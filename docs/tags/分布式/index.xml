@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>分布式 on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/</link>
+    <description>Recent content in 分布式 on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Thu, 27 May 2021 22:34:22 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/%E5%88%86%E5%B8%83%E5%BC%8F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>分布式ID实现方法</title>
+      <link>https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8Fid%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95/</link>
+      <pubDate>Thu, 27 May 2021 22:34:22 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8Fid%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95/</guid>
+      <description>实现方式 UUID 在Java的世界里，想要得到一个具有唯一性的ID，首先被想到可能就是UUID，毕竟它有着全球唯一的特性。那么UUID可以做分布式ID吗？答案是可以的，但是并不推荐！ public static void main(String[] args) { String uuid = UUID.randomUUID().toString().replaceAll(&amp;#34;-&amp;#34;,&amp;#34;&amp;#34;); System.out.println(uuid); } UUID的生成简单到只有一行代码，输出结果 c2b8c2b9e46c47e3b30dca3b0d447718，但UUID却并不适用于实际的业务需求。像用作订单号UU</description>
+    </item>
+    
+  </channel>
+</rss>

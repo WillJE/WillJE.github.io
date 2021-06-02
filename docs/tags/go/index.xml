@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>go on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/go/</link>
+    <description>Recent content in go on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sat, 15 May 2021 22:12:16 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>go中的闭包</title>
+      <link>https://willje.github.io/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/</link>
+      <pubDate>Sat, 15 May 2021 22:12:16 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/</guid>
+      <description>匿名函数 参考博客： https://www.calhoun.io/what-is-a-closure/ https://blog.cloudflare.com/a-go-gotcha-when-closures-and-goroutines-collide/ 在说闭包之前，先说一下匿名函数，匿名函数就是没有名字的函数，可以将它理解为一个变量。看下面的例子： package main import &amp;#34;fmt&amp;#34; var DoStuff func() = func() { // Do stuff } func main() { DoStuff() DoStuff = func() { fmt.Println(&amp;#34;Doing stuff!&amp;#34;) } DoStuff() DoStuff = func() { fmt.Println(&amp;#34;Doing other stuff.&amp;#34;) } DoStuff() } //Doing stuff! //Doing other stuff. 可以在这里查看：https://play.golang.org/p/WPHkRpCzH4f 闭包 闭包是匿名函数与匿名函数所引用环境的组合。匿名函数有动态创建的特</description>
+    </item>
+    
+    <item>
+      <title>深入解析 Go 中 Slice 底层实现</title>
+      <link>https://willje.github.io/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Sat, 01 May 2021 16:23:40 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/</guid>
+      <description>一. 切片和数组 关于切片和数组怎么选择？接下来好好讨论讨论这个问题。 在 Go 中，与 C 数组变量隐式作为指针使用不同，Go 数组是值类型，赋值和函数传参操作都会复制整个数组数据。 func main() { arrayA := [2]int{100, 200} var arrayB [2]int arrayB = arrayA fmt.Printf(&amp;#34;arrayA : %p , %v\n&amp;#34;, &amp;amp;arrayA, arrayA) fmt.Printf(&amp;#34;arrayB : %p , %v\n&amp;#34;, &amp;amp;arrayB, arrayB) testArray(arrayA) } func testArray(x [2]int) { fmt.Printf(&amp;#34;func Array : %p , %v\n&amp;#34;, &amp;amp;x, x) } 打印结果： arrayA : 0xc4200bebf0 , [100 200] arrayB : 0xc4200bec00 , [100 200] func Array : 0xc4200bec30 , [100 200] 可以看到，三个内存地址都不同，这也就验证了 Go 中数组赋值和函数传</description>
+    </item>
+    
+    <item>
+      <title>从一个yaml文件读取多个文档</title>
+      <link>https://willje.github.io/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/</link>
+      <pubDate>Sat, 17 Apr 2021 16:25:38 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/</guid>
+      <description>简单需求 最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构： name:&amp;#34;doc first&amp;#34;---name:&amp;#34;second&amp;#34;---name:&amp;#34;skip 3, now 4&amp;#34;---通过gopkg.in/yaml.v3``Deocder可以帮我们解析出来，默认使用&amp;quot;&amp;mdash;&amp;ldquo;来区分不同的文档。 package main import &amp;#34;fmt&amp;#34; import &amp;#34;gopkg.in/yaml.v3&amp;#34; import &amp;#34;os&amp;#34; import &amp;#34;errors&amp;#34; import &amp;#34;io&amp;#34; type Spec struct { Name string `yaml:&amp;#34;name&amp;#34;` } func main() { f, err := os.Open(&amp;#34;spec.yaml&amp;#34;) if err != nil { panic(err) } d := yaml.NewDecoder(f) for { // create new spec here spec := new(Spec) // pass a reference to spec reference err := d.Decode(&amp;amp;spec) //</description>
+    </item>
+    
+    <item>
+      <title>Golang中defer的那些事</title>
+      <link>https://willje.github.io/posts/go/basic/golang%E4%B8%ADdefer%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/</link>
+      <pubDate>Mon, 05 Apr 2021 12:13:54 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/golang%E4%B8%ADdefer%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/</guid>
+      <description>Golang中的defer关键字实现比较特殊的功能，按照官方的解释，defer后面的表达式会被放入一个列表中，在当前方法返回的时候，列表中的表达式就会被执行。一个方法中可以在一个或者多个地方使用defer表达式，这也是前面提到的，为什么需要用一个列表来保存这些表达式。在Golang中，defer表达式通常用来处理一些清理和释放资源的操作。 貌似看起来比较难懂，</description>
+    </item>
+    
+    <item>
+      <title>Go函数的参数传递方式是值传递</title>
+      <link>https://willje.github.io/posts/go/basic/go%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F%E6%98%AF%E5%80%BC%E4%BC%A0%E9%80%92/</link>
+      <pubDate>Sat, 20 Mar 2021 16:29:27 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/go%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F%E6%98%AF%E5%80%BC%E4%BC%A0%E9%80%92/</guid>
+      <description>什么是传值（值传递） 传值的意思是：函数传递的总是原来这个东西的一个副本，一副拷贝。比如我们传递一个int类型的参数，传递的其实是这个参数的一个副本；传递一个指针类型的参数，其实传递的是这个该指针的一份拷贝，而不是这个指针指向的值。 对于int这类基础类型我们可以很好的理解，它们就是一个拷贝，但是指针呢？我们觉得可以通过它修改原来的值，怎么会是一个拷贝呢？下面我</description>
+    </item>
+    
+    <item>
+      <title>Golang里的iota</title>
+      <link>https://willje.github.io/posts/go/basic/golang%E9%87%8C%E7%9A%84iota/</link>
+      <pubDate>Wed, 17 Mar 2021 16:23:40 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/golang%E9%87%8C%E7%9A%84iota/</guid>
+      <description>认识 有些概念有名字，并且有时候我们关注这些名字，甚至（特别）是在我们代码中。 const ( CCVisa = &amp;#34;Visa&amp;#34; CCMasterCard = &amp;#34;MasterCard&amp;#34; CCAmericanExpress = &amp;#34;American Express&amp;#34; ) 在其他时候，我们仅仅关注能把一个东西与其他的做区分。有些时候，有些时候一件事没有本质上的意义。比如，我们在一个数据库表中存储产品，我们可能不想以 string 存储他们的分类。我们不关注这个分类是怎样命名的，此外，该名字在市场上一直在变化。 我们仅仅关注它们是怎么彼此区分的</description>
+    </item>
+    
+    <item>
+      <title>Golang template 使用样例</title>
+      <link>https://willje.github.io/posts/go/basic/golang-template%E4%BD%BF%E7%94%A8%E6%A0%B7%E4%BE%8B/</link>
+      <pubDate>Wed, 10 Mar 2021 16:23:40 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/golang-template%E4%BD%BF%E7%94%A8%E6%A0%B7%E4%BE%8B/</guid>
+      <description>Go标准库提供了几个package可以产生输出结果，而text/template 提供了基于模板输出文本内容的功能。html/template 则是产生 安全的HTML格式的输出。 01 text/template样例 Golang text/template 包是一个数据驱动的模版渲染工具。提供条件判断，数组或map遍历；参数赋值，函数或方法调用；自定义函数扩展，模板嵌套及重用等功能。基于该工具，可以轻松实</description>
+    </item>
+    
+    <item>
+      <title>sync.once单例模式实现</title>
+      <link>https://willje.github.io/posts/go/concurrent/sync.once%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Thu, 23 Jul 2020 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/concurrent/sync.once%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0/</guid>
+      <description>并发经典场景 Go 并发编程的场景中，有一个特别经典的场景，就是并发创建对象的时候。一般伪代码如下： if ( /* 如果对象不存在 */) { // 那么就创建对象 } 因为是并发的环境，所以多个 goroutine 短时间内得出的判断都是一样的：都判断得到对象是不存在的，这时候大家的的行为也特别一致，每个 goroutine 磨刀霍霍就是创建。这时候如果不加以控制，那么会导致程序逻辑出问题。 会导致对象重复创建多次，并且可能不断的</description>
+    </item>
+    
+    <item>
+      <title>golang实现单链表</title>
+      <link>https://willje.github.io/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/</link>
+      <pubDate>Sat, 23 May 2020 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/</guid>
+      <description>数据结构 // Node represents a node of linked list type Node struct { value int next *Node } // LinkedList represents a linked list type LinkedList struct { head *Node len int } 新增节点 在链表末尾增加节点 // Insert inserts new node at the end of from linked list func (l *LinkedList) Insert(val int) { n := Node{} n.value = val if l.len == 0 { l.head = &amp;amp;n l.len++ return } ptr := l.head for i := 0; i &amp;lt; l.len; i++ { if ptr.next == nil { ptr.next = &amp;amp;n l.len++ return } ptr = ptr.next } } 指定位置增加节点 // InsertAt inserts new node at given position func (l *LinkedList) InsertAt(pos int, value int) { // create a new node newNode := Node{} newNode.value = value // validate the position if pos &amp;lt; 0 { return } if pos == 0 { l.head = &amp;amp;newNode l.len++ return } if pos &amp;gt; l.len { return } n := l.GetAt(pos) newNode.next</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Linux on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/linux/</link>
+    <description>Recent content in Linux on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Tue, 29 Oct 2019 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/linux/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Linux内核空间与用户空间</title>
+      <link>https://willje.github.io/posts/linux/linux%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4/</link>
+      <pubDate>Tue, 29 Oct 2019 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/linux/linux%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4/</guid>
+      <description>用户空间与内核空间 我们知道现在操作系统都是采用虚拟存储器 ，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次 方）。 操心系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。 为了保证用户进程不能直接操作内核，保证内核的安全，操心系统将虚拟空间划分为两部分，一部分为内核空间，一部分 为用户空间。针对</description>
+    </item>
+    
+  </channel>
+</rss>

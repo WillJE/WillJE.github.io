@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="Win10使用wsl部署k8s环境">
+<meta itemprop="description" content="前提 安装docker和go环境 配置wsl2 这个可以看之前的文章win10安装docker 安装kubectl 安装kubectl有几种方法，具体可以看install-kubectl-windows/ 直接使用curl curl -LO https://dl.k8s.io/release/v1.21.0/bin/windows/amd64/kubectl.exe 如果提示curl命令不存在，可以先安装一下curl，不过这里建议直接用github的curl（如果你安装了github的话），目录在github"><meta itemprop="datePublished" content="2021-04-24T21:57:01&#43;08:00" />
+<meta itemprop="dateModified" content="2021-04-24T21:57:01&#43;08:00" />
+<meta itemprop="wordCount" content="1351">
+<meta itemprop="keywords" content="Kubernetes," /><meta property="og:title" content="Win10使用wsl部署k8s环境" />
+<meta property="og:description" content="前提 安装docker和go环境 配置wsl2 这个可以看之前的文章win10安装docker 安装kubectl 安装kubectl有几种方法，具体可以看install-kubectl-windows/ 直接使用curl curl -LO https://dl.k8s.io/release/v1.21.0/bin/windows/amd64/kubectl.exe 如果提示curl命令不存在，可以先安装一下curl，不过这里建议直接用github的curl（如果你安装了github的话），目录在github" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/docker/win10%E4%BD%BF%E7%94%A8wsl%E9%83%A8%E7%BD%B2k8s%E7%8E%AF%E5%A2%83/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-04-24T21:57:01&#43;08:00" />
+<meta property="article:modified_time" content="2021-04-24T21:57:01&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Win10使用wsl部署k8s环境"/>
+<meta name="twitter:description" content="前提 安装docker和go环境 配置wsl2 这个可以看之前的文章win10安装docker 安装kubectl 安装kubectl有几种方法，具体可以看install-kubectl-windows/ 直接使用curl curl -LO https://dl.k8s.io/release/v1.21.0/bin/windows/amd64/kubectl.exe 如果提示curl命令不存在，可以先安装一下curl，不过这里建议直接用github的curl（如果你安装了github的话），目录在github"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Win10使用wsl部署k8s环境</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 24, 2021</span></div>
+				<h1>Win10使用wsl部署k8s环境</h1>
+			</header>
+			<div class="content">
+				<h1 id="前提">前提<a href="#前提" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>安装docker和go环境</li>
+<li>配置wsl2</li>
+</ul>
+<p>这个可以看之前的文章<a href="https://willje.github.io/posts/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/" target="_blank" rel="noopener">win10安装docker</a>
+</p>
+<h1 id="安装kubectl">安装kubectl<a href="#安装kubectl" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>安装kubectl有几种方法，具体可以看<a href="https://kubernetes.io/docs/tasks/tools/install-kubectl-windows/" target="_blank" rel="noopener">install-kubectl-windows/</a>
+</p>
+<ol>
+<li>直接使用<code>curl</code></li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">curl -LO https://dl.k8s.io/release/v1.21.0/bin/windows/amd64/kubectl.exe
+</code></pre></div><p>如果提示<code>curl</code>命令不存在，可以先安装一下curl，不过这里建议直接用github的<code>curl</code>（如果你安装了github的话），目录在<code>github安装目录/mingw64/bin</code>，不过使用这个需要配置到环境变量的<code>path</code>里。</p>
+<p>配置好之后curl会直接将kubectl可执行文件下载到bash的执行目录下，默认应该是<code>c:/users/username</code>下，然后将这个文件配置到环境变量里就行了，我这里是直接把这个文件拷贝到之前那个<code>curl</code>那个目录下了。</p>
+<p>kubectl不用安装，配置好环境变量之后就可以在wsl（ubuntu）中执行<code>kubectl version</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">will@DESKTOP-N0FI3QF:~$ kubectl version
+Client Version: version.Info<span class="o">{</span>Major:<span class="s2">&#34;1&#34;</span>, Minor:<span class="s2">&#34;19&#34;</span>, GitVersion:<span class="s2">&#34;v1.19.7&#34;</span>, GitCommit:<span class="s2">&#34;1dd5338295409edcfff11505e7bb246f0d325d15&#34;</span>, GitTreeState:<span class="s2">&#34;clean&#34;</span>, BuildDate:<span class="s2">&#34;2021-01-13T13:23:52Z&#34;</span>, GoVersion:<span class="s2">&#34;go1.15.5&#34;</span>, Compiler:<span class="s2">&#34;gc&#34;</span>, Platform:<span class="s2">&#34;linux/amd64&#34;</span><span class="o">}</span>
+</code></pre></div><p>这时因为没有配置集群，所以只有客户端版本。</p>
+<h1 id="安装kind">安装kind<a href="#安装kind" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>具体参考这个官方<a href="https://kubernetes.io/blog/2020/05/21/wsl-docker-kubernetes-on-the-windows-desktop/" target="_blank" rel="noopener">博客</a>
+</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># Download the latest version of KinD</span>
+curl -Lo ./kind https://github.com/kubernetes-sigs/kind/releases/download/v0.7.0/kind-linux-amd64
+<span class="c1"># Make the binary executable</span>
+chmod +x ./kind
+<span class="c1"># Move the binary to your executable path</span>
+sudo mv ./kind /usr/local/bin/
+</code></pre></div><p>学习一下kind的命令</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">will@DESKTOP-N0FI3QF:~$ kind
+kind creates and manages <span class="nb">local</span> Kubernetes clusters using Docker container <span class="s1">&#39;nodes&#39;</span>
+
+Usage:
+  kind <span class="o">[</span>command<span class="o">]</span>
+
+Available Commands:
+  build       Build one of <span class="o">[</span>base-image, node-image<span class="o">]</span>
+  create      Creates one of <span class="o">[</span>cluster<span class="o">]</span>
+  delete      Deletes one of <span class="o">[</span>cluster<span class="o">]</span>
+  <span class="nb">export</span>      exports one of <span class="o">[</span>logs<span class="o">]</span>
+  get         Gets one of <span class="o">[</span>clusters, nodes, kubeconfig-path<span class="o">]</span>
+  <span class="nb">help</span>        Help about any <span class="nb">command</span>
+  load        Loads images into nodes
+  version     prints the kind CLI version
+
+Flags:
+  -h, --help              <span class="nb">help</span> <span class="k">for</span> kind
+      --loglevel string   logrus log level <span class="o">[</span>panic, fatal, error, warning, info, debug<span class="o">]</span> <span class="o">(</span>default <span class="s2">&#34;warning&#34;</span><span class="o">)</span>
+      --version           version <span class="k">for</span> kind
+
+Use <span class="s2">&#34;kind [command] --help&#34;</span> <span class="k">for</span> more information about a command.
+</code></pre></div><h1 id="创建第一个集群">创建第一个集群<a href="#创建第一个集群" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="nb">echo</span> <span class="nv">$KUBECONFIG</span>
+<span class="c1"># Check if the .kube directory is created &gt; if not, no need to create it</span>
+ls <span class="nv">$HOME</span>/.kube
+<span class="c1"># Create the cluster and give it a name (optional)</span>
+kind create cluster --name wslkind
+<span class="c1"># Check if the .kube has been created and populated with files</span>
+ls <span class="nv">$HOME</span>/.kube
+will@DESKTOP-N0FI3QF:~$ kind create cluster --name willkind
+Creating cluster <span class="s2">&#34;willkind&#34;</span> ...
+ ✓ Ensuring node image <span class="o">(</span>kindest/node:v1.13.4<span class="o">)</span> 🖼
+⢎⡀ Preparing nodes 📦
+⠈⠁ Preparing nodes 📦
+⢀⡱ Preparing nodes 📦
+ ✓ Preparing nodes 📦
+ ✓ Creating kubeadm config 📜
+ ✓ Starting control-plane 🕹️
+Cluster creation complete. You can now use the cluster with:
+
+<span class="nb">export</span> <span class="nv">KUBECONFIG</span><span class="o">=</span><span class="s2">&#34;</span><span class="k">$(</span>kind get kubeconfig-path --name<span class="o">=</span><span class="s2">&#34;willkind&#34;</span><span class="k">)</span><span class="s2">&#34;</span>
+kubectl cluster-info
+
+will@DESKTOP-N0FI3QF:~$ kubectl cluster-info
+Kubernetes master is running at https://localhost:41825
+KubeDNS is running at https://localhost:41825/api/v1/namespaces/kube-system/services/kube-dns:dns/proxy
+
+To further debug and diagnose cluster problems, use <span class="s1">&#39;kubectl cluster-info dump&#39;</span>.
+will@DESKTOP-N0FI3QF:~$ kubectl get nodes
+NAME                     STATUS   ROLES    AGE   VERSION
+willkind-control-plane   Ready    master   12m   v1.13.4
+</code></pre></div><p>这时我们就完成了简单的单节点的集群创建</p>
+<p>从安装打印出的输出来看，分为4步：</p>
+<ol>
+<li>
+<p>查看本地上是否存在一个基础的安装镜像，默认是 kindest/node:v1.13.4，这个镜像里面包含了需要安装的所有东西，包括了 kubectl、kubeadm、kubelet 二进制文件，以及安装对应版本 k8s 所需要的镜像，都以 tar 压缩包的形式放在镜像内的一个路径下</p>
+</li>
+<li>
+<p>准备你的 node，这里就是做一些启动容器、解压镜像之类的工作</p>
+</li>
+<li>
+<p>生成对应的 kubeadm 的配置，之后通过 kubeadm 安装，安装之后还会做另外的一些操作，比如像我刚才仅安装单节点的集群，会帮你删掉 master 节点上的污点，否则对于没有容忍的 pod 无法部署。</p>
+</li>
+<li>
+<p>启动完毕</p>
+</li>
+</ol>
+<p>查看当前集群的运行情况</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">will@DESKTOP-N0FI3QF:~$ kubectl get po -n kube-system
+NAME                                             READY   STATUS    RESTARTS   AGE
+coredns-86c58d9df4-6gdmr                         1/1     Running   <span class="m">0</span>          161m
+coredns-86c58d9df4-nc7nt                         1/1     Running   <span class="m">0</span>          161m
+etcd-willkind-control-plane                      1/1     Running   <span class="m">0</span>          160m
+kube-apiserver-willkind-control-plane            1/1     Running   <span class="m">0</span>          160m
+kube-controller-manager-willkind-control-plane   1/1     Running   <span class="m">0</span>          160m
+kube-proxy-2b6qs                                 1/1     Running   <span class="m">0</span>          161m
+kube-scheduler-willkind-control-plane            1/1     Running   <span class="m">0</span>          160m
+weave-net-h2rt8                                  2/2     Running   <span class="m">0</span>          161m
+</code></pre></div><p>默认方式启动的节点类型是 control-plane 类型，包含了所有的组件。包括2 * coredns、etcd、api-server、controller-manager、kube-proxy、sheduler，网络插件方面默认使用的是 weave，且目前只支持 weave，不支持其他配置，如果需要可以修改 kind 代码进行定制。</p>
+<p>基本上，kind 的所有秘密都在那个基础镜像中。下面是基础容器内部的 /kind 目录，在 bin 目录下安装了 kubelet、kubeadm、kubectl 这些二进制文件，images 下面是镜像的 tar 包，kind 在启动基础镜像后会执行一遍 docker load 操作将这些 tar 包导入。manifests 下面是 weave 的 cni。</p>
+<h1 id="参考文章">参考文章<a href="#参考文章" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>
+<p><a href="https://kubernetes.io/blog/2020/05/21/wsl-docker-kubernetes-on-the-windows-desktop/">https://kubernetes.io/blog/2020/05/21/wsl-docker-kubernetes-on-the-windows-desktop/</a></p>
+</li>
+<li>
+<p><a href="https://zhuanlan.zhihu.com/p/61492135">https://zhuanlan.zhihu.com/p/61492135</a></p>
+</li>
+</ul>
+
+			</div><div class="content">
+	<br>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/kubernetes">Kubernetes</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1351 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-04-24 21:57 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents"></nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>分布式事务</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/docker/win10%E5%AE%89%E8%A3%85docker/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Win10安装docker</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

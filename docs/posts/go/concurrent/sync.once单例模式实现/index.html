@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="sync.once单例模式实现">
+<meta itemprop="description" content="并发经典场景 Go 并发编程的场景中，有一个特别经典的场景，就是并发创建对象的时候。一般伪代码如下： if ( /* 如果对象不存在 */) { // 那么就创建对象 } 因为是并发的环境，所以多个 goroutine 短时间内得出的判断都是一样的：都判断得到对象是不存在的，这时候大家的的行为也特别一致，每个 goroutine 磨刀霍霍就是创建。这时候如果不加以控制，那么会导致程序逻辑出问题。 会导致对象重复创建多次，并且可能不断的"><meta itemprop="datePublished" content="2020-07-23T21:23:18&#43;08:00" />
+<meta itemprop="dateModified" content="2020-07-23T21:23:18&#43;08:00" />
+<meta itemprop="wordCount" content="2637">
+<meta itemprop="keywords" content="go,并发," /><meta property="og:title" content="sync.once单例模式实现" />
+<meta property="og:description" content="并发经典场景 Go 并发编程的场景中，有一个特别经典的场景，就是并发创建对象的时候。一般伪代码如下： if ( /* 如果对象不存在 */) { // 那么就创建对象 } 因为是并发的环境，所以多个 goroutine 短时间内得出的判断都是一样的：都判断得到对象是不存在的，这时候大家的的行为也特别一致，每个 goroutine 磨刀霍霍就是创建。这时候如果不加以控制，那么会导致程序逻辑出问题。 会导致对象重复创建多次，并且可能不断的" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/go/concurrent/sync.once%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-07-23T21:23:18&#43;08:00" />
+<meta property="article:modified_time" content="2020-07-23T21:23:18&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="sync.once单例模式实现"/>
+<meta name="twitter:description" content="并发经典场景 Go 并发编程的场景中，有一个特别经典的场景，就是并发创建对象的时候。一般伪代码如下： if ( /* 如果对象不存在 */) { // 那么就创建对象 } 因为是并发的环境，所以多个 goroutine 短时间内得出的判断都是一样的：都判断得到对象是不存在的，这时候大家的的行为也特别一致，每个 goroutine 磨刀霍霍就是创建。这时候如果不加以控制，那么会导致程序逻辑出问题。 会导致对象重复创建多次，并且可能不断的"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>sync.once单例模式实现</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jul 23, 2020</span></div>
+				<h1>sync.once单例模式实现</h1>
+			</header>
+			<div class="content">
+				<h2 id="并发经典场景">并发经典场景<a href="#并发经典场景" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Go 并发编程的场景中，有一个特别经典的场景，就是并发创建对象的时候。一般伪代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="k">if</span> <span class="p">(</span> <span class="cm">/* 如果对象不存在 */</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// 那么就创建对象 
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>因为是并发的环境，所以多个 goroutine 短时间内得出的判断都是一样的：<strong>都判断得到对象是不存在的</strong>，这时候大家的的行为也特别一致，每个 goroutine 磨刀霍霍就是创建。这时候如果不加以控制，那么会导致程序逻辑出问题。</p>
+<p>会导致对象重复创建多次，并且可能不断的被替换和丢弃。</p>
+<h2 id="怎么解决">怎么解决？<a href="#怎么解决" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h4 id="加锁互斥">加锁互斥<a href="#加锁互斥" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>最简单的方法：<strong>加锁互斥</strong>。保证判断和创建这两个动作是原子操作，这样就不存在并发误判的时间窗，那么就不会存在以上问题了。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">lock</span> <span class="o">...</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span> <span class="cm">/* 如果对象不存在 */</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// 那么就创建对象 
+</span><span class="c1"></span>    <span class="p">}</span>
+<span class="p">}</span>
+<span class="nx">unlock</span> <span class="o">...</span>
+</code></pre></div><p>加锁不可怕，锁冲突才可怕，如果每次都要抢一把锁，那性能就划不来了。</p>
+<h4 id="once">Once<a href="#once" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>在 Go 的并发库对此有另外一个实现：<code>sync.Once</code> 对象。这是一个非常小巧的实现，对象实现代码极其精简。这个库非常方便的实现 Go 的单实例设计模式。</p>
+<p>我们换一个思路，我们不做判断，需要一个库能够提供只执行一次的语义，那么也能实现我们的目的。</p>
+<p>没错，就是直接调用 <code>Once.Do</code> 执行创建对象，业务方甚至都不需要再做多余的判断的动作，如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="cm">/* 创建对象 */</span><span class="p">)</span>
+</code></pre></div><p>对，就是这么简单，上面的调用就能保证在并发的上下文中，保持正确性。那么 <code>sync.Once</code> 对外保证了什么语义呢？</p>
+<p><strong>划重点：确保传入函数只被执行一次。</strong></p>
+<p>这里注意思考一个点：只执行一次是针对库的还是针对实例的？</p>
+<p><strong>划重点：只执行一次的语义是和具体的 once 变量绑定的。</strong></p>
+<p>怎么理解？举个例子：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">once1</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+<span class="kd">var</span> <span class="nx">once2</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+
+<span class="nx">once1</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span> <span class="nx">f1</span> <span class="p">)</span>
+<span class="nx">once2</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span> <span class="nx">f2</span> <span class="p">)</span>
+</code></pre></div><p><code>f1</code> 和 <code>f2</code> 各保证执行一次。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">once1</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+<span class="kd">var</span> <span class="nx">once2</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+
+<span class="nx">once1</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span> <span class="nx">f1</span> <span class="p">)</span>
+<span class="nx">once2</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span> <span class="nx">f2</span> <span class="p">)</span>
+</code></pre></div><h2 id="单例模式">单例模式<a href="#单例模式" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>单例模式模式可以说是设计模式里最简单的了。Go 怎么实现只创建一个对象呢？</p>
+<p>非常简单，就是借助 <code>sync.Once</code> 结构。举个完整的例子：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 全局变量（我们只希望创建一个）
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">s</span> <span class="o">*</span><span class="nx">SomeObject</span>
+<span class="c1">// 定义一个 once 变量
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">once</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Once</span>
+<span class="c1">// 只希望创建一个，单例模式
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">GetInstance</span><span class="p">()</span> <span class="o">*</span><span class="nx">SomeObject</span> <span class="p">{</span>
+    <span class="nx">once</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span><span class="kd">func</span><span class="p">(){</span>
+        <span class="c1">// 创建一个对象，赋值指针给全局变量
+</span><span class="c1"></span>        <span class="nx">s</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">SomeObject</span><span class="p">{}</span>
+    <span class="p">})</span>
+    <span class="k">return</span> <span class="nx">s</span>
+<span class="p">}</span>
+</code></pre></div><p>这样，我们就实现了单例模式，每次调用 <code>GetInstance</code> 函数返回的对象都只有一个。那么 <code>sync.Once</code>是怎么做到的呢？</p>
+<h2 id="once-的实现">Once 的实现<a href="#once-的实现" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>以下就是 <code>Once</code> 实例的全部源码实现，非常的简短，也非常的有趣。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">sync</span>
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s">&#34;sync/atomic&#34;</span>
+<span class="p">)</span>
+<span class="kd">type</span> <span class="nx">Once</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">done</span> <span class="kt">uint32</span>
+    <span class="nx">m</span>    <span class="nx">Mutex</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">o</span> <span class="o">*</span><span class="nx">Once</span><span class="p">)</span> <span class="nf">Do</span><span class="p">(</span><span class="nx">f</span> <span class="kd">func</span><span class="p">())</span> <span class="p">{</span>
+    <span class="c1">// 思考题：为什么这里不用 cas 来判断？
+</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">LoadUint32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">o</span><span class="p">.</span><span class="nx">done</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="nx">o</span><span class="p">.</span><span class="nf">doSlow</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">o</span> <span class="o">*</span><span class="nx">Once</span><span class="p">)</span> <span class="nf">doSlow</span><span class="p">(</span><span class="nx">f</span> <span class="kd">func</span><span class="p">())</span> <span class="p">{</span>
+    <span class="nx">o</span><span class="p">.</span><span class="nx">m</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+    <span class="k">defer</span> <span class="nx">o</span><span class="p">.</span><span class="nx">m</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nx">o</span><span class="p">.</span><span class="nx">done</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="c1">// 思考题：为什么这里用 defer 来加计数？
+</span><span class="c1"></span>        <span class="k">defer</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">StoreUint32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">o</span><span class="p">.</span><span class="nx">done</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="nf">f</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>以上的 <code>sync.Once</code> 实现非常简短，但是也有两个值得思考的地方。</p>
+<ol>
+<li>为什么 <code>Once.Do</code> 里面没有用 <code>cas</code> 判断？原子操作岂不是更快？</li>
+<li>为什么 <code>Once.doSlow</code> 里面用 <code>defer</code> 来加计数，而不是直接操作？</li>
+</ol>
+<h2 id="思考为什么没有用-cas-原子判断">思考：为什么没有用 cas 原子判断？<a href="#思考为什么没有用-cas-原子判断" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>什么是 <code>cas</code> ？</p>
+<p>Go 里面有是 <code>atomic.CompareAndSwapUint32</code> 实现这 <code>cas</code> 的功能。<code>cas</code> 就是 Compare And Swap 的缩写，把判断和赋值包装成一个原子操作。我们看一下 cas 的伪代码实现：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">cas</span><span class="p">(</span><span class="nx">p</span> <span class="p">:</span> <span class="nx">pointer</span> <span class="nx">to</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">old</span> <span class="p">:</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">new</span> <span class="p">:</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">bool</span> <span class="p">{</span>
+    <span class="c1">// *p 不等于 old 的时候，返回 false
+</span><span class="c1"></span>    <span class="k">if</span> <span class="o">*</span><span class="nx">p</span> <span class="o">!=</span> <span class="nx">old</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="kc">false</span>
+    <span class="p">}</span>
+    <span class="c1">// *p 等于 old 的时候，赋值新值，并返回 true
+</span><span class="c1"></span>    <span class="o">*</span><span class="nx">p</span> <span class="p">=</span> <span class="nx">new</span>
+    <span class="k">return</span> <span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div><p>上面的就是 <code>cas</code> 的伪代码实现，<code>cas</code> 保证上面的逻辑是原子操作。思考下，为什么 <code>Once</code> 不能用如下的实现：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="k">if</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">CompareAndSwapUint32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">o</span><span class="p">.</span><span class="nx">done</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nf">f</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><p>第一眼看过去，好像也能实现 <code>Once</code> 只执行一次语义？</p>
+<p>这个代码看起来 <code>o.done == 0</code> 的时候，会赋值 <code>o.done==1</code>，然后执行 <code>f()</code>。其他并发请求的时候，<code>o.done == 1</code>，就不会再进到这个分支里，貌似也可以？</p>
+<p>那为什么没用原子操作呢？<code>cas</code> 原子操作不是性能最好的吗？</p>
+<p>细品下，虽然能保证只执行一次，却有个致命的缺陷：<strong>无法在 <code>o.done==1</code> 的时候保证 <code>f()</code> 函数有执行完成</strong>。Golang 的标准库也针对这些提到了这点。</p>
+<blockquote>
+<p>// Do guarantees that when it returns, f has finished. // This implementation would not implement that guarantee: // given two simultaneous calls, the winner of the cas would // call f, and the second would return immediately, without // waiting for the first&rsquo;s call to f to complete.</p>
+</blockquote>
+<p>当 <code>o.done</code> 判断为 0 的时候，立即就设置成了 1 ，这个时候才走到 <code>f()</code> 函数里执行，这里的语义不再正确。</p>
+<p><code>Once</code> 不仅要保证只执行一次，还要保证当其他用户看到 <code>o.done==1</code> 导致 <code>Once.Do</code> 返回的时候，确保执行完成。</p>
+<p>这个语义很重要吗？</p>
+<p><strong>非常重要，这里涉及到逻辑的正确性</strong>。举个栗子，我们用 <code>Once.Do</code> 来创建一个唯一的全局变量对象，如果是你回复了用户已经 <code>Once.Do</code> 成功，但是却 <code>f()</code> 还在执行过程，那么就会出现中间态，全局变量还没有创建出来，行为是无法定义的。</p>
+<p>那么怎么解决？解决非常简单，两个思路：</p>
+<ol>
+<li>
+<p>热路径：用原子读 <code>o.done</code> 的值，保证竞态条件正确；</p>
+</li>
+<li>
+<p>既然不能用 <code>cas</code> 原子操作，那就用锁机制来保证原子性。如果 <code>o.done == 0</code> ，那么就走慢路径，注意：<strong>以下所有逻辑在一把大锁内</strong></p>
+</li>
+<li>
+<ol>
+<li>先执行 <code>f()</code> 函数；</li>
+<li>然后才去设置 <code>o.done</code> 为 1；</li>
+</ol>
+</li>
+</ol>
+<p>第一次可能在锁互斥的时候，可能会比较慢。因为要抢锁，但是只要执行过一次，就不会在走到锁内的逻辑了。都是走原子读的路径，也是非常快的。</p>
+<p>既然提到锁，我们再来看一个死锁的例子。<code>Once</code> 内部用锁来保证代码的临界区，那么就千万不要嵌套使用，不然会死锁。如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">once1</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span> <span class="kd">func</span><span class="p">(){</span>
+    <span class="nx">once1</span><span class="p">.</span><span class="nf">Do</span><span class="p">(</span> <span class="kd">func</span><span class="p">(){</span>
+        <span class="cm">/* something */</span>
+    <span class="p">}</span> <span class="p">)</span>
+<span class="p">}</span> <span class="p">)</span>
+</code></pre></div><p>上面的代码会死锁在 <code>once1.m.Lock()</code> 的调用上。</p>
+<p><strong>划重点：千万不要把 <code>sync.Once</code> 用的复杂，要保持简洁，嵌套很容易死锁。</strong></p>
+<h2 id="思考为什么-doslow-用-defer-来加计数而不是-f-之后直接操作">思考：为什么 doSlow 用 defer 来加计数，而不是 f() 之后直接操作？<a href="#思考为什么-doslow-用-defer-来加计数而不是-f-之后直接操作" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><code>Once.doSlow</code> 整个是在锁内操作的，所以这段代码的操作是串行化的。如果 <code>o.done</code> 为 0，标识没有执行过 f，整个时候注册一个 <code>defer</code> 函数 <code>defer atomic.StoreUint32(&amp;o.done, 1)</code> ，然后运行 f() 。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="p">(</span><span class="nx">o</span> <span class="o">*</span><span class="nx">Once</span><span class="p">)</span> <span class="nf">doSlow</span><span class="p">(</span><span class="nx">f</span> <span class="kd">func</span><span class="p">())</span> <span class="p">{</span>
+    <span class="nx">o</span><span class="p">.</span><span class="nx">m</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+    <span class="k">defer</span> <span class="nx">o</span><span class="p">.</span><span class="nx">m</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nx">o</span><span class="p">.</span><span class="nx">done</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="c1">// 思考题：为什么这里用 defer 来加计数？
+</span><span class="c1"></span>        <span class="k">defer</span> <span class="nx">atomic</span><span class="p">.</span><span class="nf">StoreUint32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">o</span><span class="p">.</span><span class="nx">done</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="nf">f</span><span class="p">()</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>这里为什么要用 <code>defer</code> 来确保执行 <code>o.done</code> 赋值为 1 的操作呢？踏实把 <code>atomic.StoreUint32(&amp;o.done, 1)</code> 放到 <code>f()</code> 之后不好吗？</p>
+<p>不好！<strong>因为处理不了 panic 的异常</strong>。举个例子：</p>
+<p>如果不用 <code>defer</code> ，当 <code>f()</code> 执行的时候出现 <code>panic</code> 的时候（被外层 recover，进程没挂），会导致没有 <code>o.done</code> 加计数，但其实 <code>f()</code> 已经执行过了，这就违反语义了。</p>
+<p>之前我们说过，<code>defer</code> 注册的函数，就算 <code>f()</code> 内部执行出现 <code>panic</code> ，也会被执行，所以这里就保证了 Once 对外的语义：执行过一次，<code>o.done</code> 一定是非 0。</p>
+<p>不过，我们继续思考 <code>panic</code> 场景，如果说 <code>f()</code> 因为某些原因，导致了 <code>panic</code>，可能并没有执行完，这种时候，也再不会执行 <code>Once.Do</code> 了，因为已经执行过一次了。业务自己承担这个责任，框架已经尽力了。</p>
+<h2 id="once-的语义">Once 的语义<a href="#once-的语义" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>这里归纳出 Once 提供的语义：</p>
+<ol>
+<li><code>Once.Do</code> 保证只调用一次的语义，无论 <code>f()</code> 内部有没有执行完（ panic ）；</li>
+<li>只有 <code>f()</code> 执行完成，<code>Once.Do</code> 才会返回，否则阻塞等待 <code>f()</code> 的第一次执行完成；</li>
+</ol>
+<p>抢锁简要演示：</p>
+<p><p class="md__image">
+  <img src="../sync.once%e5%8d%95%e4%be%8b%e6%a8%a1%e5%bc%8f%e5%ae%9e%e7%8e%b0.assets/%e5%be%ae%e4%bf%a1%e5%9b%be%e7%89%87_20210602104420.gif"
+    alt="微信图片_20210602104420"  />
+</p>
+</p>
+<p>最开始一轮并发的时候，需要抢锁，但是只有这一会儿，不会太久。</p>
+<p>之后的常规操作，全都走原子读即可，非常快速：</p>
+<p><p class="md__image">
+  <img src="../sync.once%e5%8d%95%e4%be%8b%e6%a8%a1%e5%bc%8f%e5%ae%9e%e7%8e%b0.assets/%e5%be%ae%e4%bf%a1%e5%9b%be%e7%89%87_20210602104503.gif"
+    alt="微信图片_20210602104503"  />
+</p>
+</p>
+<h2 id="总结">总结<a href="#总结" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ol>
+<li><code>Once</code> 对外提供 <code>f()</code> 只调用一次的语义;</li>
+<li><code>Once.Do</code> 返回之后，按照约定，<code>f()</code> 一定被执行过一次，并且只执行过一次。如果没有执行完，会阻塞等待 <code>f()</code> 的第一次执行完成；</li>
+<li><code>Once</code> 只执行一次的语义是跟实例绑定的关系，多个 <code>Once</code> 实例的话，每个实例都有一次的机会；</li>
+<li>内部用<strong>锁机制</strong>来保证逻辑的原子性，先执行 <code>f()</code> ，然后设置 <code>o.done</code> 标识位；</li>
+<li><code>Once</code> 用 <code>defer</code> 机制保证 <code>panic</code> 的场景，也能够保证 <code>o.done</code> 标识位被设置；</li>
+<li><code>Once</code> 实例千万注意，不要嵌套，内部有锁，乱用的话容易死锁；</li>
+</ol>
+
+			</div><div class="content">
+	<br>
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/">golang实现单链表</a></li>
+	
+	<li><a href="/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/">go中的闭包</a></li>
+	
+	<li><a href="/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">深入解析 Go 中 Slice 底层实现</a></li>
+	
+	<li><a href="/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/">从一个yaml文件读取多个文档</a></li>
+	
+	<li><a href="/posts/go/basic/golang%E4%B8%ADdefer%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/">Golang中defer的那些事</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/go">go</a></span><span class="tag"><a href="https://willje.github.io/tags/%E5%B9%B6%E5%8F%91">并发</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2637 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-07-23 21:23 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#并发经典场景">并发经典场景</a></li>
+    <li><a href="#怎么解决">怎么解决？</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#单例模式">单例模式</a></li>
+    <li><a href="#once-的实现">Once 的实现</a></li>
+    <li><a href="#思考为什么没有用-cas-原子判断">思考：为什么没有用 cas 原子判断？</a></li>
+    <li><a href="#思考为什么-doslow-用-defer-来加计数而不是-f-之后直接操作">思考：为什么 doSlow 用 defer 来加计数，而不是 f() 之后直接操作？</a></li>
+    <li><a href="#once-的语义">Once 的语义</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/algorithm/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>一致性哈希算法</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/linux/io-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>IO多路复用</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

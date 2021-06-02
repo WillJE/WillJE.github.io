@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="go中的闭包">
+<meta itemprop="description" content="匿名函数 参考博客： https://www.calhoun.io/what-is-a-closure/ https://blog.cloudflare.com/a-go-gotcha-when-closures-and-goroutines-collide/ 在说闭包之前，先说一下匿名函数，匿名函数就是没有名字的函数，可以将它理解为一个变量。看下面的例子： package main import &#34;fmt&#34; var DoStuff func() = func() { // Do stuff } func main() { DoStuff() DoStuff = func() { fmt.Println(&#34;Doing stuff!&#34;) } DoStuff() DoStuff = func() { fmt.Println(&#34;Doing other stuff.&#34;) } DoStuff() } //Doing stuff! //Doing other stuff. 可以在这里查看：https://play.golang.org/p/WPHkRpCzH4f 闭包 闭包是匿名函数与匿名函数所引用环境的组合。匿名函数有动态创建的特"><meta itemprop="datePublished" content="2021-05-15T22:12:16&#43;08:00" />
+<meta itemprop="dateModified" content="2021-05-15T22:12:16&#43;08:00" />
+<meta itemprop="wordCount" content="1471">
+<meta itemprop="keywords" content="go,闭包," /><meta property="og:title" content="go中的闭包" />
+<meta property="og:description" content="匿名函数 参考博客： https://www.calhoun.io/what-is-a-closure/ https://blog.cloudflare.com/a-go-gotcha-when-closures-and-goroutines-collide/ 在说闭包之前，先说一下匿名函数，匿名函数就是没有名字的函数，可以将它理解为一个变量。看下面的例子： package main import &#34;fmt&#34; var DoStuff func() = func() { // Do stuff } func main() { DoStuff() DoStuff = func() { fmt.Println(&#34;Doing stuff!&#34;) } DoStuff() DoStuff = func() { fmt.Println(&#34;Doing other stuff.&#34;) } DoStuff() } //Doing stuff! //Doing other stuff. 可以在这里查看：https://play.golang.org/p/WPHkRpCzH4f 闭包 闭包是匿名函数与匿名函数所引用环境的组合。匿名函数有动态创建的特" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-05-15T22:12:16&#43;08:00" />
+<meta property="article:modified_time" content="2021-05-15T22:12:16&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="go中的闭包"/>
+<meta name="twitter:description" content="匿名函数 参考博客： https://www.calhoun.io/what-is-a-closure/ https://blog.cloudflare.com/a-go-gotcha-when-closures-and-goroutines-collide/ 在说闭包之前，先说一下匿名函数，匿名函数就是没有名字的函数，可以将它理解为一个变量。看下面的例子： package main import &#34;fmt&#34; var DoStuff func() = func() { // Do stuff } func main() { DoStuff() DoStuff = func() { fmt.Println(&#34;Doing stuff!&#34;) } DoStuff() DoStuff = func() { fmt.Println(&#34;Doing other stuff.&#34;) } DoStuff() } //Doing stuff! //Doing other stuff. 可以在这里查看：https://play.golang.org/p/WPHkRpCzH4f 闭包 闭包是匿名函数与匿名函数所引用环境的组合。匿名函数有动态创建的特"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>go中的闭包</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>May 15, 2021</span></div>
+				<h1>go中的闭包</h1>
+			</header>
+			<div class="content">
+				<h2 id="匿名函数">匿名函数<a href="#匿名函数" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>参考博客：</p>
+<ul>
+<li><a href="https://www.calhoun.io/what-is-a-closure/">https://www.calhoun.io/what-is-a-closure/</a></li>
+<li><a href="https://blog.cloudflare.com/a-go-gotcha-when-closures-and-goroutines-collide/">https://blog.cloudflare.com/a-go-gotcha-when-closures-and-goroutines-collide/</a></li>
+</ul>
+<p>在说闭包之前，先说一下匿名函数，匿名函数就是没有名字的函数，可以将它理解为一个变量。看下面的例子：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">var</span> <span class="nx">DoStuff</span> <span class="kd">func</span><span class="p">()</span> <span class="p">=</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+  <span class="c1">// Do stuff
+</span><span class="c1"></span><span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nf">DoStuff</span><span class="p">()</span>
+
+  <span class="nx">DoStuff</span> <span class="p">=</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Doing stuff!&#34;</span><span class="p">)</span>
+  <span class="p">}</span>
+  <span class="nf">DoStuff</span><span class="p">()</span>
+
+  <span class="nx">DoStuff</span> <span class="p">=</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Doing other stuff.&#34;</span><span class="p">)</span>
+  <span class="p">}</span>
+  <span class="nf">DoStuff</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="c1">//Doing stuff!
+</span><span class="c1">//Doing other stuff.
+</span></code></pre></div><p>可以在这里查看：https://play.golang.org/p/WPHkRpCzH4f</p>
+<h2 id="闭包">闭包<a href="#闭包" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>闭包是匿名函数与匿名函数所引用环境的<strong>组合</strong>。匿名函数有动态创建的特性，<strong>该特性使得匿名函数不用通过参数传递的方式，就可以直接引用外部的变量</strong>。这就类似于常规函数直接使用全局变量一样，个人理解为：匿名函数和它引用的变量以及环境，类似常规函数引用全局变量处于一个包的环境。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">n</span> <span class="o">:=</span> <span class="mi">0</span>
+  <span class="nx">counter</span> <span class="o">:=</span> <span class="kd">func</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="nx">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nx">n</span>
+  <span class="p">}</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nf">counter</span><span class="p">())</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nf">counter</span><span class="p">())</span>
+<span class="p">}</span>
+<span class="c1">//1
+</span><span class="c1">//2
+</span></code></pre></div><p>可以在这里查看：https://play.golang.org/p/WOfBvm7UbLT</p>
+<p>注意看变量<code>n</code>是没有通过变量传递给方法<code>counter()</code>的，而且看结果第二次执行的时候返回了2，说明这个<code>counter()</code>变量不仅仅是存储了一个函数的返回值，它同时存储了一个闭包的状态。</p>
+<h2 id="闭包作为函数返回值">闭包作为函数返回值<a href="#闭包作为函数返回值" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>匿名函数作为返回值，不如理解为闭包作为函数的返回值，如下代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="nx">counter</span> <span class="o">:=</span> <span class="nf">newCounter</span><span class="p">()</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nf">counter</span><span class="p">())</span>
+  <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nf">counter</span><span class="p">())</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">newCounter</span><span class="p">()</span> <span class="kd">func</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+  <span class="nx">n</span> <span class="o">:=</span> <span class="mi">0</span>
+  <span class="k">return</span> <span class="kd">func</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="nx">n</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">return</span> <span class="nx">n</span>
+  <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>闭包被返回赋予一个同类型的变量时，同时赋值的是整个闭包的状态，该状态会一直存在外部被赋值的变量<code>counter</code>中，直到<code>counter</code>被销毁，整个闭包也被销毁。</p>
+<h2 id="golang并发中的闭包">Golang并发中的闭包<a href="#golang并发中的闭包" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>输出从1-5的数字，我们可以这么写</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d &#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>如果要使用并发输出，使用<code>goroutine</code>，并使用信号量<code>sync.WaitGroup</code>保证同步。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+    <span class="s">&#34;runtime&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="nx">runtime</span><span class="p">.</span><span class="nf">NumCPU</span><span class="p">())</span>
+    
+	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d &#34;</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+	
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="cm">/**结果
+</span><span class="cm">5 5 5 5 5
+</span><span class="cm">**/</span>
+</code></pre></div><p>这种现象的原因在于闭包共享外部的变量<code>i</code>，注意到，每次调用go就会启动一个<code>goroutine</code>，这需要一定时间；但是，启动的<code>goroutine</code>与循环变量递增不是在同一个<code>goroutine</code>，可以把i认为处于主<code>goroutine</code>中。启动一个<code>goroutine</code>的速度远小于循环执行的速度，所以即使是第一个<code>goroutine</code>刚起启动时，外层的循环也执行到了最后一步了。由于所有的<code>goroutine</code>共享<code>i</code>，而且这个i会在最后一个使用它的<code>goroutine</code>结束后被销毁，所以最后的输出结果都是最后一步的<code>i==5</code>。</p>
+<p>怎么验证这个问题呢，我们在for循环中设置延时看一下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="nx">runtime</span><span class="p">.</span><span class="nf">NumCPU</span><span class="p">())</span>
+
+	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>   <span class="c1">// 设置时间延时1秒
+</span><span class="c1"></span>	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="cm">/**输出结果
+</span><span class="cm">0
+</span><span class="cm">1
+</span><span class="cm">2
+</span><span class="cm">3
+</span><span class="cm">4
+</span><span class="cm">**/</span>
+</code></pre></div><p>每一步循环至少间隔一秒，而这一秒的时间足够启动一个<code>goroutine</code>了，因此这样可以输出正确的结果。</p>
+<p>在实际的工程中，不可能进行延时，这样就没有并发的优势，一般采取下面两种方法：</p>
+<ol>
+<li>共享的环境变量作为函数参数传递:</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="nx">runtime</span><span class="p">.</span><span class="nf">NumCPU</span><span class="p">())</span>
+
+	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">i</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="p">}(</span><span class="nx">i</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="cm">/*
+</span><span class="cm">输出:
+</span><span class="cm">4
+</span><span class="cm">0
+</span><span class="cm">3
+</span><span class="cm">1
+</span><span class="cm">2
+</span><span class="cm">*/</span>
+</code></pre></div><p>输出结果不一定按照顺序，这取决于每个<code>goroutine</code>的实际情况，但是最后的结果是不变的。可以理解为，函数参数的传递是瞬时的，而且是在一个<code>goroutine</code>执行之前就完成，所以此时执行的闭包存储了当前<code>i</code>的状态。</p>
+<ol start="2">
+<li>使用同名的变量保留当前的状态</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="nx">runtime</span><span class="p">.</span><span class="nf">NumCPU</span><span class="p">())</span>
+
+	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+		<span class="nx">i</span> <span class="o">:=</span> <span class="nx">i</span>       <span class="c1">// 注意这里的同名变量覆盖
+</span><span class="c1"></span>		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="cm">/*
+</span><span class="cm">输出结果：
+</span><span class="cm">4
+</span><span class="cm">2
+</span><span class="cm">0
+</span><span class="cm">3
+</span><span class="cm">1
+</span><span class="cm">结果顺序原因同1
+</span><span class="cm">*/</span>
+</code></pre></div><p>同名的变量<code>i</code>作为内部的局部变量，覆盖了原来循环中的<code>i</code>，此时闭包中的变量不在是共享外循环的<code>i</code>，而是都有各自的内部同名变量<code>i</code>，赋值过程发生于循环<code>goroutine</code>，因此保证了独立。</p>
+
+			</div><div class="content">
+	<br>
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">深入解析 Go 中 Slice 底层实现</a></li>
+	
+	<li><a href="/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/">从一个yaml文件读取多个文档</a></li>
+	
+	<li><a href="/posts/go/basic/golang%E4%B8%ADdefer%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/">Golang中defer的那些事</a></li>
+	
+	<li><a href="/posts/go/basic/go%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F%E6%98%AF%E5%80%BC%E4%BC%A0%E9%80%92/">Go函数的参数传递方式是值传递</a></li>
+	
+	<li><a href="/posts/go/basic/golang%E9%87%8C%E7%9A%84iota/">Golang里的iota</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/go">go</a></span><span class="tag"><a href="https://willje.github.io/tags/%E9%97%AD%E5%8C%85">闭包</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1471 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-05-15 22:12 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#匿名函数">匿名函数</a></li>
+    <li><a href="#闭包">闭包</a></li>
+    <li><a href="#闭包作为函数返回值">闭包作为函数返回值</a></li>
+    <li><a href="#golang并发中的闭包">Golang并发中的闭包</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/net/%E8%AF%A6%E8%A7%A3%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>详解计算机网络模型</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>深入解析 Go 中 Slice 底层实现</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

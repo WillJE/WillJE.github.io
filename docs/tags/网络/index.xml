@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>网络 on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/%E7%BD%91%E7%BB%9C/</link>
+    <description>Recent content in 网络 on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sat, 29 May 2021 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/%E7%BD%91%E7%BB%9C/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>TCP图解</title>
+      <link>https://willje.github.io/posts/net/tcp%E5%9B%BE%E8%A7%A3/</link>
+      <pubDate>Sat, 29 May 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/net/tcp%E5%9B%BE%E8%A7%A3/</guid>
+      <description>经过网络是怎么连接 这篇文章中的一番折腾，只要你知道另一位伙伴 B 的 IP 地址，且你们之间的网络是通的，无论多远，你都可以将一个数据包发送给你的伙伴 B 这就是物理层、数据链路层、网络层这三层所做的事情。 站在第四层的你，就可以不要脸地利用下三层所做的铺垫，随心所欲地发送数据，而不必担心找不到对方了。 虽然你此时还什么都没干，但你还是给自己这一层起了个响亮的名字，叫做传输层</description>
+    </item>
+    
+    <item>
+      <title>网络是怎么连接的</title>
+      <link>https://willje.github.io/posts/net/%E7%BD%91%E7%BB%9C%E6%98%AF%E6%80%8E%E4%B9%88%E8%BF%9E%E6%8E%A5%E7%9A%84/</link>
+      <pubDate>Fri, 28 May 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/net/%E7%BD%91%E7%BB%9C%E6%98%AF%E6%80%8E%E4%B9%88%E8%BF%9E%E6%8E%A5%E7%9A%84/</guid>
+      <description>你是一台电脑，你的名字叫 A 很久很久之前，你不与任何其他电脑相连接，孤苦伶仃。 直到有一天，你希望与另一台电脑 B 建立通信，于是你们各开了一个网口，用一根网线连接了起来。 用一根网线连接起来怎么就能&amp;quot;通信&amp;quot;了呢？我可以给你讲 IO、讲中断、讲缓冲区，但这不是研究网络时该关心的问题。 如果你纠结，要么去研究一下操作系统是如何处理网络 IO 的，要么去研究一下</description>
+    </item>
+    
+    <item>
+      <title>详解计算机网络模型</title>
+      <link>https://willje.github.io/posts/net/%E8%AF%A6%E8%A7%A3%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</link>
+      <pubDate>Thu, 20 May 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/net/%E8%AF%A6%E8%A7%A3%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</guid>
+      <description>一、体系结构 计算机网络的各层及其协议的集合被称为网络的体系结构，按照不同的维度，其常被分为七层、五层、四层网络结构： 应用层 (application layer)：直接为应用进程提供服务。应用层协议定义的是应用进程间通讯和交互的规则，不同的应用有着不同的应用层协议，如 HTTP协议（万维网服务）、FTP协议（文件传输）、SMTP协议（电子邮件）、DNS（域名查询）等。 传输层 (transport layer</description>
+    </item>
+    
+  </channel>
+</rss>

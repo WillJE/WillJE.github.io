@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>闭包 on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/%E9%97%AD%E5%8C%85/</link>
+    <description>Recent content in 闭包 on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sat, 15 May 2021 22:12:16 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/%E9%97%AD%E5%8C%85/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>go中的闭包</title>
+      <link>https://willje.github.io/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/</link>
+      <pubDate>Sat, 15 May 2021 22:12:16 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/</guid>
+      <description>匿名函数 参考博客： https://www.calhoun.io/what-is-a-closure/ https://blog.cloudflare.com/a-go-gotcha-when-closures-and-goroutines-collide/ 在说闭包之前，先说一下匿名函数，匿名函数就是没有名字的函数，可以将它理解为一个变量。看下面的例子： package main import &amp;#34;fmt&amp;#34; var DoStuff func() = func() { // Do stuff } func main() { DoStuff() DoStuff = func() { fmt.Println(&amp;#34;Doing stuff!&amp;#34;) } DoStuff() DoStuff = func() { fmt.Println(&amp;#34;Doing other stuff.&amp;#34;) } DoStuff() } //Doing stuff! //Doing other stuff. 可以在这里查看：https://play.golang.org/p/WPHkRpCzH4f 闭包 闭包是匿名函数与匿名函数所引用环境的组合。匿名函数有动态创建的特</description>
+    </item>
+    
+  </channel>
+</rss>

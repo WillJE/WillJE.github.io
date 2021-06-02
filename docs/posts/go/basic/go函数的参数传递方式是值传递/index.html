@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="Go函数的参数传递方式是值传递">
+<meta itemprop="description" content="什么是传值（值传递） 传值的意思是：函数传递的总是原来这个东西的一个副本，一副拷贝。比如我们传递一个int类型的参数，传递的其实是这个参数的一个副本；传递一个指针类型的参数，其实传递的是这个该指针的一份拷贝，而不是这个指针指向的值。 对于int这类基础类型我们可以很好的理解，它们就是一个拷贝，但是指针呢？我们觉得可以通过它修改原来的值，怎么会是一个拷贝呢？下面我"><meta itemprop="datePublished" content="2021-03-20T16:29:27&#43;08:00" />
+<meta itemprop="dateModified" content="2021-03-20T16:29:27&#43;08:00" />
+<meta itemprop="wordCount" content="3575">
+<meta itemprop="keywords" content="go," /><meta property="og:title" content="Go函数的参数传递方式是值传递" />
+<meta property="og:description" content="什么是传值（值传递） 传值的意思是：函数传递的总是原来这个东西的一个副本，一副拷贝。比如我们传递一个int类型的参数，传递的其实是这个参数的一个副本；传递一个指针类型的参数，其实传递的是这个该指针的一份拷贝，而不是这个指针指向的值。 对于int这类基础类型我们可以很好的理解，它们就是一个拷贝，但是指针呢？我们觉得可以通过它修改原来的值，怎么会是一个拷贝呢？下面我" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/go/basic/go%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F%E6%98%AF%E5%80%BC%E4%BC%A0%E9%80%92/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-03-20T16:29:27&#43;08:00" />
+<meta property="article:modified_time" content="2021-03-20T16:29:27&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Go函数的参数传递方式是值传递"/>
+<meta name="twitter:description" content="什么是传值（值传递） 传值的意思是：函数传递的总是原来这个东西的一个副本，一副拷贝。比如我们传递一个int类型的参数，传递的其实是这个参数的一个副本；传递一个指针类型的参数，其实传递的是这个该指针的一份拷贝，而不是这个指针指向的值。 对于int这类基础类型我们可以很好的理解，它们就是一个拷贝，但是指针呢？我们觉得可以通过它修改原来的值，怎么会是一个拷贝呢？下面我"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Go函数的参数传递方式是值传递</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Mar 20, 2021</span></div>
+				<h1>Go函数的参数传递方式是值传递</h1>
+			</header>
+			<div class="content">
+				<h1 id="什么是传值值传递">什么是传值（值传递）<a href="#什么是传值值传递" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>传值的意思是：函数传递的总是原来这个东西的一个副本，一副拷贝。比如我们传递一个<code>int</code>类型的参数，传递的其实是这个参数的一个副本；传递一个指针类型的参数，其实传递的是这个该指针的一份拷贝，而不是这个指针指向的值。</p>
+<p>对于int这类基础类型我们可以很好的理解，它们就是一个拷贝，但是指针呢？我们觉得可以通过它修改原来的值，怎么会是一个拷贝呢？下面我们看个例子。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">i</span><span class="o">:=</span><span class="mi">10</span>
+	<span class="nx">ip</span><span class="o">:=&amp;</span><span class="nx">i</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;原始指针的内存地址是：%p\n&#34;</span><span class="p">,</span><span class="o">&amp;</span><span class="nx">ip</span><span class="p">)</span>
+	<span class="nf">modify</span><span class="p">(</span><span class="nx">ip</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;int值被修改了，新值为:&#34;</span><span class="p">,</span><span class="nx">i</span><span class="p">)</span>
+<span class="p">}</span>
+
+ <span class="kd">func</span> <span class="nf">modify</span><span class="p">(</span><span class="nx">ip</span> <span class="o">*</span><span class="kt">int</span><span class="p">){</span>
+	 <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;函数里接收到的指针的内存地址是：%p\n&#34;</span><span class="p">,</span><span class="o">&amp;</span><span class="nx">ip</span><span class="p">)</span>
+ 	<span class="o">*</span><span class="nx">ip</span><span class="p">=</span><span class="mi">1</span>
+ <span class="p">}</span>
+</code></pre></div><p>运行结果</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">原始指针的内存地址是</span><span class="err">：</span><span class="mh">0xc42000c028</span>
+<span class="nx">函数里接收到的指针的内存地址是</span><span class="err">：</span><span class="mh">0xc42000c038</span>
+<span class="nx">int值被修改了</span><span class="err">，</span><span class="nx">新值为</span><span class="p">:</span> <span class="mi">1</span>
+</code></pre></div><p>首先我们要知道，任何存放在内存里的东西都有自己的地址，指针也不例外，它虽然指向别的数据，但是也有存放该指针的内存。</p>
+<p>所以通过输出我们可以看到，这是一个指针的拷贝，因为存放这两个指针的内存地址是不同的，虽然指针的值相同，但是是两个不同的指针。</p>
+<p><p class="md__image">
+  <img src="../images%5c1618305718651-58dfafed-4777-447d-af8a-fccb7b75d2be.png"
+    alt="1618305718651-58dfafed-4777-447d-af8a-fccb7b75d2be"  />
+</p>
+</p>
+<p>首先我们看到，我们声明了一个变量<code>i</code>,值为<code>10</code>,它的内存存放地址是<code>0xc420018070</code>,通过这个内存地址，我们可以找到变量<code>i</code>,这个内存地址也就是变量<code>i</code>的指针<code>ip</code>。</p>
+<p>指针<code>ip</code>也是一个指针类型的变量，它也需要内存存放它，它的内存地址是多少呢？是<code>0xc42000c028</code>。 在我们传递指针变量<code>ip</code>给<code>modify</code>函数的时候，是该指针变量的拷贝,所以新拷贝的指针变量<code>ip</code>，它的内存地址已经变了，是新的<code>0xc42000c038</code>。</p>
+<p>不管是<code>0xc42000c028</code>还是<code>0xc42000c038</code>，我们都可以称之为指针的指针，他们指向同一个指针<code>0xc420018070</code>，这个<code>0xc420018070</code>又指向变量<code>i</code>,这也就是为什么我们可以修改变量<code>i</code>的值。</p>
+<h1 id="什么是传引用引用传递">什么是传引用（引用传递）<a href="#什么是传引用引用传递" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>Go语言(Golang)是没有引用传递的，这里我不能使用Go举例子，但是可以通过说明描述。</p>
+<p>以上面的例子为例，如果在<code>modify</code>函数里打印出来的内存地址是不变的，也是<code>0xc42000c028</code>，那么就是引用传递。</p>
+<h1 id="迷惑map">迷惑Map<a href="#迷惑map" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>了解清楚了传值和传引用，但是对于Map类型来说，可能觉得还是迷惑，一来我们可以通过方法修改它的内容，二来它没有明显的指针。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">persons</span><span class="o">:=</span><span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">)</span>
+	<span class="nx">persons</span><span class="p">[</span><span class="s">&#34;张三&#34;</span><span class="p">]=</span><span class="mi">19</span>
+
+	<span class="nx">mp</span><span class="o">:=&amp;</span><span class="nx">persons</span>
+
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;原始map的内存地址是：%p\n&#34;</span><span class="p">,</span><span class="nx">mp</span><span class="p">)</span>
+	<span class="nf">modify</span><span class="p">(</span><span class="nx">persons</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;map值被修改了，新值为:&#34;</span><span class="p">,</span><span class="nx">persons</span><span class="p">)</span>
+<span class="p">}</span>
+
+ <span class="kd">func</span> <span class="nf">modify</span><span class="p">(</span><span class="nx">p</span> <span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kt">int</span><span class="p">){</span>
+	 <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;函数里接收到map的内存地址是：%p\n&#34;</span><span class="p">,</span><span class="o">&amp;</span><span class="nx">p</span><span class="p">)</span>
+	 <span class="nx">p</span><span class="p">[</span><span class="s">&#34;张三&#34;</span><span class="p">]=</span><span class="mi">20</span>
+ <span class="p">}</span>
+</code></pre></div><p>运行打印输出：</p>
+<pre><code>原始map的内存地址是：0xc42000c028
+函数里接收到map的内存地址是：0xc42000c038
+map值被修改了，新值为: map[张三:20]
+</code></pre><p>两个内存地址是不一样的，所以这又是一个值传递（值的拷贝），那么为什么我们可以修改Map的内容呢？先不急，我们先看一个自己实现的<code>struct</code>。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">p</span><span class="o">:=</span><span class="nx">Person</span><span class="p">{</span><span class="s">&#34;张三&#34;</span><span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;原始Person的内存地址是：%p\n&#34;</span><span class="p">,</span><span class="o">&amp;</span><span class="nx">p</span><span class="p">)</span>
+	<span class="nf">modify</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">Person</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">Name</span> <span class="kt">string</span>
+<span class="p">}</span>
+
+ <span class="kd">func</span> <span class="nf">modify</span><span class="p">(</span><span class="nx">p</span> <span class="nx">Person</span><span class="p">)</span> <span class="p">{</span>
+	 <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;函数里接收到Person的内存地址是：%p\n&#34;</span><span class="p">,</span><span class="o">&amp;</span><span class="nx">p</span><span class="p">)</span>
+	 <span class="nx">p</span><span class="p">.</span><span class="nx">Name</span> <span class="p">=</span> <span class="s">&#34;李四&#34;</span>
+ <span class="p">}</span>
+</code></pre></div><p>运行打印输出：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">原始Person的内存地址是</span><span class="err">：</span><span class="mh">0xc4200721b0</span>
+<span class="nx">函数里接收到Person的内存地址是</span><span class="err">：</span><span class="mh">0xc4200721c0</span>
+<span class="p">{</span><span class="nx">张三</span><span class="p">}</span>
+</code></pre></div><p>我们发现，我们自己定义的<code>Person</code>类型，在函数传参的时候也是值传递，但是它的值(<code>Name</code>字段)并没有被修改，我们想改成<code>李四</code>，发现最后的结果还是<code>张三</code>。</p>
+<p>这也就是说，<code>map</code>类型和我们自己定义的<code>struct</code>类型是不一样的。我们尝试把<code>modify</code>函数的接收参数改为<code>Person</code>的指针。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">p</span><span class="o">:=</span><span class="nx">Person</span><span class="p">{</span><span class="s">&#34;张三&#34;</span><span class="p">}</span>
+	<span class="nf">modify</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">p</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">Person</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">Name</span> <span class="kt">string</span>
+<span class="p">}</span>
+
+ <span class="kd">func</span> <span class="nf">modify</span><span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="nx">Person</span><span class="p">)</span> <span class="p">{</span>
+	 <span class="nx">p</span><span class="p">.</span><span class="nx">Name</span> <span class="p">=</span> <span class="s">&#34;李四&#34;</span>
+ <span class="p">}</span>
+</code></pre></div><p>在运行查看输出，我们发现，这次被修改了。我们这里省略了内存地址的打印，因为我们上面<code>int</code>类型的例子已经证明了指针类型的参数也是值传递的。 指针类型可以修改，非指针类型不行，那么我们可以大胆的猜测，我们使用<code>make</code>函数创建的<code>map</code>是不是一个指针类型呢？看一下源代码:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// makemap implements a Go map creation make(map[k]v, hint)
+</span><span class="c1">// If the compiler has determined that the map or the first bucket
+</span><span class="c1">// can be created on the stack, h and/or bucket may be non-nil.
+</span><span class="c1">// If h != nil, the map can be created directly in h.
+</span><span class="c1">// If bucket != nil, bucket can be used as the first bucket.
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">makemap</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">maptype</span><span class="p">,</span> <span class="nx">hint</span> <span class="kt">int64</span><span class="p">,</span> <span class="nx">h</span> <span class="o">*</span><span class="nx">hmap</span><span class="p">,</span> <span class="nx">bucket</span> <span class="nx">unsafe</span><span class="p">.</span><span class="nx">Pointer</span><span class="p">)</span> <span class="o">*</span><span class="nx">hmap</span> <span class="p">{</span>
+    <span class="c1">//省略无关代码
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>通过查看<code>src/runtime/hashmap.go</code>源代码发现，的确和我们猜测的一样，<code>make</code>函数返回的是一个<code>hmap</code>类型的指针<code>*hmap</code>。也就是说<code>map===*hmap</code>。 现在看<code>func modify(p map)</code>这样的函数，其实就等于<code>func modify(p *hmap)</code>，和我们前面第一节<strong>什么是值传递</strong>里举的<code>func modify(ip *int)</code>的例子一样，可以参考分析。</p>
+<p>所以在这里，Go语言通过<code>make</code>函数，字面量的包装，为我们省去了指针的操作，让我们可以更容易的使用map。这里的<code>map</code>可以理解为引用类型，但是记住引用类型不是传引用。</p>
+<h1 id="chan类型">chan类型<a href="#chan类型" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p><code>chan</code>类型本质上和<code>map</code>类型是一样的，这里不做过多的介绍，参考下源代码:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">makechan</span><span class="p">(</span><span class="nx">t</span> <span class="o">*</span><span class="nx">chantype</span><span class="p">,</span> <span class="nx">size</span> <span class="kt">int64</span><span class="p">)</span> <span class="o">*</span><span class="nx">hchan</span> <span class="p">{</span>
+    <span class="c1">//省略无关代码
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p><code>chan</code>也是一个引用类型，和<code>map</code>相差无几，<code>make</code>返回的是一个<code>*hchan</code>。</p>
+<h1 id="和mapchan都不一样的slice">和map、chan都不一样的slice<a href="#和mapchan都不一样的slice" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>先看下面一段代码，想一下会输出什么</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">s</span> <span class="p">=</span> <span class="p">[]</span><span class="kt">string</span><span class="p">{</span><span class="s">&#34;1&#34;</span><span class="p">,</span> <span class="s">&#34;2&#34;</span><span class="p">,</span> <span class="s">&#34;3&#34;</span><span class="p">}</span>
+	<span class="nf">modifySlice</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">s</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">modifySlice</span><span class="p">(</span><span class="nx">i</span> <span class="p">[]</span><span class="kt">string</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">=</span> <span class="s">&#34;3&#34;</span>
+	<span class="nx">i</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="s">&#34;4&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>结果是</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="mi">3</span>
+<span class="p">[</span><span class="mi">3</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">]</span>
+</code></pre></div><p>为什么可以修改slice的值却无法新增一个值呢？</p>
+<p>具体可以看这个官方博客：https://blog.golang.org/slices</p>
+<p>简而言之就是如果你仅仅是需要修改slice的值，传值或者指针都是可以的，如果你需要修改<code>slice header</code>的值，比如<code>capacity</code>、<code>len</code>，就需要传递指针了。</p>
+<p><code>slice</code>和<code>map</code>、<code>chan</code>都不太一样的，一样的是，它也是引用类型，它也可以在函数中修改对应的内容。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">ages</span><span class="o">:=</span><span class="p">[]</span><span class="kt">int</span><span class="p">{</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;原始slice的内存地址是%p\n&#34;</span><span class="p">,</span><span class="nx">ages</span><span class="p">)</span>
+	<span class="nf">modify</span><span class="p">(</span><span class="nx">ages</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">ages</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">modify</span><span class="p">(</span><span class="nx">ages</span> <span class="p">[]</span><span class="kt">int</span><span class="p">){</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;函数里接收到slice的内存地址是%p\n&#34;</span><span class="p">,</span><span class="nx">ages</span><span class="p">)</span>
+	<span class="nx">ages</span><span class="p">[</span><span class="mi">0</span><span class="p">]=</span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div><p>输出结果是</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">原始slice的内存地址是0xc000010400</span>
+<span class="nx">函数里接收到slice的内存地址是0xc000010400</span>
+<span class="p">[</span><span class="mi">1</span> <span class="mi">6</span> <span class="mi">6</span><span class="p">]</span>
+</code></pre></div><p>运行打印结果，发现的确是被修改了，而且我们这里打印<code>slice</code>的内存地址是可以直接通过<code>%p</code>打印的,不用使用<code>&amp;</code>取地址符转换。</p>
+<p>所以修改类型的内容的办法有很多种，类型本身作为指针可以，类型里有指针类型的字段也可以。</p>
+<p>单纯的从<code>slice</code>这个结构体看，我们可以通过<code>modify</code>修改存储元素的内容，但是永远修改不了<code>len</code>和<code>cap</code>，因为他们只是一个拷贝，如果要修改，那就要传递<code>*slice</code>作为参数才可以。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">i</span><span class="o">:=</span><span class="mi">19</span>
+	<span class="nx">p</span><span class="o">:=</span><span class="nx">Person</span><span class="p">{</span><span class="nx">name</span><span class="p">:</span><span class="s">&#34;张三&#34;</span><span class="p">,</span><span class="nx">age</span><span class="p">:</span><span class="o">&amp;</span><span class="nx">i</span><span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+	<span class="nf">modify</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">p</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">Person</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">name</span> <span class="kt">string</span>
+	<span class="nx">age</span>  <span class="o">*</span><span class="kt">int</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">p</span> <span class="nx">Person</span><span class="p">)</span> <span class="nf">String</span><span class="p">()</span> <span class="kt">string</span><span class="p">{</span>
+	<span class="k">return</span> <span class="s">&#34;姓名为：&#34;</span> <span class="o">+</span> <span class="nx">p</span><span class="p">.</span><span class="nx">name</span> <span class="o">+</span> <span class="s">&#34;,年龄为：&#34;</span><span class="o">+</span> <span class="nx">strconv</span><span class="p">.</span><span class="nf">Itoa</span><span class="p">(</span><span class="o">*</span><span class="nx">p</span><span class="p">.</span><span class="nx">age</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">modify</span><span class="p">(</span><span class="nx">p</span> <span class="nx">Person</span><span class="p">){</span>
+	<span class="nx">p</span><span class="p">.</span><span class="nx">name</span> <span class="p">=</span> <span class="s">&#34;李四&#34;</span>
+	<span class="o">*</span><span class="nx">p</span><span class="p">.</span><span class="nx">age</span> <span class="p">=</span> <span class="mi">20</span>
+<span class="p">}</span>
+</code></pre></div><p>运行打印结果为：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">姓名为</span><span class="err">：</span><span class="nx">张三</span><span class="p">,</span><span class="nx">年龄为</span><span class="err">：</span><span class="mi">19</span>
+<span class="nx">姓名为</span><span class="err">：</span><span class="nx">张三</span><span class="p">,</span><span class="nx">年龄为</span><span class="err">：</span><span class="mi">20</span>
+</code></pre></div><p>通过这个<code>Person</code>和<code>slice</code>对比，就更好理解了，<code>Person</code>的<code>name</code>字段就类似于<code>slice</code>的<code>len</code>和<code>cap</code>字段，<code>age</code>字段类似于<code>array</code>字段。在传参为非指针类型的情况下，只能修改<code>age</code>字段，<code>name</code>字段无法修改。要修改<code>name</code>字段，就要把传参改为指针，比如：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nf">modify</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">p</span><span class="p">)</span>
+<span class="kd">func</span> <span class="nf">modify</span><span class="p">(</span><span class="nx">p</span> <span class="o">*</span><span class="nx">Person</span><span class="p">){</span>
+	<span class="nx">p</span><span class="p">.</span><span class="nx">name</span> <span class="p">=</span> <span class="s">&#34;李四&#34;</span>
+	<span class="o">*</span><span class="nx">p</span><span class="p">.</span><span class="nx">age</span> <span class="p">=</span> <span class="mi">20</span>
+<span class="p">}</span>
+</code></pre></div><p>这样<code>name</code>和<code>age</code>字段双双都被修改了。</p>
+<p>所以<code>slice</code>类型也是引用类型。</p>
+<h1 id="小结">小结<a href="#小结" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>最终我们可以确认的是Go语言中所有的传参都是值传递（传值），都是一个副本，一个拷贝。因为拷贝的内容有时候是非引用类型（int、string、struct等这些），这样就在函数中就无法修改原内容数据；有的是引用类型（指针、map、slice、chan等这些），这样就可以修改原内容数据。</p>
+<p>是否可以修改原内容数据，和传值、传引用没有必然的关系。在C++中，传引用肯定是可以修改原内容数据的，</p>
+<p>在Go语言里，虽然只有传值，但是我们也可以修改原内容数据，因为参数是引用类型。</p>
+<p>这里也要记住，引用类型和传引用是两个概念。</p>
+<p>再记住，Go里只有传值（值传递）。</p>
+<h1 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li>
+<p><a href="https://www.flysnow.org/2018/02/24/golang-function-parameters-passed-by-value.html">https://www.flysnow.org/2018/02/24/golang-function-parameters-passed-by-value.html</a></p>
+</li>
+<li>
+<p><a href="https://medium.com/swlh/golang-tips-why-pointers-to-slices-are-useful-and-how-ignoring-them-can-lead-to-tricky-bugs-cac90f72e77b">https://medium.com/swlh/golang-tips-why-pointers-to-slices-are-useful-and-how-ignoring-them-can-lead-to-tricky-bugs-cac90f72e77b</a></p>
+</li>
+<li>
+<p><a href="https://blog.golang.org/slices">https://blog.golang.org/slices</a></p>
+</li>
+<li>
+<p><a href="https://stackoverflow.com/questions/30100461/why-is-the-slice-sometimes-passed-by-reference-sometimes-by-pointer">https://stackoverflow.com/questions/30100461/why-is-the-slice-sometimes-passed-by-reference-sometimes-by-pointer</a></p>
+</li>
+<li>
+<p><a href="https://colobu.com/2017/01/05/-T-or-T-it-s-a-question/">https://colobu.com/2017/01/05/-T-or-T-it-s-a-question/</a></p>
+</li>
+</ul>
+
+			</div><div class="content">
+	<br>
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/">go中的闭包</a></li>
+	
+	<li><a href="/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">深入解析 Go 中 Slice 底层实现</a></li>
+	
+	<li><a href="/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/">从一个yaml文件读取多个文档</a></li>
+	
+	<li><a href="/posts/go/basic/golang%E4%B8%ADdefer%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/">Golang中defer的那些事</a></li>
+	
+	<li><a href="/posts/go/basic/golang%E9%87%8C%E7%9A%84iota/">Golang里的iota</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/go">go</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3575 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-03-20 16:29 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents"></nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/go/basic/%E6%B7%B1%E5%85%A5-go-%E8%AF%AD%E8%A8%80%E4%B9%8B-goroutine-%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6%E4%B8%8E%E9%80%9A%E4%BF%A1/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>深入 Go 语言之 goroutine 并发控制与通信</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/go/basic/golang%E9%87%8C%E7%9A%84iota/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Golang里的iota</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

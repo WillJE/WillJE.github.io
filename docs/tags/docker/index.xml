@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>docker on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/docker/</link>
+    <description>Recent content in docker on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Tue, 20 Apr 2021 21:51:51 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/docker/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Win10安装docker</title>
+      <link>https://willje.github.io/posts/docker/win10%E5%AE%89%E8%A3%85docker/</link>
+      <pubDate>Tue, 20 Apr 2021 21:51:51 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/docker/win10%E5%AE%89%E8%A3%85docker/</guid>
+      <description>安装 主要是安装docker和wsl，先去docker官网 下载安装包，注意查看系统要求，虚拟化和安装WSL（Windows Subsystem for Linux） 。 具体可以看这个中文的：wsl官方文档 。 主要的坑在Bios启用虚拟化：3700x启用虚拟化： 看virtualisation：enabled状态 配置镜像加速 具体看这里镜像加速器 ，对于使用 Windows 10 的用户，在任务栏托盘 Docker 图标内右键菜单</description>
+    </item>
+    
+    <item>
+      <title>Docker基础概念</title>
+      <link>https://willje.github.io/posts/docker/docker%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</link>
+      <pubDate>Sat, 05 Dec 2020 12:43:20 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/docker/docker%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/</guid>
+      <description>b站教程：https://www.bilibili.com/video/BV1og4y1q7M4? 【这个教程非常简洁！且深入！基于企业应用场景！推荐！以下笔记都基于该课程】 【配套笔记：https://gitee.com/nasheishei/docker_learning/blob/master/Docker.md】 什么是docker Docker 使用 Google 公司推出的 Go 语言</description>
+    </item>
+    
+  </channel>
+</rss>

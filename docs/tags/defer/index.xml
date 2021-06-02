@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>defer on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/defer/</link>
+    <description>Recent content in defer on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Mon, 05 Apr 2021 12:13:54 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/defer/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang中defer的那些事</title>
+      <link>https://willje.github.io/posts/go/basic/golang%E4%B8%ADdefer%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/</link>
+      <pubDate>Mon, 05 Apr 2021 12:13:54 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/golang%E4%B8%ADdefer%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/</guid>
+      <description>Golang中的defer关键字实现比较特殊的功能，按照官方的解释，defer后面的表达式会被放入一个列表中，在当前方法返回的时候，列表中的表达式就会被执行。一个方法中可以在一个或者多个地方使用defer表达式，这也是前面提到的，为什么需要用一个列表来保存这些表达式。在Golang中，defer表达式通常用来处理一些清理和释放资源的操作。 貌似看起来比较难懂，</description>
+    </item>
+    
+  </channel>
+</rss>

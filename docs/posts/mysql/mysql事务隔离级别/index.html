@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="MySQL事务隔离级别">
+<meta itemprop="description" content="MySQL事务隔离级别 什么是事务？ 数据库操作的最小工作单元，是作为单个逻辑工作单元执行的一系列操作；事务是一组不可再分割的操作集合（工作逻辑单元） 举个栗子： 事务最经典常用的栗子可能就是转账：一个账户少钱了，哪另一个账户肯定要多钱，李永龙说过，亏本的买卖咱可不干，吃亏了不高兴！ 所以，少钱和多钱这两个操作，要么同时成功，要么同时失败！ MySQL中如何开启事务？ 手"><meta itemprop="datePublished" content="2020-04-09T19:46:38&#43;08:00" />
+<meta itemprop="dateModified" content="2020-04-09T19:46:38&#43;08:00" />
+<meta itemprop="wordCount" content="2946">
+<meta itemprop="keywords" content="MySQL,事务隔离级别," /><meta property="og:title" content="MySQL事务隔离级别" />
+<meta property="og:description" content="MySQL事务隔离级别 什么是事务？ 数据库操作的最小工作单元，是作为单个逻辑工作单元执行的一系列操作；事务是一组不可再分割的操作集合（工作逻辑单元） 举个栗子： 事务最经典常用的栗子可能就是转账：一个账户少钱了，哪另一个账户肯定要多钱，李永龙说过，亏本的买卖咱可不干，吃亏了不高兴！ 所以，少钱和多钱这两个操作，要么同时成功，要么同时失败！ MySQL中如何开启事务？ 手" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/mysql/mysql%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-04-09T19:46:38&#43;08:00" />
+<meta property="article:modified_time" content="2020-04-09T19:46:38&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MySQL事务隔离级别"/>
+<meta name="twitter:description" content="MySQL事务隔离级别 什么是事务？ 数据库操作的最小工作单元，是作为单个逻辑工作单元执行的一系列操作；事务是一组不可再分割的操作集合（工作逻辑单元） 举个栗子： 事务最经典常用的栗子可能就是转账：一个账户少钱了，哪另一个账户肯定要多钱，李永龙说过，亏本的买卖咱可不干，吃亏了不高兴！ 所以，少钱和多钱这两个操作，要么同时成功，要么同时失败！ MySQL中如何开启事务？ 手"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>MySQL事务隔离级别</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 9, 2020</span></div>
+				<h1>MySQL事务隔离级别</h1>
+			</header>
+			<div class="content">
+				<h2 id="mysql事务隔离级别">MySQL事务隔离级别<a href="#mysql事务隔离级别" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="什么是事务">什么是事务？<a href="#什么是事务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<blockquote>
+<p>数据库操作的最小工作单元，是作为单个逻辑工作单元执行的一系列操作；事务是一组不可再分割的操作集合（工作逻辑单元）</p>
+</blockquote>
+<p>举个栗子：</p>
+<p>事务最经典常用的栗子可能就是转账：一个账户少钱了，哪另一个账户肯定要多钱，李永龙说过，亏本的买卖咱可不干，吃亏了不高兴！</p>
+<p>所以，少钱和多钱这两个操作，要么同时成功，要么同时失败！</p>
+<h3 id="mysql中如何开启事务">MySQL中如何开启事务？<a href="#mysql中如何开启事务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ul>
+<li>手工开启：<code>begin/start transaction</code></li>
+<li>事务提交或回滚：<code>commit/rollback</code></li>
+<li>设定事务是否自动开启：<code>set session autocommit = on/off</code></li>
+</ul>
+<h3 id="事务acid特性">事务ACID特性<a href="#事务acid特性" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ul>
+<li>
+<p>原子性（<code>Atomicity</code>）</p>
+<p>最小的工作单元，要么一起成功，要么一起失败</p>
+</li>
+<li>
+<p>一致性(<code>Consistency</code>)</p>
+<p>一致性也称作是完整性，就是说事务的执行不能破坏数据库的一致性，一个事务在执行后，数据库必须从一个状态转变为另一个状态</p>
+</li>
+<li>
+<p>隔离性(<code>Isolation</code>)</p>
+<p>并发的事务相互隔离，互不干扰</p>
+</li>
+<li>
+<p>持久性(<code>Durability</code>)</p>
+<p>持久性是指事务一旦提交，对数据库的状态就应该被永久保存</p>
+</li>
+</ul>
+<h3 id="事务并发带来了哪些问题">事务并发带来了哪些问题？<a href="#事务并发带来了哪些问题" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ul>
+<li>脏读</li>
+</ul>
+<blockquote>
+<p>脏读就是指当一个事务正在访问数据，并且对数据进行了修改，而这种修改还没有提交到数据库中，这时，另外一个事务也访问这个数据，然后使用了这个数据。</p>
+</blockquote>
+<p>举个栗子：</p>
+<p>1.张三这个人工资是10000，财务将张三的工资改为了20000（但是事务未提交）；</p>
+<p>2.张三读取自己工资的时候，发现工资变成20000，非常开心；</p>
+<p>3.然后财务发现操作有误，自己改错了，随之回滚了事务，张三的工资又变成了10000，结果小伙那叫个伤心欲绝啊。</p>
+<p><strong>以上</strong>：张三读取到的这个20000就是个脏数据</p>
+<ul>
+<li>幻读</li>
+</ul>
+<blockquote>
+<p>是指当事务不是独立执行时发生的一种现象，例如第一个事务对一个表中的数据进行了修改，这种修改涉及到表中的全部数据行，同时，第二个事务也修改这个表中的数据，这种修改是向表中插入一行新数据。那么，以后就会发生操作第一个事务的用户发现表中还有没有修改的数据行，就好象发生了幻觉一样。</p>
+</blockquote>
+<p>举个栗子：</p>
+<p>假设某公司工资为10000的有10个人</p>
+<p>1.事务1，读取所有工资为10000的员工，会读取到10条记录；</p>
+<p>2.事务2此时向工资表中插入了一条员工记录，工资正好也是10000；</p>
+<p>3.事务1再次读物所有工资为10000的员工，会发现读到了11条记录。</p>
+<p><strong>以上</strong>：就产生了幻觉，如果我们能做到在操作事务未完成数据处理之前，其他的任何事务都不可以添加新数据，则能避免该问题的发生。</p>
+<ul>
+<li>不可重复读</li>
+</ul>
+<blockquote>
+<p>是指在一个事务内，多次读同一数据。在这个事务还没有结束时，另外一个事务也访问该同一数据。那么，在第一个事务中的两次读数据之间，由于第二个事务的修改，那么第一个事务两次读到的的数据可能是不一样的。这样在一个事务内两次读到的数据是不一样的，因此称为是不可重复读。</p>
+</blockquote>
+<p>举个栗子：</p>
+<p>1.在事务1中，张三 读取了自己的工资为10000,但是操作还没有完成；</p>
+<p>2.在事务2中，正好财务人员修改了张三的工资为20000,并提交了事务；</p>
+<p>3.在事务1中，张三再次读取自己的工资时，工资变为了20000。</p>
+<p><strong>以上</strong>：此时相当于发生了不可重复读，如果只有在修改事务完全提交之后才可以读取数据，则可以避免该问题。</p>
+<p><strong>不可重复读的重点是修改</strong> <strong>:</strong>
+同样的条件 ,  你读取过的数据 ,  再次读取出来发现值不一样了
+<strong>幻读的重点在于新增或者删除</strong>
+同样的条件 ,  第 1 次和第 2 次读出来的记录数不一样</p>
+<p>为了解决上边所说的几个问题，下面介绍下MySQL对于事务处理的四种隔离级别</p>
+<h3 id="事务四种隔离级别">事务四种隔离级别<a href="#事务四种隔离级别" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ul>
+<li><code>Read uncommitter</code>(未提交读) ： 没有解决任何问题</li>
+<li><code>Read Committer</code>(提交读) ：解决了脏读问题</li>
+<li><code>Repeatable Read</code>(可重复读)： 解决了不可重复读和脏读问题（ps:在Innodb情况下，也不可能发生幻读问题）</li>
+<li><code>Serializable</code>(串行化) ：脏读、幻读、不可重复读三个问题全部解决了</li>
+</ul>
+<p>为了更好的介绍以上四种情况，再举个栗子：</p>
+<p>建一张表并插入两条数据：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">-- 建表语句
+</span><span class="c1"></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="o">`</span><span class="n">t_transaction</span><span class="o">`</span> <span class="p">(</span>
+  <span class="o">`</span><span class="n">id</span><span class="o">`</span> <span class="nb">INT</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+  <span class="o">`</span><span class="n">account</span><span class="o">`</span> <span class="nb">INT</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
+  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="p">)</span>
+<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">INNODB</span> <span class="n">AUTO_INCREMENT</span><span class="o">=</span><span class="mi">1</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8mb4</span> <span class="n">ROW_FORMAT</span><span class="o">=</span><span class="n">COMPACT</span> <span class="k">COMMENT</span><span class="o">=</span><span class="s1">&#39;事务隔离级别测试表&#39;</span><span class="p">;</span>
+<span class="c1">-- 插入数据
+</span><span class="c1"></span><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">t_transaction</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span> <span class="k">VALUES</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span><span class="p">);</span>
+<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">t_transaction</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span> <span class="k">VALUES</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1000</span><span class="p">);</span>
+</code></pre></div><p>表结构如下：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509193936604.png"
+    alt="image-20210509193936604"  />
+</p>
+</p>
+<p>打开两个会话，准备模拟环境。</p>
+<h4 id="read-uncommitter">Read uncommitter<a href="#read-uncommitter" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>然后在会话1执行如下语句：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SET</span> <span class="k">SESSION</span> <span class="k">TRANSACTION</span> <span class="k">ISOLATION</span> <span class="k">LEVEL</span> <span class="k">READ</span> <span class="k">UNCOMMITTED</span><span class="p">;</span>
+<span class="k">START</span> <span class="k">TRANSACTION</span><span class="p">;</span>
+<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">t_transaction</span><span class="p">;</span>
+</code></pre></div><p>执行结果如下：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509193957145.png"
+    alt="image-20210509193957145"  />
+</p>
+</p>
+<p>接下来在会话2执行如下语句，把id为1的记录 account 值增加 200，但是并<strong>没有提交事务</strong>：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SET</span> <span class="k">SESSION</span> <span class="k">TRANSACTION</span> <span class="k">ISOLATION</span> <span class="k">LEVEL</span> <span class="k">READ</span> <span class="k">UNCOMMITTED</span><span class="p">;</span>
+<span class="k">START</span> <span class="k">TRANSACTION</span><span class="p">;</span>
+<span class="k">UPDATE</span> <span class="n">t_transaction</span> <span class="k">SET</span> <span class="n">account</span> <span class="o">=</span> <span class="n">account</span><span class="o">+</span><span class="mi">200</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
+</code></pre></div><p>回过头我们再在会话1执行一次查询：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">t_transaction</span><span class="p">;</span>
+</code></pre></div><p>执行结果如下：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509194028848.png"
+    alt="image-20210509194028848"  />
+</p>
+</p>
+<h5 id="结论">结论<a href="#结论" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h5>
+<p>我们将事务隔离级别设置为read uncommitted，即便是事务没有commit，在其他会话或者说事务中我们仍然能读到未提交的数据，这是所有隔离级别中最低的一种，这种情况属于<strong>脏读</strong>。</p>
+<p>这样做的话就会产生一个问题：</p>
+<p>那就是我们在一个事务中可以随随便便读取到其他事务未提交的数据，这还是比较麻烦的，我们叫<strong>脏读</strong>。我不知道这个名字是怎么起的，为了增强大家的印象，可以这么想，这个事务好轻浮啊，饥渴到连别人没提交的东西都等不及，真脏，呸！</p>
+<p>实际上我们的数据改变了吗？</p>
+<p><em>答案是否定的，因为只有事务commit后才会真正更新到数据库。</em></p>
+<h4 id="read-committed">Read committed<a href="#read-committed" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>我们利用如下语句将会话2的事务隔离级别设置为<code>read committed</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SET</span> <span class="k">SESSION</span> <span class="k">TRANSACTION</span> <span class="k">ISOLATION</span> <span class="k">LEVEL</span> <span class="k">READ</span> <span class="k">COMMITTED</span><span class="p">;</span>
+</code></pre></div><p>然后在会话1中执行如下语句：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">update</span> <span class="n">t_transaction</span> <span class="k">set</span> <span class="n">account</span><span class="o">=</span><span class="n">account</span><span class="o">-</span><span class="mi">200</span> <span class="k">where</span> <span class="n">id</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+</code></pre></div><p>我们将id=1的用户account减200。然后查询，发现id=1的用户account变为800。</p>
+<p><strong><p class="md__image">
+  <img src="../images/image-20210509194118396.png"
+    alt="image-20210509194118396"  />
+</p>
+</strong></p>
+<p>在会话2中查询：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">t_transaction</span><span class="p">;</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../images/image-20210509194134176.png"
+    alt="image-20210509194134176"  />
+</p>
+</p>
+<p>我们会发现数据并没有变，还是1000。</p>
+<p>接着在会话A中我们将事务提交：<code>commit</code></p>
+<p>紧接着在会话2中查看结果如下：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509194144205.png"
+    alt="image-20210509194144205"  />
+</p>
+</p>
+<h6 id="结论-1">结论<a href="#结论-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h6>
+<p>当我们将当前会话的隔离级别设置为read committed的时候，当前会话只能读取到其他事务提交的数据，未提交的数据读不到。</p>
+<p>我们在会话2同一个事务中，读取到两次不同的结果。这就造成了不可重复读，就是两次读取的结果不同，这种现象称之为<strong>不可重复读</strong>。</p>
+<h4 id="repeatableread">RepeatableRead<a href="#repeatableread" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><strong>这是MySQL默认的隔离级别</strong></p>
+<p>在会话2中我们当前事务隔离级别为repeatable read。具体操作如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">set</span> <span class="k">session</span> <span class="k">transaction</span> <span class="k">isolation</span> <span class="k">level</span> <span class="k">repeatable</span> <span class="k">read</span><span class="p">;</span>
+<span class="k">start</span> <span class="k">transaction</span><span class="p">;</span>
+</code></pre></div><p>接着在会话2中查询数据：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509194215137.png"
+    alt="image-20210509194215137"  />
+</p>
+</p>
+<p>我们在会话1中为表account添加一条数据：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">insert</span> <span class="k">into</span> <span class="n">t_transaction</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span> <span class="n">value</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1000</span><span class="p">);</span>
+<span class="k">commit</span><span class="p">;</span>
+</code></pre></div><p>然后我们查询看数据插入是否成功：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509194229007.png"
+    alt="image-20210509194229007"  />
+</p>
+</p>
+<p>回到会话2，我们查询结果：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509194235896.png"
+    alt="image-20210509194235896"  />
+</p>
+</p>
+<p>会话2中想插入一条新数据id=3，value=1000。来我们操作下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">insert</span> <span class="k">into</span> <span class="n">t_transaction</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span> <span class="n">value</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span><span class="err">；</span>
+</code></pre></div><p>执行结果：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509194302430.png"
+    alt="image-20210509194302430"  />
+</p>
+</p>
+<p>结果，问题产生了，竟然插不进去</p>
+<h6 id="结论-2">结论<a href="#结论-2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h6>
+<p>此处需要注意的是，因为我们使用的Innodb引擎，所以此处不会产生幻读，其他引擎的话在这个隔离级别可能会产生幻读，至于为什么说Innodb不会，<a href="https://willje.github.io/posts/mysql/mysql-mvcc%E6%9C%BA%E5%88%B6/" target="_blank" rel="noopener">其实MySQL 利用锁机制和MVCC避免了这个问题</a>
+。</p>
+<h4 id="serializable">Serializable<a href="#serializable" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>同样，我们将会话2的事务隔离级别设置为serializable并开启事务。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">set</span> <span class="k">session</span> <span class="k">transaction</span> <span class="k">isolation</span> <span class="k">level</span> <span class="k">serializable</span><span class="p">;</span>
+<span class="k">start</span> <span class="k">transaction</span><span class="p">;</span>
+</code></pre></div><p>在会话2中我们执行下面操作：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">account</span><span class="p">;</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../images/image-20210509194327343.png"
+    alt="image-20210509194327343"  />
+</p>
+</p>
+<p>那我们这个时候在用户A所在的会话中写数据呢？</p>
+<p>我们发现会话1所在的会话陷入等待，如果超时（这个时间可以进行配置），会出现Lock wait time out提示：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509194342046.png"
+    alt="image-20210509194342046"  />
+</p>
+</p>
+<p>如果在等待期间我们用户B所在的会话事务提交，那么用户A所在的事务的写操作将提示操作成功。</p>
+<h6 id="结论-3">结论<a href="#结论-3" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h6>
+<p>当我们将当前会话的隔离级别设置为serializable的时候，其他会话对该表的写操作将被挂起。可以看到，这是隔离级别中最严格的，但是这样做势必对性能造成影响。所以在实际的选用上，我们要根据当前具体的情况选用合适的隔离级别。</p>
+<h3 id="小结">小结<a href="#小结" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>下面用一张图来简单总结一下</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509194402354.png"
+    alt="image-20210509194402354"  />
+</p>
+</p>
+
+			</div><div class="content">
+	<br>
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/mysql/mysql-mvcc%E6%9C%BA%E5%88%B6/">MySQL_MVCC机制</a></li>
+	
+	<li><a href="/posts/mysql/mysql-innodb%E9%94%81%E6%9C%BA%E5%88%B6/">MySQL InnoDB锁机制</a></li>
+	
+	<li><a href="/posts/mysql/mysql%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E4%BC%9A%E9%80%A0%E6%88%90%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/">MySQL什么情况下会造成索引失效</a></li>
+	
+	<li><a href="/posts/mysql/mysql%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95%E5%92%8Cexplain%E7%9A%84%E7%94%A8%E6%B3%95/">MySQL中的索引和Explain的用法</a></li>
+	
+	<li><a href="/posts/mysql/mysql-b-tree%E5%92%8Cb&#43;tree/">MySQL B-Tree和B&#43;tree</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/mysql">MySQL</a></span><span class="tag"><a href="https://willje.github.io/tags/%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB">事务隔离级别</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2946 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-04-09 19:46 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#mysql事务隔离级别">MySQL事务隔离级别</a>
+      <ul>
+        <li><a href="#什么是事务">什么是事务？</a></li>
+        <li><a href="#mysql中如何开启事务">MySQL中如何开启事务？</a></li>
+        <li><a href="#事务acid特性">事务ACID特性</a></li>
+        <li><a href="#事务并发带来了哪些问题">事务并发带来了哪些问题？</a></li>
+        <li><a href="#事务四种隔离级别">事务四种隔离级别</a></li>
+        <li><a href="#小结">小结</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/mysql/mysql%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95%E5%92%8Cexplain%E7%9A%84%E7%94%A8%E6%B3%95/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>MySQL中的索引和Explain的用法</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/mysql/mysql-b-tree%E5%92%8Cb&#43;tree/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>MySQL B-Tree和B&#43;tree</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

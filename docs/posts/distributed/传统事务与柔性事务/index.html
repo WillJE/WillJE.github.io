@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="传统事务与柔性事务">
+<meta itemprop="description" content="柔性事务之前我们先来回归传统事务 传统事务 第一次接触事务的时候，被人告知事务是原子的，要么都成功要么都失败。再进一步就有ACID这四 个属性，原子性（Atomictiy）、一致性（Consistency）、隔离性（Isolation）、持久性（Durabilit）。 我们首先看下一些书籍中的官方描述： 原子性：事务是一个包含一系列操作的原子操作。事务的原子性确保这些"><meta itemprop="datePublished" content="2021-03-02T20:55:29&#43;08:00" />
+<meta itemprop="dateModified" content="2021-03-02T20:55:29&#43;08:00" />
+<meta itemprop="wordCount" content="2923">
+<meta itemprop="keywords" content="事务," /><meta property="og:title" content="传统事务与柔性事务" />
+<meta property="og:description" content="柔性事务之前我们先来回归传统事务 传统事务 第一次接触事务的时候，被人告知事务是原子的，要么都成功要么都失败。再进一步就有ACID这四 个属性，原子性（Atomictiy）、一致性（Consistency）、隔离性（Isolation）、持久性（Durabilit）。 我们首先看下一些书籍中的官方描述： 原子性：事务是一个包含一系列操作的原子操作。事务的原子性确保这些" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/distributed/%E4%BC%A0%E7%BB%9F%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%9F%94%E6%80%A7%E4%BA%8B%E5%8A%A1/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-03-02T20:55:29&#43;08:00" />
+<meta property="article:modified_time" content="2021-03-02T20:55:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="传统事务与柔性事务"/>
+<meta name="twitter:description" content="柔性事务之前我们先来回归传统事务 传统事务 第一次接触事务的时候，被人告知事务是原子的，要么都成功要么都失败。再进一步就有ACID这四 个属性，原子性（Atomictiy）、一致性（Consistency）、隔离性（Isolation）、持久性（Durabilit）。 我们首先看下一些书籍中的官方描述： 原子性：事务是一个包含一系列操作的原子操作。事务的原子性确保这些"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>传统事务与柔性事务</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Mar 2, 2021</span></div>
+				<h1>传统事务与柔性事务</h1>
+			</header>
+			<div class="content">
+				<p>柔性事务之前我们先来回归传统事务</p>
+<h2 id="传统事务">传统事务<a href="#传统事务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>第一次接触事务的时候，被人告知事务是原子的，要么都成功要么都失败。再进一步就有ACID这四</p>
+<p>个属性，原子性（Atomictiy）、一致性（Consistency）、隔离性（Isolation）、持久性（Durabilit）。</p>
+<p>我们首先看下一些书籍中的官方描述：</p>
+<ul>
+<li>
+<p>原子性：事务是一个包含一系列操作的原子操作。事务的原子性确保这些操作全部完成或者全部失败。</p>
+</li>
+<li>
+<p>一致性：一旦事务的所有操作结束，事务就被提交。然后你的数据和资源将处于遵循业务规则的一直状态。</p>
+</li>
+<li>
+<p>隔离性：因为同时在相同数据集上可能有许多事务处理，每个事务应该与其他事务隔离，避免数据破坏。</p>
+</li>
+<li>
+<p>持久性：一旦事务完成，他的结果应该能够承受任何系统错误（想象一下在事务提交过程中机器的电源被切断的情况）。通常，事务的结果被写入持续性存储。</p>
+<p>&ndash;《Spring攻略》</p>
+<p><strong>原子性</strong>：在一个事务李，动作序列的每一个步骤都必须是要么全部成功，要么所有的工作
+都将回滚。部分完成不是一个事务的概念。
+<strong>一致性</strong>：在事务开始和完成的时候，系统的资源都必须处于一致的、没有被破坏的状态。
+<strong>隔离性</strong>：一个事务，直到它被成功提交之后，它的结果对于任何其他的事务才是可见的。
+<strong>持久性</strong>：一个已提交事务的任何结果都必须是永久性的，即“在任何系统崩溃的情况下都能保存下来”。
+&ndash;《企业应用架构模式》
+为什么列举的是这两本书中的描述呢，《spring攻略》是关于spring的书籍，因为我们都知道spring有很好的对事务支持的接口及组件，《企业应用架构模式》是我看过的较早的一本书籍，迄今还记得这本书中关于这四个属性的描述，同时这两本书的作者都是世界顶级的技术专家。（《企业应用架构模式》 和《重构-改善既有代码的设计》是同一位作者）</p>
+</li>
+</ul>
+<p>OK，那这四个属性，我们自己到底该如何理解呢。个人理解如下：
+如果给事务下一个定义：事务是一个有边界的工作序列，开始和结束都有明确的定义。</p>
+<ol>
+<li>
+<p>原子性</p>
+<p>举例1-比如现在有一个事务，包含3个sql语句（工作序列，或者是指令序列），sql-1，sql-2，
+sql-3，这3个sql语句，每一个在执行的时候，都是一个单元，这个单元的执行结果，有且仅有两种可能：成功和失败。</p>
+<p>举例2-再比如，我从账户1中转出1000人民币到账户2，当我从账户1中把钱转出来之后，系统就崩溃了。那么系统应该将我的账户状态置成我还没有转出钱之前的状态。</p>
+</li>
+<li>
+<p>一致性
+举例1-有一个在线商务网站系统，有两张表，一张用户账户表（用户名、个人余额），一张商品库存表（商品ID，库存数量），用户花费30元购买1件商品，商品库存减1，账户余额减30.那么这样的结果就是一致的。否则，如果商品库存减1，账户余额没有变化，那么这样的结果就是不一致的。
+举例2-银行账户转账的例子，也一样，账户1中的钱减少1000，账户2中的钱就增加1000，这样的是一致的，否则不一致。</p>
+</li>
+<li>
+<p>隔离性
+没有隔离性就没有一致性
+举例1-我们现在有两个事务方法，一个方法是查询数据的库存，一个是购买下单，那么这两个事务方法应该互不影响，不然会造成一系列的问题，个人一直认为，事务造成的下面这些问题是跟并发密不可分的，没有并发操作，单一的请求事务是不会有这样的问题的。</p>
+</li>
+<li>
+<p>持久性
+对于数据库来讲，我的理解是这样，当我把sql-1、sql-2、sql-3提交之后，这个结果就一定会保存到数据库中，那如果提交-到写入这中间，突然断电，也没有关系，数据库服务器在重新启动之后一样会把数据写入磁盘，应该是通过日志的方式-仅个人理解。</p>
+<p>数据库一般都是通过事务日志的方式，write-ahead transaction log来保证持久性。write-ahead transaction log的意思是，事务中对数据库的改变在写入到数据库之前，首先写入到事务日志中。而事务日志是按照顺序排号的（LSN）。当数据库崩溃或者服务器断点时，重启动数据库，首先会检查日志顺序号，将本应对数据库做更改而未做的部分持久化到数据库，从而保证了持久性.</p>
+</li>
+</ol>
+<p>并发事务产生的问题可以分为4类：</p>
+<ul>
+<li>读脏数据</li>
+<li>不可重复读</li>
+<li>幻读</li>
+<li>更新丢失</li>
+</ul>
+<p>是不是跟并发导致的问题一直的呢。其实在《企业应用架构模式》一书中，有一句话描述就是：<strong>处理并发最主要的工具就是事务</strong>。</p>
+<h2 id="柔性事务">柔性事务<a href="#柔性事务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>在电商领域等互联网场景下，传统的事务在数据库性能和处理能力上都暴露出了瓶颈。在分布式领域基于CAP理论以及BASE理论，有人就提出了<strong>柔性事务</strong>的概念。</p>
+<p><strong>CAP</strong>（<strong>一致性</strong>、<strong>可用性</strong>、<strong>分区容忍性</strong>）理论大家都理解很多次了，这里不再叙述。说一下<strong>BASE理论</strong>，它是在CAP理论的基础之上的延伸。包括<strong>基本可用</strong>（Basically Available）、<strong>柔性状态</strong>（Soft State）、<strong>最终一致性</strong>（Eventual Consistency）。</p>
+<p><strong>基本可用</strong>：分布式系统出现故障的时候，允许损失一部分可用性。比如，京东618大促的时候，对一些非核心链路的功能进行降级处理。</p>
+<p><strong>柔性状态</strong>：允许系统存在中间状态，这个中间状态又不会影响系统整体可用性。比如，数据库读写分离，写库同步到读库（主库同步到从库）会有一个延时，这样实际是一种柔性状态。</p>
+<p><strong>最终一致性</strong>：那上面数据库主从复制的例子，经过数据同步延时之后，最终数据能达到一致。</p>
+<p>ACID是传统数据库常用的设计思想，它追求的是强一致性。BASE是大型分布式系统场景下的设计思想，通过牺牲强一致性获得高可用性。</p>
+<p>柔性事务是在互联网的各种应用场景下产生的，互联网最核心的需求是什么？高可用。比如每年的京东618大促，交易高峰期间如果有10S不可用，那么损失的订单量大家可想而知。</p>
+<p>老的方式实现分布式事务是通过<strong>两阶段提交</strong>来实现的。</p>
+<p>分为准备阶段和提交阶段。两阶段事务的关键是在准备阶段，在这个阶段所有参与者必须完成约束检查，达成关于分布式事务一致性的共识。</p>
+<p>第二阶段，根据之前达成的共识，完成相应的操作。提交事务的过程中需要在很多个资源节点之间进行协调，而且每个节点对锁资源的释放必须等到事务最终提交的时候。这样两阶段事务提交会耗费更长的时间。事务执行时间长意味着锁资源发生冲突的概率增加，当事务的并发量积累到一定数量的时候，很可能出现事务积压甚至出现死锁。系统的性能和吞吐量就会下降。</p>
+<p><strong>柔性事务针对分布式事务的解决方法：</strong></p>
+<p>1、记录日志+补偿</p>
+<p>记录事务的开始和结束状态。事务根据日志记录找回事务的当前执行状态，并根据状态决定重试异常步骤，也就是正向补偿，或者回滚上一次执行步骤，也就是</p>
+<p>反向补偿。</p>
+<p>2、消息
+多次重试，也就是发送多次消息，由于要多次重发，所以程序必须是幂等（同一操作反复执行多次结果不变），这是非常具有互联网特征的一种模式。</p>
+<p>3、“无锁”设计
+放弃锁是一个解决问题的思路。比如通过乐观锁，大多数是基于版本号来实现。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"> <span class="k">update</span> <span class="n">goods</span>
+ <span class="k">set</span> <span class="o">`</span><span class="n">name</span><span class="o">`=#</span><span class="err">{</span><span class="n">name</span><span class="err">}</span><span class="p">,</span>
+ <span class="n">remaining_number</span><span class="o">=#</span><span class="err">{</span><span class="n">remainingNumber</span><span class="err">}</span><span class="p">,</span>
+ <span class="k">version</span><span class="o">=</span><span class="k">version</span><span class="o">+</span><span class="mi">1</span>
+ <span class="k">where</span> <span class="n">id</span><span class="o">=#</span><span class="err">{</span><span class="n">id</span><span class="err">}</span> <span class="k">and</span> <span class="k">version</span><span class="o">=#</span><span class="err">{</span><span class="k">version</span><span class="err">}</span>
+</code></pre></div><h2 id="总结">总结<a href="#总结" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>从理念上梳理了传统事务和柔性事务。在现在的电商领域里绝大部分场景下，我们都不会使用两阶段提交这样低效的方式来实现分布式事务。我们都会采取上面柔</p>
+<p>性事务的方式来实现分布式事务来保证系统的性能和业务的最终一致。柔性事务的实现需要有下面2点作为保证：</p>
+<ol>
+<li>应用程序一定要做幂等实现，特别是对数据库进行数据修改操作的时候。</li>
+<li>远程模块之间采用异步消息驱动，异步消息还可以起到检查点的作用。</li>
+</ol>
+<h2 id="参考">参考<a href="#参考" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ul>
+<li><a href="https://www.jianshu.com/p/ab1a1c6b08a1" target="_blank" rel="noopener">传统事务与柔性事务</a>
+</li>
+</ul>
+
+			</div><div class="content">
+	<br>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/%E4%BA%8B%E5%8A%A1">事务</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2923 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-03-02 20:55 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#传统事务">传统事务</a></li>
+    <li><a href="#柔性事务">柔性事务</a></li>
+    <li><a href="#总结">总结</a></li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/go/basic/golang-template%E4%BD%BF%E7%94%A8%E6%A0%B7%E4%BE%8B/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Golang template 使用样例</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F-%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>分布式系统---幂等性设计</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

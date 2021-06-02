@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="MySQL什么情况下会造成索引失效">
+<meta itemprop="description" content="一、准备工作，准备sql 这里我使用的mysql版本是 8.0.19。 CREATE TABLE `student` ( `id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(20), `age` int(11), `address` varchar(25), `crtdate` timestamp, PRIMARY KEY (`id`) USING BTREE ); insert into student(name,age,address,crtdate) values(&#39;张三&#39;, 15, &#39;山东青岛&#39;, now()); insert into student(name,age,address,crtdate) values(&#39;李四&#39;, 17, &#39;山东济南&#39;, now()); insert into student(name,age,address,crtdate) values(&#39;王五&#39;, 18, &#39;山东潍坊&#39;, now()); -- 创建复"><meta itemprop="datePublished" content="2020-04-16T14:48:19&#43;08:00" />
+<meta itemprop="dateModified" content="2020-04-16T14:48:19&#43;08:00" />
+<meta itemprop="wordCount" content="2210">
+<meta itemprop="keywords" content="MySQL,索引," /><meta property="og:title" content="MySQL什么情况下会造成索引失效" />
+<meta property="og:description" content="一、准备工作，准备sql 这里我使用的mysql版本是 8.0.19。 CREATE TABLE `student` ( `id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(20), `age` int(11), `address` varchar(25), `crtdate` timestamp, PRIMARY KEY (`id`) USING BTREE ); insert into student(name,age,address,crtdate) values(&#39;张三&#39;, 15, &#39;山东青岛&#39;, now()); insert into student(name,age,address,crtdate) values(&#39;李四&#39;, 17, &#39;山东济南&#39;, now()); insert into student(name,age,address,crtdate) values(&#39;王五&#39;, 18, &#39;山东潍坊&#39;, now()); -- 创建复" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/mysql/mysql%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E4%BC%9A%E9%80%A0%E6%88%90%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-04-16T14:48:19&#43;08:00" />
+<meta property="article:modified_time" content="2020-04-16T14:48:19&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MySQL什么情况下会造成索引失效"/>
+<meta name="twitter:description" content="一、准备工作，准备sql 这里我使用的mysql版本是 8.0.19。 CREATE TABLE `student` ( `id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(20), `age` int(11), `address` varchar(25), `crtdate` timestamp, PRIMARY KEY (`id`) USING BTREE ); insert into student(name,age,address,crtdate) values(&#39;张三&#39;, 15, &#39;山东青岛&#39;, now()); insert into student(name,age,address,crtdate) values(&#39;李四&#39;, 17, &#39;山东济南&#39;, now()); insert into student(name,age,address,crtdate) values(&#39;王五&#39;, 18, &#39;山东潍坊&#39;, now()); -- 创建复"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>MySQL什么情况下会造成索引失效</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 16, 2020</span></div>
+				<h1>MySQL什么情况下会造成索引失效</h1>
+			</header>
+			<div class="content">
+				<p><p class="md__image">
+  <img src="../images/gCe4M3snqW.png"
+    alt="img"  />
+</p>
+</p>
+<h2 id="一准备工作准备sql">一、准备工作，准备sql<a href="#一准备工作准备sql" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>这里我使用的mysql版本是 8.0.19。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="o">`</span><span class="n">student</span><span class="o">`</span>  <span class="p">(</span>
+    <span class="o">`</span><span class="n">id</span><span class="o">`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
+    <span class="o">`</span><span class="n">name</span><span class="o">`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+    <span class="o">`</span><span class="n">age</span><span class="o">`</span> <span class="nb">int</span><span class="p">(</span><span class="mi">11</span><span class="p">),</span>
+    <span class="o">`</span><span class="n">address</span><span class="o">`</span> <span class="nb">varchar</span><span class="p">(</span><span class="mi">25</span><span class="p">),</span>
+    <span class="o">`</span><span class="n">crtdate</span><span class="o">`</span> <span class="k">timestamp</span><span class="p">,</span>
+    <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="p">)</span> <span class="k">USING</span> <span class="n">BTREE</span>
+<span class="p">);</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">student</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">age</span><span class="p">,</span><span class="n">address</span><span class="p">,</span><span class="n">crtdate</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="s1">&#39;张三&#39;</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="s1">&#39;山东青岛&#39;</span><span class="p">,</span> <span class="n">now</span><span class="p">());</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">student</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">age</span><span class="p">,</span><span class="n">address</span><span class="p">,</span><span class="n">crtdate</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="s1">&#39;李四&#39;</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="s1">&#39;山东济南&#39;</span><span class="p">,</span> <span class="n">now</span><span class="p">());</span>
+<span class="k">insert</span> <span class="k">into</span> <span class="n">student</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">age</span><span class="p">,</span><span class="n">address</span><span class="p">,</span><span class="n">crtdate</span><span class="p">)</span> <span class="k">values</span><span class="p">(</span><span class="s1">&#39;王五&#39;</span><span class="p">,</span> <span class="mi">18</span><span class="p">,</span> <span class="s1">&#39;山东潍坊&#39;</span><span class="p">,</span> <span class="n">now</span><span class="p">());</span>
+
+<span class="c1">-- 创建复合索引
+</span><span class="c1"></span><span class="k">alter</span> <span class="k">table</span> <span class="n">student</span> <span class="k">add</span> <span class="k">index</span> <span class="n">idx_stu_nameAgeAddr</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="n">age</span><span class="p">,</span><span class="n">address</span><span class="p">);</span>
+ 
+</code></pre></div><h2 id="二索引是什么使用explain关键字来解析sql使用索引情况">二、索引是什么、使用explain关键字来解析sql使用索引情况<a href="#二索引是什么使用explain关键字来解析sql使用索引情况" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>explain如何使用，请阅读这篇文章：</p>
+<p><a href="https://willje.github.io/posts/mysql/mysql%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95%E5%92%8Cexplain%E7%9A%84%E7%94%A8%E6%B3%95/" target="_blank" rel="noopener">MySQL中的索引和Explain的用法</a>
+</p>
+<h2 id="三索引的使用与失效场景">三、索引的使用与失效场景<a href="#三索引的使用与失效场景" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="使用全部复合索引索引正常使用">使用全部复合索引（索引正常使用）<a href="#使用全部复合索引索引正常使用" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>之前创建了name、age、address三个字段的复合索引，查询条件根据这三个字段，是可以直接使用索引的。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">-- sql贴在这里了
+</span><span class="c1"></span><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span> <span class="k">and</span> <span class="n">age</span><span class="o">=</span><span class="mi">15</span> <span class="k">and</span> <span class="n">address</span> <span class="o">=</span> <span class="s1">&#39;山东青岛&#39;</span><span class="p">;</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../images/image-20210509124051290.png"
+    alt="image-20210509124051290"  />
+</p>
+</p>
+<h3 id="最佳左前缀法则">最佳左前缀法则<a href="#最佳左前缀法则" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p><strong>如果索引了多列，要遵循最左前缀法则。指的是查询从索引的最左前列开始并且不跳过索引中的列。</strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">-- sql贴在这里了
+</span><span class="c1"></span><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span> <span class="k">and</span> <span class="n">age</span><span class="o">=</span><span class="mi">15</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">age</span><span class="o">=</span><span class="mi">15</span> <span class="k">and</span> <span class="n">address</span> <span class="o">=</span> <span class="s1">&#39;山东青岛&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span> <span class="k">and</span> <span class="n">address</span> <span class="o">=</span> <span class="s1">&#39;山东青岛&#39;</span><span class="p">;</span>
+</code></pre></div><p>以下这两种查询都是没问题的，因为遵守最佳左前缀法则，条件字段从左到右，从第一个索引字段name开始并且也不跳过索引中间的列：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509124142095.png"
+    alt="image-20210509124142095"  />
+</p>
+</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509124216107.png"
+    alt="image-20210509124216107"  />
+</p>
+</p>
+<p>以下会造成索引完全失效，因为没有使用复合索引的第一列name：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509124242582.png"
+    alt="image-20210509124242582"  />
+</p>
+</p>
+<p>以下会造成索引部分失效，第一个条件name是走索引的，但是address因为跳过了age所以address这个字段索引失效：</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509124401641.png"
+    alt="image-20210509124401641"  />
+</p>
+</p>
+<h3 id="在索引列上做任何操作">在索引列上做任何操作<a href="#在索引列上做任何操作" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>（计算、函数、自动或手动类型转换），会导致索引失效而转向全表扫描。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">-- sql贴这里了
+</span><span class="c1"></span><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="k">left</span><span class="p">(</span><span class="n">name</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="o">=</span><span class="s1">&#39;张&#39;</span><span class="p">;</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../images/image-20210509124433198.png"
+    alt="image-20210509124433198"  />
+</p>
+</p>
+<p>索引列上使用了表达式，如where substr(name, 1, 3)=&lsquo;张小四&rsquo;、where num = num +1，表达式是一大忌讳，再简单的表达式mysql也会造成索引失效。</p>
+<p>有时数据量不是大到严重影响速度时，一般可以先查出来，比如先查询所有订单记录的数据，再在程序中筛选。</p>
+<h3 id="字符串不加单引号">字符串不加单引号<a href="#字符串不加单引号" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;123&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span> <span class="o">=</span> <span class="mi">123</span><span class="p">;</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../images/image-20210509143201991.png"
+    alt="image-20210509143439129"  />
+</p>
+</p>
+<h3 id="使用索引中范围条件右边的列">使用索引中范围条件右边的列。<a href="#使用索引中范围条件右边的列" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>（范围条件之后的索引全失效，但是范围条件之前的和范围条件的还是用到索引的。）</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">-- sql贴这里了
+</span><span class="c1"></span><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span> <span class="k">and</span> <span class="n">age</span><span class="o">=</span><span class="mi">15</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span> <span class="k">and</span> <span class="n">age</span><span class="o">=</span><span class="mi">15</span> <span class="k">and</span> <span class="n">address</span> <span class="o">=</span> <span class="s1">&#39;山东青岛&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span> <span class="k">and</span> <span class="n">age</span><span class="o">&gt;</span><span class="mi">15</span> <span class="k">and</span> <span class="n">address</span> <span class="o">=</span> <span class="s1">&#39;山东青岛&#39;</span><span class="p">;</span>
+</code></pre></div><p>很显然，最后一条sql，只有name、age走了索引，但是address失效了。</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509143439129.png"
+    alt="image-20210509143439129"  />
+</p>
+</p>
+<h3 id="尽量使用覆合索引">尽量使用覆合索引<a href="#尽量使用覆合索引" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>（只访问索引的查询（索引列和查询列一致）），减少select *。</p>
+<p>我们都知道，Extra中出现using index是好现象，对查询效率会增强。</p>
+<p>而且有范围查询时，不用*的时候，key_len会更小，这意味着会增加查询效率。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span> <span class="k">and</span> <span class="n">age</span><span class="o">=</span><span class="mi">15</span> <span class="k">and</span> <span class="n">address</span> <span class="o">=</span> <span class="s1">&#39;山东青岛&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="n">name</span><span class="p">,</span><span class="n">age</span><span class="p">,</span><span class="n">address</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span> <span class="k">and</span> <span class="n">age</span><span class="o">=</span><span class="mi">15</span> <span class="k">and</span> <span class="n">address</span> <span class="o">=</span> <span class="s1">&#39;山东青岛&#39;</span><span class="p">;</span>
+
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span> <span class="k">and</span> <span class="n">age</span><span class="o">&gt;</span><span class="mi">15</span> <span class="k">and</span> <span class="n">address</span> <span class="o">=</span> <span class="s1">&#39;山东青岛&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="n">name</span><span class="p">,</span><span class="n">age</span><span class="p">,</span><span class="n">address</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span> <span class="k">and</span> <span class="n">age</span><span class="o">&gt;</span><span class="mi">15</span> <span class="k">and</span> <span class="n">address</span> <span class="o">=</span> <span class="s1">&#39;山东青岛&#39;</span><span class="p">;</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../images/image-20210509144031621.png"
+    alt="image-20210509144031621"  />
+</p>
+</p>
+<h3 id="使用不等于-或者-">使用不等于（!= 或者 &lt;&gt;）<a href="#使用不等于-或者-" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">-- sql贴这里了
+</span><span class="c1"></span><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">!=</span><span class="s1">&#39;张三&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">&lt;&gt;</span><span class="s1">&#39;张三&#39;</span><span class="p">;</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../images/image-20210509144228190.png"
+    alt="image-20210509144228190"  />
+</p>
+</p>
+<h3 id="is-not-null也无法使用索引">is not null也无法使用索引<a href="#is-not-null也无法使用索引" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">-- sql贴这里了
+</span><span class="c1"></span><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span> <span class="k">is</span> <span class="k">null</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span> <span class="k">is</span> <span class="k">not</span> <span class="k">null</span><span class="p">;</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../images/image-20210509124726807.png"
+    alt="image-20210509124726807"  />
+</p>
+</p>
+<h3 id="like以通配符开头abc会导致索引失效">like以通配符开头（'%abc&hellip;'）会导致索引失效。<a href="#like以通配符开头abc会导致索引失效" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>like以通配符开头会导致索引失效，但是通配符放在后面索引就会正常使用。</p>
+<div class="highlight"><pre class="chroma"><code class="language-mysql" data-lang="mysql"><span class="c1">-- sql在这里
+</span><span class="c1"></span><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span> <span class="k">like</span> <span class="s1">&#39;%张&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span> <span class="k">like</span> <span class="s1">&#39;张%&#39;</span><span class="p">;</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span> <span class="k">like</span> <span class="s1">&#39;%张%&#39;</span><span class="p">;</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../images/image-20210509144329002.png"
+    alt="image-20210509144329002"  />
+</p>
+</p>
+<p>但是，这种情况like前面使用通配符，也是会走索引的：（select查询的字段刚好是复合索引的字段，所以为什么在查询的时候不建议使用*）</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"> <span class="k">explain</span> <span class="k">select</span> <span class="n">name</span><span class="p">,</span><span class="n">age</span><span class="p">,</span><span class="n">address</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span> <span class="k">like</span> <span class="s1">&#39;%张%&#39;</span><span class="p">;</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../images/image-20210509144533188.png"
+    alt="image-20210509144533188"  />
+</p>
+</p>
+<h3 id="少用or用它来连接时会索引失效">少用or，用它来连接时会索引失效。<a href="#少用or用它来连接时会索引失效" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;张三&#39;</span> <span class="k">or</span> <span class="n">age</span><span class="o">=</span><span class="mi">15</span><span class="p">;</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../images/image-20210509144559607.png"
+    alt="image-20210509144559607"  />
+</p>
+</p>
+<h3 id="关于in关键字">关于in关键字<a href="#关于in关键字" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>in关键字在mysql中是个很神奇的存在</p>
+<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">-- 主键
+</span><span class="c1"></span><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">id</span> <span class="k">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">);</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">id</span> <span class="k">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">,</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">9</span><span class="p">);</span>
+
+<span class="c1">-- 复合索引
+</span><span class="c1"></span><span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span> <span class="k">in</span> <span class="p">(</span><span class="s1">&#39;李四&#39;</span><span class="p">);</span>
+<span class="k">explain</span> <span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">student</span> <span class="k">where</span> <span class="n">name</span> <span class="k">in</span> <span class="p">(</span><span class="s1">&#39;李四&#39;</span><span class="p">,</span> <span class="s1">&#39;王五&#39;</span><span class="p">);</span>
+</code></pre></div><p>我们可以看到，in使用关键字少的时候，会走索引的，但是内容较多，就会造成索引失效</p>
+<p><p class="md__image">
+  <img src="../images/image-20210509144646650.png"
+    alt="image-20210509144646650"  />
+</p>
+</p>
+<h2 id="四总结">四、总结<a href="#四总结" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>最后在网上看到一个顺口溜，如下：</p>
+<blockquote>
+<p>全值匹配我最爱，最左前缀要遵守；</p>
+<p>带头大哥不能死，中间兄弟不能断；</p>
+<p>索引列上少计算，范围之后全失效；</p>
+<p>LIKE百分写最右，覆盖索引不写星；</p>
+<p>不等空值还有or，索引失效要少用。</p>
+</blockquote>
+
+			</div><div class="content">
+	<br>
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/mysql/mysql%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95%E5%92%8Cexplain%E7%9A%84%E7%94%A8%E6%B3%95/">MySQL中的索引和Explain的用法</a></li>
+	
+	<li><a href="/posts/mysql/mysql-mvcc%E6%9C%BA%E5%88%B6/">MySQL_MVCC机制</a></li>
+	
+	<li><a href="/posts/mysql/mysql-innodb%E9%94%81%E6%9C%BA%E5%88%B6/">MySQL InnoDB锁机制</a></li>
+	
+	<li><a href="/posts/mysql/mysql%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">MySQL事务隔离级别</a></li>
+	
+	<li><a href="/posts/mysql/mysql-b-tree%E5%92%8Cb&#43;tree/">MySQL B-Tree和B&#43;tree</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/mysql">MySQL</a></span><span class="tag"><a href="https://willje.github.io/tags/%E7%B4%A2%E5%BC%95">索引</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2210 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-04-16 14:48 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#一准备工作准备sql">一、准备工作，准备sql</a></li>
+    <li><a href="#二索引是什么使用explain关键字来解析sql使用索引情况">二、索引是什么、使用explain关键字来解析sql使用索引情况</a></li>
+    <li><a href="#三索引的使用与失效场景">三、索引的使用与失效场景</a>
+      <ul>
+        <li><a href="#使用全部复合索引索引正常使用">使用全部复合索引（索引正常使用）</a></li>
+        <li><a href="#最佳左前缀法则">最佳左前缀法则</a></li>
+        <li><a href="#在索引列上做任何操作">在索引列上做任何操作</a></li>
+        <li><a href="#字符串不加单引号">字符串不加单引号</a></li>
+        <li><a href="#使用索引中范围条件右边的列">使用索引中范围条件右边的列。</a></li>
+        <li><a href="#尽量使用覆合索引">尽量使用覆合索引</a></li>
+        <li><a href="#使用不等于-或者-">使用不等于（!= 或者 &lt;&gt;）</a></li>
+        <li><a href="#is-not-null也无法使用索引">is not null也无法使用索引</a></li>
+        <li><a href="#like以通配符开头abc会导致索引失效">like以通配符开头（'%abc&hellip;'）会导致索引失效。</a></li>
+        <li><a href="#少用or用它来连接时会索引失效">少用or，用它来连接时会索引失效。</a></li>
+        <li><a href="#关于in关键字">关于in关键字</a></li>
+      </ul>
+    </li>
+    <li><a href="#四总结">四、总结</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/mysql/mysql-innodb%E9%94%81%E6%9C%BA%E5%88%B6/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>MySQL InnoDB锁机制</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/mysql/mysql%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95%E5%92%8Cexplain%E7%9A%84%E7%94%A8%E6%B3%95/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>MySQL中的索引和Explain的用法</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>hugo on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/hugo/</link>
+    <description>Recent content in hugo on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Fri, 05 Apr 2019 15:18:03 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/hugo/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Hugo、githubpages搭建自己的网站</title>
+      <link>https://willje.github.io/posts/blog/hugogithubpages%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E7%BD%91%E7%AB%99/</link>
+      <pubDate>Fri, 05 Apr 2019 15:18:03 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/blog/hugogithubpages%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E7%BD%91%E7%AB%99/</guid>
+      <description>安装hugo 直接官网 安装，windows下载的是一个压缩包，解压下来就能使用，不过要把该路径配置到环境变量里。 检查安装 hugo version 使用hugo 创建站点 hugo new site [your site name] 下一步是选择主题，我的主题是LoveIt 。 将该主题增加到网站的配置文件config.toml中，这样才能生效： &amp;#39;theme = &amp;#34;hermit&amp;#34; 测试下是否成功，运行： $ hugo serve 增加文章 hugo new posts/my-first-post.md 这会在 content/posts 目录下生成一个 my-first-post.md 文件，里面内容如下： --- title:</description>
+    </item>
+    
+  </channel>
+</rss>

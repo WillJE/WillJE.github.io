@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>负载均衡 on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</link>
+    <description>Recent content in 负载均衡 on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sun, 25 Oct 2020 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>负载均衡</title>
+      <link>https://willje.github.io/posts/arccitecture/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</link>
+      <pubDate>Sun, 25 Oct 2020 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/arccitecture/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</guid>
+      <description>什么是负载均衡 负载均衡是高可用网络基础架构的关键组件，通常用于将工作负载分布到多个服务器来提高网站、应用、数据库或其他服务的性能和可靠性。 传统架构 在这里用户是直连到 web 服务器，如果这个服务器宕机了，那么用户自然也就没办法访问了。 另外，如果同时有很多用户试图访问服务器，超过了其能处理的极限，就会出现加载速度缓慢或根本无法连接的情况。 引入负载均衡 而通过在后端引入一</description>
+    </item>
+    
+    <item>
+      <title>LVS简介</title>
+      <link>https://willje.github.io/posts/arccitecture/lvs%E7%AE%80%E4%BB%8B/</link>
+      <pubDate>Tue, 20 Oct 2020 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/arccitecture/lvs%E7%AE%80%E4%BB%8B/</guid>
+      <description>LVS自从1998年开始，发展到现在已经是一个比较成熟的技术项目了。可以利用LVS技术实现高可伸缩的、高可用的网络服务，例如WWW服务、Cache服务、DNS服务、FTP服务、MAIL服务、视频/音频点播服务等等，有许多比较著名网站和组织都在使用LVS架设的集群系统，例如：Linux的门户网站 、向RealPlayer提供音频视频服务而闻名的Real公司 、全球</description>
+    </item>
+    
+  </channel>
+</rss>

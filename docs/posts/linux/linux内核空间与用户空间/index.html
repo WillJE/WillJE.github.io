@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="Linux内核空间与用户空间">
+<meta itemprop="description" content="用户空间与内核空间 我们知道现在操作系统都是采用虚拟存储器 ，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次 方）。 操心系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。 为了保证用户进程不能直接操作内核，保证内核的安全，操心系统将虚拟空间划分为两部分，一部分为内核空间，一部分 为用户空间。针对"><meta itemprop="datePublished" content="2019-10-29T20:55:29&#43;08:00" />
+<meta itemprop="dateModified" content="2019-10-29T20:55:29&#43;08:00" />
+<meta itemprop="wordCount" content="1963">
+<meta itemprop="keywords" content="Linux," /><meta property="og:title" content="Linux内核空间与用户空间" />
+<meta property="og:description" content="用户空间与内核空间 我们知道现在操作系统都是采用虚拟存储器 ，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次 方）。 操心系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。 为了保证用户进程不能直接操作内核，保证内核的安全，操心系统将虚拟空间划分为两部分，一部分为内核空间，一部分 为用户空间。针对" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/linux/linux%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2019-10-29T20:55:29&#43;08:00" />
+<meta property="article:modified_time" content="2019-10-29T20:55:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Linux内核空间与用户空间"/>
+<meta name="twitter:description" content="用户空间与内核空间 我们知道现在操作系统都是采用虚拟存储器 ，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次 方）。 操心系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。 为了保证用户进程不能直接操作内核，保证内核的安全，操心系统将虚拟空间划分为两部分，一部分为内核空间，一部分 为用户空间。针对"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Linux内核空间与用户空间</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Oct 29, 2019</span></div>
+				<h1>Linux内核空间与用户空间</h1>
+			</header>
+			<div class="content">
+				<h2 id="用户空间与内核空间">用户空间与内核空间<a href="#用户空间与内核空间" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>我们知道现在操作系统都是采用<a href="https://baike.baidu.com/item/%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8#:~:text=%E8%99%9A%E6%8B%9F%E5%AD%98%E5%82%A8%E5%99%A8%28Virtual%20Memory%29%EF%BC%9A,%E7%BB%93%E6%9E%84%E5%92%8C%E5%8F%AF%E7%94%A8%E7%A3%81%E7%9B%98%E5%AE%B9%E9%87%8F%E3%80%82" target="_blank" rel="noopener">虚拟存储器</a>
+，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次</p>
+<p>方）。</p>
+<p>操心系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。</p>
+<p>为了保证用户进程不能直接操作内核，保证内核的安全，操心系统将虚拟空间划分为两部分，一部分为内核空间，一部分</p>
+<p>为用户空间。针对linux操作系统而言，将最高的1G字节（从虚拟地址0xC0000000到0xFFFFFFFF），供内核使用，称为内</p>
+<p>核空间，而将较低的3G字节（从虚拟地址0x00000000到0xBFFFFFFF），供各个进程使用，称为用户空间。每个进程可以</p>
+<p>通过系统调用进入内核，因此，Linux内核由系统内的所有进程共享。于是，从具体进程的角度来看，每个进程可以拥有</p>
+<p>4G字节的虚拟空间。空间分配如下图所示：</p>
+<p><p class="md__image">
+  <img src="../Linux%e5%86%85%e6%a0%b8%e7%a9%ba%e9%97%b4%e4%b8%8e%e7%94%a8%e6%88%b7%e7%a9%ba%e9%97%b4.assets/19223008-e9e63cbdacf24562a462656c7985f638.png"
+    alt="img"  />
+</p>
+</p>
+<p>**有了用户空间和内核空间，整个linux内部结构可以分为三部分，从最底层到最上层依次是：硬件&ndash;&gt;内核空间&ndash;&gt;用户空间。**如下图所示：</p>
+<p><p class="md__image">
+  <img src="../Linux%e5%86%85%e6%a0%b8%e7%a9%ba%e9%97%b4%e4%b8%8e%e7%94%a8%e6%88%b7%e7%a9%ba%e9%97%b4.assets/19221748-2f795fab93eb4ebfae5cce4a876e7164.png"
+    alt="img"  />
+</p>
+</p>
+<h2 id="为什么需要区分内核空间与用户空间">为什么需要区分内核空间与用户空间<a href="#为什么需要区分内核空间与用户空间" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>在 CPU 的所有指令中，有些指令是非常危险的，如果错用，将导致系统崩溃，比如清内存、设置时钟等。如果允许所有</p>
+<p>的程序都可以使用这些指令，那么系统崩溃的概率将大大增加。</p>
+<p>所以，CPU 将指令分为特权指令和非特权指令，对于那些危险的指令，只允许操作系统及其相关模块使用，普通应用程序</p>
+<p>只能使用那些不会造成灾难的指令。比如 Intel 的 CPU 将特权等级分为 4 个级别：Ring0~Ring3。</p>
+<p>其实 Linux 系统只使用了 Ring0 和 Ring3 两个运行级别(Windows 系统也是一样的)。当进程运行在 Ring3 级别时被称为运</p>
+<p>行在用户态，而运行在 Ring0 级别时被称为运行在内核态。</p>
+<h2 id="内核态与用户态">内核态与用户态<a href="#内核态与用户态" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>好了我们现在需要再解释一下什么是内核态、用户态：</p>
+<p><strong>当进程运行在内核空间时就处于内核态，而进程运行在用户空间时则处于用户态。</strong></p>
+<p>在内核态下，进程运行在内核地址空间中，此时 CPU 可以执行任何指令。运行的代码也不受任何的限制，可以自由地访</p>
+<p>问任何有效地址，也可以直接进行端口的访问。</p>
+<p>在用户态下，进程运行在用户地址空间中，被执行的代码要受到 CPU 的诸多检查，它们只能访问映射其地址空间的页表</p>
+<p>项中规定的在用户态下可访问页面的虚拟地址，且只能对任务状态段(TSS)中 I/O 许可位图(I/O Permission Bitmap)中规定</p>
+<p>的可访问端口进行直接访问。</p>
+<p>对于以前的 DOS 操作系统来说，是没有内核空间、用户空间以及内核态、用户态这些概念的。可以认为所有的代码都是</p>
+<p>运行在内核态的，因而用户编写的应用程序代码可以很容易的让操作系统崩溃掉。</p>
+<p>对于 Linux 来说，通过区分内核空间和用户空间的设计，隔离了操作系统代码(操作系统的代码要比应用程序的代码健壮很</p>
+<p>多)与应用程序代码。即便是单个应用程序出现错误也不会影响到操作系统的稳定性，这样其它的程序还可以正常的运行</p>
+<p>(Linux 可是个多任务系统啊！)。</p>
+<p><strong>所以，区分内核空间和用户空间本质上是要提高操作系统的稳定性及可用性。</strong></p>
+<h2 id="如何从用户空间进入内核空间">如何从用户空间进入内核空间<a href="#如何从用户空间进入内核空间" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>其实所有的系统资源管理都是在内核空间中完成的。比如读写磁盘文件，分配回收内存，从网络接口读写数据等等。我们</p>
+<p>的应用程序是无法直接进行这样的操作的。但是我们可以通过内核提供的接口来完成这样的任务。</p>
+<p>比如应用程序要读取磁盘上的一个文件，它可以向内核发起一个 &ldquo;系统调用&rdquo; 告诉内核：&ldquo;我要读取磁盘上的某某文件&rdquo;。其</p>
+<p>实就是通过一个特殊的指令让进程从用户态进入到内核态(到了内核空间)，在内核空间中，CPU 可以执行任何的指令，当</p>
+<p>然也包括从磁盘上读取数据。具体过程是先把数据读取到内核空间中，然后再把数据拷贝到用户空间并从内核态切换到用</p>
+<p>户态。此时应用程序已经从系统调用中返回并且拿到了想要的数据，可以开开心心的往下执行了。</p>
+<p>简单说就是应用程序把高科技的事情(从磁盘读取文件)外包给了系统内核，系统内核做这些事情既专业又高效。</p>
+<p>对于一个进程来讲，从用户空间进入内核空间并最终返回到用户空间，这个过程是十分复杂的。举个例子，比如我们经常</p>
+<p>接触的概念 &ldquo;堆栈&rdquo;，其实进程在内核态和用户态各有一个堆栈。运行在用户空间时进程使用的是用户空间中的堆栈，而运</p>
+<p>行在内核空间时，进程使用的是内核空间中的堆栈。所以说，Linux 中每个进程有两个栈，分别用于用户态和内核态。</p>
+<p>下图简明的描述了用户态与内核态之间的转换：</p>
+<p><p class="md__image">
+  <img src="../Linux%e5%86%85%e6%a0%b8%e7%a9%ba%e9%97%b4%e4%b8%8e%e7%94%a8%e6%88%b7%e7%a9%ba%e9%97%b4.assets/952033-20180203175808171-1763645276.png"
+    alt="img"  />
+</p>
+</p>
+<p>既然用户态的进程必须切换成内核态才能使用系统的资源，那么我们接下来就看看进程一共有多少种方式可以从用户态进</p>
+<p>入到内核态。概括的说，有三种方式：<strong>系统调用、软中断和硬件中断</strong>。这三种方式每一种都涉及到大量的操作系统知</p>
+<p>识，所以这里不做展开。</p>
+<h2 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ul>
+<li>
+<p><a href="http://kaito-kidd.com/2018/09/06/computer-system-virtual-memory/" target="_blank" rel="noopener">计算机系统基础（八）虚拟存储器| Kaito&rsquo;s Blog</a>
+</p>
+</li>
+<li>
+<p><a href="https://www.cnblogs.com/sparkdev/p/8410350.html" target="_blank" rel="noopener">Linux 内核空间与用户空间- sparkdev - 博客园</a>
+</p>
+</li>
+</ul>
+
+			</div><div class="content">
+	<br>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/linux">Linux</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1963 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2019-10-29 20:55 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#用户空间与内核空间">用户空间与内核空间</a></li>
+    <li><a href="#为什么需要区分内核空间与用户空间">为什么需要区分内核空间与用户空间</a></li>
+    <li><a href="#内核态与用户态">内核态与用户态</a></li>
+    <li><a href="#如何从用户空间进入内核空间">如何从用户空间进入内核空间</a></li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/mysql/mysql-b-tree%E5%92%8Cb&#43;tree/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>MySQL B-Tree和B&#43;tree</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/blog/hugogithubpages%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E7%BD%91%E7%AB%99/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Hugo、githubpages搭建自己的网站</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

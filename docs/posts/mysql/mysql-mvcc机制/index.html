@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="MySQL_MVCC机制">
+<meta itemprop="description" content="本文中用到的概念解释 数据读取特性 不可重复读 指一个事务范围内两个相同的查询却返回了不同数据 这是由于查询时系统中其他事务修改的提交而引起的 幻读 在两个连续的查找之间一个并发的修改事务修改了查询的数据集，导致这两个查询返回了不同的结果 这是由于查询时系统中其他事务新增或者删除记录引起的 事务隔离级别 Read Commited(提交读) 一个事务从开始到提交前,所作的任何修改对其他"><meta itemprop="datePublished" content="2020-04-25T22:34:22&#43;08:00" />
+<meta itemprop="dateModified" content="2020-04-25T22:34:22&#43;08:00" />
+<meta itemprop="wordCount" content="1740">
+<meta itemprop="keywords" content="MySQL,MVCC," /><meta property="og:title" content="MySQL_MVCC机制" />
+<meta property="og:description" content="本文中用到的概念解释 数据读取特性 不可重复读 指一个事务范围内两个相同的查询却返回了不同数据 这是由于查询时系统中其他事务修改的提交而引起的 幻读 在两个连续的查找之间一个并发的修改事务修改了查询的数据集，导致这两个查询返回了不同的结果 这是由于查询时系统中其他事务新增或者删除记录引起的 事务隔离级别 Read Commited(提交读) 一个事务从开始到提交前,所作的任何修改对其他" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/mysql/mysql-mvcc%E6%9C%BA%E5%88%B6/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-04-25T22:34:22&#43;08:00" />
+<meta property="article:modified_time" content="2020-04-25T22:34:22&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="MySQL_MVCC机制"/>
+<meta name="twitter:description" content="本文中用到的概念解释 数据读取特性 不可重复读 指一个事务范围内两个相同的查询却返回了不同数据 这是由于查询时系统中其他事务修改的提交而引起的 幻读 在两个连续的查找之间一个并发的修改事务修改了查询的数据集，导致这两个查询返回了不同的结果 这是由于查询时系统中其他事务新增或者删除记录引起的 事务隔离级别 Read Commited(提交读) 一个事务从开始到提交前,所作的任何修改对其他"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>MySQL_MVCC机制</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Apr 25, 2020</span></div>
+				<h1>MySQL_MVCC机制</h1>
+			</header>
+			<div class="content">
+				<h3 id="本文中用到的概念解释">本文中用到的概念解释<a href="#本文中用到的概念解释" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h4 id="数据读取特性">数据读取特性<a href="#数据读取特性" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<ul>
+<li>不可重复读
+<ul>
+<li>指一个事务范围内两个相同的查询却返回了不同数据</li>
+<li>这是由于查询时系统中其他事务修改的提交而引起的</li>
+</ul>
+</li>
+<li>幻读
+<ul>
+<li>在两个连续的查找之间一个并发的修改事务修改了查询的数据集，导致这两个查询返回了不同的结果</li>
+<li>这是由于查询时系统中其他事务新增或者删除记录引起的</li>
+</ul>
+</li>
+</ul>
+<h4 id="事务隔离级别">事务隔离级别<a href="#事务隔离级别" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<ul>
+<li>Read Commited(提交读)
+<ul>
+<li>一个事务从开始到提交前,所作的任何修改对其他事务不可见</li>
+<li>仅能读取到已提交的记录，这种隔离级别下，每条语句都会读取已提交事务的更新，若两次查询之间有其他事务提交，则会导致两次查询结果不一致。</li>
+</ul>
+</li>
+<li>Repeatable Read(可重复读)
+<ul>
+<li>在同一个事务中，多次读取同样的记录的结果是一致的</li>
+</ul>
+</li>
+</ul>
+<h4 id="快照读与当前读">快照读与当前读<a href="#快照读与当前读" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>在MVCC并发控制中，读操作可以分成两类，快照读与当前读</p>
+<ul>
+<li>快照读
+<ul>
+<li>读取的是记录数据的可见版本（可能是过期的数据），不用加锁</li>
+<li>简单select使用该读取方式</li>
+</ul>
+</li>
+<li>当前读
+<ul>
+<li>读取的是记录数据的最新版本，并且当前读返回的记录都会加上锁，保证其他事务不会再并发的修改这条记录</li>
+<li>select &hellip; lock in share mode</li>
+<li>select &hellip; for update</li>
+<li>insert</li>
+<li>update</li>
+<li>delete</li>
+<li>以上查询将使用当前读</li>
+</ul>
+</li>
+</ul>
+<h3 id="什么是mvcc">什么是MVCC<a href="#什么是mvcc" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>指多版本并发控制，让普通的select语句直接读取指定版本的值，避免加锁，来提高并发请求时的性能，配合行锁机制，在并发请求下，提高了MYSQL的性能</p>
+<h3 id="mvcc解决了什么问题">MVCC解决了什么问题<a href="#mvcc解决了什么问题" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ol>
+<li>做到了读不影响写，写不影响读，提高了并发性能</li>
+<li>提供了一致性读的功能，避免幻读和不可重复读</li>
+</ol>
+<h3 id="什么时候会用到mvcc">什么时候会用到MVCC<a href="#什么时候会用到mvcc" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>在RC和RR隔离级别下，innodb通过快照读方式读取数据时使用</p>
+<h4 id="mvcc实现原理">MVCC实现原理<a href="#mvcc实现原理" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>通过保存数据在某个时间点的快照来实现，具有以下两个特点</p>
+<p>不管执行多长时间，同一个事务在执行的过程中看到的数据是一致的</p>
+<p>根据事务的开始时间不同，不同事务的对同一张表，同一时刻看到的数据可能是不一样的</p>
+<h3 id="mvcc具体实现">MVCC具体实现<a href="#mvcc具体实现" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h4 id="隐藏列">隐藏列<a href="#隐藏列" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>innodb行都设置了隐藏列（对查询不可见），和MVCC有关的包含如下</p>
+<p><p class="md__image">
+  <img src="../MySQL_MVCC%e6%9c%ba%e5%88%b6.assets/image-20210525220123152.png"
+    alt="image-20210525220123152"  />
+</p>
+</p>
+<ul>
+<li>DATA_TRX_ID： 产生这条记录的事务ID，INSERT/UPDATE/DELETE时都会更新这个记录</li>
+<li>DATA_ROLL_PTR： 指向该行回滚段的指针，该行上所有旧的版本，在undo中都通过链表的形式组织，该值指向undo中下一个历史记录，历史记录按照由新到旧顺序排列</li>
+<li>DELETED： BIT位，删除标志0或者1</li>
+</ul>
+<h4 id="事务链表当前活跃链表">事务链表(当前活跃链表)<a href="#事务链表当前活跃链表" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><p class="md__image">
+  <img src="../MySQL_MVCC%e6%9c%ba%e5%88%b6.assets/image-20210525220230637.png"
+    alt="image-20210525220230637"  />
+</p>
+</p>
+<ul>
+<li>MySQL中的事务在开始到提交这段过程中，都会被保存到一个叫trx_sys的全局事务链表中，这是一个基本的链表结构</li>
+<li>事务链表中保存的都是还未提交的事务，事务一旦被提交，则会被从事务链表中摘除</li>
+</ul>
+<h4 id="readview">ReadView<a href="#readview" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><p class="md__image">
+  <img src="../MySQL_MVCC%e6%9c%ba%e5%88%b6.assets/image-20210525220247275.png"
+    alt="image-20210525220247275"  />
+</p>
+</p>
+<ul>
+<li>在SQL开始的时候被创建的一个数据结构，包含以下三个</li>
+<li>low_limit_id 表示该SQL启动时，当前事务链表中最大的事务id编号，也就是最近创建的除自身以外最大事务编号；</li>
+<li>up_limit_id 表示该SQL启动时，当前事务链表中最小的事务id编号，也就是当前系统中创建最早但还未提交的事务；</li>
+<li>trx_ids 存储当前trx_sys事务链表中的事务id集合。</li>
+</ul>
+<h4 id="数据读取规则">数据读取规则<a href="#数据读取规则" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>逻辑图</p>
+<p><p class="md__image">
+  <img src="../MySQL_MVCC%e6%9c%ba%e5%88%b6.assets/image-20210525220304666.png"
+    alt="image-20210525220304666"  />
+</p>
+</p>
+<p>流程描述</p>
+<ol>
+<li>先根据DATA_TRX_ID，ReadView 判断记录可见性</li>
+<li>如果可见，根据 DELETED 判断数据是否删除</li>
+<li>如果不可见，根据 DATA_ROLL_PTR 判断是否有历史版本，没有则结束，如果有则取出历史版本，重新执行这个流程，直到找到可见数据或者检查完所有历史版本</li>
+</ol>
+<p>如何判断可见性</p>
+<ol>
+<li>
+<p>DATA_TRX_ID小于up_limit_id</p>
+<p>说明在事务开始前已经提交完成的数据，对于当前事务来说是可见的</p>
+</li>
+<li>
+<p>DATA_TRX_ID大于low_limit_id</p>
+<p>说明在查询的时候，这条数据还没有提交，不可见</p>
+</li>
+<li>
+<p>DATA_TRX_ID位于up_limit_id和low_limit_id之间</p>
+<p>遍历ReadView中的trx_ids，判断DATA_TRX_ID是否在其中</p>
+<p>如果不在，表示事务已提交，数据可见</p>
+<p>如果在，表示事务未提交，数据不可见</p>
+</li>
+</ol>
+<h4 id="mvcc是如何解决幻读和不可重复读问题的">MVCC是如何解决幻读和不可重复读问题的<a href="#mvcc是如何解决幻读和不可重复读问题的" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>关键在于创建ReadView的时机。</p>
+<p>在RC隔离级别下，单个事务每次执行SELECT语句时都会创建ReadView，所以两个相同条件的查询可能由于随着时间的推移，ReadView更新后可以看到更多已提交的数据，导致不可重复读和幻读。</p>
+<p>在RR隔离级别下，单个事务只会在第一次执行SELECT查询时创建ReadView，后续不再更新，所以整个事务期间可以看到的数据都是相同的，不会出现不可重复读和幻读。</p>
+
+			</div><div class="content">
+	<br>
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/mysql/mysql-innodb%E9%94%81%E6%9C%BA%E5%88%B6/">MySQL InnoDB锁机制</a></li>
+	
+	<li><a href="/posts/mysql/mysql%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E4%BC%9A%E9%80%A0%E6%88%90%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/">MySQL什么情况下会造成索引失效</a></li>
+	
+	<li><a href="/posts/mysql/mysql%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95%E5%92%8Cexplain%E7%9A%84%E7%94%A8%E6%B3%95/">MySQL中的索引和Explain的用法</a></li>
+	
+	<li><a href="/posts/mysql/mysql%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">MySQL事务隔离级别</a></li>
+	
+	<li><a href="/posts/mysql/mysql-b-tree%E5%92%8Cb&#43;tree/">MySQL B-Tree和B&#43;tree</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/mysql">MySQL</a></span><span class="tag"><a href="https://willje.github.io/tags/mvcc">MVCC</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1740 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-04-25 22:34 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li>
+      <ul>
+        <li><a href="#本文中用到的概念解释">本文中用到的概念解释</a></li>
+        <li><a href="#什么是mvcc">什么是MVCC</a></li>
+        <li><a href="#mvcc解决了什么问题">MVCC解决了什么问题</a></li>
+        <li><a href="#什么时候会用到mvcc">什么时候会用到MVCC</a></li>
+        <li><a href="#mvcc具体实现">MVCC具体实现</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>golang实现单链表</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/mysql/mysql-innodb%E9%94%81%E6%9C%BA%E5%88%B6/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>MySQL InnoDB锁机制</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

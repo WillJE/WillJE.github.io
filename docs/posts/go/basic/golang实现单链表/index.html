@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="golang实现单链表">
+<meta itemprop="description" content="数据结构 // Node represents a node of linked list type Node struct { value int next *Node } // LinkedList represents a linked list type LinkedList struct { head *Node len int } 新增节点 在链表末尾增加节点 // Insert inserts new node at the end of from linked list func (l *LinkedList) Insert(val int) { n := Node{} n.value = val if l.len == 0 { l.head = &amp;n l.len&#43;&#43; return } ptr := l.head for i := 0; i &lt; l.len; i&#43;&#43; { if ptr.next == nil { ptr.next = &amp;n l.len&#43;&#43; return } ptr = ptr.next } } 指定位置增加节点 // InsertAt inserts new node at given position func (l *LinkedList) InsertAt(pos int, value int) { // create a new node newNode := Node{} newNode.value = value // validate the position if pos &lt; 0 { return } if pos == 0 { l.head = &amp;newNode l.len&#43;&#43; return } if pos &gt; l.len { return } n := l.GetAt(pos) newNode.next"><meta itemprop="datePublished" content="2020-05-23T21:23:18&#43;08:00" />
+<meta itemprop="dateModified" content="2020-05-23T21:23:18&#43;08:00" />
+<meta itemprop="wordCount" content="521">
+<meta itemprop="keywords" content="go,链表," /><meta property="og:title" content="golang实现单链表" />
+<meta property="og:description" content="数据结构 // Node represents a node of linked list type Node struct { value int next *Node } // LinkedList represents a linked list type LinkedList struct { head *Node len int } 新增节点 在链表末尾增加节点 // Insert inserts new node at the end of from linked list func (l *LinkedList) Insert(val int) { n := Node{} n.value = val if l.len == 0 { l.head = &amp;n l.len&#43;&#43; return } ptr := l.head for i := 0; i &lt; l.len; i&#43;&#43; { if ptr.next == nil { ptr.next = &amp;n l.len&#43;&#43; return } ptr = ptr.next } } 指定位置增加节点 // InsertAt inserts new node at given position func (l *LinkedList) InsertAt(pos int, value int) { // create a new node newNode := Node{} newNode.value = value // validate the position if pos &lt; 0 { return } if pos == 0 { l.head = &amp;newNode l.len&#43;&#43; return } if pos &gt; l.len { return } n := l.GetAt(pos) newNode.next" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-05-23T21:23:18&#43;08:00" />
+<meta property="article:modified_time" content="2020-05-23T21:23:18&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="golang实现单链表"/>
+<meta name="twitter:description" content="数据结构 // Node represents a node of linked list type Node struct { value int next *Node } // LinkedList represents a linked list type LinkedList struct { head *Node len int } 新增节点 在链表末尾增加节点 // Insert inserts new node at the end of from linked list func (l *LinkedList) Insert(val int) { n := Node{} n.value = val if l.len == 0 { l.head = &amp;n l.len&#43;&#43; return } ptr := l.head for i := 0; i &lt; l.len; i&#43;&#43; { if ptr.next == nil { ptr.next = &amp;n l.len&#43;&#43; return } ptr = ptr.next } } 指定位置增加节点 // InsertAt inserts new node at given position func (l *LinkedList) InsertAt(pos int, value int) { // create a new node newNode := Node{} newNode.value = value // validate the position if pos &lt; 0 { return } if pos == 0 { l.head = &amp;newNode l.len&#43;&#43; return } if pos &gt; l.len { return } n := l.GetAt(pos) newNode.next"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>golang实现单链表</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>May 23, 2020</span></div>
+				<h1>golang实现单链表</h1>
+			</header>
+			<div class="content">
+				<h2 id="数据结构">数据结构<a href="#数据结构" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Node represents a node of linked list
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Node</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">value</span> <span class="kt">int</span>
+	<span class="nx">next</span>  <span class="o">*</span><span class="nx">Node</span>
+<span class="p">}</span>
+
+<span class="c1">// LinkedList represents a linked list
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">LinkedList</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">head</span> <span class="o">*</span><span class="nx">Node</span>
+	<span class="nx">len</span>  <span class="kt">int</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="新增节点">新增节点<a href="#新增节点" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>在链表末尾增加节点</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Insert inserts new node at the end of  from linked list
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LinkedList</span><span class="p">)</span> <span class="nf">Insert</span><span class="p">(</span><span class="nx">val</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">n</span> <span class="o">:=</span> <span class="nx">Node</span><span class="p">{}</span>
+	<span class="nx">n</span><span class="p">.</span><span class="nx">value</span> <span class="p">=</span> <span class="nx">val</span>
+	<span class="k">if</span> <span class="nx">l</span><span class="p">.</span><span class="nx">len</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">n</span>
+		<span class="nx">l</span><span class="p">.</span><span class="nx">len</span><span class="o">++</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="nx">ptr</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">l</span><span class="p">.</span><span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">ptr</span><span class="p">.</span><span class="nx">next</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+			<span class="nx">ptr</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">n</span>
+			<span class="nx">l</span><span class="p">.</span><span class="nx">len</span><span class="o">++</span>
+			<span class="k">return</span>
+		<span class="p">}</span>
+		<span class="nx">ptr</span> <span class="p">=</span> <span class="nx">ptr</span><span class="p">.</span><span class="nx">next</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="指定位置增加节点">指定位置增加节点<a href="#指定位置增加节点" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// InsertAt inserts new node at given position
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LinkedList</span><span class="p">)</span> <span class="nf">InsertAt</span><span class="p">(</span><span class="nx">pos</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">value</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="c1">// create a new node
+</span><span class="c1"></span>	<span class="nx">newNode</span> <span class="o">:=</span> <span class="nx">Node</span><span class="p">{}</span>
+	<span class="nx">newNode</span><span class="p">.</span><span class="nx">value</span> <span class="p">=</span> <span class="nx">value</span>
+	<span class="c1">// validate the position
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">pos</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">pos</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">newNode</span>
+		<span class="nx">l</span><span class="p">.</span><span class="nx">len</span><span class="o">++</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">pos</span> <span class="p">&gt;</span> <span class="nx">l</span><span class="p">.</span><span class="nx">len</span> <span class="p">{</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+	<span class="nx">n</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nf">GetAt</span><span class="p">(</span><span class="nx">pos</span><span class="p">)</span>
+	<span class="nx">newNode</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="nx">n</span>
+	<span class="nx">prevNode</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nf">GetAt</span><span class="p">(</span><span class="nx">pos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="nx">prevNode</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">newNode</span>
+	<span class="nx">l</span><span class="p">.</span><span class="nx">len</span><span class="o">++</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="输出链表">输出链表<a href="#输出链表" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Print displays all the nodes from linked list
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LinkedList</span><span class="p">)</span> <span class="nf">Print</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">l</span><span class="p">.</span><span class="nx">len</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;No nodes in list&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">ptr</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">l</span><span class="p">.</span><span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Node: &#34;</span><span class="p">,</span> <span class="nx">ptr</span><span class="p">)</span>
+		<span class="nx">ptr</span> <span class="p">=</span> <span class="nx">ptr</span><span class="p">.</span><span class="nx">next</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="查找链表">查找链表<a href="#查找链表" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// Search returns node position with given value from linked list
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LinkedList</span><span class="p">)</span> <span class="nf">Search</span><span class="p">(</span><span class="nx">val</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">ptr</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">l</span><span class="p">.</span><span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">ptr</span><span class="p">.</span><span class="nx">value</span> <span class="o">==</span> <span class="nx">val</span> <span class="p">{</span>
+			<span class="k">return</span> <span class="nx">i</span>
+		<span class="p">}</span>
+		<span class="nx">ptr</span> <span class="p">=</span> <span class="nx">ptr</span><span class="p">.</span><span class="nx">next</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="获取指定位置的链表元素">获取指定位置的链表元素<a href="#获取指定位置的链表元素" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// GetAt returns node at given position from linked list
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LinkedList</span><span class="p">)</span> <span class="nf">GetAt</span><span class="p">(</span><span class="nx">pos</span> <span class="kt">int</span><span class="p">)</span> <span class="o">*</span><span class="nx">Node</span> <span class="p">{</span>
+	<span class="nx">ptr</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span>
+	<span class="k">if</span> <span class="nx">pos</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">ptr</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">pos</span> <span class="p">&gt;</span> <span class="p">(</span><span class="nx">l</span><span class="p">.</span><span class="nx">len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="kc">nil</span>
+	<span class="p">}</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">pos</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="nx">ptr</span> <span class="p">=</span> <span class="nx">ptr</span><span class="p">.</span><span class="nx">next</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">ptr</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="删除链表元素">删除链表元素<a href="#删除链表元素" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// DeleteAt deletes node at given position from linked list
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LinkedList</span><span class="p">)</span> <span class="nf">DeleteAt</span><span class="p">(</span><span class="nx">pos</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="c1">// validate the position
+</span><span class="c1"></span>	<span class="k">if</span> <span class="nx">pos</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;position can not be negative&#34;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;position can not be negative&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="nx">l</span><span class="p">.</span><span class="nx">len</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;No nodes in list&#34;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;No nodes in list&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">prevNode</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nf">GetAt</span><span class="p">(</span><span class="nx">pos</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">prevNode</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Node not found&#34;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Node not found&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">prevNode</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="nx">l</span><span class="p">.</span><span class="nf">GetAt</span><span class="p">(</span><span class="nx">pos</span><span class="p">).</span><span class="nx">next</span>
+	<span class="nx">l</span><span class="p">.</span><span class="nx">len</span><span class="o">--</span>
+	<span class="k">return</span> <span class="kc">nil</span>
+<span class="p">}</span>
+
+<span class="c1">// DeleteVal deletes node having given value from linked list
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LinkedList</span><span class="p">)</span> <span class="nf">DeleteVal</span><span class="p">(</span><span class="nx">val</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">error</span> <span class="p">{</span>
+	<span class="nx">ptr</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span>
+	<span class="k">if</span> <span class="nx">l</span><span class="p">.</span><span class="nx">len</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;List is empty&#34;</span><span class="p">)</span>
+		<span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;List is empty&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">l</span><span class="p">.</span><span class="nx">len</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">ptr</span><span class="p">.</span><span class="nx">value</span> <span class="o">==</span> <span class="nx">val</span> <span class="p">{</span>
+			<span class="k">if</span> <span class="nx">i</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+				<span class="nx">prevNode</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nf">GetAt</span><span class="p">(</span><span class="nx">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+				<span class="nx">prevNode</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="nx">l</span><span class="p">.</span><span class="nf">GetAt</span><span class="p">(</span><span class="nx">i</span><span class="p">).</span><span class="nx">next</span>
+			<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+				<span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">=</span> <span class="nx">ptr</span><span class="p">.</span><span class="nx">next</span>
+			<span class="p">}</span>
+			<span class="nx">l</span><span class="p">.</span><span class="nx">len</span><span class="o">--</span>
+			<span class="k">return</span> <span class="kc">nil</span>
+		<span class="p">}</span>
+		<span class="nx">ptr</span> <span class="p">=</span> <span class="nx">ptr</span><span class="p">.</span><span class="nx">next</span>
+	<span class="p">}</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;Node not found&#34;</span><span class="p">)</span>
+	<span class="k">return</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">New</span><span class="p">(</span><span class="s">&#34;Node not found&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+
+</code></pre></div>
+			</div><div class="content">
+	<br>
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/go/concurrent/sync.once%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0/">sync.once单例模式实现</a></li>
+	
+	<li><a href="/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/">go中的闭包</a></li>
+	
+	<li><a href="/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">深入解析 Go 中 Slice 底层实现</a></li>
+	
+	<li><a href="/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/">从一个yaml文件读取多个文档</a></li>
+	
+	<li><a href="/posts/go/basic/golang%E4%B8%ADdefer%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/">Golang中defer的那些事</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/go">go</a></span><span class="tag"><a href="https://willje.github.io/tags/%E9%93%BE%E8%A1%A8">链表</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>521 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-05-23 21:23 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#数据结构">数据结构</a></li>
+    <li><a href="#新增节点">新增节点</a></li>
+    <li><a href="#指定位置增加节点">指定位置增加节点</a></li>
+    <li><a href="#输出链表">输出链表</a></li>
+    <li><a href="#查找链表">查找链表</a></li>
+    <li><a href="#获取指定位置的链表元素">获取指定位置的链表元素</a></li>
+    <li><a href="#删除链表元素">删除链表元素</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/linux/io-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>IO多路复用</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/mysql/mysql-mvcc%E6%9C%BA%E5%88%B6/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>MySQL_MVCC机制</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

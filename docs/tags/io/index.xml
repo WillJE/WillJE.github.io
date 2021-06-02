@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>IO on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/io/</link>
+    <description>Recent content in IO on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sat, 30 May 2020 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>IO多路复用</title>
+      <link>https://willje.github.io/posts/linux/io-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</link>
+      <pubDate>Sat, 30 May 2020 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/linux/io-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</guid>
+      <description>阻塞 IO 服务端为了处理客户端的连接和请求的数据，写了如下代码。 listenfd = socket(); // 打开一个网络通信端口 bind(listenfd); // 绑定 listen(listenfd); // 监听 while(1) { connfd = accept(listenfd); // 阻塞建立连接 int n = read(connfd, buf); // 阻塞读数据 doSomeThing(buf); // 利用读到的数据做些什么 close(connfd); // 关闭连接，循环等待下一个连接 } 这段代码会执行得磕磕绊绊，就像这样。 ![图片](IO 多路复用.assets/微信图片_20210529211749.gif) 可以看到，服务端的线程阻塞</description>
+    </item>
+    
+  </channel>
+</rss>

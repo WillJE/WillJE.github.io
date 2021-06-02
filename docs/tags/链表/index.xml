@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>链表 on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/%E9%93%BE%E8%A1%A8/</link>
+    <description>Recent content in 链表 on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sat, 23 May 2020 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/%E9%93%BE%E8%A1%A8/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>golang实现单链表</title>
+      <link>https://willje.github.io/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/</link>
+      <pubDate>Sat, 23 May 2020 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/</guid>
+      <description>数据结构 // Node represents a node of linked list type Node struct { value int next *Node } // LinkedList represents a linked list type LinkedList struct { head *Node len int } 新增节点 在链表末尾增加节点 // Insert inserts new node at the end of from linked list func (l *LinkedList) Insert(val int) { n := Node{} n.value = val if l.len == 0 { l.head = &amp;amp;n l.len++ return } ptr := l.head for i := 0; i &amp;lt; l.len; i++ { if ptr.next == nil { ptr.next = &amp;amp;n l.len++ return } ptr = ptr.next } } 指定位置增加节点 // InsertAt inserts new node at given position func (l *LinkedList) InsertAt(pos int, value int) { // create a new node newNode := Node{} newNode.value = value // validate the position if pos &amp;lt; 0 { return } if pos == 0 { l.head = &amp;amp;newNode l.len++ return } if pos &amp;gt; l.len { return } n := l.GetAt(pos) newNode.next</description>
+    </item>
+    
+  </channel>
+</rss>

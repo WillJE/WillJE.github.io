@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="分布式系统CAP定理与BASE理论">
+<meta itemprop="description" content="CAP定理 在计算机科学中，CAP定理指出，对于一个分布式系统，不能同时满足一下三点，最多只能同时满足其中两点： 一致性(Consistency)：在分布式系统环境下，数据在多台机器上有多个副本。当对数据执行更新操作时，数据更新操作完成后，所有节点在同一时间的数据完全一致，客户端读取的数据永远是更新后的最新数据。 可用性(Availability) : 服务一直可用，"><meta itemprop="datePublished" content="2021-01-15T20:55:29&#43;08:00" />
+<meta itemprop="dateModified" content="2021-01-15T20:55:29&#43;08:00" />
+<meta itemprop="wordCount" content="1856">
+<meta itemprop="keywords" content="CAP,BASE," /><meta property="og:title" content="分布式系统CAP定理与BASE理论" />
+<meta property="og:description" content="CAP定理 在计算机科学中，CAP定理指出，对于一个分布式系统，不能同时满足一下三点，最多只能同时满足其中两点： 一致性(Consistency)：在分布式系统环境下，数据在多台机器上有多个副本。当对数据执行更新操作时，数据更新操作完成后，所有节点在同一时间的数据完全一致，客户端读取的数据永远是更新后的最新数据。 可用性(Availability) : 服务一直可用，" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9Fcap%E5%AE%9A%E7%90%86%E4%B8%8Ebase%E7%90%86%E8%AE%BA/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-01-15T20:55:29&#43;08:00" />
+<meta property="article:modified_time" content="2021-01-15T20:55:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="分布式系统CAP定理与BASE理论"/>
+<meta name="twitter:description" content="CAP定理 在计算机科学中，CAP定理指出，对于一个分布式系统，不能同时满足一下三点，最多只能同时满足其中两点： 一致性(Consistency)：在分布式系统环境下，数据在多台机器上有多个副本。当对数据执行更新操作时，数据更新操作完成后，所有节点在同一时间的数据完全一致，客户端读取的数据永远是更新后的最新数据。 可用性(Availability) : 服务一直可用，"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>分布式系统CAP定理与BASE理论</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jan 15, 2021</span></div>
+				<h1>分布式系统CAP定理与BASE理论</h1>
+			</header>
+			<div class="content">
+				<h2 id="cap定理">CAP定理<a href="#cap定理" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>在计算机科学中，CAP定理指出，对于一个分布式系统，不能同时满足一下三点，最多只能同时满足其中两点：</p>
+<ul>
+<li>一致性(Consistency)：在分布式系统环境下，数据在多台机器上有多个副本。当对数据执行更新操作时，数据更新操作完成后，所有节点<strong>在同一时间的数据完全一致</strong>，客户端读取的数据永远是更新后的最新数据。</li>
+<li>可用性(Availability) : 服务一直可用，即<strong>对于客户端每次读或写请求都能在有限时间内得到正确的响应</strong>，但不保证获取的数据为最新数据。 “有限时间内”是指对于客户端的每一个操作请求，系统必能够在指定的时间内返回对应的处理结果，如果超过了这个时间范围，系统将被认为是不可用的。</li>
+<li>分区容错性(Partition tolerance) : 在<strong>网络分区出现故障时保证系统不受影响</strong>，仍让可以对外提供一致性和可用性服务。网络分区出现故障通常指的是节点之间的网络故障，但是节点内部网络是完好的，这种情况导致的问题就是节点之间无法进行数据复制。</li>
+</ul>
+<h4 id="cap定理简单证明">CAP定理简单证明<a href="#cap定理简单证明" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>由于分布式系统中多个节点分布在不同的机器（当然也可以是单台机器上的多个节点），节点之间通过网络进行通信，由于网络不完全可靠，所以在分布式系统中我们<strong>必须要满足分区容错性</strong>。若要舍弃分区容错性，也就是只有一个分区，何谈分布式系统，所以下面的讨论总是围绕分区容错性来讨论。当网络分区出现故障的时候，我们可以通过一定策略来达到一致性或可用性的要求。</p>
+<p>一个简单的分布式系统如下：系统中有两个节点对外提供服务，Server1和Server2，Server1和Server2各自维护和访问自己的数据库DB1和DB2，DB1和DB2数据通过复制技术保证数据之间的同步。</p>
+<p><p class="md__image">
+  <img src="../%e5%88%86%e5%b8%83%e5%bc%8f%e7%b3%bb%e7%bb%9fCAP%e5%ae%9a%e7%90%86%e4%b8%8eBASE%e7%90%86%e8%ae%ba.assets/image-20210514223232898.png"
+    alt="image-20210514223232898"  />
+</p>
+</p>
+<p>在理想情况下，即同时满足CAP的情况，DB1和DB2的数据是完全一致的，Server1与Server2可以同时对外提供服务，用户不管是请求server1还是请求server2，都会得到立即响应，并且获取的数据是完全一致且为最新数据。</p>
+<p>但是现实中不可能出现这么理想的情况，当DB1和DB2之间网络发声故障时，此时有用户向Server1发送数据更新请求，DB1数据更新后无法将最新数据同步到DB2，此时DB2中存储的任然是旧数据；这个时候，有用户向Server2发送读数据请求，由于数据还没有同步，应用程序无法将最新的数据返回给用户，这个时候有两种选择：</p>
+<ul>
+<li>牺牲数据一致性，保证服务可用性。Server返回DB2中的旧数据给用户</li>
+<li>牺牲服务可用性，保证数据一致性。阻塞服务请求，直到故障恢复，DB1与DB2数据同步完成之后再恢复提供服务。</li>
+</ul>
+<p>从上面分析可以看出，分布式系统不可能同时满足CAP。在实际应用的过程中，由于不能同时满足CAP,我们必须舍弃其中之一，由于P是所有分布式系统中不许满足的，所以最后需要在C和A之间做个取舍。</p>
+<p>在大多数的分布式数据库中（如redis、Hbase等），往往是优先保证CP，因为无论是分布式系统还是想zooKeeper这种分布式协调组件，数据一致性往往是他们最基本的要求。</p>
+<p>对于需要保证高可用性的系统，将舍弃数据一致性而保证服务的高可用性。如12306</p>
+<h2 id="base理论">Base理论<a href="#base理论" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Base理论是Basically Available（基本可用）、Soft state（软状态）、Eventually consistent（最终一致性）的缩写；它基于CAP定理逐步演化来的，它是CAP中一致性和可用性权衡的结果，其核心思想是即使系统无法达到强一致性，可以<strong>根据应用自身的业务特点，采用适当的方式来使系统达到最终一致性</strong>。</p>
+<h4 id="基本可用basically-available">基本可用（Basically Available）<a href="#基本可用basically-available" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>基本可用是指当分布式系统发生故障的时候，允许损失部分可用性。常见的有以下几种情况：</p>
+<ul>
+<li>响应时间上的损失：正常情况下，一个在线搜索引擎需要再0.5秒之内返回给用户响应的查询结果，但由于出现故障，查询结果的响应时间增加到了1~2秒。</li>
+<li>功能上的损失：通常的做法是<strong>降级服务</strong>，如对于展示一些有序元素的页面，但部分组件出现故障时，这个时候可不展示有序元素，降级为无序元素列表。</li>
+</ul>
+<h4 id="软状态">软状态<a href="#软状态" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>软状态是指允许系统中的数据存在中间状态，并认为该中间状态的存在不影响系统的整体可用性，即允许系统不同节点的数据副本之间进行数据同步的过程中存在延时。</p>
+<h4 id="最终一致性">最终一致性<a href="#最终一致性" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>最终一致性强调的是系统所有的数据副本，在经过一段时间的同步后，最终能够达到一个一致的状态。因此，最终一致性的本质是需要系统保证最终数据能够达到一致，而不需要试试保证系统数据的强一致性。 具体最终一致性的实现方法见之前一致性相关博客：<a href="https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/" target="_blank" rel="noopener">分布式系统中的数据一致性问题</a>
+</p>
+
+			</div><div class="content">
+	<br>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/cap">CAP</a></span><span class="tag"><a href="https://willje.github.io/tags/base">BASE</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1856 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-01-15 20:55 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#cap定理">CAP定理</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#base理论">Base理论</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/distributed/raft-%E7%AE%97%E6%B3%95/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Raft算法</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>分布式系统中的数据一致性问题</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

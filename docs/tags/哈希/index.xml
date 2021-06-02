@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>哈希 on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/%E5%93%88%E5%B8%8C/</link>
+    <description>Recent content in 哈希 on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Tue, 29 Sep 2020 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/%E5%93%88%E5%B8%8C/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>一致性哈希算法</title>
+      <link>https://willje.github.io/posts/algorithm/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/</link>
+      <pubDate>Tue, 29 Sep 2020 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/algorithm/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/</guid>
+      <description>在了解一致性哈希算法之前，最好先了解一下缓存中的一个应用场景，了解了这个应用场景之后，再来理解一致性哈希算法，就容易多了，也更能体现出一致性哈 希算法的优点，那么，我们先来描述一下这个经典的分布式缓存的应用场景。 场景描述 假设，我们有三台缓存服务器，用于缓存图片，我们为这三台缓存服务器编号为0号、1号、2号，现在，有3万张图片需要缓存，我们希望这些图片被均匀的缓</description>
+    </item>
+    
+  </channel>
+</rss>

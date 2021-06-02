@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>array on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/array/</link>
+    <description>Recent content in array on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sat, 01 May 2021 16:23:40 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/array/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>深入解析 Go 中 Slice 底层实现</title>
+      <link>https://willje.github.io/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Sat, 01 May 2021 16:23:40 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/</guid>
+      <description>一. 切片和数组 关于切片和数组怎么选择？接下来好好讨论讨论这个问题。 在 Go 中，与 C 数组变量隐式作为指针使用不同，Go 数组是值类型，赋值和函数传参操作都会复制整个数组数据。 func main() { arrayA := [2]int{100, 200} var arrayB [2]int arrayB = arrayA fmt.Printf(&amp;#34;arrayA : %p , %v\n&amp;#34;, &amp;amp;arrayA, arrayA) fmt.Printf(&amp;#34;arrayB : %p , %v\n&amp;#34;, &amp;amp;arrayB, arrayB) testArray(arrayA) } func testArray(x [2]int) { fmt.Printf(&amp;#34;func Array : %p , %v\n&amp;#34;, &amp;amp;x, x) } 打印结果： arrayA : 0xc4200bebf0 , [100 200] arrayB : 0xc4200bec00 , [100 200] func Array : 0xc4200bec30 , [100 200] 可以看到，三个内存地址都不同，这也就验证了 Go 中数组赋值和函数传</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>template on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/template/</link>
+    <description>Recent content in template on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Wed, 10 Mar 2021 16:23:40 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/template/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Golang template 使用样例</title>
+      <link>https://willje.github.io/posts/go/basic/golang-template%E4%BD%BF%E7%94%A8%E6%A0%B7%E4%BE%8B/</link>
+      <pubDate>Wed, 10 Mar 2021 16:23:40 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/golang-template%E4%BD%BF%E7%94%A8%E6%A0%B7%E4%BE%8B/</guid>
+      <description>Go标准库提供了几个package可以产生输出结果，而text/template 提供了基于模板输出文本内容的功能。html/template 则是产生 安全的HTML格式的输出。 01 text/template样例 Golang text/template 包是一个数据驱动的模版渲染工具。提供条件判断，数组或map遍历；参数赋值，函数或方法调用；自定义函数扩展，模板嵌套及重用等功能。基于该工具，可以轻松实</description>
+    </item>
+    
+  </channel>
+</rss>
