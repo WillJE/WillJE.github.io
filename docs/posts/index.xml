@@ -6541,6 +6541,253 @@ hash（服务器C的IP地址） %  2^32
 		</item>
 		
 		<item>
+			<title>Java并发之CAS原理分析</title>
+			<link>https://willje.github.io/posts/java/concurrent/java%E5%B9%B6%E5%8F%91%E4%B9%8Bcas%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/</link>
+			<pubDate>Sat, 29 Jun 2019 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/java/concurrent/java%E5%B9%B6%E5%8F%91%E4%B9%8Bcas%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/</guid>
+			<description>CAS（Compare-and-Swap），即比较并替换，是一种实现并发算法时常用到的技术，Java并发包中的很多类都使用了CAS技术。 什么是CAS CAS(compare and swap) 比较并替换，比较和替换是线程并发算法时用到的一种技术 CAS是原子操作，保证并发安全，而不是保证并发同步 CAS是CPU的一个指令 CAS是非阻塞的、轻量级的乐观锁 为什么说CAS是乐观锁 乐观锁，严格来说并不是锁，</description>
+			<content type="html"><![CDATA[<p>CAS（Compare-and-Swap），即比较并替换，是一种实现并发算法时常用到的技术，Java并发包中的很多类都使用了CAS技术。</p>
+<h2 id="什么是cas">什么是CAS</h2>
+<ol>
+<li>CAS(compare and swap) 比较并替换，比较和替换是线程并发算法时用到的一种技术</li>
+<li>CAS是原子操作，保证并发安全，而不是保证并发同步</li>
+<li>CAS是CPU的一个指令</li>
+<li>CAS是非阻塞的、轻量级的乐观锁</li>
+</ol>
+<h2 id="为什么说cas是乐观锁">为什么说CAS是乐观锁</h2>
+<p>乐观锁，严格来说并不是锁，通过原子性来保证数据的同步，比如说数据库的乐观锁，通过版本控制来实现等，所以CAS不会保证线程同步。乐观的认为在数据更新期间没有其他线程影响</p>
+<h2 id="cas原理">CAS原理</h2>
+<p>CAS(compare and swap) 比较并替换，就是将内存值更新为需要的值，但是有个条件，内存值必须与期望值相同。举个例子，期望值 E、内存值M、更新值U，当E == M的时候将M更新为U。</p>
+<h2 id="cas应用">CAS应用</h2>
+<p>由于CAS是CPU指令，我们只能通过JNI与操作系统交互，关于CAS的方法都在sun.misc包下Unsafe的类里
+java.util.concurrent.atomic包下的原子类等通过CAS来实现原子操作。</p>
+<h2 id="cas举例-计数器">CAS举例-计数器</h2>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">CasLock</span> <span class="o">{</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kd">final</span> <span class="n">CountDownLatch</span> <span class="n">latch</span> <span class="o">=</span> <span class="k">new</span> <span class="n">CountDownLatch</span><span class="o">(</span><span class="n">5</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="n">AtomicInteger</span> <span class="n">i</span> <span class="o">=</span> <span class="k">new</span> <span class="n">AtomicInteger</span><span class="o">(</span><span class="n">0</span><span class="o">);</span>
+    <span class="kd">private</span> <span class="kd">static</span> <span class="kt">int</span> <span class="n">p</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">InterruptedException</span> <span class="o">{</span>
+        <span class="kt">long</span> <span class="n">time</span> <span class="o">=</span> <span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">();</span>
+        <span class="n">ExecutorService</span> <span class="n">pool</span> <span class="o">=</span> <span class="n">Executors</span><span class="o">.</span><span class="na">newFixedThreadPool</span><span class="o">(</span><span class="n">5</span><span class="o">);</span>
+        <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">5</span><span class="o">;</span> <span class="n">j</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">pool</span><span class="o">.</span><span class="na">execute</span><span class="o">(</span><span class="k">new</span> <span class="n">Runnable</span><span class="o">()</span> <span class="o">{</span>
+                <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+                    <span class="k">for</span><span class="o">(</span><span class="kt">int</span> <span class="n">k</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">k</span> <span class="o">&lt;</span> <span class="n">10000</span><span class="o">;</span> <span class="n">k</span><span class="o">++)</span> <span class="o">{</span>
+                        <span class="n">p</span><span class="o">++;</span>                <span class="c1">//不是原子操作
+</span><span class="c1"></span>                        <span class="n">i</span><span class="o">.</span><span class="na">getAndIncrement</span><span class="o">();</span><span class="c1">//调用原子类加1
+</span><span class="c1"></span>                    <span class="o">}</span>
+                    <span class="n">latch</span><span class="o">.</span><span class="na">countDown</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">});</span>
+        <span class="o">}</span>
+        <span class="n">latch</span><span class="o">.</span><span class="na">await</span><span class="o">();</span><span class="c1">//保证所有子线程执行完成
+</span><span class="c1"></span>        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">System</span><span class="o">.</span><span class="na">currentTimeMillis</span><span class="o">()</span> <span class="o">-</span> <span class="n">time</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;p=&#34;</span> <span class="o">+</span> <span class="n">p</span><span class="o">);</span>
+        <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;i=&#34;</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>
+        <span class="n">pool</span><span class="o">.</span><span class="na">shutdown</span><span class="o">();</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>输出结果</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="s2">&#34;C:\Program Files\Java\jdk1.8.0_91\bin\java&#34;</span> ...
+<span class="m">8</span>
+<span class="nv">p</span><span class="o">=</span>43204//结果不正确
+<span class="nv">i</span><span class="o">=</span><span class="m">50000</span>
+
+Process finished with <span class="nb">exit</span> code <span class="m">0</span>
+</code></pre></div><p>根据结果我们发现，由于多线程异步进行p++操作，导致结果不正确。</p>
+<p>为什么p++的记过不正确呢？比如两个线程读到p的值为1，然后做加1操作，这时候p的值是2，而不是3 而变量i的结果却</p>
+<p>是对的，这就要归功于CAS,下面我们具体看一下原子类。</p>
+<h3 id="cas指令和具体源代码">CAS指令和具体源代码</h3>
+<p>原子类例如AtomicInteger里的方法都很简单，大家看一看都能懂，我们具体看下getAndIncrement方法。下面贴出代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//该方法功能是Interger类型加1
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">final</span> <span class="kt">int</span> <span class="nf">getAndIncrement</span><span class="o">()</span> <span class="o">{</span>
+		<span class="c1">//主要看这个getAndAddInt方法
+</span><span class="c1"></span>        <span class="k">return</span> <span class="n">unsafe</span><span class="o">.</span><span class="na">getAndAddInt</span><span class="o">(</span><span class="k">this</span><span class="o">,</span> <span class="n">valueOffset</span><span class="o">,</span> <span class="n">1</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="c1">//var1 是this指针
+</span><span class="c1">//var2 是地址偏移量
+</span><span class="c1">//var4 是自增的数值，是自增1还是自增N
+</span><span class="c1"></span><span class="kd">public</span> <span class="kd">final</span> <span class="kt">int</span> <span class="nf">getAndAddInt</span><span class="o">(</span><span class="n">Object</span> <span class="n">var1</span><span class="o">,</span> <span class="kt">long</span> <span class="n">var2</span><span class="o">,</span> <span class="kt">int</span> <span class="n">var4</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">var5</span><span class="o">;</span>
+        <span class="k">do</span> <span class="o">{</span>
+	        <span class="c1">//获取内存值，这是内存值已经是旧的，假设我们称作期望值E
+</span><span class="c1"></span>            <span class="n">var5</span> <span class="o">=</span> <span class="k">this</span><span class="o">.</span><span class="na">getIntVolatile</span><span class="o">(</span><span class="n">var1</span><span class="o">,</span> <span class="n">var2</span><span class="o">);</span>
+            <span class="c1">//compareAndSwapInt方法是重点，
+</span><span class="c1"></span>            <span class="c1">//var5是期望值，var5 + var4是要更新的值
+</span><span class="c1"></span>            <span class="c1">//这个操作就是调用CAS的JNI,每个线程将自己内存里的内存值M
+</span><span class="c1"></span>            <span class="c1">//与var5期望值E作比较，如果相同将内存值M更新为var5 + var4,否则做自旋操作
+</span><span class="c1"></span>        <span class="o">}</span> <span class="k">while</span><span class="o">(!</span><span class="k">this</span><span class="o">.</span><span class="na">compareAndSwapInt</span><span class="o">(</span><span class="n">var1</span><span class="o">,</span> <span class="n">var2</span><span class="o">,</span> <span class="n">var5</span><span class="o">,</span> <span class="n">var5</span> <span class="o">+</span> <span class="n">var4</span><span class="o">));</span>
+
+        <span class="k">return</span> <span class="n">var5</span><span class="o">;</span>
+    <span class="o">}</span>
+</code></pre></div><p>解释一下getAndAddInt方法的流程</p>
+<p>假设有以下情景：</p>
+<ol>
+<li>A、B两个线程</li>
+<li>jvm主内存的值1，A、B工作内存的值为1（工作内存会拷贝一份主内存的值）</li>
+<li>当前期望值为1，做加1操作</li>
+<li>此时var5 = 1, var4 = 1,
+<ul>
+<li>A线程将var5与工作内存值M比较，比较var5是否等于1</li>
+<li>如果相同则将工作内存值修改为var5+var4 既修改为2并同步到主内存，此时this指针里，示例变量value的值就是2，结束循环</li>
+<li>如果不相同则其B线程修改了主内存的值，说明B线程已经先于A线程做了加1操作，A线程没有更新成功需要继续循环，注意此时var5更新为新的内存值，假设当前的内存值是2，那么此时var5 = 2， var5 + var4 = 3,重复上述步骤直到成功</li>
+</ul>
+</li>
+</ol>
+<p>下面是compareAndSwapInt本地方法的源码，可以看到使用cmpxchg指令实现CAS，在效率上有不错的表现。</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">UNSAFE_ENTRY</span><span class="p">(</span><span class="n">jboolean</span><span class="p">,</span> <span class="n">Unsafe_CompareAndSwapInt</span><span class="p">(</span><span class="n">JNIEnv</span> <span class="o">*</span><span class="n">env</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">unsafe</span><span class="p">,</span> <span class="n">jobject</span> <span class="n">obj</span><span class="p">,</span> <span class="n">jlong</span> <span class="n">offset</span><span class="p">,</span> <span class="n">jint</span> <span class="n">e</span><span class="p">,</span> <span class="n">jint</span> <span class="n">x</span><span class="p">))</span>
+  <span class="n">UnsafeWrapper</span><span class="p">(</span><span class="s">&#34;Unsafe_CompareAndSwapInt&#34;</span><span class="p">);</span>
+  <span class="n">oop</span> <span class="n">p</span> <span class="o">=</span> <span class="n">JNIHandles</span><span class="o">::</span><span class="n">resolve</span><span class="p">(</span><span class="n">obj</span><span class="p">);</span>
+  <span class="n">jint</span><span class="o">*</span> <span class="n">addr</span> <span class="o">=</span> <span class="p">(</span><span class="n">jint</span> <span class="o">*</span><span class="p">)</span> <span class="n">index_oop_from_field_offset_long</span><span class="p">(</span><span class="n">p</span><span class="p">,</span> <span class="n">offset</span><span class="p">);</span>
+  <span class="k">return</span> <span class="p">(</span><span class="n">jint</span><span class="p">)(</span><span class="n">Atomic</span><span class="o">::</span><span class="n">cmpxchg</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="n">e</span><span class="p">))</span> <span class="o">==</span> <span class="n">e</span><span class="p">;</span>
+<span class="n">UNSAFE_END</span>
+</code></pre></div><h2 id="cas优缺点">CAS优缺点</h2>
+<h3 id="优点">优点</h3>
+<p>非阻塞的轻量级的乐观锁，通过CPU指令实现，在资源竞争不激烈的情况下性能高，相比synchronized重量锁，synchronized会进行比较复杂的加锁，解锁和唤醒操作。</p>
+<h3 id="缺点">缺点</h3>
+<p><strong>ABA问题</strong>
+线程C、D,线程D将A修改为B后又修改为A,此时C线程以为A没有改变过，java的原子类AtomicStampedReference，通过控制变量值的版本来保证CAS的正确性。</p>
+<p>自旋时间过长，消耗CPU资源
+如果资源竞争激烈，多线程自旋长时间消耗资源。</p>
+<h2 id="cas总结">CAS总结</h2>
+<p>CAS不仅是乐观锁，是种思想，我们也可以在日常项目中通过类似CAS的操作保证数据安全，但并不是所有场合都适合，曾看过帖子说，能用synchronized就不要用CAS，除非遇到性能瓶颈，因为CAS会让代码可读性变差，这句话看大家怎么理解了。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>HTTPS讲解</title>
+			<link>https://willje.github.io/posts/net/https%E8%AE%B2%E8%A7%A3/</link>
+			<pubDate>Wed, 17 Apr 2019 16:25:38 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/net/https%E8%AE%B2%E8%A7%A3/</guid>
+			<description>在正式开始讲解https之前我们还得先搞清楚两个概念：什么是对称加密，以及什么是非对称加密？ 这两个概念都是属于加密学中的基础知识，其实非常好懂。 对称加密和非对称加密 对称加密比较简单，就是客户端和服务器共用同一个密钥，该密钥可以用于加密一段内容，同时也可以用于解密这段内容。对称加密的优点是加解密效率高，但是在安全性方面可能存在一些问题，因为密钥存放在客户端有被</description>
+			<content type="html"><![CDATA[<p>在正式开始讲解https之前我们还得先搞清楚两个概念：什么是对称加密，以及什么是非对称加密？</p>
+<p>这两个概念都是属于加密学中的基础知识，其实非常好懂。</p>
+<h2 id="对称加密和非对称加密">对称加密和非对称加密</h2>
+<p>对称加密比较简单，就是客户端和服务器共用同一个密钥，该密钥可以用于加密一段内容，同时也可以用于解密这段内容。对称加密的优点是加解密效率高，但是在安全性方面可能存在一些问题，因为密钥存放在客户端有被窃取的风险。</p>
+<p>对称加密的代表算法有：AES、DES等。</p>
+<p>而非对称加密则要复杂一点，它将密钥分成了两种：公钥和私钥。公钥通常存放在客户端，私钥通常存放在服务器。使用公钥加密的数据只有用私钥才能解密，反过来使用私钥加密的数据也只有用公钥才能解密。非对称加密的优点是安全性更高，因为客户端发送给服务器的加密信息只有用服务器的私钥才能解密，因此不用担心被别人破解，但缺点是加解密的效率相比于对称加密要差很多。</p>
+<p>非对称加密的代表算法有：RSA、ElGamal等。</p>
+<p>掌握了这两个概念之后，我们就可以开始学习https了。这里先提前抛出一个问题，同时也是面试时可能经常会问到的一个问题：https为了保证数据传输的安全，使用的是对称加密还是非对称加密呢？</p>
+<p>学完本篇文章之后你就能知道答案了。</p>
+<p>首先我们来看一下，传统的http方式在网络传输时存在哪些问题。</p>
+<h2 id="http有哪些问题">HTTP有哪些问题</h2>
+<p>由于我们在传输数据时信息都是明文的，因此很容易出现数据被监听和窃取的情况。示意图如下：</p>
+<p><p class="md__image">
+  <img src="../HTTPS%e8%ae%b2%e8%a7%a3.assets/image-20210607215556444.png"
+    alt="image-20210607215556444"  />
+</p>
+</p>
+<p>另外，传输的数据还有可能被一些别有用心的人篡改，导致浏览器与网站收发的内容不一致。示意图如下：</p>
+<p><p class="md__image">
+  <img src="../HTTPS%e8%ae%b2%e8%a7%a3.assets/image-20210607215608536.png"
+    alt="image-20210607215608536"  />
+</p>
+</p>
+<p>也就是说，使用http传输数据至少存在着数据被监听以及数据被篡改这两大风险，因此http是一种不安全的传输协议。</p>
+<p>那么解决方案大家肯定都知道是使用https，但是我们先尝试着自己思考一下该如何保证http传输的安全性，进而也就能一步步地理解https的工作原理了。</p>
+<h2 id="工作原理">工作原理</h2>
+<h3 id="使用对称加密通信">使用对称加密通信</h3>
+<p>既然数据以明文的形式在网络上传输是不安全的，那么我们显然要对数据进行加密才行。刚才提到了，加密方式主要有两种，对称加密和非对称加密。对称加密的</p>
+<p>优点是加解密效率高，而我们在网络上传输数据是非常讲究效率的，因此这里很明显应该使用对称加密。示意图如下：</p>
+<p><p class="md__image">
+  <img src="../HTTPS%e8%ae%b2%e8%a7%a3.assets/image-20210607215724929.png"
+    alt="image-20210607215724929"  />
+</p>
+</p>
+<p>可以看到，由于我们在网络上传输的数据都是密文，所以不怕被监听者获取到，因为他们无法得知原文是什么。而浏览器收到密文之后，只需要使用和网站相同的</p>
+<p>密钥来对数据进行解密就可以了。</p>
+<p>这种工作机制看上去好像确实保证了数据传输的安全性，但是却存在一个巨大的漏洞：浏览器和网站怎样商定使用什么密钥呢？</p>
+<p>这绝对是一个计算机界的难题，浏览器和网站要使用相同的密钥才能正常对数据进行加解密，但是如何让这个密钥只让它们俩知晓，而不被任何监听者知晓呢？你</p>
+<p>会发现不管怎么商定，浏览器和网站的首次通信过程必定是明文的。这就意味着，按照上述的工作流程，我们始终无法创建一个安全的对称加密密钥。</p>
+<h3 id="引入非对称加密">引入非对称加密</h3>
+<p>所以，只使用对称加密看来是永远无法解决这个问题了，这个时候我们需要将非对称加密引入进来，协助解决无法安全创建对称加密密钥的问题。</p>
+<p>那么为什么非对称加密就可以解决这个问题呢？我们还是通过示意图的方式来理解一下：</p>
+<p><p class="md__image">
+  <img src="../HTTPS%e8%ae%b2%e8%a7%a3.assets/image-20210607215917466.png"
+    alt="image-20210607215917466"  />
+</p>
+</p>
+<p>可以看到，如果我们想要安全地创建一个对称加密的密钥，可以让浏览器这边来随机生成，但是生成出来的密钥不能直接在网络上传输，而是要用网站提供的公钥</p>
+<p>对其进行非对称加密。由于公钥加密后的数据只能使用私钥来解密，因此这段数据在网络上传输是绝对安全的。而网站在收到消息之后，只需要使用私钥对其解</p>
+<p>密，就获取到浏览器生成的密钥了。</p>
+<p>另外，使用这种方式，只有在浏览器和网站首次商定密钥的时候需要使用非对称加密，一旦网站收到了浏览器随机生成的密钥之后，双方就可以都使用对称加密来</p>
+<p>进行通信了，因此工作效率是非常高的。</p>
+<h3 id="引入ca机构获取网站公钥">引入CA机构获取网站公钥</h3>
+<p>那么，上述的工作机制你认为已经非常完善了吗？其实并没有，因为我们还是差了非常关键的一步，浏览器该怎样才能获取到网站的公钥呢？虽然公钥是属于公开</p>
+<p>的数据，在网络上传输不怕被别人监听，但是如果公钥被别人篡改了怎么办？示意图如下：</p>
+<p><p class="md__image">
+  <img src="../HTTPS%e8%ae%b2%e8%a7%a3.assets/image-20210607220045520.png"
+    alt="image-20210607220045520"  />
+</p>
+</p>
+<p>也就是说，只要我们从网络上去获取任何网站的公钥，就必然存在着公钥被篡改的风险。而一旦你使用了假的公钥来对数据进行加密，那么就可以被别人以假的私</p>
+<p>钥进行解密，后果不堪设想。</p>
+<p>方案设计到这里好像已经进入了死胡同，因为无论如何我们都无法安全地获取到一个网站的公钥，而我们显然也不可能将世界上所有网站的公钥都预置在操作系统</p>
+<p>当中。</p>
+<p>这个时候，就必须引入一个新的概念来打破僵局了：CA机构。</p>
+<p>CA机构专门用于给各个网站签发数字证书，从而保证浏览器可以安全地获得各个网站的公钥。那么CA机构是如何完成这个艰巨的任务的呢？下面开始一步步解</p>
+<p>析。</p>
+<p>首先，我们作为一个网站的管理员需要向CA机构进行申请，将自己的公钥提交给CA机构。CA机构则会使用我们提交的公钥，再加上一系列其他的信息，如网站域</p>
+<p>名、有效时长等，来制作证书。</p>
+<p>证书制作完成后，CA机构会使用自己的私钥对其加密，并将加密后的数据返回给我们，我们只需要将获得的加密数据配置到网站服务器上即可。</p>
+<p>然后，每当有浏览器请求我们的网站时，首先会将这段加密数据返回给浏览器，此时浏览器会用CA机构的公钥来对这段数据解密。</p>
+<p>如果能解密成功，就可以得到CA机构给我们网站颁发的证书了，其中当然也包括了我们网站的公钥。你可以在浏览器的地址栏上，点击网址左侧的小锁图标来查</p>
+<p>看证书的详细信息，如下图所示。</p>
+<p><p class="md__image">
+  <img src="../HTTPS%e8%ae%b2%e8%a7%a3.assets/image-20210607220143653.png"
+    alt="image-20210607220143653"  />
+</p>
+</p>
+<p>得到了公钥之后，接下来的流程就和刚才示意图中所描述的一样了。</p>
+<p>而如果无法解密成功，则说明此段加密数据并不是由一个合法的CA机构使用私钥加密而来的，有可能是被篡改了，于是会在浏览器上显示一个著名的异常界面，</p>
+<p>如下图所示。</p>
+<p><p class="md__image">
+  <img src="../HTTPS%e8%ae%b2%e8%a7%a3.assets/image-20210607220202841.png"
+    alt="image-20210607220202841"  />
+</p>
+</p>
+<p>那么你可能会问了，有了CA机构之后就真的安全了吗？我们在浏览器端要使用CA机构的公钥来解密数据，那么又该如何安全地获取到CA机构的公钥呢？</p>
+<p>这个问题就很好解决了，因为世界上的网站是无限多的，而CA机构总共就那么几家。任何正版操作系统都会将所有主流CA机构的公钥内置到操作系统当中，所以</p>
+<p>我们不用额外获取，解密时只需遍历系统中所有内置的CA机构的公钥，只要有任何一个公钥能够正常解密出数据，就说明它是合法的。</p>
+<p>Windows系统的内置证书如下：</p>
+<p><p class="md__image">
+  <img src="../HTTPS%e8%ae%b2%e8%a7%a3.assets/image-20210607220226403.png"
+    alt="image-20210607220226403"  />
+</p>
+</p>
+<p>但是即使使用CA机构的公钥能够正常解密出数据，目前的流程也还是存在问题的。因为每一家CA机构都会给成千上万的网站制作证书，假如攻击者知道abc.com</p>
+<p>使用的是某家CA机构的证书，那么他也可以同样去这家CA机构申请一个合法的证书，然后在浏览器请求abc.com时对返回的加密证书数据进行替换。示意图如</p>
+<p>下：</p>
+<p><p class="md__image">
+  <img src="../HTTPS%e8%ae%b2%e8%a7%a3.assets/image-20210607220247413.png"
+    alt="image-20210607220247413"  />
+</p>
+</p>
+<p>可以看到，由于攻击者申请的证书也是由正规CA机构制作的，因此这段加密数据当然可以成功被解密。</p>
+<p>也正是因为这个原因，所有CA机构在制作的证书时除了网站的公钥外，还要包含许多其他数据，用来辅助进行校验，比如说网站的域名就是其中一项重要的数</p>
+<p>据。</p>
+<p>同样是刚才的例子，如果证书中加入了网站的域名，那么攻击者就只能无功而返了。因为，即使加密数据可以被成功解密，但是最终解密出来的证书中包含的域名</p>
+<p>和浏览器正在请求的域名对不上，那么此时浏览器仍然会显示异常界面。示意图如下：</p>
+<p><p class="md__image">
+  <img src="../HTTPS%e8%ae%b2%e8%a7%a3.assets/image-20210607220340874.png"
+    alt="image-20210607220340874"  />
+</p>
+</p>
+<p>好了，方案设计到这里，其实我们的网络传输就已经做到足够的安全了。当然，这其实也就是https的工作原理。</p>
+<p>那么回到一开始的问题：https使用的是对称加密还是非对称加密呢？答案也很明显了，https使用的是对称加密与非对称加密相结合的方式。</p>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s/DGIkZT26CBafJzpQgrqqdQ" target="_blank" rel="noopener">写一篇最好懂的https讲解</a>
+</li>
+</ul>
+]]></content>
+		</item>
+		
+		<item>
 			<title>Hugo、githubpages搭建自己的网站</title>
 			<link>https://willje.github.io/posts/blog/hugogithubpages%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E7%BD%91%E7%AB%99/</link>
 			<pubDate>Fri, 05 Apr 2019 15:18:03 +0800</pubDate>
