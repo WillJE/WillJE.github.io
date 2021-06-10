@@ -65,6 +65,26 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/mysql/mysql-mvcc%E6%9C%BA%E5%88%B6/">MySQL_MVCC机制</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>本文中用到的概念解释 数据读取特性 不可重复读 指一个事务范围内两个相同的查询却返回了不同数据 这是由于查询时系统中其他事务修改的提交而引起的 幻读 在两个连续的查找之间一个并发的修改事务修改了查询的数据集，导致这两个查询返回了不同的结果 这是由于查询时系统中其他事务新增或者删除记录引起的 事务隔离级别 Read Commited(提交读) 一个事务从开始到提交前,所作的任何修改对其他</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2020-04-25</span>
+                        <a class="tag"
+                                   href="/tags/mysql/">MySQL</a><a class="tag"
+                                   href="/tags/mvcc/">MVCC</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/mysql/mysql-innodb%E9%94%81%E6%9C%BA%E5%88%B6/">MySQL InnoDB锁机制</a>
                 </h2>
             </div>
@@ -239,32 +259,6 @@
             </div>
 				</div>
     
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/linux/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/"></a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>文件描述符是什么 fd 是 File descriptor 的缩写，中文名叫做：文件描述符。文件描述符是一个非负整数，本质上是一个索引值（这句话非常重要）。
-什么时候拿到的 fd ？
-当打开一个文件时，内核向进程返回一个文件描述符（ open 系统调用得到 ），后续 read、write 这个文件时，则只需要用这个文件描述符来标识该文件，将其作为参数传入 read、write 。
-fd 的值范围是什么？
-在 POSIX 语义中，0，1，2 这三个 fd 值已经被赋予特殊含义，分别是标准输入（ STDIN_FILENO ），标准输出（ STDOUT_FILENO ），标准错误（ STDERR_FILENO ）。
-文件描述符是有一个范围的：0 ～ OPEN_MAX-1 ，最早期的 UNIX 系统中范围很小，现在的主流系统单就这个值来说，变化范围是几乎不受限制的，只受到系统硬件配置和系统管理员配置的约束。
-你可以通过 ulimit 命令查看当前系统的配置：
-➜ ulimit -n 4864 如上，我系统上进程默认最多打开 4864 文件。
-参考资料  存储基础 — 文件描述符 fd 究竟是什么？   </p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">0001-01-01</span>
-                        
-                    </div>
-                </div>
-            </div>
-				</div>
-    
     <div class="pagination">
         
 <ul class="pagination">
@@ -286,11 +280,14 @@ fd 的值范围是什么？
   <li class="page-item active">
     <a class="page-link" href="/page/4/">4</a>
   </li>
-  <li class="page-item disabled">
-    <a  class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+  <li class="page-item">
+    <a class="page-link" href="/page/5/">5</a>
   </li>
   <li class="page-item">
-    <a href="/page/4/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
+    <a href="/page/5/" class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+  </li>
+  <li class="page-item">
+    <a href="/page/5/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
   </li>
 </ul>
 

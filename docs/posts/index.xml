@@ -4935,6 +4935,379 @@ hash（服务器C的IP地址） %  2^32
 		</item>
 		
 		<item>
+			<title>SpringCloudNacos使用</title>
+			<link>https://willje.github.io/posts/java/spring/springcloudnacos%E4%BD%BF%E7%94%A8/</link>
+			<pubDate>Thu, 25 Jun 2020 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/java/spring/springcloudnacos%E4%BD%BF%E7%94%A8/</guid>
+			<description>Nacos 是 Spring Cloud Alibaba 核心组件之一，可以用作 Spring Cloud 的注册中心和配置中心。 本文讲述如何在 Spring Cloud 中使用 Nacos 作为配置中心。 安装Nacos 与 Spring Cloud Config 和 Eureka 的使用方式不同，Nacos Server 需要独立部署。Nacos Server 的部署方式包括单机模式和集群模式，集群模式可以解决 Nacos 高可用的问题。 为简单起见，本文采用单机模式 Nacos Server 作为配置中心。单机模式搭建过程比较简单，可以通过下载源代码编译方式安装和二进制可执行</description>
+			<content type="html"><![CDATA[<p>Nacos 是 Spring Cloud Alibaba 核心组件之一，可以用作 Spring Cloud 的注册中心和配置中心。</p>
+<p>本文讲述如何在 Spring Cloud 中使用 Nacos 作为配置中心。</p>
+<h2 id="安装nacos">安装Nacos</h2>
+<p>与 Spring Cloud Config 和 Eureka 的使用方式不同，Nacos Server 需要独立部署。Nacos Server 的部署方式包括单机模式和集群模式，集群模式可以解决 Nacos 高可用的问题。</p>
+<p>为简单起见，本文采用单机模式 Nacos Server 作为配置中心。单机模式搭建过程比较简单，可以通过下载源代码编译方式安装和二进制可执行文件安装。</p>
+<p>具体安装步骤可以参考官方文档：</p>
+<p><a href="https://nacos.io/zh-cn/docs/quick-start.html">https://nacos.io/zh-cn/docs/quick-start.html</a></p>
+<p>安装完成后，使用用户 <code>nacos</code> 和密码 <code>nacos</code> 访问 Nacos 控制台：</p>
+<p><p class="md__image">
+  <img src="../SpringCloudNacos%e4%bd%bf%e7%94%a8.assets/nacos-config.png"
+    alt="img"  />
+</p>
+</p>
+<p>图中可以看到访问端口被改成了 8868，而不是 8848。Nacos Server 启动端口的修改也比较简单，修改其配置文件 <code>conf/application.propertie</code> 中端口配置 <code>server.port</code> 即可。</p>
+<h2 id="创建spring-boot项目">创建Spring Boot项目</h2>
+<p>利用 IntelliJ Idea 创建 Spring Boot项目，其中的父（<code>parent</code> ）项目 <code>springboot-nacos</code> 的 <code>pom.xml</code> 内容如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0&#34;</span> <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+    <span class="nt">&lt;groupId&gt;</span>com.example<span class="nt">&lt;/groupId&gt;</span>
+    <span class="nt">&lt;artifactId&gt;</span>springboot-nacos<span class="nt">&lt;/artifactId&gt;</span>
+    <span class="nt">&lt;packaging&gt;</span>pom<span class="nt">&lt;/packaging&gt;</span>
+    <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;modules&gt;</span>
+        <span class="nt">&lt;module&gt;</span>nacosprovider<span class="nt">&lt;/module&gt;</span>
+        <span class="nt">&lt;module&gt;</span>nacosconsumer<span class="nt">&lt;/module&gt;</span>
+        <span class="nt">&lt;module&gt;</span>nacosconfig<span class="nt">&lt;/module&gt;</span>
+    <span class="nt">&lt;/modules&gt;</span>
+    <span class="nt">&lt;dependencies&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-boot<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-boot-autoconfigure<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;/dependencies&gt;</span>
+
+    <span class="nt">&lt;parent&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>2.3.7.RELEASE<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;relativePath/&gt;</span> <span class="c">&lt;!-- lookup parent from repository --&gt;</span>
+    <span class="nt">&lt;/parent&gt;</span>
+
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;project.build.sourceEncoding&gt;</span>UTF-8<span class="nt">&lt;/project.build.sourceEncoding&gt;</span>
+        <span class="nt">&lt;spring-cloud.version&gt;</span>Hoxton.SR9<span class="nt">&lt;/spring-cloud.version&gt;</span>
+        <span class="nt">&lt;java.version&gt;</span>1.8<span class="nt">&lt;/java.version&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+
+    <span class="nt">&lt;dependencyManagement&gt;</span>
+        <span class="nt">&lt;dependencies&gt;</span>
+            <span class="nt">&lt;dependency&gt;</span>
+                <span class="nt">&lt;groupId&gt;</span>org.springframework.cloud<span class="nt">&lt;/groupId&gt;</span>
+                <span class="nt">&lt;artifactId&gt;</span>spring-cloud-dependencies<span class="nt">&lt;/artifactId&gt;</span>
+                <span class="nt">&lt;version&gt;</span>${spring-cloud.version}<span class="nt">&lt;/version&gt;</span>
+                <span class="nt">&lt;type&gt;</span>pom<span class="nt">&lt;/type&gt;</span>
+                <span class="nt">&lt;scope&gt;</span>import<span class="nt">&lt;/scope&gt;</span>
+            <span class="nt">&lt;/dependency&gt;</span>
+
+            <span class="nt">&lt;dependency&gt;</span>
+                <span class="nt">&lt;groupId&gt;</span>com.alibaba.cloud<span class="nt">&lt;/groupId&gt;</span>
+                <span class="nt">&lt;artifactId&gt;</span>spring-cloud-alibaba-dependencies<span class="nt">&lt;/artifactId&gt;</span>
+                <span class="nt">&lt;version&gt;</span>2.2.3.RELEASE<span class="nt">&lt;/version&gt;</span>
+                <span class="nt">&lt;type&gt;</span>pom<span class="nt">&lt;/type&gt;</span>
+                <span class="nt">&lt;scope&gt;</span>import<span class="nt">&lt;/scope&gt;</span>
+            <span class="nt">&lt;/dependency&gt;</span>
+        <span class="nt">&lt;/dependencies&gt;</span>
+    <span class="nt">&lt;/dependencyManagement&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</code></pre></div><p>上述内容主要三部分：</p>
+<ul>
+<li><code>parent</code>：定义spring boot的版本</li>
+<li><code>dependencyManagement</code>：spring cloud的版本以及spring cloud alibaba的版本，由于spring cloud alibaba还未纳入spring cloud的主版本管理中，所以需要自己加入</li>
+<li><code>dependencies</code>：当前应用要使用的依赖内容。这里主要新加入了Nacos的服务注册与发现模块：<code>spring-cloud-starter-alibaba-nacos-discovery</code>。由于在<code>dependencyManagement</code>中已经引入了版本，所以这里就不用指定具体版本了。</li>
+</ul>
+<p>**注意：**这里版本关系需要对应清楚，不然会踩很多坑。</p>
+<p>更多版本对应关系参考：<a href="https://github.com/spring-cloud-incubator/spring-cloud-alibaba/wiki/%e7%89%88%e6%9c%ac%e8%af%b4%e6%98%8e" target="_blank" rel="noopener">版本说明 Wiki</a>
+</p>
+<h2 id="子项目-nacosconfig">子项目-nacosconfig</h2>
+<p>父项目的 <code>pom.xml</code> 定义了 Spring Cloud 和 Spring Cloud Alibaba 依赖版本，这样，各子项目都使用同一版本下的子依赖版本。</p>
+<p>接着创建一个名称为 <code>nacosconfig</code> 的 <code>module</code> 。<code>nacosconfig</code> 的 <code>pom.xml</code> 内容如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="cp">&lt;?xml version=&#34;1.0&#34; encoding=&#34;UTF-8&#34;?&gt;</span>
+<span class="nt">&lt;project</span> <span class="na">xmlns=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0&#34;</span>
+         <span class="na">xmlns:xsi=</span><span class="s">&#34;http://www.w3.org/2001/XMLSchema-instance&#34;</span>
+         <span class="na">xsi:schemaLocation=</span><span class="s">&#34;http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd&#34;</span><span class="nt">&gt;</span>
+    <span class="nt">&lt;parent&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>springboot-nacos<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>com.example<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>1.0<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/parent&gt;</span>
+    <span class="nt">&lt;modelVersion&gt;</span>4.0.0<span class="nt">&lt;/modelVersion&gt;</span>
+
+    <span class="nt">&lt;artifactId&gt;</span>nacosconfig<span class="nt">&lt;/artifactId&gt;</span>
+
+    <span class="nt">&lt;dependencies&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>com.alibaba.cloud<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-nacos-config<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+    <span class="nt">&lt;/dependencies&gt;</span>
+
+    <span class="nt">&lt;build&gt;</span>
+        <span class="nt">&lt;plugins&gt;</span>
+            <span class="nt">&lt;plugin&gt;</span>
+                <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+                <span class="nt">&lt;artifactId&gt;</span>spring-boot-maven-plugin<span class="nt">&lt;/artifactId&gt;</span>
+                <span class="nt">&lt;configuration&gt;</span>
+                    <span class="nt">&lt;finalName&gt;</span>${project.name}<span class="nt">&lt;/finalName&gt;</span>
+                <span class="nt">&lt;/configuration&gt;</span>
+            <span class="nt">&lt;/plugin&gt;</span>
+        <span class="nt">&lt;/plugins&gt;</span>
+    <span class="nt">&lt;/build&gt;</span>
+<span class="nt">&lt;/project&gt;</span>
+</code></pre></div><p><code>nacosconfig</code> 的 <code>pom.xml</code> 继承自 <code>springcloudstudy</code> 的 <code>pom.xml</code>。且引入依赖：</p>
+<ul>
+<li><code>spring-cloud-starter-alibaba-nacos-config</code> ：作为 Nacos 客户端读取 Nacos 配置</li>
+<li><code>spring-boot-starter-web</code>：对外提供 Web 接口</li>
+</ul>
+<h3 id="使用-nacos-配置">使用 Nacos 配置</h3>
+<p>在 <code>nacosconfig</code> 项目 <code>bootstrap.yml</code> 配置文件添加应用名称和 Nacos Server 地址：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nacosconfig</span><span class="w">
+</span><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">nacos</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">config</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">server-addr</span><span class="p">:</span><span class="w"> </span><span class="l">localhost:8848</span><span class="w">
+</span><span class="w">        </span><span class="nt">file-extension</span><span class="p">:</span><span class="w"> </span><span class="l">yaml</span><span class="w">
+</span></code></pre></div><p>之所以需要配置 <code>spring.application.name</code> 的名称，是因为它是构成 Nacos 配置 <code>Data Id</code> 的一部分。Nacos <code>Data Id</code> 完整格式如下:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="si">${</span><span class="nv">prefix</span><span class="si">}</span>-<span class="si">${</span><span class="nv">spring</span><span class="p">.profiles.active</span><span class="si">}</span>.<span class="si">${</span><span class="nv">file</span><span class="p">-extension</span><span class="si">}</span>
+</code></pre></div><ul>
+<li><code>prefix</code>：默认为 <code>spring.application.name</code> 的值</li>
+<li><code>spring.profiles.active</code>：即当前环境对应的 profile，如果为空，则 <code>-${spring.profiles.active}</code> 为空</li>
+<li><code>file-extension</code>：配置内容格式，支持 <code>properties</code> 和 <code>yaml</code> 格式</li>
+</ul>
+<p>Nacos Server 有关配置：</p>
+<ul>
+<li><code>server-addr</code>：Nacos Server 地址</li>
+<li><code>file-extension</code>：Nacos Data Id 配置格式，此处配置为 <code>yaml</code> 格式</li>
+</ul>
+<p>即，采用上述配置，<code>nacosconfig</code> 会从 Nacos Server 读取 Data Id 为 <code>nacosconfig.yaml</code> 的配置。</p>
+<p>这里关于配置的更多使用可以参考：<a href="https://blog.didispace.com/spring-cloud-alibaba-nacos-config-1/" target="_blank" rel="noopener">Spring Cloud Alibaba基础教程：Nacos配置的加载规则详解</a>
+</p>
+<p><strong>例子一</strong>：如果我们不想通过服务名来加载，那么可以增加如下配置，就会加载到<code>Data ID=example.properties</code>，<code>Group=DEFAULT_GROUP</code>的配置内容了：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">spring.cloud.nacos.config.prefix<span class="o">=</span>example
+</code></pre></div><p><strong>例子二</strong>：如果我们想要加载yaml格式的内容，而不是Properties格式的内容，那么可以通过如下配置，实现加载<code>Data ID=example.yaml</code>，<code>Group=DEFAULT_GROUP</code>的配置内容了：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">spring.cloud.nacos.config.prefix<span class="o">=</span>example
+spring.cloud.nacos.config.file-extension<span class="o">=</span>yaml
+</code></pre></div><p><strong>例子三</strong>：如果我们对配置做了分组管理，那么可以通过如下配置，实现加载<code>Data ID=example.yaml</code>，<code>Group=DEV_GROUP</code>的配置内容了：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">spring.cloud.nacos.config.prefix<span class="o">=</span>example
+spring.cloud.nacos.config.file-extension<span class="o">=</span>yaml
+spring.cloud.nacos.config.group<span class="o">=</span>DEV_GROUP
+</code></pre></div><h3 id="从nacos读取端口配置">从Nacos读取端口配置</h3>
+<p>在 Nacos 控制台添加一个新的配置，其中：</p>
+<ul>
+<li>Data Id：<code>nacosconfig</code></li>
+<li>Group：<code>DEFAULT_GROUP</code></li>
+<li>配置格式：<code>YAML</code></li>
+</ul>
+<p>配置内容：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">server</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">9080</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">user</span><span class="p">:</span><span class="w"> </span><span class="l">will</span><span class="w">
+</span></code></pre></div><p>启动 <code>nacosconfig</code> 项目，可以看到打印日志：</p>
+<blockquote>
+<p>2021-06-06 11:00:28.146 INFO 25112 — [ main] o.s.b.w.embedded.tomcat.TomcatWebServer : Tomcat initialized with port(s): 9080 (http)</p>
+</blockquote>
+<p>即说明 <code>nacosconfig</code> 项目监听端口从默认的 8080 改成了 9080。</p>
+<h3 id="从nacos读取变量配置">从Nacos读取变量配置</h3>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kn">package</span> <span class="nn">will</span><span class="o">;</span>
+
+<span class="kn">import</span> <span class="nn">org.springframework.beans.factory.annotation.Value</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.SpringApplication</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.boot.autoconfigure.SpringBootApplication</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.cloud.context.config.annotation.RefreshScope</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.GetMapping</span><span class="o">;</span>
+<span class="kn">import</span> <span class="nn">org.springframework.web.bind.annotation.RestController</span><span class="o">;</span>
+
+<span class="nd">@SpringBootApplication</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">NacosConfigApplication</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">NacosConfigApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@RestController</span>
+    <span class="nd">@RefreshScope</span>
+    <span class="kd">static</span> <span class="kd">class</span> <span class="nc">TestController</span> <span class="o">{</span>
+
+        <span class="nd">@Value</span><span class="o">(</span><span class="s">&#34;${user}&#34;</span><span class="o">)</span>
+        <span class="kd">private</span> <span class="n">String</span> <span class="n">user</span><span class="o">;</span>
+
+        <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/test&#34;</span><span class="o">)</span>
+        <span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">()</span> <span class="o">{</span>
+            <span class="k">return</span> <span class="n">user</span><span class="o">;</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+
+</code></pre></div><p>通过rest接口，获取变量user的值，为实现配置自动更新，使用了注解 <code>@RefreshScope</code>。</p>
+<p>访问 <code>http://localhost:9080/test</code>，返回：</p>
+<blockquote>
+<p>will</p>
+</blockquote>
+<p>在 Nacos 控制台修改 <code>nacosconfig</code> 配置，将 <code>user</code> 值修改为 <code>will.change</code>，可以看到 <code>nacosconfig</code> 项目打印日志：</p>
+<blockquote>
+<p>2021-06-07 15:44:37.651 INFO 25112 — [88.115.137_8868] c.a.n.client.config.impl.ClientWorker : [fixed-10.88.115.137_8868] [data-received] dataId=nacosconfig, group=DEFAULT_GROUP, tenant=null, md5=396057d762f85e3cfa28e2d2f450e722, content=server:
+port: 9080
+user: will.change, type=yaml</p>
+</blockquote>
+<p>说明 <code>nacosconfig</code> 项目已接收到最新的 Nacos 配置。</p>
+<p>访问 <code>http://localhost:9080/test</code>，返回：</p>
+<blockquote>
+<p>will.change</p>
+</blockquote>
+<p>配置实现了动态更新。</p>
+<h2 id="子项目-nacosprovider">子项目-nacosprovider</h2>
+<p>创建服务提供者 <code>nacosprovider</code> 作为子项目。</p>
+<p>添加 <code>nacosprovider</code> 的依赖：</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>com.alibaba.cloud<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="nt">&lt;/artifactId&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div><p>其中，依赖 <code>spring-cloud-starter-alibaba-nacos-discovery</code> 用于连接 Nacos Server 注册中心。</p>
+<p><code>bootstrap.yml</code> 配置 Nacos Server 地址，以及服务名称：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">server</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8060</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nacos-provider</span><span class="w">
+</span><span class="w">
+</span><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">nacos</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">discovery</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">server-addr</span><span class="p">:</span><span class="w"> </span><span class="l">localhost:8848</span><span class="w">
+</span></code></pre></div><p><code>spring.application.name</code> 用于配置服务名称，这个名称会在 Nacos 控制台服务列表上展示。</p>
+<p>在 Spring Boot 启动主类添加 <code>@EnableDiscoveryClient</code> 注解，开启服务注册功能：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
+<span class="nd">@EnableDiscoveryClient</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">NacosproviderApplication</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">NacosproviderApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>增加 controller 接口：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@RestController</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ProviderController</span> <span class="o">{</span>
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;/echo/{string}&#34;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">echo</span><span class="o">(</span><span class="nd">@PathVariable</span> <span class="n">String</span> <span class="n">string</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">&#34;Hello Nacos Discovery &#34;</span> <span class="o">+</span> <span class="n">string</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h2 id="子项目-nacosconsumer">子项目-nacosconsumer</h2>
+<p>添加服务消费者 <code>nacosconsumer</code> 的依赖：</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>com.alibaba.cloud<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="nt">&lt;/artifactId&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;dependency&gt;</span>
+	<span class="nt">&lt;groupId&gt;</span>org.springframework.cloud<span class="nt">&lt;/groupId&gt;</span>
+	<span class="nt">&lt;artifactId&gt;</span>spring-cloud-starter-openfeign<span class="nt">&lt;/artifactId&gt;</span>
+<span class="nt">&lt;/dependency&gt;</span>
+</code></pre></div><p>其中，依赖 <code>spring-cloud-starter-openfeign</code> 用于使用 feign 客户端调用服务接口。</p>
+<p><code>nacosconsumer</code> 的 <code>bootstrap.yml</code> 配置：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">server</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8070</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nacos-consumer</span><span class="w">
+</span><span class="w">
+</span><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">nacos</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">discovery</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">server-addr</span><span class="p">:</span><span class="w"> </span><span class="l">localhost:8848</span><span class="w">
+</span></code></pre></div><p>其中，服务名称 <code>spring.application.name</code> 配置为 <code>nacos-consumer</code>。</p>
+<h3 id="调用服务提供者">调用服务提供者</h3>
+<p>在启动主类添加 <code>@EnableFeignClients</code> 注解启用 feign 客户端的使用，添加 <code>@EnableDiscoveryClient</code> 注解开启服务注册功能：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
+<span class="nd">@EnableDiscoveryClient</span>
+<span class="nd">@EnableFeignClients</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">NacosconsumerApplication</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">NacosconsumerApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>使用注解 <code>@FeignClient</code> 定义 feign 客户端，将远程服务 <code>http://nacos-provider/echo/</code> 映射为本地方法调用：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@FeignClient</span><span class="o">(</span><span class="s">&#34;nacos-provider&#34;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">interface</span> <span class="nc">ProviderClient</span> <span class="o">{</span>
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;/echo/{string}&#34;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+    <span class="n">String</span> <span class="nf">echo</span><span class="o">(</span><span class="nd">@PathVariable</span> <span class="n">String</span> <span class="n">string</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div><p>Feign 客户端能将服务名称 <code>nacos-provider</code> 映射为 <code>nacosprovider</code> 的地址，这是由于 <code>nacosconsumer</code> 和 <code>nacosprovider</code> 都已经连接上了 Nacos Server 注册中心，<code>nacosconsumer</code> 可以从注册中心获取 <code>nacosprovider</code> 的 ip 和端口。</p>
+<p><code>nacosconsumer</code> 提供 controller 接口，以测试调用 <code>nacosprovider</code> 接口：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@RestController</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ConsumerController</span> <span class="o">{</span>
+    <span class="nd">@Autowired</span>
+    <span class="n">ProviderClient</span> <span class="n">providerClient</span><span class="o">;</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="n">value</span> <span class="o">=</span> <span class="s">&#34;/echo/{str}&#34;</span><span class="o">,</span> <span class="n">method</span> <span class="o">=</span> <span class="n">RequestMethod</span><span class="o">.</span><span class="na">GET</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">echo</span><span class="o">(</span><span class="nd">@PathVariable</span> <span class="n">String</span> <span class="n">str</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">providerClient</span><span class="o">.</span><span class="na">echo</span><span class="o">(</span><span class="n">str</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>其中，通过 <code>@Autowired</code> 注解，使用上面定义的 feign 客户端。可以看到 ，通过 feign 客户端，调用远程服务接口就像调用本地方法一样。</p>
+<p>启动<code> nacosconsumer</code> 和 <code>nacosprovider</code> 后，可以看到 Nacos 控制台服务列表显示出两个服务：</p>
+<p><p class="md__image">
+  <img src="../SpringCloudNacos%e4%bd%bf%e7%94%a8.assets/nacos.png"
+    alt="img"  />
+</p>
+</p>
+<p>调用接口 <code>http://127.0.0.1:8070/echo/will.me</code>，返回：</p>
+<blockquote>
+<p>Hello Nacos Discovery will.me</p>
+</blockquote>
+<h2 id="附源代码">附：源代码</h2>
+<p>完整的源代码请参考：</p>
+<p><a href="https://github.com/WillJE/spring_boot_nacos">https://github.com/WillJE/spring_boot_nacos</a></p>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li><a href="https://nacos.io/zh-cn/docs/quick-start-spring-cloud.html" target="_blank" rel="noopener">Nacos Spring Cloud 快速开始</a>
+</li>
+<li><a href="https://leehao.me/Spring-Cloud-%E4%BD%BF%E7%94%A8-Nacos-%E4%BD%9C%E9%85%8D%E7%BD%AE%E4%B8%AD%E5%BF%83/" target="_blank" rel="noopener">Spring Cloud 使用 Nacos 作配置中心</a>
+</li>
+<li><a href="https://blog.didispace.com/nacos-faqs/" target="_blank" rel="noopener">Nacos部署中的一些常见问题汇总</a>
+</li>
+<li><a href="https://blog.didispace.com/spring-cloud-alibaba-sentinel-2-1/" target="_blank" rel="noopener">Spring Cloud Alibaba基础教程：Sentinel使用Nacos存储规则</a>
+</li>
+<li><a href="https://blog.didispace.com/nacos-yuanli-1/" target="_blank" rel="noopener">Nacos配置中心原理</a>
+</li>
+<li><a href="https://blog.didispace.com/spring-cloud-alibaba-5/" target="_blank" rel="noopener">Spring Cloud Alibaba基础教程：Nacos的集群部署</a>
+</li>
+<li><a href="https://blog.didispace.com/spring-cloud-alibaba-4/" target="_blank" rel="noopener">Spring Cloud Alibaba基础教程：Nacos的数据持久化</a>
+</li>
+<li><a href="https://blog.didispace.com/spring-cloud-alibaba-nacos-config-3/" target="_blank" rel="noopener">Spring Cloud Alibaba基础教程：Nacos配置的多文件加载与共享配置</a>
+</li>
+<li><a href="https://blog.didispace.com/spring-cloud-alibaba-nacos-config-2/" target="_blank" rel="noopener">Spring Cloud Alibaba基础教程：Nacos配置的多环境管理</a>
+</li>
+<li><a href="https://www.cnkirito.moe/nacos-cluster-mode/" target="_blank" rel="noopener">Nacos 集群部署模式最佳实践- 徐靖峰|个人博客</a>
+</li>
+</ul>
+]]></content>
+		</item>
+		
+		<item>
 			<title>IO多路复用</title>
 			<link>https://willje.github.io/posts/linux/io-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/</link>
 			<pubDate>Sat, 30 May 2020 20:55:29 +0800</pubDate>
