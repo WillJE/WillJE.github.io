@@ -4159,6 +4159,334 @@ sql-3，这3个sql语句，每一个在执行的时候，都是一个单元，�
 		</item>
 		
 		<item>
+			<title>Zookeeper入门</title>
+			<link>https://willje.github.io/posts/distributed/zookeeper%E5%85%A5%E9%97%A8/</link>
+			<pubDate>Sat, 28 Nov 2020 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/distributed/zookeeper%E5%85%A5%E9%97%A8/</guid>
+			<description>我们在虚拟机中安装zookeeper，首先要安装linux虚拟机。 安装linux虚拟机 安装vmvare，地址在这里 下载centos镜像，地址在这里 安装，这里要注意网络配置，Centos网络设置 我这里没有设置固定IP，因为使用的是DHCP动态分配IP，不知道明天起来IP会不会变。 补充：IP变了，于是按照下面的方法固定IP； 关键点，配置网络；vmware虚拟机c</description>
+			<content type="html"><![CDATA[<p>我们在虚拟机中安装zookeeper，首先要安装linux虚拟机。</p>
+<h2 id="安装linux虚拟机">安装linux虚拟机</h2>
+<ol>
+<li>安装vmvare，地址<a href="https://www.vmware.com/products/workstation-pro.html" target="_blank" rel="noopener">在这里</a>
+</li>
+<li>下载centos镜像，地址<a href="https://www.centos.org/download/" target="_blank" rel="noopener">在这里</a>
+</li>
+<li>安装，这里要注意网络配置，<a href="https://zhuanlan.zhihu.com/p/79361590" target="_blank" rel="noopener">Centos网络设置</a>
+</li>
+</ol>
+<blockquote>
+<p>我这里没有设置固定IP，因为使用的是DHCP动态分配IP，不知道明天起来IP会不会变。</p>
+<p>补充：IP变了，于是按照下面的方法固定IP；</p>
+</blockquote>
+<ol start="4">
+<li>关键点，配置网络；<a href="https://willje.github.io/posts/net/vmware%E8%99%9A%E6%8B%9F%E6%9C%BAcentos7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" target="_blank" rel="noopener">vmware虚拟机centos7网络配置</a>
+</li>
+</ol>
+<h2 id="centos安装jdk8">centos安装jdk8</h2>
+<p><a href="https://www.cnblogs.com/toutou/p/9670395.html" target="_blank" rel="noopener">《CentOS安装Java JDK》</a>
+</p>
+<p>查看是否安装了java</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">yum list installed <span class="p">|</span> grep jdk
+</code></pre></div><p>查询CentOS自带的Java相关组件</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">rpm -qa <span class="p">|</span> grep java
+</code></pre></div><p>rpm：管理套件</p>
+<p>-qa：使用询问模式，查询所有套件</p>
+<p>grep：查找文件里符合条件的字符串</p>
+<p><a href="https://www.jianshu.com/p/0dd37861a983" target="_blank" rel="noopener">Centos7.5安装java8 - 简书</a>
+</p>
+<p>查看<code>java</code>版本库</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">yum search java <span class="p">|</span> grep jdk
+</code></pre></div><p>安装</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">yum install java-1.8.0-openjdk java-1.8.0-openjdk-devel
+</code></pre></div><p>这里后面应该要配置环境变量的，但是我没有配置，输入</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">java -version
+</code></pre></div><p>也显示了java版本。不知道这里是为什么？</p>
+<p>设置环境变量是这样设置的</p>
+<p>打开配置文件地址</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">vim /etc/profile
+</code></pre></div><p>设置环境变量</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># java enviroment</span>
+<span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/usr/local/java8
+<span class="nb">export</span> <span class="nv">JRE_HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/jre
+<span class="nb">export</span> <span class="nv">CLASSPATH</span><span class="o">=</span>.:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/lib:<span class="si">${</span><span class="nv">JRE_HOME</span><span class="si">}</span>/lib
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$PATH</span>
+</code></pre></div><p>然后刷新配置文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">source</span> /etc/profile
+</code></pre></div><p>检查</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">java -version
+</code></pre></div><h2 id="安装zookeeper">安装zookeeper</h2>
+<p><a href="https://www.youtube.com/watch?v=cjqPBDZle9U&amp;list=PLMUlMXMh0NUE8qh7BQreXiYcSOEgq9RM_&amp;index=5" target="_blank" rel="noopener">视频介绍</a>
+</p>
+<p>博客介绍：<a href="https://www.cnblogs.com/toutou/p/install_codis.html#install_zookeeper" target="_blank" rel="noopener">《安装ZooKeeper》</a>
+</p>
+<p>这是下载目录：https://archive.apache.org/dist/zookeeper/</p>
+<p>下载完成之后，上传至centos服务器/home目录下，这里有一个坑：<a href="https://juejin.cn/post/6844903944850767886" target="_blank" rel="noopener">zookeeper-3.5.5安装报错：找不到或无法加载主类org.apache &hellip;</a>
+，*.tar.gz只是源代码，而-bin.tar.gz才包含编译后的二进制文件。</p>
+<p>解压</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">tar -zxvf
+</code></pre></div><p>重命名为zookeeper</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">mv apache-zookeeper-3.7.0 zookeeper
+</code></pre></div><p>移动到usr/local目录下</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">mv zookeeper /usr/local
+</code></pre></div><p>配置环境变量</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 添加Zookeeper HOME路径</span>
+<span class="nb">export</span> <span class="nv">ZOOKEEPER_HOME</span><span class="o">=</span>/usr/local/zookeeper
+<span class="c1"># 在export PATH 下添加 ZOOKEEPER_HOME</span>
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$ZOOKEEPER_HOME</span>/bin
+</code></pre></div><h3 id="修改zookeeper配置文件">修改zookeeper配置文件</h3>
+<p>首先复制一份配置文件conf/zoo_sample.cfg，后面修改针对这个复制的配置文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">cp zoo_sample.cfg zoo.cfg
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># The number of milliseconds of each tick</span>
+<span class="nv">tickTime</span><span class="o">=</span><span class="m">2000</span>
+<span class="c1"># The number of ticks that the initial </span>
+<span class="c1"># synchronization phase can take</span>
+<span class="nv">initLimit</span><span class="o">=</span><span class="m">10</span>
+<span class="c1"># The number of ticks that can pass between </span>
+<span class="c1"># sending a request and getting an acknowledgement</span>
+<span class="nv">syncLimit</span><span class="o">=</span><span class="m">5</span>
+<span class="c1"># the directory where the snapshot is stored.</span>
+<span class="c1"># do not use /tmp for storage, /tmp here is just </span>
+<span class="c1"># example sakes.</span>
+<span class="nv">dataDir</span><span class="o">=</span>/tmp/zookeeper
+<span class="c1"># the port at which the clients will connect</span>
+<span class="nv">clientPort</span><span class="o">=</span><span class="m">2181</span>
+<span class="c1"># the maximum number of client connections.</span>
+<span class="c1"># increase this if you need to handle more clients</span>
+<span class="c1">#maxClientCnxns=60</span>
+<span class="c1">#</span>
+<span class="c1"># Be sure to read the maintenance section of the </span>
+<span class="c1"># administrator guide before turning on autopurge.</span>
+<span class="c1">#</span>
+<span class="c1"># http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance</span>
+<span class="c1">#</span>
+<span class="c1"># The number of snapshots to retain in dataDir</span>
+<span class="c1">#autopurge.snapRetainCount=3</span>
+<span class="c1"># Purge task interval in hours</span>
+<span class="c1"># Set to &#34;0&#34; to disable auto purge feature</span>
+<span class="c1">#autopurge.purgeInterval=1</span>
+
+<span class="c1">## Metrics Providers</span>
+<span class="c1">#</span>
+<span class="c1"># https://prometheus.io Metrics Exporter</span>
+<span class="c1">#metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider</span>
+<span class="c1">#metricsProvider.httpPort=7000</span>
+<span class="c1">#metricsProvider.exportJvmInfo=true</span>
+</code></pre></div><p>新增了两行数据和日志目录</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">dataDir</span><span class="o">=</span>/usr/local/zookeeper/dataDir
+<span class="nv">dataLogDir</span><span class="o">=</span>/usr/local/zookeeper/dataLogDir
+</code></pre></div><p>同理在对应目录建好目录</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">mkdir dataDir
+mkdir dataLogDir
+</code></pre></div><h3 id="启动zookeeper服务">启动zookeeper服务</h3>
+<p>在bin目录下执行<code>./zkServer.sh start</code></p>
+<p><p class="md__image">
+  <img src="../Zookeeper%e5%85%a5%e9%97%a8.assets/image-20210613205955830.png"
+    alt="image-20210613205955830"  />
+</p>
+</p>
+<h3 id="使用客户端连接">使用客户端连接</h3>
+<p>还是在bin目录下执行<code>./zkCli.sh</code></p>
+<p><p class="md__image">
+  <img src="../Zookeeper%e5%85%a5%e9%97%a8.assets/image-20210613211014833.png"
+    alt="image-20210613211014833"  />
+</p>
+</p>
+<h2 id="使用zookeeper命令">使用zookeeper命令</h2>
+<p><a href="http://www.runoob.com/w3cnote/zookeeper-bs-command.html" target="_blank" rel="noopener">7.0 Zookeeper 客户端基础命令使用| 菜鸟教程</a>
+</p>
+<p><a href="https://www.cnblogs.com/f-ck-need-u/p/9232829.html" target="_blank" rel="noopener">ZooKeeper系列(2)：ZooKeeper命令行工具zkCli.sh - 骏马金龙 &hellip;</a>
+</p>
+<p><code>help</code>命令，查看所有命令；</p>
+<p><p class="md__image">
+  <img src="../Zookeeper%e5%85%a5%e9%97%a8.assets/image-20210613231350906.png"
+    alt="image-20210613231350906"  />
+</p>
+</p>
+<p><code>ls</code>命令</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 1<span class="o">]</span> ls
+ls <span class="o">[</span>-s<span class="o">]</span> <span class="o">[</span>-w<span class="o">]</span> <span class="o">[</span>-R<span class="o">]</span> path
+<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 2<span class="o">]</span> ls /
+<span class="o">[</span>zookeeper<span class="o">]</span>
+<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 3<span class="o">]</span> ls /zookeeper
+<span class="o">[</span>config, quota<span class="o">]</span>
+<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 4<span class="o">]</span> ls /zookeeper/config
+<span class="o">[]</span>
+<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 5<span class="o">]</span> ls /zookeeper/quota
+</code></pre></div><p><code>create</code>命令，创建一个节点和设置值；</p>
+<ul>
+<li><code>create -e</code> 是可以创建临时节点的，临时节点当client断开连接或者session持续一段时间心跳断了，server会将其删除</li>
+<li><code>create - s</code>可以创建顺序节点</li>
+</ul>
+<p><code>get</code>命令，获取当前节点的值；</p>
+<p><code>stat</code>命令，获取当前节点信息</p>
+<p><code>set命令</code>，有乐观锁，版本号的控制</p>
+<h2 id="zookeeper特性-watcher机制">Zookeeper特性-watcher机制</h2>
+<p><a href="https://spongecaptain.cool/post/zookeeper/zookeeperwatch/" target="_blank" rel="noopener">ZooKeeper Watch 机制源码解析- Spongecaptain 的个人技术博客</a>
+</p>
+<p>ZooKeeper Watch 机制类似于 Java 设计模式中的观察者模式或者监听模式，唯一的不同是不再基于线程间通信，而是基于进程间通信。</p>
+<p>ZooKeeper Watch 机制是指，客户端在所有的读命令上告知服务端：这个节点或者子节点变化时通知我，具体来说，支持的写操作有：</p>
+<ul>
+<li>getData</li>
+<li>getChildren</li>
+<li>exists</li>
+</ul>
+<p>例如，我们在命令行可以输入 <code>get -w /foo</code>，其中 <code>-w</code> 参数就是用于告知 ZooKeeper 服务端，当前客户端想在 <code>/foo</code> 节点上设置一个监听器。</p>
+<p><strong>注意事项</strong>：写操作<strong>不支持</strong>任何形式的 watch 注册。</p>
+<p>另一方面，ZooKeeper 支持的事件监听类型与对应的注册方法有：</p>
+<ul>
+<li>NodeCreated 节点创建：<code>exits()</code></li>
+<li>NodeDataChanged 节点数据改变：<code>exits()</code>、<code>getData()</code></li>
+<li>NodeDeleted 节点删除：<code>exits()</code>、<code>getData()</code> 、<code>getChildren()</code></li>
+<li>NodeChildrenChanged 子节点改变：<code>getChildren()</code></li>
+</ul>
+<p><strong>注意事项</strong>：自节点数据的改变并不会引发 NodeChildrenChanged 子节点改变事件。</p>
+<p>ZooKeeper Watch 机制的两个细节：</p>
+<ul>
+<li>wactch 是一次性触发的（除了永久递归 watch），如果客户端如果在一个 watch 通知后继续收到相同节点的 watch 通知，那么必须再次注册 watch 一次；</li>
+<li>服务端发给客户端的 watch 通知并不包含具体的节点数据，其起到的作用非常存粹：告知客户端其关注的节点发生了 watch 事件；</li>
+</ul>
+<p>关于 ZooKeeper Watch 源码阅读，我们需要解决如下模型的实现：</p>
+<ul>
+<li>服务端
+<ul>
+<li>如何为带有 watch 的读请求进行事件注册；</li>
+<li>在节点的写操作发送时，如何触发事件，将事件通知发送给客户端；</li>
+</ul>
+</li>
+<li>客户端
+<ul>
+<li>命令的发送、注册用与序列化发送；</li>
+<li>事件的监听与回调；</li>
+</ul>
+</li>
+</ul>
+<p>模型如下图所示：</p>
+<p><a href="https://spongecaptain.cool/images/img_zookeeper/ZooKeeper_Watcher_Register.png" target="_blank" rel="noopener"><p class="md__image">
+  <img src="../Zookeeper%e5%85%a5%e9%97%a8.assets/ZooKeeper_Watcher_Register.png"
+    alt="ZooKeeper_Watcher_Register"  />
+</p>
+</a>
+</p>
+<p>这里的要点是：无论是客户端还是服务端，只有将 Watcher 进行注册，才能在事件发送时进行回调，否则不进行回调。</p>
+<h3 id="watcher使用场景">watcher使用场景</h3>
+<ul>
+<li>统一资源配置</li>
+</ul>
+<h2 id="zookeeper作用">Zookeeper作用</h2>
+<p>主从高可用、统一配置、发布与订阅、分布式锁、集群管理，保证集群中数据的强一致性</p>
+<h2 id="acl权限控制">ACL权限控制</h2>
+<p>ACL(access control list)，针对节点可以设置相关的读写等权限，目的为了保证数据安全性；</p>
+<p>命令有：<code>getAcl</code>和<code>setAcl</code>还有<code>addauth</code></p>
+<p><a href="http://www.yoonper.com/post.php?id=47" target="_blank" rel="noopener">ZooKeeper ACL权限控制- YoonPer</a>
+</p>
+<p><a href="https://www.cnblogs.com/qlqwjy/p/10517231.html" target="_blank" rel="noopener">zookeeper的ACL权限控制- QiaoZhi - 博客园</a>
+</p>
+<p>ACL 权限控制，使用：scheme id perm 来标识，主要涵盖 3 个方面：</p>
+<ul>
+<li>权限模式（Scheme）：授权的策略</li>
+<li>授权对象（ID）:授权的对象</li>
+<li>权限（Permission）:授予的权限</li>
+</ul>
+<p>其特性如下：</p>
+<ul>
+<li>ZooKeeper的权限控制是基于每个znode节点的，需要对每个节点设置权限</li>
+<li>每个znode支持设置多种权限控制方案和多个权限</li>
+<li>子节点不会继承父节点的权限，客户端无权访问某节点，但可能可以访问它的子节点</li>
+</ul>
+<h3 id="1-scheme-采用何种方式授权">1. scheme 采用何种方式授权</h3>
+<p>　　**world：**默认方式，相当于全部都能访问
+　　<strong>auth</strong>：代表已经认证通过的用户(cli中可以通过addauth digest user:pwd 来添加当前上下文中的授权用户)
+　　<strong>digest</strong>：即用户名:密码这种方式认证，这也是业务系统中最常用的。用 <em>username:password</em> 字符串来产生一个MD5串，然后该串被用来作为ACL ID。认证是通过明文发送<em>username:password</em> 来进行的，当用在ACL时，表达式为<em>username:base64</em> ，base64是password的SHA1摘要的编码。
+　　<strong>ip</strong>：使用客户端的主机IP作为ACL ID 。这个ACL表达式的格式为<em>addr/bits</em> ，此时addr中的有效位与客户端addr中的有效位进行比对。</p>
+<h3 id="2-id--给谁授予权限">2. ID  给谁授予权限</h3>
+<p>　　授权对象ID是指，权限赋予的用户或者一个实体，例如：IP 地址或者机器。授权模式 schema 与 授权对象 ID 之间</p>
+<p><p class="md__image">
+  <img src="../Zookeeper%e5%85%a5%e9%97%a8.assets/1196212-20190312150144821-1097483460.png"
+    alt="img"  />
+</p>
+</p>
+<h3 id="3-permission--授予什么权限">3. permission  授予什么权限</h3>
+<p>　　<strong>CREATE、READ、WRITE、DELETE、ADMIN</strong> 也就是 <strong>增、删、改、查、管理</strong>权限，这5种权限简写为crwda</p>
+<p>注意:</p>
+<p>　　<strong>这5种权限中，delete是指对子节点的删除权限，其它4种权限指对自身节点的操作权限</strong></p>
+<p><strong>更详细的如下:</strong></p>
+<p>　　<strong>CREATE</strong>  c 可以创建子节点
+　　<strong>DELETE</strong>  d 可以删除子节点（仅下一级节点）
+　　<strong>READ</strong>    r 可以读取节点数据及显示子节点列表
+　　<strong>WRITE</strong>   w 可以设置节点数据
+　　<strong>ADMIN</strong>   a 可以设置节点访问控制列表权限</p>
+<h2 id="zookeeper四字命令">Zookeeper四字命令</h2>
+<p><a href="http://www.runoob.com/w3cnote/zookeeper-sc-4lw.html" target="_blank" rel="noopener">8.0 Zookeeper 四字命令| 菜鸟教程</a>
+</p>
+<p>zookeeper 支持某些特定的四字命令与其交互，用户获取 zookeeper 服务的当前状态及相关信息，用户在客户端可以通过 telenet 或者 nc（netcat） 向 zookeeper 提交相应的命令。</p>
+<p>安装 nc 命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ yum install nc                <span class="c1"># centos</span>
+或
+$ sudo apt install netcat       <span class="c1"># ubuntu</span>
+</code></pre></div><p>四字命令格式：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">echo</span> <span class="o">[</span>command<span class="o">]</span> <span class="p">|</span> nc <span class="o">[</span>ip<span class="o">]</span> <span class="o">[</span>port<span class="o">]</span>
+</code></pre></div><p>此时输入命令</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">echo</span> stat <span class="p">|</span> nc 192.168.152.128 <span class="m">2181</span>
+</code></pre></div><p>报错：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">stat is not executed because it is not in the whitelist.
+</code></pre></div><p>这时要将下面这段加入配置文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">4lw.commands.whitelist<span class="o">=</span>stat, ruok, conf, isro
+</code></pre></div><p>完成后重启Zookeeper服务即可；</p>
+<h2 id="zookeeper集群搭建">ZooKeeper集群搭建</h2>
+<p><a href="https://www.cnblogs.com/ysocean/p/9860529.html" target="_blank" rel="noopener">zookeeper 集群搭建- YSOcean - 博客园</a>
+</p>
+<p>这里要用到多个虚拟机，可以用之前创建好的虚拟机直接克隆即可；</p>
+<h2 id="通过javaapi操作zookeeper">通过JavaAPI操作ZooKeeper</h2>
+<p><a href="https://segmentfault.com/a/1190000019265970" target="_blank" rel="noopener">【zookeeper】第4篇：使用客户端API来操作ZK &hellip;</a>
+</p>
+<h2 id="总结">总结</h2>
+<p>这里简单入门了一下zookeeper，是为接下来学习<a href="https://dubbo.apache.org/zh/" target="_blank" rel="noopener">dubbo</a>
+做的准备。</p>
+<p>根据自己的学习和参考<a href="https://spongecaptain.cool/post/zookeeper/myunderstandingofzookeeper/" target="_blank" rel="noopener">他的理解</a>
+，总结下来<strong>Zookeeper = 文件系统 + 监听通知机制</strong></p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>思维题</title>
+			<link>https://willje.github.io/posts/%E6%80%9D%E7%BB%B4%E9%A2%98/</link>
+			<pubDate>Sat, 28 Nov 2020 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/%E6%80%9D%E7%BB%B4%E9%A2%98/</guid>
+			<description>64匹马，8赛道，找出最快的4匹最少要几次? 64匹马，8赛道，找出最快的4匹最少要几次? 猴子搬香蕉 猴子搬香蕉 140克盐如何3次分成50克、90克 140克盐如何3次分成50克、90克 140克盐分置 你有两个罐子，容量分别是 5 升和 3 升，还有一池塘的水。在没有测量工具的辅助下，问能否准确的取出 4 升水来？ 考虑1+3；3升装满后导入5升；再装满3升后导入5升，此时3升剩</description>
+			<content type="html"><![CDATA[<h2 id="64匹马8赛道找出最快的4匹最少要几次">64匹马，8赛道，找出最快的4匹最少要几次?</h2>
+<p><a href="https://mp.weixin.qq.com/s/Bx0SN1gxGFLt41bv693R2g" target="_blank" rel="noopener">64匹马，8赛道，找出最快的4匹最少要几次?</a>
+</p>
+<h2 id="猴子搬香蕉">猴子搬香蕉</h2>
+<p><a href="https://mp.weixin.qq.com/s/o-sAmMseal4rOccG9hiSQg" target="_blank" rel="noopener">猴子搬香蕉</a>
+</p>
+<h2 id="140克盐如何3次分成50克90克">140克盐如何3次分成50克、90克</h2>
+<p><a href="https://mp.weixin.qq.com/s/8r5e2NX0wT13DIz6CvopUw" target="_blank" rel="noopener">140克盐如何3次分成50克、90克</a>
+</p>
+<ol>
+<li>140克盐分置</li>
+</ol>
+<p>你有两个罐子，容量分别是 5 升和 3 升，还有一池塘的水。在没有测量工具的辅助下，问能否准确的取出 4 升水来？</p>
+<blockquote>
+<p>考虑1+3；3升装满后导入5升；再装满3升后导入5升，此时3升剩下1升；得到1；</p>
+<p>然后把1升导入5升容器，再把3升容器装满导入5升容器，得3+1=4；</p>
+</blockquote>
+<p>煎一个鸡蛋需要 15 分钟，可是你手头没有计时器。现在给你两根绳子，烧完一根绳子需要一个小时；而绳子是粗细不均匀的，有可能半根绳子几分钟就烧完了。</p>
+<blockquote>
+<p>找两根绳子，一根从两头烧，另一根从1头烧，第一根烧完了以后，把第二根另一头也点燃并开始计时，等第二根绳子烧完即是15分钟。</p>
+</blockquote>
+<p>填满一辆校车需要多少个高尔夫球？</p>
+<blockquote>
+<p><a href="http://www.woshipm.com/zhichang/3455467.html" target="_blank" rel="noopener">谷歌面试题解析：一辆校车能装下多少乒乓球</a>
+</p>
+<p><strong>明确问题——分析问题——解决问题</strong>的三部曲来对这个面试题进行解析。</p>
+</blockquote>
+<p>收集的一些思维题，持续更新。。。。</p>
+]]></content>
+		</item>
+		
+		<item>
 			<title>负载均衡</title>
 			<link>https://willje.github.io/posts/arccitecture/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/</link>
 			<pubDate>Sun, 25 Oct 2020 20:55:29 +0800</pubDate>
@@ -7219,6 +7547,57 @@ cp -rf public/* ../willJE.github.io/docs/
 git add * <span class="o">&amp;&amp;</span> git commit -m <span class="s1">&#39;new article&#39;</span> <span class="o">&amp;&amp;</span> git push
 
 <span class="nb">cd</span> ../willJE/
+</code></pre></div>]]></content>
+		</item>
+		
+		<item>
+			<title>vmvare虚拟机centos网络配置</title>
+			<link>https://willje.github.io/posts/net/vmware%E8%99%9A%E6%8B%9F%E6%9C%BAcentos7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/</link>
+			<pubDate>Mon, 28 May 2018 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/net/vmware%E8%99%9A%E6%8B%9F%E6%9C%BAcentos7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/</guid>
+			<description>第一步：重置虚拟网络设置 VMWARE-&amp;gt;编辑-&amp;gt;虚拟网络编辑器-&amp;gt; 还原默认设置 NAT设置 记住： 子网掩码和网关IP。 还原后的默认值即可以 设置静态IP vi /etc/sysconfig/network-scripts/ifcfg-ens33 ifcfg-ens33 这个名字，每个人的电脑网卡不一样，可以从ifconfig 查看到。 这里还要设置DNS，直接取物理机的DNS即可；通过 ifconfig /all 重启网络服务 systemctl restart network</description>
+			<content type="html"><![CDATA[<h2 id="第一步重置虚拟网络设置">第一步：重置虚拟网络设置</h2>
+<p>VMWARE-&gt;编辑-&gt;虚拟网络编辑器-&gt;  还原默认设置</p>
+<p><p class="md__image">
+  <img src="../vmware%e8%99%9a%e6%8b%9f%e6%9c%bacentos7%e7%bd%91%e7%bb%9c%e9%85%8d%e7%bd%ae.assets/13827699-31c7d6e0661ff85c.png"
+    alt="img"  />
+</p>
+</p>
+<h2 id="nat设置">NAT设置</h2>
+<p>记住： 子网掩码和网关IP。 还原后的默认值即可以</p>
+<p><p class="md__image">
+  <img src="../vmware%e8%99%9a%e6%8b%9f%e6%9c%bacentos7%e7%bd%91%e7%bb%9c%e9%85%8d%e7%bd%ae.assets/13827699-06c70140c9433841.png"
+    alt="img"  />
+</p>
+</p>
+<p><p class="md__image">
+  <img src="../vmware%e8%99%9a%e6%8b%9f%e6%9c%bacentos7%e7%bd%91%e7%bb%9c%e9%85%8d%e7%bd%ae.assets/13827699-89c6b35f707e25c8.png"
+    alt="img"  />
+</p>
+</p>
+<h2 id="设置静态ip">设置静态IP</h2>
+<p><code>vi /etc/sysconfig/network-scripts/ifcfg-ens33</code>
+<code>ifcfg-ens33</code> 这个名字，每个人的电脑网卡不一样，可以从ifconfig 查看到。</p>
+<p><p class="md__image">
+  <img src="../vmware%e8%99%9a%e6%8b%9f%e6%9c%bacentos7%e7%bd%91%e7%bb%9c%e9%85%8d%e7%bd%ae.assets/13827699-b2990bf3b6f681e3.png"
+    alt="img"  />
+</p>
+</p>
+<p><p class="md__image">
+  <img src="../vmware%e8%99%9a%e6%8b%9f%e6%9c%bacentos7%e7%bd%91%e7%bb%9c%e9%85%8d%e7%bd%ae.assets/13827699-ad81df40ae6b8f6b.png"
+    alt="img"  />
+</p>
+</p>
+<p>这里还要设置DNS，直接取物理机的DNS即可；通过</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">ifconfig /all
+</code></pre></div><p><p class="md__image">
+  <img src="../vmware%e8%99%9a%e6%8b%9f%e6%9c%bacentos7%e7%bd%91%e7%bb%9c%e9%85%8d%e7%bd%ae.assets/image-20210614195506122.png"
+    alt="image-20210614195506122"  />
+</p>
+</p>
+<p>重启网络服务</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">systemctl restart network
 </code></pre></div>]]></content>
 		</item>
 		

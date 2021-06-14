@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>logic on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/logic/</link>
+    <description>Recent content in logic on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sat, 28 Nov 2020 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/logic/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>思维题</title>
+      <link>https://willje.github.io/posts/%E6%80%9D%E7%BB%B4%E9%A2%98/</link>
+      <pubDate>Sat, 28 Nov 2020 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/%E6%80%9D%E7%BB%B4%E9%A2%98/</guid>
+      <description>64匹马，8赛道，找出最快的4匹最少要几次? 64匹马，8赛道，找出最快的4匹最少要几次? 猴子搬香蕉 猴子搬香蕉 140克盐如何3次分成50克、90克 140克盐如何3次分成50克、90克 140克盐分置 你有两个罐子，容量分别是 5 升和 3 升，还有一池塘的水。在没有测量工具的辅助下，问能否准确的取出 4 升水来？ 考虑1+3；3升装满后导入5升；再装满3升后导入5升，此时3升剩</description>
+    </item>
+    
+  </channel>
+</rss>

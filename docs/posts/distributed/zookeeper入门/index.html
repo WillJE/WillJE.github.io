@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="Zookeeper入门">
+<meta itemprop="description" content="我们在虚拟机中安装zookeeper，首先要安装linux虚拟机。 安装linux虚拟机 安装vmvare，地址在这里 下载centos镜像，地址在这里 安装，这里要注意网络配置，Centos网络设置 我这里没有设置固定IP，因为使用的是DHCP动态分配IP，不知道明天起来IP会不会变。 补充：IP变了，于是按照下面的方法固定IP； 关键点，配置网络；vmware虚拟机c"><meta itemprop="datePublished" content="2020-11-28T20:55:29&#43;08:00" />
+<meta itemprop="dateModified" content="2020-11-28T20:55:29&#43;08:00" />
+<meta itemprop="wordCount" content="3221">
+<meta itemprop="keywords" content="zookeeper," /><meta property="og:title" content="Zookeeper入门" />
+<meta property="og:description" content="我们在虚拟机中安装zookeeper，首先要安装linux虚拟机。 安装linux虚拟机 安装vmvare，地址在这里 下载centos镜像，地址在这里 安装，这里要注意网络配置，Centos网络设置 我这里没有设置固定IP，因为使用的是DHCP动态分配IP，不知道明天起来IP会不会变。 补充：IP变了，于是按照下面的方法固定IP； 关键点，配置网络；vmware虚拟机c" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/distributed/zookeeper%E5%85%A5%E9%97%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-11-28T20:55:29&#43;08:00" />
+<meta property="article:modified_time" content="2020-11-28T20:55:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Zookeeper入门"/>
+<meta name="twitter:description" content="我们在虚拟机中安装zookeeper，首先要安装linux虚拟机。 安装linux虚拟机 安装vmvare，地址在这里 下载centos镜像，地址在这里 安装，这里要注意网络配置，Centos网络设置 我这里没有设置固定IP，因为使用的是DHCP动态分配IP，不知道明天起来IP会不会变。 补充：IP变了，于是按照下面的方法固定IP； 关键点，配置网络；vmware虚拟机c"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Zookeeper入门</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Nov 28, 2020</span></div>
+				<h1>Zookeeper入门</h1>
+			</header>
+			<div class="content">
+				<p>我们在虚拟机中安装zookeeper，首先要安装linux虚拟机。</p>
+<h2 id="安装linux虚拟机">安装linux虚拟机<a href="#安装linux虚拟机" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ol>
+<li>安装vmvare，地址<a href="https://www.vmware.com/products/workstation-pro.html" target="_blank" rel="noopener">在这里</a>
+</li>
+<li>下载centos镜像，地址<a href="https://www.centos.org/download/" target="_blank" rel="noopener">在这里</a>
+</li>
+<li>安装，这里要注意网络配置，<a href="https://zhuanlan.zhihu.com/p/79361590" target="_blank" rel="noopener">Centos网络设置</a>
+</li>
+</ol>
+<blockquote>
+<p>我这里没有设置固定IP，因为使用的是DHCP动态分配IP，不知道明天起来IP会不会变。</p>
+<p>补充：IP变了，于是按照下面的方法固定IP；</p>
+</blockquote>
+<ol start="4">
+<li>关键点，配置网络；<a href="https://willje.github.io/posts/net/vmware%E8%99%9A%E6%8B%9F%E6%9C%BAcentos7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/" target="_blank" rel="noopener">vmware虚拟机centos7网络配置</a>
+</li>
+</ol>
+<h2 id="centos安装jdk8">centos安装jdk8<a href="#centos安装jdk8" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://www.cnblogs.com/toutou/p/9670395.html" target="_blank" rel="noopener">《CentOS安装Java JDK》</a>
+</p>
+<p>查看是否安装了java</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">yum list installed <span class="p">|</span> grep jdk
+</code></pre></div><p>查询CentOS自带的Java相关组件</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">rpm -qa <span class="p">|</span> grep java
+</code></pre></div><p>rpm：管理套件</p>
+<p>-qa：使用询问模式，查询所有套件</p>
+<p>grep：查找文件里符合条件的字符串</p>
+<p><a href="https://www.jianshu.com/p/0dd37861a983" target="_blank" rel="noopener">Centos7.5安装java8 - 简书</a>
+</p>
+<p>查看<code>java</code>版本库</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">yum search java <span class="p">|</span> grep jdk
+</code></pre></div><p>安装</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">yum install java-1.8.0-openjdk java-1.8.0-openjdk-devel
+</code></pre></div><p>这里后面应该要配置环境变量的，但是我没有配置，输入</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">java -version
+</code></pre></div><p>也显示了java版本。不知道这里是为什么？</p>
+<p>设置环境变量是这样设置的</p>
+<p>打开配置文件地址</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">vim /etc/profile
+</code></pre></div><p>设置环境变量</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># java enviroment</span>
+<span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/usr/local/java8
+<span class="nb">export</span> <span class="nv">JRE_HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/jre
+<span class="nb">export</span> <span class="nv">CLASSPATH</span><span class="o">=</span>.:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/lib:<span class="si">${</span><span class="nv">JRE_HOME</span><span class="si">}</span>/lib
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$PATH</span>
+</code></pre></div><p>然后刷新配置文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">source</span> /etc/profile
+</code></pre></div><p>检查</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">java -version
+</code></pre></div><h2 id="安装zookeeper">安装zookeeper<a href="#安装zookeeper" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://www.youtube.com/watch?v=cjqPBDZle9U&amp;list=PLMUlMXMh0NUE8qh7BQreXiYcSOEgq9RM_&amp;index=5" target="_blank" rel="noopener">视频介绍</a>
+</p>
+<p>博客介绍：<a href="https://www.cnblogs.com/toutou/p/install_codis.html#install_zookeeper" target="_blank" rel="noopener">《安装ZooKeeper》</a>
+</p>
+<p>这是下载目录：https://archive.apache.org/dist/zookeeper/</p>
+<p>下载完成之后，上传至centos服务器/home目录下，这里有一个坑：<a href="https://juejin.cn/post/6844903944850767886" target="_blank" rel="noopener">zookeeper-3.5.5安装报错：找不到或无法加载主类org.apache &hellip;</a>
+，*.tar.gz只是源代码，而-bin.tar.gz才包含编译后的二进制文件。</p>
+<p>解压</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">tar -zxvf
+</code></pre></div><p>重命名为zookeeper</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">mv apache-zookeeper-3.7.0 zookeeper
+</code></pre></div><p>移动到usr/local目录下</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">mv zookeeper /usr/local
+</code></pre></div><p>配置环境变量</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 添加Zookeeper HOME路径</span>
+<span class="nb">export</span> <span class="nv">ZOOKEEPER_HOME</span><span class="o">=</span>/usr/local/zookeeper
+<span class="c1"># 在export PATH 下添加 ZOOKEEPER_HOME</span>
+<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$ZOOKEEPER_HOME</span>/bin
+</code></pre></div><h3 id="修改zookeeper配置文件">修改zookeeper配置文件<a href="#修改zookeeper配置文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>首先复制一份配置文件conf/zoo_sample.cfg，后面修改针对这个复制的配置文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">cp zoo_sample.cfg zoo.cfg
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># The number of milliseconds of each tick</span>
+<span class="nv">tickTime</span><span class="o">=</span><span class="m">2000</span>
+<span class="c1"># The number of ticks that the initial </span>
+<span class="c1"># synchronization phase can take</span>
+<span class="nv">initLimit</span><span class="o">=</span><span class="m">10</span>
+<span class="c1"># The number of ticks that can pass between </span>
+<span class="c1"># sending a request and getting an acknowledgement</span>
+<span class="nv">syncLimit</span><span class="o">=</span><span class="m">5</span>
+<span class="c1"># the directory where the snapshot is stored.</span>
+<span class="c1"># do not use /tmp for storage, /tmp here is just </span>
+<span class="c1"># example sakes.</span>
+<span class="nv">dataDir</span><span class="o">=</span>/tmp/zookeeper
+<span class="c1"># the port at which the clients will connect</span>
+<span class="nv">clientPort</span><span class="o">=</span><span class="m">2181</span>
+<span class="c1"># the maximum number of client connections.</span>
+<span class="c1"># increase this if you need to handle more clients</span>
+<span class="c1">#maxClientCnxns=60</span>
+<span class="c1">#</span>
+<span class="c1"># Be sure to read the maintenance section of the </span>
+<span class="c1"># administrator guide before turning on autopurge.</span>
+<span class="c1">#</span>
+<span class="c1"># http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance</span>
+<span class="c1">#</span>
+<span class="c1"># The number of snapshots to retain in dataDir</span>
+<span class="c1">#autopurge.snapRetainCount=3</span>
+<span class="c1"># Purge task interval in hours</span>
+<span class="c1"># Set to &#34;0&#34; to disable auto purge feature</span>
+<span class="c1">#autopurge.purgeInterval=1</span>
+
+<span class="c1">## Metrics Providers</span>
+<span class="c1">#</span>
+<span class="c1"># https://prometheus.io Metrics Exporter</span>
+<span class="c1">#metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider</span>
+<span class="c1">#metricsProvider.httpPort=7000</span>
+<span class="c1">#metricsProvider.exportJvmInfo=true</span>
+</code></pre></div><p>新增了两行数据和日志目录</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">dataDir</span><span class="o">=</span>/usr/local/zookeeper/dataDir
+<span class="nv">dataLogDir</span><span class="o">=</span>/usr/local/zookeeper/dataLogDir
+</code></pre></div><p>同理在对应目录建好目录</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">mkdir dataDir
+mkdir dataLogDir
+</code></pre></div><h3 id="启动zookeeper服务">启动zookeeper服务<a href="#启动zookeeper服务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>在bin目录下执行<code>./zkServer.sh start</code></p>
+<p><p class="md__image">
+  <img src="../Zookeeper%e5%85%a5%e9%97%a8.assets/image-20210613205955830.png"
+    alt="image-20210613205955830"  />
+</p>
+</p>
+<h3 id="使用客户端连接">使用客户端连接<a href="#使用客户端连接" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>还是在bin目录下执行<code>./zkCli.sh</code></p>
+<p><p class="md__image">
+  <img src="../Zookeeper%e5%85%a5%e9%97%a8.assets/image-20210613211014833.png"
+    alt="image-20210613211014833"  />
+</p>
+</p>
+<h2 id="使用zookeeper命令">使用zookeeper命令<a href="#使用zookeeper命令" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="http://www.runoob.com/w3cnote/zookeeper-bs-command.html" target="_blank" rel="noopener">7.0 Zookeeper 客户端基础命令使用| 菜鸟教程</a>
+</p>
+<p><a href="https://www.cnblogs.com/f-ck-need-u/p/9232829.html" target="_blank" rel="noopener">ZooKeeper系列(2)：ZooKeeper命令行工具zkCli.sh - 骏马金龙 &hellip;</a>
+</p>
+<p><code>help</code>命令，查看所有命令；</p>
+<p><p class="md__image">
+  <img src="../Zookeeper%e5%85%a5%e9%97%a8.assets/image-20210613231350906.png"
+    alt="image-20210613231350906"  />
+</p>
+</p>
+<p><code>ls</code>命令</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 1<span class="o">]</span> ls
+ls <span class="o">[</span>-s<span class="o">]</span> <span class="o">[</span>-w<span class="o">]</span> <span class="o">[</span>-R<span class="o">]</span> path
+<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 2<span class="o">]</span> ls /
+<span class="o">[</span>zookeeper<span class="o">]</span>
+<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 3<span class="o">]</span> ls /zookeeper
+<span class="o">[</span>config, quota<span class="o">]</span>
+<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 4<span class="o">]</span> ls /zookeeper/config
+<span class="o">[]</span>
+<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 5<span class="o">]</span> ls /zookeeper/quota
+</code></pre></div><p><code>create</code>命令，创建一个节点和设置值；</p>
+<ul>
+<li><code>create -e</code> 是可以创建临时节点的，临时节点当client断开连接或者session持续一段时间心跳断了，server会将其删除</li>
+<li><code>create - s</code>可以创建顺序节点</li>
+</ul>
+<p><code>get</code>命令，获取当前节点的值；</p>
+<p><code>stat</code>命令，获取当前节点信息</p>
+<p><code>set命令</code>，有乐观锁，版本号的控制</p>
+<h2 id="zookeeper特性-watcher机制">Zookeeper特性-watcher机制<a href="#zookeeper特性-watcher机制" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://spongecaptain.cool/post/zookeeper/zookeeperwatch/" target="_blank" rel="noopener">ZooKeeper Watch 机制源码解析- Spongecaptain 的个人技术博客</a>
+</p>
+<p>ZooKeeper Watch 机制类似于 Java 设计模式中的观察者模式或者监听模式，唯一的不同是不再基于线程间通信，而是基于进程间通信。</p>
+<p>ZooKeeper Watch 机制是指，客户端在所有的读命令上告知服务端：这个节点或者子节点变化时通知我，具体来说，支持的写操作有：</p>
+<ul>
+<li>getData</li>
+<li>getChildren</li>
+<li>exists</li>
+</ul>
+<p>例如，我们在命令行可以输入 <code>get -w /foo</code>，其中 <code>-w</code> 参数就是用于告知 ZooKeeper 服务端，当前客户端想在 <code>/foo</code> 节点上设置一个监听器。</p>
+<p><strong>注意事项</strong>：写操作<strong>不支持</strong>任何形式的 watch 注册。</p>
+<p>另一方面，ZooKeeper 支持的事件监听类型与对应的注册方法有：</p>
+<ul>
+<li>NodeCreated 节点创建：<code>exits()</code></li>
+<li>NodeDataChanged 节点数据改变：<code>exits()</code>、<code>getData()</code></li>
+<li>NodeDeleted 节点删除：<code>exits()</code>、<code>getData()</code> 、<code>getChildren()</code></li>
+<li>NodeChildrenChanged 子节点改变：<code>getChildren()</code></li>
+</ul>
+<p><strong>注意事项</strong>：自节点数据的改变并不会引发 NodeChildrenChanged 子节点改变事件。</p>
+<p>ZooKeeper Watch 机制的两个细节：</p>
+<ul>
+<li>wactch 是一次性触发的（除了永久递归 watch），如果客户端如果在一个 watch 通知后继续收到相同节点的 watch 通知，那么必须再次注册 watch 一次；</li>
+<li>服务端发给客户端的 watch 通知并不包含具体的节点数据，其起到的作用非常存粹：告知客户端其关注的节点发生了 watch 事件；</li>
+</ul>
+<p>关于 ZooKeeper Watch 源码阅读，我们需要解决如下模型的实现：</p>
+<ul>
+<li>服务端
+<ul>
+<li>如何为带有 watch 的读请求进行事件注册；</li>
+<li>在节点的写操作发送时，如何触发事件，将事件通知发送给客户端；</li>
+</ul>
+</li>
+<li>客户端
+<ul>
+<li>命令的发送、注册用与序列化发送；</li>
+<li>事件的监听与回调；</li>
+</ul>
+</li>
+</ul>
+<p>模型如下图所示：</p>
+<p><a href="https://spongecaptain.cool/images/img_zookeeper/ZooKeeper_Watcher_Register.png" target="_blank" rel="noopener"><p class="md__image">
+  <img src="../Zookeeper%e5%85%a5%e9%97%a8.assets/ZooKeeper_Watcher_Register.png"
+    alt="ZooKeeper_Watcher_Register"  />
+</p>
+</a>
+</p>
+<p>这里的要点是：无论是客户端还是服务端，只有将 Watcher 进行注册，才能在事件发送时进行回调，否则不进行回调。</p>
+<h3 id="watcher使用场景">watcher使用场景<a href="#watcher使用场景" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ul>
+<li>统一资源配置</li>
+</ul>
+<h2 id="zookeeper作用">Zookeeper作用<a href="#zookeeper作用" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>主从高可用、统一配置、发布与订阅、分布式锁、集群管理，保证集群中数据的强一致性</p>
+<h2 id="acl权限控制">ACL权限控制<a href="#acl权限控制" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>ACL(access control list)，针对节点可以设置相关的读写等权限，目的为了保证数据安全性；</p>
+<p>命令有：<code>getAcl</code>和<code>setAcl</code>还有<code>addauth</code></p>
+<p><a href="http://www.yoonper.com/post.php?id=47" target="_blank" rel="noopener">ZooKeeper ACL权限控制- YoonPer</a>
+</p>
+<p><a href="https://www.cnblogs.com/qlqwjy/p/10517231.html" target="_blank" rel="noopener">zookeeper的ACL权限控制- QiaoZhi - 博客园</a>
+</p>
+<p>ACL 权限控制，使用：scheme id perm 来标识，主要涵盖 3 个方面：</p>
+<ul>
+<li>权限模式（Scheme）：授权的策略</li>
+<li>授权对象（ID）:授权的对象</li>
+<li>权限（Permission）:授予的权限</li>
+</ul>
+<p>其特性如下：</p>
+<ul>
+<li>ZooKeeper的权限控制是基于每个znode节点的，需要对每个节点设置权限</li>
+<li>每个znode支持设置多种权限控制方案和多个权限</li>
+<li>子节点不会继承父节点的权限，客户端无权访问某节点，但可能可以访问它的子节点</li>
+</ul>
+<h3 id="1-scheme-采用何种方式授权">1. scheme 采用何种方式授权<a href="#1-scheme-采用何种方式授权" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>　　**world：**默认方式，相当于全部都能访问
+　　<strong>auth</strong>：代表已经认证通过的用户(cli中可以通过addauth digest user:pwd 来添加当前上下文中的授权用户)
+　　<strong>digest</strong>：即用户名:密码这种方式认证，这也是业务系统中最常用的。用 <em>username:password</em> 字符串来产生一个MD5串，然后该串被用来作为ACL ID。认证是通过明文发送<em>username:password</em> 来进行的，当用在ACL时，表达式为<em>username:base64</em> ，base64是password的SHA1摘要的编码。
+　　<strong>ip</strong>：使用客户端的主机IP作为ACL ID 。这个ACL表达式的格式为<em>addr/bits</em> ，此时addr中的有效位与客户端addr中的有效位进行比对。</p>
+<h3 id="2-id--给谁授予权限">2. ID  给谁授予权限<a href="#2-id--给谁授予权限" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>　　授权对象ID是指，权限赋予的用户或者一个实体，例如：IP 地址或者机器。授权模式 schema 与 授权对象 ID 之间</p>
+<p><p class="md__image">
+  <img src="../Zookeeper%e5%85%a5%e9%97%a8.assets/1196212-20190312150144821-1097483460.png"
+    alt="img"  />
+</p>
+</p>
+<h3 id="3-permission--授予什么权限">3. permission  授予什么权限<a href="#3-permission--授予什么权限" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>　　<strong>CREATE、READ、WRITE、DELETE、ADMIN</strong> 也就是 <strong>增、删、改、查、管理</strong>权限，这5种权限简写为crwda</p>
+<p>注意:</p>
+<p>　　<strong>这5种权限中，delete是指对子节点的删除权限，其它4种权限指对自身节点的操作权限</strong></p>
+<p><strong>更详细的如下:</strong></p>
+<p>　　<strong>CREATE</strong>  c 可以创建子节点
+　　<strong>DELETE</strong>  d 可以删除子节点（仅下一级节点）
+　　<strong>READ</strong>    r 可以读取节点数据及显示子节点列表
+　　<strong>WRITE</strong>   w 可以设置节点数据
+　　<strong>ADMIN</strong>   a 可以设置节点访问控制列表权限</p>
+<h2 id="zookeeper四字命令">Zookeeper四字命令<a href="#zookeeper四字命令" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="http://www.runoob.com/w3cnote/zookeeper-sc-4lw.html" target="_blank" rel="noopener">8.0 Zookeeper 四字命令| 菜鸟教程</a>
+</p>
+<p>zookeeper 支持某些特定的四字命令与其交互，用户获取 zookeeper 服务的当前状态及相关信息，用户在客户端可以通过 telenet 或者 nc（netcat） 向 zookeeper 提交相应的命令。</p>
+<p>安装 nc 命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ yum install nc                <span class="c1"># centos</span>
+或
+$ sudo apt install netcat       <span class="c1"># ubuntu</span>
+</code></pre></div><p>四字命令格式：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">echo</span> <span class="o">[</span>command<span class="o">]</span> <span class="p">|</span> nc <span class="o">[</span>ip<span class="o">]</span> <span class="o">[</span>port<span class="o">]</span>
+</code></pre></div><p>此时输入命令</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">echo</span> stat <span class="p">|</span> nc 192.168.152.128 <span class="m">2181</span>
+</code></pre></div><p>报错：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">stat is not executed because it is not in the whitelist.
+</code></pre></div><p>这时要将下面这段加入配置文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">4lw.commands.whitelist<span class="o">=</span>stat, ruok, conf, isro
+</code></pre></div><p>完成后重启Zookeeper服务即可；</p>
+<h2 id="zookeeper集群搭建">ZooKeeper集群搭建<a href="#zookeeper集群搭建" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://www.cnblogs.com/ysocean/p/9860529.html" target="_blank" rel="noopener">zookeeper 集群搭建- YSOcean - 博客园</a>
+</p>
+<p>这里要用到多个虚拟机，可以用之前创建好的虚拟机直接克隆即可；</p>
+<h2 id="通过javaapi操作zookeeper">通过JavaAPI操作ZooKeeper<a href="#通过javaapi操作zookeeper" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://segmentfault.com/a/1190000019265970" target="_blank" rel="noopener">【zookeeper】第4篇：使用客户端API来操作ZK &hellip;</a>
+</p>
+<h2 id="总结">总结<a href="#总结" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>这里简单入门了一下zookeeper，是为接下来学习<a href="https://dubbo.apache.org/zh/" target="_blank" rel="noopener">dubbo</a>
+做的准备。</p>
+<p>根据自己的学习和参考<a href="https://spongecaptain.cool/post/zookeeper/myunderstandingofzookeeper/" target="_blank" rel="noopener">他的理解</a>
+，总结下来<strong>Zookeeper = 文件系统 + 监听通知机制</strong></p>
+
+			</div><div class="content">
+	<br>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/zookeeper">zookeeper</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3221 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-11-28 20:55 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#安装linux虚拟机">安装linux虚拟机</a></li>
+    <li><a href="#centos安装jdk8">centos安装jdk8</a></li>
+    <li><a href="#安装zookeeper">安装zookeeper</a>
+      <ul>
+        <li><a href="#修改zookeeper配置文件">修改zookeeper配置文件</a></li>
+        <li><a href="#启动zookeeper服务">启动zookeeper服务</a></li>
+        <li><a href="#使用客户端连接">使用客户端连接</a></li>
+      </ul>
+    </li>
+    <li><a href="#使用zookeeper命令">使用zookeeper命令</a></li>
+    <li><a href="#zookeeper特性-watcher机制">Zookeeper特性-watcher机制</a>
+      <ul>
+        <li><a href="#watcher使用场景">watcher使用场景</a></li>
+      </ul>
+    </li>
+    <li><a href="#zookeeper作用">Zookeeper作用</a></li>
+    <li><a href="#acl权限控制">ACL权限控制</a>
+      <ul>
+        <li><a href="#1-scheme-采用何种方式授权">1. scheme 采用何种方式授权</a></li>
+        <li><a href="#2-id--给谁授予权限">2. ID  给谁授予权限</a></li>
+        <li><a href="#3-permission--授予什么权限">3. permission  授予什么权限</a></li>
+      </ul>
+    </li>
+    <li><a href="#zookeeper四字命令">Zookeeper四字命令</a></li>
+    <li><a href="#zookeeper集群搭建">ZooKeeper集群搭建</a></li>
+    <li><a href="#通过javaapi操作zookeeper">通过JavaAPI操作ZooKeeper</a></li>
+    <li><a href="#总结">总结</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/docker/docker%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Docker基础概念</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/%E6%80%9D%E7%BB%B4%E9%A2%98/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>思维题</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>
