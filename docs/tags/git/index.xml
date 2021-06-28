@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
-    <lastBuildDate>Mon, 05 Oct 2020 12:10:00 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 15 Jun 2021 12:10:00 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/git/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>gitignore如何忽略之前已提交的文件</title>
+      <link>https://willje.github.io/posts/git/gitignore%E5%A6%82%E4%BD%95%E5%BF%BD%E7%95%A5%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%87%E4%BB%B6/</link>
+      <pubDate>Tue, 15 Jun 2021 12:10:00 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/git/gitignore%E5%A6%82%E4%BD%95%E5%BF%BD%E7%95%A5%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%87%E4%BB%B6/</guid>
+      <description>做开发时，有些编译生成的代码我们希望不提交到 git 上，这时候就要使用 .gitignore 对文件/文件夹进行忽略，但有时候会碰到个棘手的问题，就是之前已经正常提交到 git 上的文件，即使在 .gitignore 进行了忽略，但代码仓库里依旧还是存在。 其实通过几行简单的命令就可以轻松解决这个问题 首先删除本地缓存 $ git rm -r --cached . 新建/修改 .gitignore 文件 将需要忽略的文件/文件夹路径写到 .gitignore 里 commit 本次变更 $ git commit -m &amp;#34;本次提交说</description>
+    </item>
+    
     <item>
       <title>Git小记</title>
       <link>https://willje.github.io/posts/git/git%E5%B0%8F%E8%AE%B0/</link>

@@ -6,8 +6,28 @@
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en</language>
 		<copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
-		<lastBuildDate>Sat, 29 May 2021 20:55:29 +0800</lastBuildDate>
+		<lastBuildDate>Tue, 15 Jun 2021 12:10:00 +0800</lastBuildDate>
 		<atom:link href="https://willje.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>gitignore如何忽略之前已提交的文件</title>
+			<link>https://willje.github.io/posts/git/gitignore%E5%A6%82%E4%BD%95%E5%BF%BD%E7%95%A5%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%87%E4%BB%B6/</link>
+			<pubDate>Tue, 15 Jun 2021 12:10:00 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/git/gitignore%E5%A6%82%E4%BD%95%E5%BF%BD%E7%95%A5%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%87%E4%BB%B6/</guid>
+			<description>做开发时，有些编译生成的代码我们希望不提交到 git 上，这时候就要使用 .gitignore 对文件/文件夹进行忽略，但有时候会碰到个棘手的问题，就是之前已经正常提交到 git 上的文件，即使在 .gitignore 进行了忽略，但代码仓库里依旧还是存在。 其实通过几行简单的命令就可以轻松解决这个问题 首先删除本地缓存 $ git rm -r --cached . 新建/修改 .gitignore 文件 将需要忽略的文件/文件夹路径写到 .gitignore 里 commit 本次变更 $ git commit -m &amp;#34;本次提交说</description>
+			<content type="html"><![CDATA[<p>做开发时，有些编译生成的代码我们希望不提交到 git 上，这时候就要使用 .gitignore 对文件/文件夹进行忽略，但有时候会碰到个棘手的问题，就是之前已经正常提交到 git 上的文件，即使在 .gitignore 进行了忽略，但代码仓库里依旧还是存在。</p>
+<p>其实通过几行简单的命令就可以轻松解决这个问题</p>
+<p><strong>首先删除本地缓存</strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ git rm -r --cached .
+</code></pre></div><p><strong>新建/修改 .gitignore 文件</strong></p>
+<p>将需要忽略的文件/文件夹路径写到 .gitignore 里</p>
+<p><strong>commit 本次变更</strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ git commit -m <span class="s2">&#34;本次提交说明&#34;</span>
+</code></pre></div><p><strong>推送到代码仓库</strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ git push
+</code></pre></div>]]></content>
+		</item>
 		
 		<item>
 			<title>TCP图解</title>
@@ -3635,6 +3655,242 @@ sql-3，这3个sql语句，每一个在执行的时候，都是一个单元，�
 		</item>
 		
 		<item>
+			<title>什么是零拷贝</title>
+			<link>https://willje.github.io/posts/linux/%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%B6%E6%8B%B7%E8%B4%9D/</link>
+			<pubDate>Thu, 25 Feb 2021 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/linux/%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%B6%E6%8B%B7%E8%B4%9D/</guid>
+			<description>前言 磁盘可以说是计算机系统最慢的硬件之一，读写速度相差内存 10 倍以上，所以针对优化磁盘的技术非常的多，比如零拷贝、直接 I/O、异步 I/O 等等，这些优化的目的就是为了提高系统的吞吐量，另外操作系统内核中的磁盘高速缓存区，可以有效的减少磁盘的访问次数。 这次，我们就以「文件传输」作为切入点，来分析 I/O 工作方式，以及如何优化传输文件的性能。 为什么要有 DMA 技术? 在没有 DMA 技术前，</description>
+			<content type="html"><![CDATA[<h2 id="前言">前言</h2>
+<p>磁盘可以说是计算机系统最慢的硬件之一，读写速度相差内存 10 倍以上，所以针对优化磁盘的技术非常的多，比如零拷贝、直接 I/O、异步 I/O 等等，这些优化的目的就是为了提高系统的吞吐量，另外操作系统内核中的磁盘高速缓存区，可以有效的减少磁盘的访问次数。</p>
+<p>这次，我们就以「文件传输」作为切入点，来分析 I/O 工作方式，以及如何优化传输文件的性能。</p>
+<h2 id="为什么要有-dma-技术">为什么要有 DMA 技术?</h2>
+<p>在没有 DMA 技术前，I/O 的过程是这样的：</p>
+<ul>
+<li>CPU 发出对应的指令给磁盘控制器，然后返回；</li>
+<li>磁盘控制器收到指令后，于是就开始准备数据，会把数据放入到磁盘控制器的内部缓冲区中，然后产生一个<strong>中断</strong>；</li>
+<li>CPU 收到中断信号后，停下手头的工作，接着把磁盘控制器的缓冲区的数据一次一个字节地读进自己的寄存器，然后再把寄存器里的数据写入到内存，而在数据传输的期间 CPU 是无法执行其他任务的。</li>
+</ul>
+<p>为了方便你理解，我画了一副图：</p>
+<p>![img](什么是零拷贝.assets/I_O 中断.png)</p>
+<p>可以看到，整个数据的传输过程，都要需要 CPU 亲自参与搬运数据的过程，而且这个过程，CPU 是不能做其他事情的。</p>
+<p>简单的搬运几个字符数据那没问题，但是如果我们用千兆网卡或者硬盘传输大量数据的时候，都用 CPU 来搬运的话，肯定忙不过来。</p>
+<p>计算机科学家们发现了事情的严重性后，于是就发明了 DMA 技术，也就是<strong>直接内存访问（*Direct Memory Access*）</strong> 技术。</p>
+<p>什么是 DMA 技术？简单理解就是，<strong>在进行 I/O 设备和内存的数据传输的时候，数据搬运的工作全部交给 DMA 控制器，而 CPU 不再参与任何与数据搬运相关的事情，这样 CPU 就可以去处理别的事务</strong>。</p>
+<p>那使用 DMA 控制器进行数据传输的过程究竟是什么样的呢？下面我们来具体看看。</p>
+<p>![img](什么是零拷贝.assets/DRM I_O 过程.png)</p>
+<p>具体过程：</p>
+<ul>
+<li>用户进程调用 read 方法，向操作系统发出 I/O 请求，请求读取数据到自己的内存缓冲区中，进程进入阻塞状态；</li>
+<li>操作系统收到请求后，进一步将 I/O 请求发送 DMA，然后让 CPU 执行其他任务；</li>
+<li>DMA 进一步将 I/O 请求发送给磁盘；</li>
+<li>磁盘收到 DMA 的 I/O 请求，把数据从磁盘读取到磁盘控制器的缓冲区中，当磁盘控制器的缓冲区被读满后，向 DMA 发起中断信号，告知自己缓冲区已满；</li>
+<li><strong>DMA 收到磁盘的信号，将磁盘控制器缓冲区中的数据拷贝到内核缓冲区中，此时不占用 CPU，CPU 可以执行其他任务</strong>；</li>
+<li>当 DMA 读取了足够多的数据，就会发送中断信号给 CPU；</li>
+<li>CPU 收到 DMA 的信号，知道数据已经准备好，于是将数据从内核拷贝到用户空间，系统调用返回；</li>
+</ul>
+<p>可以看到， 整个数据传输的过程，CPU 不再参与数据搬运的工作，而是全程由 DMA 完成，但是 CPU 在这个过程中也是必不可少的，因为传输什么数据，从哪里传输到哪里，都需要 CPU 来告诉 DMA 控制器。</p>
+<p>早期 DMA 只存在在主板上，如今由于 I/O 设备越来越多，数据传输的需求也不尽相同，所以每个 I/O 设备里面都有自己的 DMA 控制器。</p>
+<h2 id="传统的文件传输有多糟糕">传统的文件传输有多糟糕？</h2>
+<p>如果服务端要提供文件传输的功能，我们能想到的最简单的方式是：将磁盘上的文件读取出来，然后通过网络协议发送给客户端。</p>
+<p>传统 I/O 的工作方式是，数据读取和写入是从用户空间到内核空间来回复制，而内核空间的数据是通过操作系统层面的 I/O 接口从磁盘读取或写入。</p>
+<p>代码通常如下，一般会需要两个系统调用：</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">read</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">tmp_buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+<span class="n">write</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">tmp_buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+</code></pre></div><p>代码很简单，虽然就两行代码，但是这里面发生了不少的事情。</p>
+<p><p class="md__image">
+  <img src="../%e4%bb%80%e4%b9%88%e6%98%af%e9%9b%b6%e6%8b%b7%e8%b4%9d.assets/%e4%bc%a0%e7%bb%9f%e6%96%87%e4%bb%b6%e4%bc%a0%e8%be%93.png"
+    alt="img"  />
+</p>
+</p>
+<p>首先，期间共<strong>发生了 4 次用户态与内核态的上下文切换</strong>，因为发生了两次系统调用，一次是 <code>read()</code> ，一次是 <code>write()</code>，每次系统调用都得先从用户态切换到内核态，等内核完成任务后，再从内核态切换回用户态。</p>
+<p>上下文切换到成本并不小，一次切换需要耗时几十纳秒到几微秒，虽然时间看上去很短，但是在高并发的场景下，这类时间容易被累积和放大，从而影响系统的性能。</p>
+<p>其次，还<strong>发生了 4 次数据拷贝</strong>，其中两次是 DMA 的拷贝，另外两次则是通过 CPU 拷贝的，下面说一下这个过程：</p>
+<ul>
+<li><em>第一次拷贝</em>，把磁盘上的数据拷贝到操作系统内核的缓冲区里，这个拷贝的过程是通过 DMA 搬运的。</li>
+<li><em>第二次拷贝</em>，把内核缓冲区的数据拷贝到用户的缓冲区里，于是我们应用程序就可以使用这部分数据了，这个拷贝到过程是由 CPU 完成的。</li>
+<li><em>第三次拷贝</em>，把刚才拷贝到用户的缓冲区里的数据，再拷贝到内核的 socket 的缓冲区里，这个过程依然还是由 CPU 搬运的。</li>
+<li><em>第四次拷贝</em>，把内核的 socket 缓冲区里的数据，拷贝到网卡的缓冲区里，这个过程又是由 DMA 搬运的。</li>
+</ul>
+<p>我们回过头看这个文件传输的过程，我们只是搬运一份数据，结果却搬运了 4 次，过多的数据拷贝无疑会消耗 CPU 资源，大大降低了系统性能。</p>
+<p>这种简单又传统的文件传输方式，存在冗余的上文切换和数据拷贝，在高并发系统里是非常糟糕的，多了很多不必要的开销，会严重影响系统性能。</p>
+<p>所以，<strong>要想提高文件传输的性能，就需要减少「用户态与内核态的上下文切换」和「内存拷贝」的次数</strong>。</p>
+<h2 id="如何优化文件传输的性能">如何优化文件传输的性能？</h2>
+<blockquote>
+<p>先来看看，如何减少「用户态与内核态的上下文切换」的次数呢？</p>
+</blockquote>
+<p>读取磁盘数据的时候，之所以要发生上下文切换，这是因为用户空间没有权限操作磁盘或网卡，内核的权限最高，这些操作设备的过程都需要交由操作系统内核来完成，所以一般要通过内核去完成某些任务的时候，就需要使用操作系统提供的系统调用函数。</p>
+<p>而一次系统调用必然会发生 2 次上下文切换：首先从用户态切换到内核态，当内核执行完任务后，再切换回用户态交由进程代码执行。</p>
+<p>所以，<strong>要想减少上下文切换到次数，就要减少系统调用的次数</strong>。</p>
+<blockquote>
+<p>再来看看，如何减少「数据拷贝」的次数？</p>
+</blockquote>
+<p>在前面我们知道了，传统的文件传输方式会历经 4 次数据拷贝，而且这里面，「从内核的读缓冲区拷贝到用户的缓冲区里，再从用户的缓冲区里拷贝到 socket 的缓冲区里」，这个过程是没有必要的。</p>
+<p>因为文件传输的应用场景中，在用户空间我们并不会对数据「再加工」，所以数据实际上可以不用搬运到用户空间，因此<strong>用户的缓冲区是没有必要存在的</strong>。</p>
+<hr>
+<h2 id="如何实现零拷贝">如何实现零拷贝？</h2>
+<p>零拷贝技术实现的方式通常有 2 种：</p>
+<ul>
+<li>mmap + write</li>
+<li>sendfile</li>
+</ul>
+<p>下面就谈一谈，它们是如何减少「上下文切换」和「数据拷贝」的次数。</p>
+<h3 id="mmap--write">mmap + write</h3>
+<p>在前面我们知道，<code>read()</code> 系统调用的过程中会把内核缓冲区的数据拷贝到用户的缓冲区里，于是为了减少这一步开销，我们可以用 <code>mmap()</code> 替换 <code>read()</code> 系统调用函数。</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">buf</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+<span class="n">write</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+</code></pre></div><p><code>mmap()</code> 系统调用函数会直接把内核缓冲区里的数据「<strong>映射</strong>」到用户空间，这样，操作系统内核与用户空间就不需要再进行任何的数据拷贝操作。</p>
+<p>![img](什么是零拷贝.assets/mmap + write 零拷贝.png)</p>
+<p>具体过程如下：</p>
+<ul>
+<li>应用进程调用了 <code>mmap()</code> 后，DMA 会把磁盘的数据拷贝到内核的缓冲区里。接着，应用进程跟操作系统内核「共享」这个缓冲区；</li>
+<li>应用进程再调用 <code>write()</code>，操作系统直接将内核缓冲区的数据拷贝到 socket 缓冲区中，这一切都发生在内核态，由 CPU 来搬运数据；</li>
+<li>最后，把内核的 socket 缓冲区里的数据，拷贝到网卡的缓冲区里，这个过程是由 DMA 搬运的。</li>
+</ul>
+<p>我们可以得知，通过使用 <code>mmap()</code> 来代替 <code>read()</code>， 可以减少一次数据拷贝的过程。</p>
+<p>但这还不是最理想的零拷贝，因为仍然需要通过 CPU 把内核缓冲区的数据拷贝到 socket 缓冲区里，而且仍然需要 4 次上下文切换，因为系统调用还是 2 次。</p>
+<h3 id="sendfile">sendfile</h3>
+<p>在 Linux 内核版本 2.1 中，提供了一个专门发送文件的系统调用函数 <code>sendfile()</code>，函数形式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span><span class="cp"></span><span class="n">ssize_t</span> <span class="nf">sendfile</span><span class="p">(</span><span class="kt">int</span> <span class="n">out_fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">in_fd</span><span class="p">,</span> <span class="n">off_t</span> <span class="o">*</span><span class="n">offset</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">count</span><span class="p">);</span>
+</code></pre></div><p>它的前两个参数分别是目的端和源端的文件描述符，后面两个参数是源端的偏移量和复制数据的长度，返回值是实际复制数据的长度。</p>
+<p>首先，它可以替代前面的 <code>read()</code> 和 <code>write()</code> 这两个系统调用，这样就可以减少一次系统调用，也就减少了 2 次上下文切换的开销。</p>
+<p>其次，该系统调用，可以直接把内核缓冲区里的数据拷贝到 socket 缓冲区里，不再拷贝到用户态，这样就只有 2 次上下文切换，和 3 次数据拷贝。如下图：</p>
+<p><p class="md__image">
+  <img src="../%e4%bb%80%e4%b9%88%e6%98%af%e9%9b%b6%e6%8b%b7%e8%b4%9d.assets/senfile-3%e6%ac%a1%e6%8b%b7%e8%b4%9d.png"
+    alt="img"  />
+</p>
+</p>
+<p>但是这还不是真正的零拷贝技术，如果网卡支持 SG-DMA（<em>The Scatter-Gather Direct Memory Access</em>）技术（和普通的 DMA 有所不同），我们可以进一步减少通过 CPU 把内核缓冲区里的数据拷贝到 socket 缓冲区的过程。</p>
+<p>你可以在你的 Linux 系统通过下面这个命令，查看网卡是否支持 scatter-gather 特性：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ethtool -k eth0 <span class="p">|</span> grep scatter-gather
+scatter-gather: on
+</code></pre></div><p>于是，从 Linux 内核 <code>2.4</code> 版本开始起，对于支持网卡支持 SG-DMA 技术的情况下， <code>sendfile()</code> 系统调用的过程发生了点变化，具体过程如下：</p>
+<ul>
+<li>第一步，通过 DMA 将磁盘上的数据拷贝到内核缓冲区里；</li>
+<li>第二步，缓冲区描述符和数据长度传到 socket 缓冲区，这样网卡的 SG-DMA 控制器就可以直接将内核缓存中的数据拷贝到网卡的缓冲区里，此过程不需要将数据从操作系统内核缓冲区拷贝到 socket 缓冲区中，这样就减少了一次数据拷贝；</li>
+</ul>
+<p>所以，这个过程之中，只进行了 2 次数据拷贝，如下图：</p>
+<p><p class="md__image">
+  <img src="../%e4%bb%80%e4%b9%88%e6%98%af%e9%9b%b6%e6%8b%b7%e8%b4%9d.assets/senfile-%e9%9b%b6%e6%8b%b7%e8%b4%9d.png"
+    alt="img"  />
+</p>
+</p>
+<p>这就是所谓的<strong>零拷贝（*Zero-copy*）技术，因为我们没有在内存层面去拷贝数据，也就是说全程没有通过 CPU 来搬运数据，所有的数据都是通过 DMA 来进行传输的。</strong>。</p>
+<p>零拷贝技术的文件传输方式相比传统文件传输的方式，减少了 2 次上下文切换和数据拷贝次数，<strong>只需要 2 次上下文切换和数据拷贝次数，就可以完成文件的传输，而且 2 次的数据拷贝过程，都不需要通过 CPU，2 次都是由 DMA 来搬运。</strong></p>
+<p>所以，总体来看，<strong>零拷贝技术可以把文件传输的性能提高至少一倍以上</strong>。</p>
+<h2 id="使用零拷贝技术的项目">使用零拷贝技术的项目</h2>
+<p>事实上，Kafka 这个开源项目，就利用了「零拷贝」技术，从而大幅提升了 I/O 的吞吐率，这也是 Kafka 在处理海量数据为什么这么快的原因之一。</p>
+<p>如果你追溯 Kafka 文件传输的代码，你会发现，最终它调用了 Java NIO 库里的 <code>transferTo</code> 方法：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Overridepublic</span> 
+<span class="kt">long</span> <span class="nf">transferFrom</span><span class="o">(</span><span class="n">FileChannel</span> <span class="n">fileChannel</span><span class="o">,</span> <span class="kt">long</span> <span class="n">position</span><span class="o">,</span> <span class="kt">long</span> <span class="n">count</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span> 
+    <span class="k">return</span> <span class="n">fileChannel</span><span class="o">.</span><span class="na">transferTo</span><span class="o">(</span><span class="n">position</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">socketChannel</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div><p>如果 Linux 系统支持 <code>sendfile()</code> 系统调用，那么 <code>transferTo()</code> 实际上最后就会使用到 <code>sendfile()</code> 系统调用函数。</p>
+<p>曾经有大佬专门写过程序测试过，在同样的硬件条件下，传统文件传输和零拷拷贝文件传输的性能差异，你可以看到下面这张测试数据图，使用了零拷贝能够缩短 <code>65%</code> 的时间，大幅度提升了机器传输数据的吞吐量。</p>
+<p><p class="md__image">
+  <img src="../%e4%bb%80%e4%b9%88%e6%98%af%e9%9b%b6%e6%8b%b7%e8%b4%9d.assets/%e9%9b%b6%e6%8b%b7%e8%b4%9d%e6%b5%8b%e8%af%95%e6%95%b0%e6%8d%ae.png"
+    alt="数据来源于：https://developer.ibm.com/articles/j-zerocopy/"  />
+</p>
+</p>
+<p>数据来源于：https://developer.ibm.com/articles/j-zerocopy/</p>
+<p>另外，Nginx 也支持零拷贝技术，一般默认是开启零拷贝技术，这样有利于提高文件传输的效率，是否开启零拷贝技术的配置如下：</p>
+<pre><code>http {
+...
+    sendfile on
+...
+}
+</code></pre><p>sendfile 配置的具体意思:</p>
+<ul>
+<li>设置为 on 表示，使用零拷贝技术来传输文件：sendfile ，这样只需要 2 次上下文切换，和 2 次数据拷贝。</li>
+<li>设置为 off 表示，使用传统的文件传输技术：read + write，这时就需要 4 次上下文切换，和 4 次数据拷贝。</li>
+</ul>
+<p>当然，要使用 sendfile，Linux 内核版本必须要 2.1 以上的版本。</p>
+<hr>
+<h2 id="pagecache-有什么作用">PageCache 有什么作用？</h2>
+<p>回顾前面说道文件传输过程，其中第一步都是先需要先把磁盘文件数据拷贝「内核缓冲区」里，这个「内核缓冲区」实际上是<strong>磁盘高速缓存（*PageCache*）</strong>。</p>
+<p>由于零拷贝使用了 PageCache 技术，可以使得零拷贝进一步提升了性能，我们接下来看看 PageCache 是如何做到这一点的。</p>
+<p>读写磁盘相比读写内存的速度慢太多了，所以我们应该想办法把「读写磁盘」替换成「读写内存」。于是，我们会通过 DMA 把磁盘里的数据搬运到内存里，这样就可以用读内存替换读磁盘。</p>
+<p>但是，内存空间远比磁盘要小，内存注定只能拷贝磁盘里的一小部分数据。</p>
+<p>那问题来了，选择哪些磁盘数据拷贝到内存呢？</p>
+<p>我们都知道程序运行的时候，具有「局部性」，所以通常，刚被访问的数据在短时间内再次被访问的概率很高，于是我们可以用 <strong>PageCache 来缓存最近被访问的数据</strong>，当空间不足时淘汰最久未被访问的缓存。</p>
+<p>所以，读磁盘数据的时候，优先在 PageCache 找，如果数据存在则可以直接返回；如果没有，则从磁盘中读取，然后缓存 PageCache 中。</p>
+<p>还有一点，读取磁盘数据的时候，需要找到数据所在的位置，但是对于机械磁盘来说，就是通过磁头旋转到数据所在的扇区，再开始「顺序」读取数据，但是旋转磁头这个物理动作是非常耗时的，为了降低它的影响，<strong>PageCache 使用了「预读功能」</strong>。</p>
+<p>比如，假设 read 方法每次只会读 <code>32 KB</code> 的字节，虽然 read 刚开始只会读 0 ～ 32 KB 的字节，但内核会把其后面的 32～64 KB 也读取到 PageCache，这样后面读取 32～64 KB 的成本就很低，如果在 32～64 KB 淘汰出 PageCache 前，进程读取到它了，收益就非常大。</p>
+<p>所以，PageCache 的优点主要是两个：</p>
+<ul>
+<li>缓存最近被访问的数据；</li>
+<li>预读功能；</li>
+</ul>
+<p>这两个做法，将大大提高读写磁盘的性能。</p>
+<p><strong>但是，在传输大文件（GB 级别的文件）的时候，PageCache 会不起作用，那就白白浪费 DMA 多做的一次数据拷贝，造成性能的降低，即使使用了 PageCache 的零拷贝也会损失性能</strong></p>
+<p>这是因为如果你有很多 GB 级别文件需要传输，每当用户访问这些大文件的时候，内核就会把它们载入 PageCache 中，于是 PageCache 空间很快被这些大文件占满。</p>
+<p>另外，由于文件太大，可能某些部分的文件数据被再次访问的概率比较低，这样就会带来 2 个问题：</p>
+<ul>
+<li>PageCache 由于长时间被大文件占据，其他「热点」的小文件可能就无法充分使用到 PageCache，于是这样磁盘读写的性能就会下降了；</li>
+<li>PageCache 中的大文件数据，由于没有享受到缓存带来的好处，但却耗费 DMA 多拷贝到 PageCache 一次；</li>
+</ul>
+<p>所以，针对大文件的传输，不应该使用 PageCache，也就是说不应该使用零拷贝技术，因为可能由于 PageCache 被大文件占据，而导致「热点」小文件无法利用到 PageCache，这样在高并发的环境下，会带来严重的性能问题。</p>
+<hr>
+<h2 id="大文件传输用什么方式实现">大文件传输用什么方式实现？</h2>
+<p>那针对大文件的传输，我们应该使用什么方式呢？</p>
+<p>我们先来看看最初的例子，当调用 read 方法读取文件时，进程实际上会阻塞在 read 方法调用，因为要等待磁盘数据的返回，如下图：</p>
+<p>![img](什么是零拷贝.assets/阻塞 IO 的过程.png)</p>
+<p>具体过程：</p>
+<ul>
+<li>当调用 read 方法时，会阻塞着，此时内核会向磁盘发起 I/O 请求，磁盘收到请求后，便会寻址，当磁盘数据准备好后，就会向内核发起 I/O 中断，告知内核磁盘数据已经准备好；</li>
+<li>内核收到 I/O 中断后，就将数据从磁盘控制器缓冲区拷贝到 PageCache 里；</li>
+<li>最后，内核再把 PageCache 中的数据拷贝到用户缓冲区，于是 read 调用就正常返回了。</li>
+</ul>
+<p>对于阻塞的问题，可以用异步 I/O 来解决，它工作方式如下图：</p>
+<p>![img](什么是零拷贝.assets/异步 IO 的过程.png)</p>
+<p>它把读操作分为两部分：</p>
+<ul>
+<li>前半部分，内核向磁盘发起读请求，但是可以<strong>不等待数据就位就可以返回</strong>，于是进程此时可以处理其他任务；</li>
+<li>后半部分，当内核将磁盘中的数据拷贝到进程缓冲区后，进程将接收到内核的<strong>通知</strong>，再去处理数据；</li>
+</ul>
+<p>而且，我们可以发现，异步 I/O 并没有涉及到 PageCache，所以使用异步 I/O 就意味着要绕开 PageCache。</p>
+<p>绕开 PageCache 的 I/O 叫直接 I/O，使用 PageCache 的 I/O 则叫缓存 I/O。通常，对于磁盘，异步 I/O 只支持直接 I/O。</p>
+<p>前面也提到，大文件的传输不应该使用 PageCache，因为可能由于 PageCache 被大文件占据，而导致「热点」小文件无法利用到 PageCache。</p>
+<p>于是，<strong>在高并发的场景下，针对大文件的传输的方式，应该使用「异步 I/O + 直接 I/O」来替代零拷贝技术</strong>。</p>
+<p>直接 I/O 应用场景常见的两种：</p>
+<ul>
+<li>应用程序已经实现了磁盘数据的缓存，那么可以不需要 PageCache 再次缓存，减少额外的性能损耗。在 MySQL 数据库中，可以通过参数设置开启直接 I/O，默认是不开启；</li>
+<li>传输大文件的时候，由于大文件难以命中 PageCache 缓存，而且会占满 PageCache 导致「热点」文件无法充分利用缓存，从而增大了性能开销，因此，这时应该使用直接 I/O。</li>
+</ul>
+<p>另外，由于直接 I/O 绕过了 PageCache，就无法享受内核的这两点的优化：</p>
+<ul>
+<li>内核的 I/O 调度算法会缓存尽可能多的 I/O 请求在 PageCache 中，最后「<strong>合并</strong>」成一个更大的 I/O 请求再发给磁盘，这样做是为了减少磁盘的寻址操作；</li>
+<li>内核也会「<strong>预读</strong>」后续的 I/O 请求放在 PageCache 中，一样是为了减少对磁盘的操作；</li>
+</ul>
+<p>于是，传输大文件的时候，使用「异步 I/O + 直接 I/O」了，就可以无阻塞地读取文件了。</p>
+<p>所以，传输文件的时候，我们要根据文件的大小来使用不同的方式：</p>
+<ul>
+<li>传输大文件的时候，使用「异步 I/O + 直接 I/O」；</li>
+<li>传输小文件的时候，则使用「零拷贝技术」；</li>
+</ul>
+<p>在 nginx 中，我们可以用如下配置，来根据文件的大小来使用不同的方式：</p>
+<pre><code>location /video/ { 
+    sendfile on; 
+    aio on; 
+    directio 1024m; 
+}
+</code></pre><p>当文件大小大于 <code>directio</code> 值后，使用「异步 I/O + 直接 I/O」，否则使用「零拷贝技术」。</p>
+<hr>
+<h2 id="总结">总结</h2>
+<p>早期 I/O 操作，内存与磁盘的数据传输的工作都是由 CPU 完成的，而此时 CPU 不能执行其他任务，会特别浪费 CPU 资源。</p>
+<p>于是，为了解决这一问题，DMA 技术就出现了，每个 I/O 设备都有自己的 DMA 控制器，通过这个 DMA 控制器，CPU 只需要告诉 DMA 控制器，我们要传输什么数据，从哪里来，到哪里去，就可以放心离开了。后续的实际数据传输工作，都会由 DMA 控制器来完成，CPU 不需要参与数据传输的工作。</p>
+<p>传统 IO 的工作方式，从硬盘读取数据，然后再通过网卡向外发送，我们需要进行 4 上下文切换，和 4 次数据拷贝，其中 2 次数据拷贝发生在内存里的缓冲区和对应的硬件设备之间，这个是由 DMA 完成，另外 2 次则发生在内核态和用户态之间，这个数据搬移工作是由 CPU 完成的。</p>
+<p>为了提高文件传输的性能，于是就出现了零拷贝技术，它通过一次系统调用（<code>sendfile</code> 方法）合并了磁盘读取与网络发送两个操作，降低了上下文切换次数。另外，拷贝数据都是发生在内核中的，天然就降低了数据拷贝的次数。</p>
+<p>Kafka 和 Nginx 都有实现零拷贝技术，这将大大提高文件传输的性能。</p>
+<p>零拷贝技术是基于 PageCache 的，PageCache 会缓存最近访问的数据，提升了访问缓存数据的性能，同时，为了解决机械硬盘寻址慢的问题，它还协助 I/O 调度算法实现了 IO 合并与预读，这也是顺序读比随机读性能好的原因。这些优势，进一步提升了零拷贝的性能。</p>
+<p>需要注意的是，零拷贝技术是不允许进程对文件内容作进一步的加工的，比如压缩数据再发送。</p>
+<p>另外，当传输大文件时，不能使用零拷贝，因为可能由于 PageCache 被大文件占据，而导致「热点」小文件无法利用到 PageCache，并且大文件的缓存命中率不高，这时就需要使用「异步 IO + 直接 IO 」的方式。</p>
+<p>在 Nginx 里，可以通过配置，设定一个文件大小阈值，针对大文件使用异步 IO 和直接 IO，而对小文件使用零拷贝。</p>
+]]></content>
+		</item>
+		
+		<item>
 			<title>分布式系统---幂等性设计</title>
 			<link>https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F-%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/</link>
 			<pubDate>Fri, 05 Feb 2021 20:55:29 +0800</pubDate>
@@ -3980,6 +4236,598 @@ sql-3，这3个sql语句，每一个在执行的时候，都是一个单元，�
 </code></pre></div><p>意即<strong>世上只有一种一致性算法，那就是Paxos</strong>，所有其他一致性算法都是Paxos算法的不完整版。</p>
 <p>Paxos算法太难于理解，<a href="https://willje.github.io/posts/distributed/raft-%E7%AE%97%E6%B3%95/" target="_blank" rel="noopener">Raft算法</a>
 更易理解也有具体实现。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>go并发编程</title>
+			<link>https://willje.github.io/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</link>
+			<pubDate>Fri, 25 Dec 2020 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</guid>
+			<description>并发与并行 并发是指同一个时间段内多个任务同时交叉执行，并且都没有执行结束，而并行是说在单位时间内多个任务同时在执行，并发任务强调在一个时间段内同时执行，而一个时间段有多个单位时间累积而成，所以说并发的多个任务在单位时间内不一定同时在执行。 在单个cpu的时代多个任务同时运行都是并发，这是因为cpu同时只能执行一个任务，单个cpu时代多任务是共享一个cpu的，当</description>
+			<content type="html"><![CDATA[<h2 id="并发与并行">并发与并行</h2>
+<p><strong>并发是指同一个时间段内多个任务同时交叉执行，并且都没有执行结束</strong>，<strong>而并行是说在单位时间内多个任务同时在执行</strong>，并发任务强调在一个时间段内同时执行，而一个时间段有多个单位时间累积而成，所以说并发的多个任务在单位时间内不一定同时在执行。</p>
+<p>在单个cpu的时代多个任务同时运行都是并发，这是因为cpu同时只能执行一个任务，单个cpu时代多任务是共享一个cpu的，当一个任务占用cpu运行时候，其它任务就会被挂起，当占用cpu的任务时间片用完后，会把cpu让给其它任务来使用，所以在单cpu时代多线程编程是意义不大，并且线程间频繁的上下文切换还会带来开销。</p>
+<h2 id="并发编程难在哪">并发编程难在哪</h2>
+<h3 id="数据竞争的存在">数据竞争的存在</h3>
+<p>当两个或者多个线程<code>（goroutine）</code>在没有任何同步措施的情况下同时读写同一个共享资源时候，这多个线<code>（goroutine）</code></p>
+<p>就处于数据竞争状态，数据竞争会导致程序的运行结果超出写代码的人的期望。下面我们来看个例子：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>在这段代码中包含了两个协程，一个是显式的，通过 <code>go</code> 关键字声明的这条语句，表示启用一个新的协程来处理加法运算，另一个是隐式的，即 <code>main</code> 函数本身也是运行在一个主协程中，该协程和调用 <code>add</code> 函数的子协程是并发运行的两个协程，就好比从 <code>go</code> 关键字开始，从主协程中叉出一条新路。</p>
+<p>和之前不使用协程的方式相比，由此也引入了不确定性：我们不知道子协程什么时候执行完毕，运行到了什么状态。在主协程中启动子协程后，程序就退出运行了，这就意味着包含这两个协程的处理进程退出了，<strong>所以，我们运行这段代码，不会看到子协程里运行的打印结果，因为还没来得及执行它们，进程就已经退出了</strong>。另外，我们也不要试图从 <code>add</code> 函数返回处理结果，因为在主协程中，根本获取不到子协程的返回值，从子协程开始执行起就已经和主协程没有任何关系了，返回值会被丢弃。</p>
+<p>如果要显示出子协程的打印结果，一种方式是在主协程中等待足够长的时间再退出，以便保证子协程中的所有代码执行完毕：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">//
+</span><span class="c1"></span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">=</span> <span class="mi">3</span>
+</code></pre></div><p>这看起来或许有效，但是这是非常低效，并且并不是所有情况下都可以解决的。正确的做法可以使用信号量等同步措施。</p>
+<h3 id="并发执行示例">并发执行示例</h3>
+<p>接下来，我们通过下面这段代码来验证协程的并发执行：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d\n&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>很简单，我们给协程代码外层套上一个循环就可以了，这样一来，就同时启动了 10 个子协程，由于它们是并发执行的，执行的先后顺序无法保证。</p>
+<p>可以看到每个子协程中<code>add</code>函数执行完打印语句睡眠 3 秒再退出，如果不是并发执行，那么肯定至多只能打印一条结果出来，但实际情况是，仍然是打印 10 条结果，并且没有任何延迟，证明这些加法运算是并发执行的。</p>
+<h3 id="操作的原子性">操作的原子性</h3>
+<p>所谓原子性操作是指当执行一系列操作时候，这些操作那么全部被执行，那么全部不被执行，不存在只执行其中一部分的情况。在设计<strong>计数器</strong>时候一般都是先读取当前值，然后+1，然后更新，这个过程是读-改-写的过程，如果不能保证这个过程是原子性，那么就会出现线程安全问题。如下代码是线程不安全的，因为不能保证<code>a++</code>是原子性操作:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">count</span> <span class="kt">int32</span>
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">const</span> <span class="nx">ThreadNum</span> <span class="p">=</span> <span class="mi">5000</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">ThreadNum</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span><span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">ThreadNum</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">count</span><span class="o">++</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span><span class="c1">//3. 等待goroutine运行结束
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>如上代码在main函数所在为<code>goroutine</code>内创建了<code>THREAD_NUM</code>个<code>goroutine</code>，每个新的<code>goroutine</code>执行代码对变量count计数增加1。</p>
+<p>这里创建了<code>THREADNUM</code>个信号量，用来在代码3处等待<code>THREADNUM</code>个<code>goroutine</code>执行完毕，然后输出最终计数，执行上面代码我们 期望输出1000，但是实际却不是。</p>
+<p>这是因为a++操作本身不是原子性的，其等价于b := count;b=b+1;count=b;是三步操作，所以可能导致导致计数不准确</p>
+<p>上面的程序需要保证<code>count++</code>的原子性才是正确的，可以使用<code>sync/atomic</code>包的一些原子性函数或者锁可以解决这个问题。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;sync/atomic&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">count</span> <span class="kt">int32</span>
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">const</span> <span class="nx">ThreadNum</span> <span class="p">=</span> <span class="mi">5000</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">ThreadNum</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span><span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">ThreadNum</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="c1">//count++
+</span><span class="c1"></span>			<span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">count</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="内存访问同步">内存访问同步</h3>
+<p>上节原子性操作第一个例子有问题是因为count++操作是被分解为类似b := count;b=b+1;count =b; 的三部操作，而多个<code>goroutine</code>同时执行<code>count++</code>时候并不是顺序执行者三个步骤的，而是可能交叉访问的。所以如果能对内存变量的访问添加同步访问措施，就可以避免这个问题：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">count</span> <span class="kt">int32</span>
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">var</span> <span class="nx">lock</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+<span class="kd">const</span> <span class="nx">ThreadNum</span> <span class="p">=</span> <span class="mi">5000</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">ThreadNum</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span><span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">ThreadNum</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">lock</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span><span class="c1">//2.1
+</span><span class="c1"></span>			<span class="nx">count</span><span class="o">++</span>
+			<span class="nx">lock</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>如上代码创建了一个互斥锁lock,然后<code>goroutine</code>内在执行count++前先获取锁，执行完毕后在释放锁。</p>
+<p>当1000个<code>goroutine</code>同时执行到2.1时候只有一个线程可以获取到锁，其他的线程被阻塞，直到获取到锁的<code>goroutine</code>释放了锁。也就是这1000个线程的并发行使用锁转换为了串行执行，也就是对共享内存变量的访问施加了同步措施。</p>
+<h2 id="线程模型">线程模型</h2>
+<p>线程的并发执行是有操作系统来进行调度的，操作系统一般都都在内核提供对线程的支持。而我们在使用高级语言编写程序时候创建的线程是用户线程，那么用户线程与内核线程是什么关系那？其实下面将要讲解的三种线程模型就是根据用户线程与内核线程关系的不同而划分的。</p>
+<h3 id="一对一模型">一对一模型</h3>
+<p>这种线程模型下用户线程与内核线程是一一对应的，当从程序入口点（比如main函数）启动后，操作系统就创建了一个进程，这个main函数所在的线程就是主线程，在main函数内当我们使用高级语言创建一个用户线程的时候，其实对应创建了一个内核线程，如下图：</p>
+<p><p class="md__image">
+  <img src="../go%e5%b9%b6%e5%8f%91%e7%bc%96%e7%a8%8b.assets/image-20210521103541595.png"
+    alt="image-20210521103541595"  />
+</p>
+</p>
+<p>这种线程模型优点是在多处理器上，<strong>多个线程可以真正实现并行运行</strong>，并且当一个线程由于网络IO等原因被阻塞时候，其他的线程不受影响。</p>
+<p>缺点是由于一般操作系统会限制内核线程的个数，所以用户线程的个数会受到限制。另外由于用户线程与系统线程一一对应，当用户线程比如执行Io操作（执行系统调用）时候，需要从用户态的用户程序的执行切换到内核态执行内核操作，然后等执行完毕后又会从内核态切换到用户态执行用户程序，而这个切换操作开销是相对比较大的。</p>
+<p>另外这里提下高级语言Java的线程模型就是使用的这种一对一的模型，所以Java中多线程对共享变量使用锁同步时候会导致获取锁失败的线程进行上下文切换，而JUC包提供的无锁CAS操作则不会产生上下文切换。</p>
+<h3 id="多对一模型">多对一模型</h3>
+<p>多对一模型是指多个用户线程对应一个内核线程，同时同一个用户线程只能对应一个内核线程，这时候对应同一个内核线程的多个用户线程的上下文切换是由用户态的运行时线程库来做的，而不是由操作系统调度系统来做的，其模型如下：</p>
+<p><p class="md__image">
+  <img src="../go%e5%b9%b6%e5%8f%91%e7%bc%96%e7%a8%8b.assets/image-20210521103601327.png"
+    alt="image-20210521103601327"  />
+</p>
+</p>
+<p>这种模型好处是由于上下文切换在用户态，所以切换速度很快，开销很小；另外可创建的用户线程的数量可以很多，只受内存大小限制。</p>
+<p>这种模型由于多个用户线程对应一个内核线程，当该内核线程对应的一个用户线程被阻塞挂起时候，该内核线程对应的其他用户线程也不能运行了，因为这时候内核线程已经被阻塞挂起了。另外这种模型并不能很好的利用多核CPU进行并发运行。</p>
+<h3 id="多对多模型">多对多模型</h3>
+<p>多对多模型则结合一对一和多对一模型的特点，让大量的用户线程对应少数几个内核线程上，其模型图如下：<p class="md__image">
+  <img src="../go%e5%b9%b6%e5%8f%91%e7%bc%96%e7%a8%8b.assets/640"
+    alt="图片"  />
+</p>
+这时候每个内核线程对应多个用户线程，每个用户线程有可以对应多个内核线程，当一个用户线程阻塞后，其对应的当前的内核线程会被阻塞，但是被阻塞的内核线程对应的其他用户线程可以切换到其他的内核线程上继续运行，所以多对多模型是可以充分利用多核CPU提升运行效能的。</p>
+<p>另外多对多模型也对用户线程个数没有限制，理论上只要内存够用可以无限创建。</p>
+<h2 id="go的线程模型">Go的线程模型</h2>
+<p><a href="https://juejin.cn/post/6859312340630929421" target="_blank" rel="noopener">Go的线程模型 - 掘金</a>
+</p>
+<p>在操作系统提供的内核线程之上，Go搭建了一个特有的两级线程模型。</p>
+<p>一个G的执行需要P和M的支持。P和M关联之后，就形成了一个有效的G运行环境（内核线程+上下文环境）。
+每个P都会包含一个可运行的G的队列，该队列中的G会被依次传递给本地P关联的当前M,并获得运行时机。</p>
+<blockquote>
+<p><code>KSE</code>: 内核调度实体，可以被内核的调度器调度的对象，也称为内核级线程，是操作系统内核最小调度单元。</p>
+</blockquote>
+<p><p class="md__image">
+  <img src="../go%e5%b9%b6%e5%8f%91%e7%bc%96%e7%a8%8b.assets/9c4de4056a1745f7988e402f6774152f~tplv-k3u1fbpfcp-zoom-1.image"
+    alt="img"  />
+</p>
+</p>
+<p>M</p>
+<ul>
+<li>
+<p>machine的缩写，一个M代表一个用户空间的内核线程，与内核线程<code>（KSE）</code>总是一一对应,在M的生命周期内，会且仅会与一个<code>KSE</code>产生关联。</p>
+</li>
+<li>
+<p>M刚创建之初，就会被加入到<strong>全局M列表</strong>。</p>
+</li>
+<li>
+<p>有些时候，M会被停止（比如找不到可运行G时等），M会被加入到<strong>调度器的空闲M列表</strong>，在需要一个未被使用的M时，调度器会先尝试从该列表中获取。</p>
+</li>
+<li>
+<p>单个Go程序所使用的M的最大值可以设置，初始值是10000</p>
+</li>
+</ul>
+<p>P</p>
+<ul>
+<li>processor的缩写，一个P代表执行一个Go代码片段所必需的资源（上下文环境）</li>
+<li>调度器会适时的让P与不同的M建立或断开关联，使得P中的可运行G能够及时获得运行时机。</li>
+<li>P的数量默认等于当前cpu核数,可以利用函数<code>runtime.GOMAXPROCS</code>来改变P的数量。P的数量即为可运行G队列的数量。</li>
+<li>当一个P不再与任何M关联时，且它的可运行G队列为空，会被放入<strong>调度器的空闲P列表</strong>，在需要一个空闲的P关联M时，会从此列表取出。</li>
+<li>P的包含一个自由G列表，存放一些已经运行完成的G。当增长到一定程度，运行时系统会把其中的部分G转移到<strong>调度器的自由G列表</strong>中。</li>
+</ul>
+<p>G</p>
+<ul>
+<li><code>goroutine</code>的缩写，一个G代表一个go代码片段，G是对go代码的一种封装.Go的编译器会把go语句变成对内部函数<code>newproc</code>的调用，并把go函数及其参数都作为参数传递给这个函数。</li>
+<li>新建的G会被首先加入<strong>全局G列表</strong>，初始化之后，会被加入到本地P的可运行队列，还会被存储到本地P的<code>runnext</code>字段，该字段用户存放新鲜出炉的G，以便更早的运行它。如果<code>runnext</code>已经有一个G，那么这个已有G会被踢到<strong>该P的可运行G队列</strong>的末尾。如果该队列已满，那么这个G就只能追加到<strong>调度器的可运行G队列</strong>中。</li>
+<li>当go语句欲启用一个G的时候，运行时系统会先试图从相应的<strong>P的自由G列表</strong>中获取一个现成的G，来封装这个go函数。仅当获取不到G才有可能创建一个新G。</li>
+<li>运行时系统会在发现本地P自由G太少，会尝试从调度器的自由G列表中转移一些过来。如果发现本地P的自由G队列满了，会转移一些到<strong>调度器的自由G列表</strong>。</li>
+<li>所有的<strong>自由G列表</strong> 都是先进后出的。</li>
+<li>一个G在被启用之后，会先被追加到某个P的可运行G队列中，以等待运行时机。</li>
+</ul>
+<h2 id="goroutine轻量级的线程">goroutine轻量级的线程</h2>
+<p>在go中，使用go关键字跟上一个函数，就创建了一个<code>goroutine</code>，每个<code>goroutine</code>可以认为是一个轻量级的线程，其占用更少的堆栈空间，并且其需要的堆栈空间大小可以随着程序的运行需要动态增加或者空闲回收。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---main goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine running---&#34;</span><span class="p">)</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---wait sub goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine over---&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="cm">/**
+</span><span class="cm">---wait sub goroutine over---
+</span><span class="cm">---sub goroutine running---
+</span><span class="cm">---sub goroutine over---
+</span><span class="cm">---main goroutine over---
+</span><span class="cm">**/</span>
+</code></pre></div><p>另外我们也可以先创建一个函数，然后使用go关键字带上函数名就可以开启一个新<code>goroutine</code>来运行这个函数，如下代码创建了函数<code>printFunc</code>，然后使用 go <code>printFunc()</code>来开启新<code>goroutine</code>来启动该函数：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">printFunc</span><span class="p">(){</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine running---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---main goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">go</span> <span class="nf">printFunc</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---wait sub goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine over---&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>另外需要注意的是在go中整个进程的生命周期是与main函数所在<code>goroutine</code>一致的，只要main函数所在<code>goroutine</code>结束了，整个进程也就是结束了，而不管是否还有其他<code>goroutine</code>在运行：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---main goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;I&#39;m a goroutine&#34;</span><span class="p">)</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="c1">//无限循环
+</span><span class="c1"></span>		<span class="k">for</span>  <span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine running---&#34;</span><span class="p">)</span>
+		<span class="p">}</span>
+	<span class="p">}()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---wait sub goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine over---&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>如上代码在使用go关键字创建的<code>goroutine</code>内新增了for无限循环打印输出，运行上面代码后会发现随着main函数所在<code>gorroutine</code>销毁，后进程就退出了，虽然新创建的<code>goroutine</code>还没运行完毕。</p>
+<p><code>goroutine</code>是轻量级线程，并不是操作系统线程，<code>goroutine</code>与操作系统线程对应关系是<code>M：N</code>，也就是M个<code>goroutine</code>对应N个操作系统线程，<code>goroutine</code>内部实现与在多个操作系统线程(Os 线程)之间复用的协程(coroutines)一样。如果一个<code>goroutine</code>阻塞OS线程，例如等待输入，则该OS线程中的其他<code>goroutine</code>将迁移到其他OS线程，以便它们可以继续运行。</p>
+<h3 id="如何杀死一个goroutine">如何杀死一个goroutine</h3>
+<p>为了让一个运行中的goroutine停止，我们可以让其在一个channel上监听停止信号，如下代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">quit</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span><span class="p">{</span>
+			<span class="k">select</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">quit</span><span class="p">:</span>
+				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;sub goroutine is over&#34;</span><span class="p">)</span>
+				<span class="k">return</span>
+			<span class="k">default</span><span class="p">:</span>
+				<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;sub goroutine doing something&#34;</span><span class="p">)</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}()</span>
+
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+
+    
+	<span class="c1">//4.关闭通道quit
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;main goroutine start stop sub goroutine&#34;</span><span class="p">)</span>
+	<span class="nb">close</span><span class="p">(</span><span class="nx">quit</span><span class="p">)</span>
+
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;main goroutine is over&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>如上创建了一个无缓冲通道quit用来做反向通知子线程停止；开启了一个<code>goroutine</code>，该<code>goroutine</code>内使用了无限循环，内部使用了select结构，其中第一个case是从通道quit内读取元素，由于quit通道一开始没有元素，所以这个case分支不会被执行，而是转向执行defalut分支；defalut分支里面用来执行具体的业务，这里是休眠1s然后打印输出，这个<code>goroutine</code>的作用就是间隔1s执行打印输出，并且等quit通道内有元素时候执行return退出当前<code>goroutine</code></p>
+<p>代码4关闭通道，关闭通道后回向通道内写入一个零值元素，这里先让主<code>goroutine</code>休眠3秒是为了在关闭quit通道前让子<code>goroutine</code>有机会执行一些时间。</p>
+<p>代码4关闭通道后，子<code>goroutine</code>内的select语句的第一个case就会从quit读取操作中返回，然后子<code>goroutine</code>就执行return退出了。</p>
+<blockquote>
+<p>使用无缓冲通道和select结构在主<code>goroutine</code> 内反向控制子<code>goroutine</code>的生命周期在go中是一个通用的做法。</p>
+</blockquote>
+<h2 id="runtime包">runtime包</h2>
+<p>Go的运行时包runtime中包含了一些列的可以设置go运行时的环境的函数，比如运行最大有多少逻辑处理器（P），最多可以创建多少OS线程（M）等。</p>
+<h3 id="runtimegomaxprocsn-int"><code>runtime.GOMAXPROCS(n int)</code></h3>
+<p>设置逻辑处理器个数,也就是设置MPG中的P的个数，默认P的个数是逻辑cpu的个数，比如在4核双线程的机器上P默认个数是8，调用该函数会返回设置前P的个数。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">GOARCH</span> <span class="o">==</span> <span class="s">&#34;wasm&#34;</span> <span class="o">&amp;&amp;</span> <span class="nx">n</span> <span class="p">&gt;</span> <span class="mi">1</span> <span class="p">{</span>
+		<span class="nx">n</span> <span class="p">=</span> <span class="mi">1</span> <span class="c1">// WebAssembly has no threads yet, so only one CPU is possible.
+</span><span class="c1"></span>	<span class="p">}</span>
+	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+	<span class="nx">ret</span> <span class="o">:=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">gomaxprocs</span><span class="p">)</span>
+	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">n</span> <span class="o">==</span> <span class="nx">ret</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">ret</span>
+	<span class="p">}</span>
+	<span class="nf">stopTheWorldGC</span><span class="p">(</span><span class="s">&#34;GOMAXPROCS&#34;</span><span class="p">)</span>
+	<span class="c1">// newprocs will be processed by startTheWorld
+</span><span class="c1"></span>	<span class="nx">newprocs</span> <span class="p">=</span> <span class="nb">int32</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
+	<span class="nf">startTheWorldGC</span><span class="p">()</span>
+	<span class="k">return</span> <span class="nx">ret</span>
+<span class="p">}</span>
+</code></pre></div><p>由于调用该方法会<code>stopTheWorld</code>，所以如果要设置该值，建议尽早设置该值。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;runtime&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">20</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><p>如上代码main函数内设置当前逻辑处理器P的个数为1，设置为1意味着所有的<code>goroutine</code>都被放到了这唯一一个P的本地队列里面了。然后main函数里面创建了两个<code>goroutine</code>来分别打印输出，执行上面代码会发现一种可能的序列为：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="m">10</span>
+<span class="m">11</span>
+<span class="m">12</span>
+<span class="m">13</span>
+<span class="m">14</span>
+<span class="m">15</span>
+<span class="m">16</span>
+<span class="m">17</span>
+<span class="m">18</span>
+<span class="m">19</span>
+<span class="m">0</span>
+<span class="m">1</span>
+<span class="m">2</span>
+<span class="m">3</span>
+<span class="m">4</span>
+<span class="m">5</span>
+<span class="m">6</span>
+<span class="m">7</span>
+<span class="m">8</span>
+<span class="m">9</span>
+
+Process finished with the <span class="nb">exit</span> code <span class="m">0</span>
+</code></pre></div><p>从结果看着两个<code>goroutine</code>是顺序执行的，一个执行完毕后，顺序执行第二个（其实后面会知道这是假象,这里之所以顺序输出是因为每个<code>goroutine</code>耗时太短，还没来得及做上下文切换），把上面代码修改为下面，也就是在打印一数字后休眠1s:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;runtime&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+			<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">20</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+			<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><p>一种可能输出是：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="m">10</span>
+<span class="m">0</span>
+<span class="m">1</span>
+<span class="m">11</span>
+<span class="m">12</span>
+<span class="m">2</span>
+<span class="m">3</span>
+<span class="m">13</span>
+<span class="m">14</span>
+<span class="m">4</span>
+<span class="m">5</span>
+<span class="m">15</span>
+<span class="m">16</span>
+<span class="m">6</span>
+<span class="m">7</span>
+<span class="m">17</span>
+<span class="m">18</span>
+<span class="m">8</span>
+<span class="m">9</span>
+<span class="m">19</span>
+
+Process finished with the <span class="nb">exit</span> code <span class="m">0</span>
+
+</code></pre></div><p>可知虽然在P为1的情况下，两个<code>goroutine</code>还是交叉运行，而不是顺序的。</p>
+<h3 id="runtimegosched"><code>runtime.Gosched()</code></h3>
+<p>类似Java中线程的<code>yeild</code>方法，当一个<code>goroutine</code>执行该方法时候意味着当前<code>goroutine</code>放弃当前cpu的使用权，然后运行时会调度系统会调度其他<code>goroutine</code>占用cpu进行运行，放弃CPU使用权的<code>goroutine</code>并没有被阻塞，而是处于就绪状态，可以在随时获取到cpu情况下继续运行。</p>
+<p>前面的例子我们使用<code>time.sleep</code>方法让<code>goroutine</code>阻塞从而让出CPU让另外一个<code>goroutine</code>运行，其实也可以使用<code>Gosched</code></p>
+<h3 id="debugsetmaxthreadsthreads-int"><code>debug.SetMaxThreads(threads int)</code></h3>
+<p>设置最多可以创建多少操作系统线程M，如果尝试创建比这个设置多的线程，应该程序将会崩溃，默认是10000个。</p>
+<h2 id="互斥锁">互斥锁</h2>
+<p>在go中互斥锁是在sync包提供的，其是独占锁，同时只有一个线程可以获取该锁。</p>
+<p>当一个<code>goroutine</code>持有互斥锁时候，其他请求获取锁的<code>goroutine</code>会被阻塞挂起，等获取锁的<code>goroutine</code>释放锁后，阻塞的线程中的一个才可以被唤醒并获取锁。同时该锁是<strong>不可重入锁</strong>，当前<code>goroutine</code>在获取该锁后释放前再次尝试获取该锁会被阻塞。</p>
+<p>在go中使用<code> var mutex sync.Mutex</code>就可以创建一个开箱即用的互斥锁，调用<code>mutex.Lock()</code>尝试获取锁，调用<code>mutex.Unlock()</code>释放锁，需要注意的是释放锁时候要保证某一个<code>goroutine</code>已经获取到了锁，如果在没有获取锁的<code>goroutinemutex.Unlock()</code>的情况下，会抛出错误。</p>
+<p><strong>另外需要注意的是释放锁的<code>goroutine</code>不要求与获取锁的<code>goroutine</code>是同一个</strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">var</span> <span class="nx">lock</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="nx">lock</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---main goroutine lock---&#34;</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine unlock---&#34;</span><span class="p">)</span>
+		<span class="nx">lock</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="cm">/**
+</span><span class="cm">---main goroutine lock---
+</span><span class="cm">---sub goroutine unlock---
+</span><span class="cm">**/</span>
+</code></pre></div><p>另外go中互斥锁分为两种模式：正常与饥饿模式。</p>
+<h3 id="正常模式">正常模式</h3>
+<p>在正常模式中当多个<code>goroutine</code>同时获取同一个互斥锁时候，其中一个<code>goroutine</code>会获取到该锁，其他的<code>goroutine</code>则会被放入到与该锁维护的一个FIFO队列里面，然后被阻塞挂起。</p>
+<p>当获取锁的<code>goroutine</code>释放锁后，该队列里面的某个等待的<code>goroutine</code>会被激活，激活的<code>goroutine</code>并不能马上获取到锁的所有权，这是因为当前可能有新创建的大量<code>goroutine</code>也需要获取该锁，这时候激活的<code>goroutine</code>就要与这些新的<code>goroutine</code>共同竞争锁的所有权，所以被激活的<code>goroutine</code>还是很有可能获取不到锁，如果发生了这种情况，则被激活的线程还是要被放到队列最前面（队首），最后如果一个被阻塞的<code>goroutine</code>尝试了<code>1ms</code>的时间还没获取到锁，则互斥锁的模式会被自动切换到饥饿模式。</p>
+<h3 id="饥饿模式">饥饿模式</h3>
+<p>在饥饿模式下当多个<code>goroutine</code>同时获取同一个互斥锁时候，其中一个<code>goroutine</code>会获取到该锁，其他的<code>goroutine</code>则会被放入到与该锁维护的一个FIFO队列里面，然后被阻塞挂起</p>
+<p>当获取锁的<code>goroutine</code>释放锁后，锁的所有权会被交给FIFO队列里面队首的<code>goroutine</code>,新创建的<code>goroutine</code>尝试获取锁的时候，即使发现了当前锁是空闲的也不会去尝试获取，而是被放到锁做维护的FIFO的队尾部。</p>
+<p>如果一个激活的<code>goroutine</code>接受了锁的所有权，并且当发生了下面的某一个事情时候该锁从饥饿模式切换回正常模式：1.当前激活的<code>goroutine</code>是FIFO队列最后一个，1.当前激活的<code>goroutine</code>在<code>1ms</code>时间内就获取到了锁；</p>
+<h3 id="总结">总结</h3>
+<p>正常模式可以提供更好的性能，因为一个<code>goroutine</code>可以在有<code>goroutine</code>处于等待锁的条件下抢占式的去获取锁，而不需要遵循先来先到的原则；而饥饿模式则可以很好的预防锁的FIFO队列队尾部的<code>goroutine</code>一直获取不到锁的情况。</p>
+<h2 id="读写锁">读写锁</h2>
+<p>go语言类似Java <code>JUC</code>包也提供了一些列用于多线程之间进行同步的措施，比如低级的同步措施有 锁、<code>CAS</code>、原子变量操作类。本节我们先来看看go中读写锁，读写锁相比互斥锁来说并发度更高，在读多写少情况下比较实用。</p>
+<p>在go中可以使用<code>sync.RWMutex</code>获取一个读写锁，读写锁是读写互斥锁，读锁可以被任意多的读<code>goroutine</code>持有，但是写锁只能被某一个<code>goroutine</code>持有。当一个<code>goroutine</code>获取读锁后，其他<code>goroutine</code>也可以获取到读锁，但是如果这时候有<code>goroutine</code>尝试获取写锁，则获取写锁的线程将会被阻塞，这时候如果再有<code>goroutine</code>尝试获取读锁，则其也会被阻塞。</p>
+<p>当某个<code>goroutine</code>获取到写锁后，其后尝试获取读锁的<code>goroutine</code>都会被阻塞。</p>
+<p>读锁占用的情况会阻止写，不会阻止读，多个<code>goroutine</code>可以同时获取读锁。</p>
+<p>另外读锁是可重入锁，也就是同一个<code>goroutine</code>在可以在持有读锁的情况下再次获取读锁。</p>
+<p>在go中获取读锁和写锁方式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">rwlock</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">RWMutex</span>
+<span class="nx">rwlock</span><span class="p">.</span><span class="nf">RLock</span><span class="p">()</span><span class="c1">//获取读锁
+</span><span class="c1"></span><span class="nx">rwlock</span><span class="p">.</span><span class="nf">RUnlock</span><span class="p">()</span><span class="c1">//释放读锁
+</span><span class="c1"></span>
+<span class="nx">rwlock</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span><span class="c1">//获取写锁
+</span><span class="c1"></span><span class="nx">rwlock</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span><span class="c1">//释放写锁
+</span></code></pre></div><p>读写锁有以下三个特性：</p>
+<ol>
+<li>多个<code>goroutine</code>可以同时获取读锁</li>
+<li>读写锁是互斥锁</li>
+<li>读锁是可重入锁，即一个<code>goroutine</code>可以多次获取读锁</li>
+</ol>
+<h3 id="读写锁实现一个并发安全的map">读写锁实现一个并发安全的map</h3>
+<p><a href="https://www.flysnow.org/2017/05/03/go-in-action-go-read-write-lock.html" target="_blank" rel="noopener">Go语言实战笔记（十七）| Go 读写锁| 飞雪无情的博客</a>
+</p>
+<p>我们在做Java开发的时候，肯定知道<code>SynchronizedMap</code>这个Map，它是一个在多线程下安全的Map，我们可以通过<code>Collections.synchronizedMap(Map&lt;K, V&gt;)</code>来获取一个安全的Map，下面我们看看如何使用读写锁，基于Go语言来实现一个安全的Map 。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">common</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+<span class="c1">//安全的Map
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">SynchronizedMap</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">rw</span> <span class="o">*</span><span class="nx">sync</span><span class="p">.</span><span class="nx">RWMutex</span>
+	<span class="nx">data</span> <span class="kd">map</span><span class="p">[</span><span class="kd">interface</span><span class="p">{}]</span><span class="kd">interface</span><span class="p">{}</span>
+<span class="p">}</span>
+<span class="c1">//存储操作
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">sm</span> <span class="o">*</span><span class="nx">SynchronizedMap</span><span class="p">)</span> <span class="nf">Put</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span><span class="nx">v</span> <span class="kd">interface</span><span class="p">{}){</span>
+	<span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+
+	<span class="nx">sm</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]=</span><span class="nx">v</span>
+<span class="p">}</span>
+<span class="c1">//获取操作
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">sm</span> <span class="o">*</span><span class="nx">SynchronizedMap</span><span class="p">)</span> <span class="nf">Get</span><span class="p">(</span><span class="nx">k</span> <span class="kd">interface</span><span class="p">{})</span> <span class="kd">interface</span><span class="p">{}{</span>
+	<span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">RLock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">RUnlock</span><span class="p">()</span>
+
+	<span class="k">return</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1">//删除操作
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">sm</span> <span class="o">*</span><span class="nx">SynchronizedMap</span><span class="p">)</span> <span class="nf">Delete</span><span class="p">(</span><span class="nx">k</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+	<span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+
+	<span class="nb">delete</span><span class="p">(</span><span class="nx">sm</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span><span class="nx">k</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">//遍历Map，并且把遍历的值给回调函数，可以让调用者控制做任何事情
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">sm</span> <span class="o">*</span><span class="nx">SynchronizedMap</span><span class="p">)</span> <span class="nf">Each</span><span class="p">(</span><span class="nx">cb</span> <span class="kd">func</span> <span class="p">(</span><span class="kd">interface</span><span class="p">{},</span><span class="kd">interface</span><span class="p">{})){</span>
+	<span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">RLock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">RUnlock</span><span class="p">()</span>
+
+	<span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">data</span> <span class="p">{</span>
+		<span class="nf">cb</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span><span class="nx">v</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//生成初始化一个SynchronizedMap
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">NewSynchronizedMap</span><span class="p">()</span> <span class="o">*</span><span class="nx">SynchronizedMap</span><span class="p">{</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">SynchronizedMap</span><span class="p">{</span>
+		<span class="nx">rw</span><span class="p">:</span><span class="nb">new</span><span class="p">(</span><span class="nx">sync</span><span class="p">.</span><span class="nx">RWMutex</span><span class="p">),</span>
+		<span class="nx">data</span><span class="p">:</span><span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kd">interface</span><span class="p">{}]</span><span class="kd">interface</span><span class="p">{}),</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="条件变量">条件变量</h2>
+<p><a href="https://ilifes.com/golang/ipc-cond/" target="_blank" rel="noopener">Go并发编程之传统同步—(2)条件变量 _</a>
+</p>
 ]]></content>
 		</item>
 		
@@ -5606,6 +6454,86 @@ user: will.change, type=yaml</p>
 <blockquote>
 <p>Hello Nacos Discovery will.me</p>
 </blockquote>
+<h2 id="子项目-nacos-sidecar使用">子项目-nacos-sidecar使用</h2>
+<h3 id="创建sidecar应用">创建sidecar应用</h3>
+<p>首先创建一个简单的web服务simple-web作为sidecar；</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
+<span class="nd">@RestController</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SimpleWebApplicationClass</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">SimpleWebApplicationClass</span><span class="o">.</span><span class="na">class</span><span class="o">,</span><span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/health&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">health</span><span class="o">(){</span>
+        <span class="k">return</span> <span class="s">&#34;{\&#34;status\&#34;:\&#34;UP\&#34;}&#34;</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/hello&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">(){</span>
+        <span class="k">return</span> <span class="s">&#34;I&#39;m not java&#34;</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>端口</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">server</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8081</span><span class="w">
+</span></code></pre></div><h3 id="sidecar-simple模块">sidecar-simple模块</h3>
+<p>然后创建一个nacos-sidecar模块测试，pom文件如下</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml"><span class="nt">&lt;dependencies&gt;</span>
+    <span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>com.alibaba.cloud<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-sidecar<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>2.1.1.RELEASE<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+
+    <span class="nt">&lt;dependency&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>com.alibaba.cloud<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>spring-cloud-starter-alibaba-nacos-discovery<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>2.1.1.RELEASE<span class="nt">&lt;/version&gt;</span>
+    <span class="nt">&lt;/dependency&gt;</span>
+<span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div><p>主要看配置文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">server</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8088</span><span class="w">
+</span><span class="w"></span><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">cloud</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">nacos</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">discovery</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">server-addr</span><span class="p">:</span><span class="w"> </span><span class="l">localhost:8848</span><span class="w">
+</span><span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">sidecar-simple</span><span class="w">
+</span><span class="w"></span><span class="c"># 配置异构服务</span><span class="w">
+</span><span class="w"></span><span class="nt">sidecar</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">ip</span><span class="p">:</span><span class="w"> </span><span class="l">localhost</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8081</span><span class="w">
+</span><span class="w">  </span><span class="nt">health-check-url</span><span class="p">:</span><span class="w"> </span><span class="l">http://localhost:8081/health</span><span class="w">
+</span></code></pre></div><p>我们将这个服务也注册进nacos中，这里和前面nacos-provider不同的是，这里增加了sidecar，也就是我们之前创建的springboot web应用；</p>
+<h3 id="consumer消费">consumer消费</h3>
+<p>这时，在之前创建的nacosconsumer模块中增加一个controller</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@RestController</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">SideCarConsumer</span> <span class="o">{</span>
+    <span class="nd">@Bean</span>
+    <span class="nd">@LoadBalanced</span>
+    <span class="kd">public</span> <span class="n">RestTemplate</span> <span class="nf">restTemplate</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="k">new</span> <span class="n">RestTemplate</span><span class="o">();</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Autowired</span>
+    <span class="kd">private</span> <span class="n">RestTemplate</span> <span class="n">restTemplate</span><span class="o">;</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/hello&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">hello</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">restTemplate</span><span class="o">.</span><span class="na">getForObject</span><span class="o">(</span><span class="s">&#34;http://sidecar-simple/hello&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="o">}</span>
+
+    <span class="nd">@GetMapping</span><span class="o">(</span><span class="s">&#34;/health&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">health</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">restTemplate</span><span class="o">.</span><span class="na">getForObject</span><span class="o">(</span><span class="s">&#34;http://sidecar-simple/health&#34;</span><span class="o">,</span> <span class="n">String</span><span class="o">.</span><span class="na">class</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>这里使用服务访问而不是通过ip访问，<code>sidecar-simple</code>对应的前面创建的带有sidecar的服务；</p>
+<p>然后将三个应用启动，访问<code>http://localhost:8088/hello</code>和访问<code>http://localhost:8088/health</code>即能访问到前面创建的springboot web应用，而这个应用我们是没有注册到nacos中的。</p>
 <h2 id="附源代码">附：源代码</h2>
 <p>完整的源代码请参考：</p>
 <p><a href="https://github.com/WillJE/spring_boot_nacos">https://github.com/WillJE/spring_boot_nacos</a></p>
@@ -5630,6 +6558,90 @@ user: will.change, type=yaml</p>
 <li><a href="https://blog.didispace.com/spring-cloud-alibaba-nacos-config-2/" target="_blank" rel="noopener">Spring Cloud Alibaba基础教程：Nacos配置的多环境管理</a>
 </li>
 <li><a href="https://www.cnkirito.moe/nacos-cluster-mode/" target="_blank" rel="noopener">Nacos 集群部署模式最佳实践- 徐靖峰|个人博客</a>
+</li>
+<li><a href="https://gitee.com/kkk0713/nacos-sidecar/tree/master" target="_blank" rel="noopener">nacos-sidecar应用</a>
+</li>
+</ul>
+]]></content>
+		</item>
+		
+		<item>
+			<title>SpringCloud学习</title>
+			<link>https://willje.github.io/posts/java/spring/springcloud%E5%AD%A6%E4%B9%A0/</link>
+			<pubDate>Thu, 25 Jun 2020 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/java/spring/springcloud%E5%AD%A6%E4%B9%A0/</guid>
+			<description>Spring Cloud是一系列框架的有序集合。它利用Spring Boot的开发便利性巧妙地简化了分布式系统基础设施的开发，如服务发现注册、配置中心、消息总线、负载均衡、断路器、数据监控等，都可以用Spring Boot的开发风格做到一键启动和部署。Spring Cloud并没有重复制造轮子，它只是将目前各家公司开发的比较成熟、经得起实际考验的服务框架组合起来，通过Spri</description>
+			<content type="html"><![CDATA[<p>Spring Cloud是一系列框架的有序集合。它利用Spring Boot的开发便利性巧妙地简化了分布式系统基础设施的开发，如服务发现注册、配置中心、消息总线、负载均衡、断路器、数据监控等，都可以用Spring Boot的开发风格做到一键启动和部署。Spring Cloud并没有重复制造轮子，它只是将目前各家公司开发的比较成熟、经得起实际考验的服务框架组合起来，通过Spring Boot风格进行再封装屏蔽掉了复杂的配置和实现原理，最终给开发者留出了一套简单易懂、易部署和易维护的分布式系统开发工具包。</p>
+<ul>
+<li><strong>Spring 官网</strong>：<a href="https://spring.io/" target="_blank" rel="noopener">spring.io</a>
+</li>
+<li><strong>Spring Cloud 官网</strong>：<a href="https://spring.io/projects/spring-cloud" target="_blank" rel="noopener">spring.io/projects/sp…</a>
+</li>
+<li><strong>Spring Boot 官网</strong>:<a href="https://spring.io/projects/spring-boot/" target="_blank" rel="noopener">spring.io/projects/sp…</a>
+</li>
+</ul>
+<p><p class="md__image">
+  <img src="../SpringCloud%e5%ad%a6%e4%b9%a0.assets/4f66876c35d54a8fb49f35ebf4a9199e~tplv-k3u1fbpfcp-watermark.image"
+    alt="微信图片_20210608212119.jpg"  />
+</p>
+</p>
+<h2 id="版本对应关系">版本对应关系</h2>
+<p>可以通过Spring 官方对应版本地址：https://start.spring.io/actuator/info，找到springcloud和springboot版本对应关系：</p>
+<p><strong>spring-cloud-dependencies</strong> 版本列表可查看：</p>
+<p><a href="https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies" target="_blank" rel="noopener">https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-dependencies</a>
+</p>
+<p><strong>spring-boot-starter-parent</strong> 版本列表可查看：</p>
+<p><a href="https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent" target="_blank" rel="noopener">https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-parent</a>
+</p>
+<h2 id="服务注册和发现">服务注册和发现</h2>
+<h3 id="consul">consul</h3>
+<p>Consul 作为一种分布式服务工具，为了避免单点故障常常以集群的方式进行部署，在 Consul 集群的节点中分为 Server 和 Client 两种节点（所有的节点也被称为Agent），Server 节点保存数据，Client 节点负责健康检查及转发数据请求到 Server；Server 节点有一个 Leader 节点和多个 Follower 节点，Leader 节点会将数据同步到 Follower 节点，在 Leader 节点挂掉的时候会启动选举机制产生一个新的 Leader。</p>
+<p>Client 节点很轻量且无状态，它以 RPC 的方式向 Server 节点做读写请求的转发，此外也可以直接向 Server 节点发送读写请求。下面是 Consul 的架构图：</p>
+<p><p class="md__image">
+  <img src="../SpringCloud%e5%ad%a6%e4%b9%a0.assets/12553249-f5bec7bbaeaead67.png"
+    alt="img"  />
+</p>
+</p>
+<p><a href="https://www.jianshu.com/p/aaf02d8c5081" target="_blank" rel="noopener">Consul学习：第一课- 简书</a>
+</p>
+<p><a href="https://wangfanggang.com/Java/consul/" target="_blank" rel="noopener">Spring Cloud 学习笔记- Consul | 钢钢更新</a>
+</p>
+<p><a href="https://cloud.spring.io/spring-cloud-consul/reference/html/#spring-cloud-consul-install" target="_blank" rel="noopener">官方文档</a>
+</p>
+<h3 id="eureka">eureka</h3>
+<p>服务中心，这可以说是微服务架构的核心功能了，微服务部署之后，一定要有服务注册和发现的能力，Eureka 就是担任这个角色的。如果你用过 dubbo 的话，那一定知道 dubbo 中服务注册和发现的功能是用 zookeeper 来实现的。</p>
+<p>目前官方已停止升级，如果你的项目中还没有使用并且打算使用注册中心的话，可以直接使用 Spring Cloud Consul。</p>
+<h3 id="zookeeper">zookeeper</h3>
+<h3 id="etcd">etcd</h3>
+<h3 id="比较">比较</h3>
+<p><a href="https://mp.weixin.qq.com/s/qUb3F42LO8dk2zja3prFyQ" target="_blank" rel="noopener">ZooKeeper、Eureka、Consul 、Nacos，微服务注册中心怎么选？</a>
+</p>
+<p><p class="md__image">
+  <img src="../SpringCloud%e5%ad%a6%e4%b9%a0.assets/006By2pOgy1g52mnqkf14j31nu0mmn0c.jpg"
+    alt="img"  />
+</p>
+</p>
+<h2 id="spring-cloud-consul">Spring Cloud Consul</h2>
+<p>Consul 让服务注册和服务发现（通过 DNS 和 HTTP 接口）更加简单，甚至对于外部服务（例如SaaS）注册也一样。Spring Cloud Consul 可替代已有的 Spring Cloud Eureka。Eureka 2.x 版本也已经停止开发，并且 Spring Cloud 官方也建议用 Spring Cloud Consul 来替代，当然如果已经用了 Eureka 在项目中也没有关系，Eureka 已经足够稳定，正常使用没有任何问题。</p>
+<p>Spring Cloud Consul 可替代已有的 Spring Cloud Config ，当做配置中心使用。</p>
+<p><a href="https://mp.weixin.qq.com/s?__biz=MzAxMjA0MDk2OA==&amp;mid=2449469011&amp;idx=1&amp;sn=a6202e0f990ef4355b54879f1b598d62&amp;chksm=8fbca034b8cb2922fd45001b4ac269c9a6df0c362c4dcce0fad0d4b2f0ecb21f6daa2d6ec9ef&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">服务注册发现、配置中心集一体的 Spring Cloud Consul</a>
+</p>
+<p><a href="https://kingfree.gitbook.io/consul/" target="_blank" rel="noopener">consul中文文档</a>
+</p>
+<h2 id="spring-cloud-stream">Spring Cloud Stream</h2>
+<p>Spring Cloud Stream 是消息中间件组件，它集成了 kafka 和 rabbitmq 。如果你的系统中打算集成 kafka 或 rabbitmq，可以考虑使用 Stream 。</p>
+<h2 id="spring-cloud-bus">Spring Cloud Bus</h2>
+<p>消息总线，用于在集群（例如，配置变化事件）中传播状态变化，可与Spring Cloud Config联合实现热部署。集成了 Rabbitmq 和 kafka 。刚刚上面说到的 Stream 好像也是这个功能。没错，我们可以认为 Bus 是 Stream 的进一步封装，使用更简单。而 Stream 的灵活性更高。</p>
+<h2 id="spring-cloud-feign">Spring Cloud Feign</h2>
+<p>Feign是一种声明式、模板化的HTTP客户端。它可以用注解的方式简化 HTTP 请求，可以快速简单的请求服务提供接口。如果你还在使用 restTemplate 或者其他方式，不妨考虑一下 Feign。</p>
+<h2 id="spring-cloud-sleuth">Spring Cloud Sleuth</h2>
+<p>服务日志收集和链路追踪模块，封装了 Dapper 和 log-based 追踪以及 Zipkin 和 HTrace 操作。与之功能相同的框架还有 skywalking、Pinpoint，另外国内还有美团开源的 CAT，只不过 CAT 属于代码侵入的，需要开发人员在系统中做代码埋点，不过也更加灵活，更加精细。</p>
+<h2 id="spring-cloud-security">Spring Cloud Security</h2>
+<p>可用做授权服务、单点登录等。如果服务需要做权限控制，那除非你自己实现。不然用到最多的就是 shiro 和 Spring Security 。Spring Boot 中用的比较多的就是 Security，众多授权机制中属于 OAuth2 最为流行。Spring Cloud Security 就是将 Security、OAuth2 做了集成，方便使用。</p>
+<h2 id="学习资源">学习资源</h2>
+<ul>
+<li><a href="https://www.zhihu.com/column/c_1236328606852071424" target="_blank" rel="noopener">微服务专栏-mrhelloworld</a>
 </li>
 </ul>
 ]]></content>
@@ -7242,6 +8254,463 @@ user: will.change, type=yaml</p>
 		</item>
 		
 		<item>
+			<title>ELK入门</title>
+			<link>https://willje.github.io/posts/blog/elk%E5%85%A5%E9%97%A8/</link>
+			<pubDate>Sun, 13 Oct 2019 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/blog/elk%E5%85%A5%E9%97%A8/</guid>
+			<description>介绍 ELK是Elasticsearch、Logstash、Kibana三大开源框架首字母大写简称(但是后期出现的filebeat(beats中的一种)可以用来 替代logstash的数据收集功能，比较轻量级)。市面上也被成为Elastic Stack。 Logstash是免费且开放的服务器端数据处理管道，能够从多个来源采集数据，转换数据，然后将数据发送到您最喜欢 的</description>
+			<content type="html"><![CDATA[<h2 id="介绍">介绍</h2>
+<p>ELK是Elasticsearch、Logstash、Kibana三大开源框架首字母大写简称(但是后期出现的filebeat(beats中的一种)可以用来</p>
+<p>替代logstash的数据收集功能，比较轻量级)。市面上也被成为Elastic Stack。</p>
+<p><strong>Logstash</strong>是免费且开放的服务器端数据处理管道，能够从多个来源采集数据，转换数据，然后将数据发送到您最喜欢</p>
+<p>的“存储库”中。Logstash能够动态地采集、转换和传输数据，不受格式或复杂度的影响。利用Grok从非结构化数据中派生</p>
+<p>出结构，从IP地址解码出地理坐标，匿名化或排除敏感字段，并简化整体处理过程。</p>
+<p><strong>Elasticsearch</strong>是Elastic Stack核心的分布式搜索和分析引擎,是一个基于Lucene、分布式、通过Restful方式进行交互的近</p>
+<p>实时搜索平台框架。Elasticsearch为所有类型的数据提供近乎实时的搜索和分析。无论您是结构化文本还是非结构化文</p>
+<p>本，数字数据或地理空间数据，Elasticsearch都能以支持快速搜索的方式有效地对其进行存储和索引。</p>
+<p><strong>Kibana</strong>是一个针对Elasticsearch的开源分析及可视化平台，用来搜索、查看交互存储在Elasticsearch索引中的数据。使用</p>
+<p>Kibana，可以通过各种图表进行高级数据分析及展示。并且可以为 Logstash 和 ElasticSearch 提供的日志分析友好的 Web</p>
+<p>界面，可以汇总、分析和搜索重要数据日志。还可以让海量数据更容易理解。它操作简单，基于浏览器的用户界面可以快</p>
+<p>速创建仪表板（dashboard）实时显示Elasticsearch查询动态。</p>
+<h3 id="为什么要使用elk">为什么要使用ELK</h3>
+<p>日志主要包括系统日志、应用程序日志和安全日志。系统运维和开发人员可以通过日志了解服务器软硬件信息、检查配置</p>
+<p>过程中的错误及错误发生的原因。经常分析日志可以了解服务器的负荷，性能安全性，从而及时采取措施纠正错误。</p>
+<p>往往单台机器的日志我们使用grep、awk等工具就能基本实现简单分析，但是当日志被分散的储存不同的设备上。如果你</p>
+<p>管理数十上百台服务器，你还在使用依次登录每台机器的传统方法查阅日志。这样是不是感觉很繁琐和效率低下。当务之</p>
+<p>急我们使用集中化的日志管理，例如：开源的syslog，将所有服务器上的日志收集汇总。集中化管理日志后，日志的统计</p>
+<p>和检索又成为一件比较麻烦的事情，一般我们使用grep、awk和wc等Linux命令能实现检索和统计，但是对于要求更高的</p>
+<p>查询、排序和统计等要求和庞大的机器数量依然使用这样的方法难免有点力不从心。</p>
+<p>一般大型系统是一个分布式部署的架构，不同的服务模块部署在不同的服务器上，问题出现时，大部分情况需要根据问题</p>
+<p>暴露的关键信息，定位到具体的服务器和服务模块，构建一套集中式日志系统，可以提高定位问题的效率。</p>
+<h2 id="环境搭建">环境搭建</h2>
+<p>elk各个组件的网址可以在官网下载：https://www.elastic.co/cn/</p>
+<p>或者在中文社区下载：https://elasticsearch.cn/download/</p>
+<h3 id="es">ES</h3>
+<p>下载完成后解压即可，进入bin目录执行elasticsearch.bat文件服务即启动，访问localhost:9200；</p>
+<p><p class="md__image">
+  <img src="../ELK%e5%85%a5%e9%97%a8.assets/image-20210623164157343.png"
+    alt="image-20210623164157343"  />
+</p>
+</p>
+<p>Elasticsearch head是一个elasticsearch的UI界面，可以访问官网https://github.com/mobz/elasticsearch-head 安装，或者使用谷歌浏览器插件<a href="https://chrome.google.com/webstore/detail/elasticsearch-head/ffmkiejjmecolpfloofpjologoblkegm/related?hl=zh-CN" target="_blank" rel="noopener">ElasticSearch Head</a>
+。</p>
+<h3 id="kibana">Kibana</h3>
+<p>还是下载解压，进入bin目录执行kibana.bat即可；</p>
+<p>kibana默认是英语，如果需要汉化，可以在conf/kibana.yml文件中找到il8n改成zh-CN即可；</p>
+<h2 id="基础知识">基础知识</h2>
+<h3 id="elasticsearch">Elasticsearch</h3>
+<h4 id="几个概念">几个概念</h4>
+<p><strong>索引（Index）</strong></p>
+<p>类比mysql的database，一个索引就是一个数据库。es将数据存储在一个或多个索引中。向索引写入文档或从索引中读取文档。</p>
+<p><strong>文档（document）</strong></p>
+<p>文档是es中的只要实体，数据搜索，就是对文档的搜索。文档由字段构成。从客户端角度看，文档是一个JSON对象</p>
+<p><strong>映射（mapping）</strong></p>
+<p>类似mysql中对于表结构的定义。对index中的元信息进行存储。例如如何将输入文本分割为词条，哪些词条被过滤等等。</p>
+<p><strong>类型（type）</strong></p>
+<p>一个索引可以有多个类型。例如一个索引下可以有文章类型，也可以有用户类型，也可以有评论类型。在一个索引中不能再创建多个类型，在以后的版本中将删除类型的整个概念。</p>
+<p><strong>节点（node）</strong></p>
+<p>一个es服务实例称为一个节点</p>
+<p><strong>集群（cluster）</strong></p>
+<p>多个节点组成一个集群。</p>
+<p>这个集群名称必须是唯一的，因为集群的节点是通过集群名称来加入集群的</p>
+<p><strong>分片(shard)和副本</strong></p>
+<p>索引可能存储大量数据，这些数据可能会c超出单个节点的硬件限制。例如，占用1TB磁盘空间的10亿个文档的单个索引可能不适合单个节点的磁盘，或者速度太慢，无法单独满足单个节点的搜索请求。</p>
+<p>为了解决这个问题，ElasticSearch提供了将索引细分为多个片段（称为碎片）的能力。创建索引时，只需定义所需的碎片数量。每个分片（shard）本身就是一个完全功能性和独立的“索引”，可以托管在集群中的任何节点上。</p>
+<blockquote>
+<p>为什么要分片?</p>
+</blockquote>
+<p>它允许您水平拆分/缩放内容量</p>
+<p>它允许您跨碎片（可能在多个节点上）分布和并行操作，从而提高性能/吞吐量</p>
+<blockquote>
+<p>为什么要有副本？</p>
+</blockquote>
+<p>当分片/节点发生故障时提供高可用性。因此，需要注意的是，副本分片永远不会分配到复制它的原始/主分片所在的节点上。</p>
+<p>允许您扩展搜索量/吞吐量，因为可以在所有副本上并行执行搜索。</p>
+<p>可以在创建索引时为每个索引定义分片和副本的数量。创建索引后，您还可以随时动态更改副本的数量。您可以使用收缩和拆分API更改现有索引的分片数量，建议在创建索引时就考虑好分片和副本的数量。</p>
+<p>默认情况下，ElasticSearch中的每个索引都分配一个主分片和一个副本，这意味着如果集群中至少有两个节点，则索引将有一个主分片和另一个副本分片（一个完整副本），每个索引总共有两个分片。</p>
+<p><strong>网关（mapping）</strong></p>
+<p>在es的工作过程中，关于集群状态，索引设置的各种信息都会被收集起来，并在网关中被持久化。</p>
+<h4 id="基础操作">基础操作</h4>
+<p>查看节点健康状态</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">GET /_cat/health?format<span class="o">=</span>json
+</code></pre></div><p>查看<code>_cat</code>命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">=</span>^.^<span class="o">=</span>
+/_cat/allocation
+/_cat/shards
+/_cat/shards/<span class="o">{</span>index<span class="o">}</span>
+/_cat/master
+/_cat/nodes
+/_cat/tasks
+/_cat/indices
+/_cat/indices/<span class="o">{</span>index<span class="o">}</span>
+/_cat/segments
+/_cat/segments/<span class="o">{</span>index<span class="o">}</span>
+/_cat/count
+/_cat/count/<span class="o">{</span>index<span class="o">}</span>
+/_cat/recovery
+/_cat/recovery/<span class="o">{</span>index<span class="o">}</span>
+/_cat/health
+/_cat/pending_tasks
+/_cat/aliases
+/_cat/aliases/<span class="o">{</span>alias<span class="o">}</span>
+/_cat/thread_pool
+/_cat/thread_pool/<span class="o">{</span>thread_pools<span class="o">}</span>
+/_cat/plugins
+/_cat/fielddata
+/_cat/fielddata/<span class="o">{</span>fields<span class="o">}</span>
+/_cat/nodeattrs
+/_cat/repositories
+/_cat/snapshots/<span class="o">{</span>repository<span class="o">}</span>
+/_cat/templates
+</code></pre></div><p>我们可以使用curl或者kibana提供的Dev Tools进行API测试。</p>
+<p>ES是使用REST风格的API。</p>
+<p><strong>简单的增删改查</strong></p>
+<p>创建索引</p>
+<blockquote>
+<p>注：实际项目里一般是不会直接这样创建 index 的，这里仅为演示。一般都是通过创建 mapping 手动定义 index 或者自动生成 index 。</p>
+</blockquote>
+<p><p class="md__image">
+  <img src="../ELK%e5%85%a5%e9%97%a8.assets/image-20210624095435159.png"
+    alt="image-20210624095435159"  />
+</p>
+</p>
+<p>查看所有索引</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">GET /_cat/indices?format<span class="o">=</span>json
+</code></pre></div><p>删除索引</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">DELETE /customer
+</code></pre></div><p>按ID新增数据，type为_doc：type后期版本会删除，默认就是 _doc</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">PUT /customer/_doc/1
+<span class="o">{</span>
+  <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;John Doe&#34;</span>
+<span class="o">}</span>
+PUT /customer/_doc/2
+<span class="o">{</span>
+  <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;yujc&#34;</span>,
+  <span class="s2">&#34;age&#34;</span>:22
+<span class="o">}</span>
+</code></pre></div><blockquote>
+<p>如果索引index不存在，直接新增数据也会同时创建index。</p>
+</blockquote>
+<p>同时，该操作也能修改数据：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">PUT /customer/_doc/2
+<span class="o">{</span>
+  <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;yujc2&#34;</span>
+<span class="o">}</span>
+</code></pre></div><p><code>name</code>字段会被修改，而且<code>_version</code>会被修改为2。<strong>该操作实际是覆盖数据</strong>：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">GET /customer/_doc/2
+</code></pre></div><p>结果：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">{</span>
+  <span class="s2">&#34;_index&#34;</span>: <span class="s2">&#34;customer&#34;</span>,
+  <span class="s2">&#34;_type&#34;</span>: <span class="s2">&#34;_doc&#34;</span>,
+  <span class="s2">&#34;_id&#34;</span>: <span class="s2">&#34;2&#34;</span>,
+  <span class="s2">&#34;_version&#34;</span>: 2,
+  <span class="s2">&#34;found&#34;</span>: true,
+  <span class="s2">&#34;_source&#34;</span>: <span class="o">{</span>
+    <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;yujc2&#34;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h4 id="复杂查询">复杂查询</h4>
+<p>使用query带上条件，_source指定需要查询的字段即mapping；</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">GET /customer/_doc/_search
+<span class="o">{</span>
+  <span class="s2">&#34;query&#34;</span>:<span class="o">{</span>
+    <span class="s2">&#34;match&#34;</span>:<span class="o">{</span>
+      <span class="s2">&#34;name&#34;</span>:<span class="s2">&#34;JAMES HARDEN&#34;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>,
+  <span class="s2">&#34;_source&#34;</span>:<span class="o">[</span><span class="s2">&#34;name&#34;</span><span class="o">]</span>
+<span class="o">}</span>
+</code></pre></div><p>使用sort指定mapping按升序或降序排序；</p>
+<p>使用highlight高亮，还可以使用pre_tags自定义高亮样式；</p>
+<h4 id="ik分词器">ik分词器</h4>
+<p>Elasticsearch默认也能对中文进行分词。</p>
+<p>安装IK，IK项目地址：<a href="https://github.com/medcl/elasticsearch-analysis-ik/releases" target="_blank" rel="noopener">https://github.com/medcl/elas&hellip;</a>
+</p>
+<p><strong>首先需要说明的是，IK插件必须和 ElasticSearch 的版本一致，否则不兼容。</strong></p>
+<p>安装方法：从 <a href="https://github.com/medcl/elasticsearch-analysis-ik/releases" target="_blank" rel="noopener">https://github.com/medcl/elas&hellip;</a>
+ 下载压缩包，然后在ES的<code>plugins</code>目录创建<code>analysis-ik</code>子目录，把压缩包的内容复制到这个目录里面即可。</p>
+<p>IK支持两种分词模式：</p>
+<ul>
+<li>ik_max_word: 会将文本做最细粒度的拆分，会穷尽各种可能的组合</li>
+<li>ik_smart: 会做最粗粒度的拆分</li>
+</ul>
+<p>es自带了许多内置的Analyzer分析器，无需配置就可以直接在index中使用：</p>
+<ul>
+<li>标准分词器（standard）：以单词边界切分字符串为terms，根据Unicode文本分割算法。它会移除大部分的标点符号，小写分词后的term，支持停用词。</li>
+<li>简单分词器（simple）：该分词器会在遇到非字母时切分字符串，小写所有的term。</li>
+<li>空格分词器（whitespace）：遇到空格字符时切分字符串，</li>
+<li>停用词分词器（stop）：类似简单分词器，同时支持移除停用词。</li>
+<li>关键词分词器（keyword）：无操作分词器，会输出与输入相同的内容作为一个single term。</li>
+<li>模式分词器（pattern）：使用正则表达式讲字符串且分为terms。支持小写字母和停用词。</li>
+<li>语言分词器（language）：支持许多基于特定语言的分词器，比如english或french。</li>
+<li>签名分词器（fingerprint）：是一个专家分词器，会产生一个签名，可以用于去重检测。</li>
+<li>自定义分词器：如果内置分词器无法满足你的需求，可以自定义custom分词器，根据不同的character filters，tokenizer，token filters的组合 。例如IK就是自定义分词器。</li>
+</ul>
+<p>详见文档：<a href="https://www.elastic.co/guide/en/elasticsearch/reference/current/analysis-analyzers.html" target="_blank" rel="noopener">https://www.elastic.co/guide/&hellip;</a>
+</p>
+<p>使用kibana devtools测试ik两种不同分词模式ik_smart和ik_max_word的测试</p>
+<p><p class="md__image">
+  <img src="../ELK%e5%85%a5%e9%97%a8.assets/image-20210623173137089.png"
+    alt="image-20210623173137089"  />
+</p>
+</p>
+<p>自定义分词词典</p>
+<p>我们也可以定义自己的词典供IK使用。比如：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">curl -XGET <span class="s2">&#34;http://localhost:9200/_analyze&#34;</span> -H <span class="s1">&#39;Content-Type: application/json&#39;</span> -d<span class="s1">&#39;{&#34;analyzer&#34;: &#34;ik_smart&#34;,&#34;text&#34;: &#34;去朝阳公园&#34;}&#39;</span>
+</code></pre></div><p>结果：</p>
+<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
+  <span class="nt">&#34;tokens&#34;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+      <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;去&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+      <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_CHAR&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;朝阳&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_WORD&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+      <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;公园&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+      <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_WORD&#34;</span><span class="p">,</span>
+      <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">2</span>
+    <span class="p">}</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</code></pre></div><p>我们希望<code>朝阳公园</code>作为一个整体，这时候可以把该词加入到自己的词典里。</p>
+<p>新建自己的词典只需要简单几步就可以完成：
+1、在<code>elasticsearch-6.2.4/config/analysis-ik/</code>目录增加一个<code>my.dic</code>:</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ touch my.dic
+$ <span class="nb">echo</span> 朝阳公园 &gt; my.dic
+
+$ cat my.dic
+朝阳公园
+</code></pre></div><p><code>.dic</code>为词典文件，其实就是简单的文本文件，词语与词语直接需要换行。注意是UTF8编码。我们看一下自带的分词文件：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ head -n <span class="m">5</span> main.dic
+一一列举
+一一对应
+一一道来
+一丁
+一丁不识
+</code></pre></div><p>2、然后修改<code>elasticsearch-6.2.4/config/analysis-ik/IKAnalyzer.cfg.xml</code>文件：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">&lt;?xml <span class="nv">version</span><span class="o">=</span><span class="s2">&#34;1.0&#34;</span> <span class="nv">encoding</span><span class="o">=</span><span class="s2">&#34;UTF-8&#34;</span>?&gt;
+&lt;!DOCTYPE properties SYSTEM <span class="s2">&#34;http://java.sun.com/dtd/properties.dtd&#34;</span>&gt;
+&lt;properties&gt;
+    &lt;comment&gt;IK Analyzer 扩展配置&lt;/comment&gt;
+    &lt;!--用户可以在这里配置自己的扩展字典 --&gt;
+    &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;ext_dict&#34;</span>&gt;my.dic&lt;/entry&gt;
+     &lt;!--用户可以在这里配置自己的扩展停止词字典--&gt;
+    &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;ext_stopwords&#34;</span>&gt;&lt;/entry&gt;
+    &lt;!--用户可以在这里配置远程扩展字典 --&gt;
+    &lt;!-- &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;remote_ext_dict&#34;</span>&gt;words_location&lt;/entry&gt; --&gt;
+    &lt;!--用户可以在这里配置远程扩展停止词字典--&gt;
+    &lt;!-- &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;remote_ext_stopwords&#34;</span>&gt;words_location&lt;/entry&gt; --&gt;
+&lt;/properties&gt;
+</code></pre></div><p>增加了<code>my.dic</code>，然后重启ES。我们再看一下效果：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">GET /_analyze
+<span class="o">{</span>
+  <span class="s2">&#34;analyzer&#34;</span>: <span class="s2">&#34;ik_smart&#34;</span>,
+  <span class="s2">&#34;text&#34;</span>: <span class="s2">&#34;去朝阳公园&#34;</span>
+<span class="o">}</span>
+</code></pre></div><p>结果：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">{</span>
+  <span class="s2">&#34;tokens&#34;</span>: <span class="o">[</span>
+    <span class="o">{</span>
+      <span class="s2">&#34;token&#34;</span>: <span class="s2">&#34;去&#34;</span>,
+      <span class="s2">&#34;start_offset&#34;</span>: 0,
+      <span class="s2">&#34;end_offset&#34;</span>: 1,
+      <span class="s2">&#34;type&#34;</span>: <span class="s2">&#34;CN_CHAR&#34;</span>,
+      <span class="s2">&#34;position&#34;</span>: <span class="m">0</span>
+    <span class="o">}</span>,
+    <span class="o">{</span>
+      <span class="s2">&#34;token&#34;</span>: <span class="s2">&#34;朝阳公园&#34;</span>,
+      <span class="s2">&#34;start_offset&#34;</span>: 1,
+      <span class="s2">&#34;end_offset&#34;</span>: 5,
+      <span class="s2">&#34;type&#34;</span>: <span class="s2">&#34;CN_WORD&#34;</span>,
+      <span class="s2">&#34;position&#34;</span>: <span class="m">1</span>
+    <span class="o">}</span>
+  <span class="o">]</span>
+<span class="o">}</span>
+</code></pre></div><p>说明自定义词典生效了。如果有多个词典，使用英文分号隔开：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">&lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;ext_dict&#34;</span>&gt;my.dic<span class="p">;</span>custom/single_word_low_freq.dic&lt;/entry&gt;
+</code></pre></div><h2 id="集成springboot">集成SpringBoot</h2>
+<p>各种客户端集成可以看<a href="https://www.elastic.co/guide/en/elasticsearch/client/index.html" target="_blank" rel="noopener">官网</a>
+</p>
+<h2 id="参考资料">参考资料</h2>
+<p><a href="https://segmentfault.com/a/1190000016753816" target="_blank" rel="noopener">Elasticsearch实践（一）：基础入门</a>
+</p>
+<p><a href="https://segmentfault.com/a/1190000017215854" target="_blank" rel="noopener">Elasticsearch实践（四）：IK分词</a>
+</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>Java生产者与消费者</title>
+			<link>https://willje.github.io/posts/java/concurrent/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/</link>
+			<pubDate>Mon, 05 Aug 2019 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/java/concurrent/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/</guid>
+			<description>实现生产者消费者模型，可以使用阻塞队列，或者使用 Object 类里自带的 wait() 和 notify() 或者 notifyAll() 的消息通知机制。 实现 wait()/notify() 接下来我们需要重点看下这个通知机制。 wait() 和 notify() 都是 Java 中的 Object 类自带的方法，可以用来实现线程间的通信。 在上一节 讲的 11 个 APIs 里我也提到了它，我们这里再展开讲一下。 wait() 方法是用来让当前线程等待，直到有别的线程调用 notify() 将它唤醒，或者我们可以设定一个时间让它自动苏醒。 调用该方法之前，线程</description>
+			<content type="html"><![CDATA[<p>实现生产者消费者模型，可以使用阻塞队列，或者使用 <code>Object</code> 类里自带的 <code>wait()</code> 和 <code>notify()</code> 或者 <code>notifyAll()</code> 的消息通知机制。</p>
+<h2 id="实现">实现</h2>
+<h3 id="waitnotify">wait()/notify()</h3>
+<p>接下来我们需要重点看下这个通知机制。</p>
+<p><code>wait()</code> 和 <code>notify()</code> 都是 Java 中的 <code>Object</code> 类自带的方法，可以用来实现线程间的通信。</p>
+<p>在<a href="https://mp.weixin.qq.com/s/FHyqxHcfzOtKvA1_PFtnXw" target="_blank" rel="noopener">上一节</a>
+讲的 11 个 APIs 里我也提到了它，我们这里再展开讲一下。</p>
+<p><code>wait()</code> 方法是用来让当前线程等待，直到有别的线程调用 <code>notify()</code> 将它唤醒，或者我们可以设定一个时间让它自动苏醒。</p>
+<p>调用该方法之前，线程必须要获得该对象的对象监视器锁，也就是只能用在加锁的方法下。</p>
+<p><strong>而调用该方法之后，当前线程会释放锁。</strong>（提示：这里很重要，也是下文代码中用 <code>while</code> 而非 <code>if</code> 的原因。）</p>
+<p><code>notify()</code> 方法只能通知一个线程，如果多个线程在等待，那就唤醒任意一个。</p>
+<p><code>notifyAll()</code> 方法是可以唤醒所有等待线程，然后加入同步队列。</p>
+<p><p class="md__image">
+  <img src="../%e7%94%9f%e4%ba%a7%e8%80%85%e6%b6%88%e8%b4%b9%e8%80%85.assets/007S8ZIlgy1gippgxspy8j310k0sagqn.jpg"
+    alt="img"  />
+</p>
+</p>
+<p>这里我们用到了 2 个队列：</p>
+<ul>
+<li>同步队列：对应于我们<a href="https://mp.weixin.qq.com/s/FHyqxHcfzOtKvA1_PFtnXw" target="_blank" rel="noopener">上一节</a>
+讲的线程状态中的 <code>Runnable</code>，也就是线程准备就绪，就等着抢资源了。</li>
+<li>等待队列：对应于我们<a href="https://mp.weixin.qq.com/s/FHyqxHcfzOtKvA1_PFtnXw" target="_blank" rel="noopener">上一节</a>
+讲的线程状态中的 <code>Waiting</code>，也就是等待状态。</li>
+</ul>
+<p><strong>这里需要注意，从等待状态线程无法直接进入 Q2，而是要先重新加入同步队列，再次等待拿锁，拿到了锁才能进去 Q2；一旦出了 Q2，锁就丢了。</strong></p>
+<p>在 <code>Q2</code> 里，其实只有一个线程，因为这里我们必须要加锁才能进行操作。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Product</span>  <span class="o">{</span>
+    <span class="kd">private</span> <span class="n">String</span> <span class="n">name</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Product</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">getName</span><span class="o">()</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setName</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>主函数里我设定了两类线程，并且这里选择用普通的 <code>ArrayDeque</code> 来实现 <code>Queue</code>，更简单的方式是直接用 Java 中的 <code>BlockingQueue</code> 来实现。</p>
+<p><code>BlockingQueue</code> 是阻塞队列，它有一系列的方法可以让线程实现自动阻塞，常用的 <code>BlockingQueue</code> 有很多，后面会单独出一篇文章来讲。</p>
+<p>这里为了更好的理解并发协同的这个过程，我们先自己处理。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Test</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">Queue</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="n">queue</span> <span class="o">=</span> <span class="k">new</span> <span class="n">ArrayDeque</span><span class="o">&lt;&gt;();</span>
+
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">100</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Producer</span><span class="o">(</span><span class="n">queue</span><span class="o">,</span> <span class="n">100</span><span class="o">)).</span><span class="na">start</span><span class="o">();</span>
+            <span class="k">new</span> <span class="n">Thread</span><span class="o">(</span><span class="k">new</span> <span class="n">Consumer</span><span class="o">(</span><span class="n">queue</span><span class="o">,</span> <span class="n">100</span><span class="o">)).</span><span class="na">start</span><span class="o">();</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Producer</span> <span class="kd">implements</span> <span class="n">Runnable</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="n">Queue</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="n">queue</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">maxCapacity</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Producer</span><span class="o">(</span><span class="n">Queue</span> <span class="n">queue</span><span class="o">,</span> <span class="kt">int</span> <span class="n">maxCapacity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">maxCapacity</span> <span class="o">=</span> <span class="n">maxCapacity</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">queue</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">queue</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="n">maxCapacity</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//一定要用 while，而不是 if，下文解释
+</span><span class="c1"></span>                <span class="k">try</span> <span class="o">{</span>
+                    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;生产者&#34;</span> <span class="o">+</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;等待中... Queue 已达到最大容量，无法生产&#34;</span><span class="o">);</span>
+                    <span class="n">wait</span><span class="o">();</span>
+                    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;生产者&#34;</span> <span class="o">+</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;退出等待&#34;</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">queue</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//队列里的产品从无到有，需要通知在等待的消费者
+</span><span class="c1"></span>                <span class="n">queue</span><span class="o">.</span><span class="na">notifyAll</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="n">Random</span> <span class="n">random</span> <span class="o">=</span> <span class="k">new</span> <span class="n">Random</span><span class="o">();</span>
+            <span class="n">Integer</span> <span class="n">i</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="na">nextInt</span><span class="o">();</span>
+            <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="k">new</span> <span class="n">Product</span><span class="o">(</span><span class="s">&#34;产品&#34;</span>  <span class="o">+</span> <span class="n">i</span><span class="o">.</span><span class="na">toString</span><span class="o">()));</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;生产者&#34;</span> <span class="o">+</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;生产了产品：&#34;</span> <span class="o">+</span> <span class="n">i</span><span class="o">.</span><span class="na">toString</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>其实它的主逻辑很简单，我这里为了方便演示加了很多打印语句才显得有点复杂。</p>
+<p>我们把主要逻辑拎出来看：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"> <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">queue</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">queue</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="n">maxCapacity</span><span class="o">)</span> <span class="o">{</span> <span class="c1">//一定要用 while，而不是 if，下文解释
+</span><span class="c1"></span>                <span class="k">try</span> <span class="o">{</span>
+                    <span class="n">wait</span><span class="o">();</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">queue</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">queue</span><span class="o">.</span><span class="na">notifyAll</span><span class="o">();</span>
+            <span class="o">}</span>
+            <span class="n">queue</span><span class="o">.</span><span class="na">offer</span><span class="o">(</span><span class="k">new</span> <span class="n">Product</span><span class="o">(</span><span class="s">&#34;产品&#34;</span>  <span class="o">+</span> <span class="n">i</span><span class="o">.</span><span class="na">toString</span><span class="o">()));</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="为什么只能用-while-而不是-if">为什么只能用 <code>while</code> 而不是 <code>if</code></h3>
+<p>其实在这一小段，生产者线程经历了几个过程：</p>
+<ol>
+<li>如果队列已满，它就没法生产，那也不能占着位置不做事，所以要把锁让出来，去 <code>Q3 - 等待队列</code> 等着；</li>
+<li>在等待队列里被唤醒之后，不能直接夺过锁来，而是要先加入 <code>Q1 - 同步队列</code> 等待资源；</li>
+<li>一旦抢到资源，关门上锁，才能来到 <code>Q2</code> 继续执行 <code>wait()</code> 之后的活，但是，此时这个队列有可能又满了，所以退出 <code>wait()</code> 之后，还需要再次检查 <code>queue.size() == maxCapacity</code> 这个条件，所以要用 <code>while</code>。</li>
+</ol>
+<p><strong>那么为什么可能又满了呢？</strong></p>
+<p>因为线程没有一直拿着锁，<strong>在被唤醒之后，到拿到锁之间的这段时间里</strong>，有可能其他的生产者线程先拿到了锁进行了生产，所以队列又经历了一个从不满到满的过程。</p>
+<p>总结：在使用线程的等待通知机制时，一般都要在 <code>while</code> 循环中调用 <code>wait()</code> 方法。</p>
+<p>消费者线程是完全对称的，我们来看代码。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">Consumer</span> <span class="kd">implements</span> <span class="n">Runnable</span><span class="o">{</span>
+    <span class="kd">private</span> <span class="n">Queue</span><span class="o">&lt;</span><span class="n">Product</span><span class="o">&gt;</span> <span class="n">queue</span><span class="o">;</span>
+    <span class="kd">private</span> <span class="kt">int</span> <span class="n">maxCapacity</span><span class="o">;</span>
+
+    <span class="kd">public</span> <span class="nf">Consumer</span><span class="o">(</span><span class="n">Queue</span> <span class="n">queue</span><span class="o">,</span> <span class="kt">int</span> <span class="n">maxCapacity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">queue</span> <span class="o">=</span> <span class="n">queue</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">maxCapacity</span> <span class="o">=</span> <span class="n">maxCapacity</span><span class="o">;</span>
+    <span class="o">}</span>
+
+    <span class="nd">@Override</span>
+    <span class="kd">public</span> <span class="kt">void</span> <span class="nf">run</span><span class="o">()</span> <span class="o">{</span>
+        <span class="kd">synchronized</span> <span class="o">(</span><span class="n">queue</span><span class="o">)</span> <span class="o">{</span>
+            <span class="k">while</span> <span class="o">(</span><span class="n">queue</span><span class="o">.</span><span class="na">isEmpty</span><span class="o">())</span> <span class="o">{</span>
+                <span class="k">try</span> <span class="o">{</span>
+                    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;消费者&#34;</span> <span class="o">+</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;等待中... Queue 已缺货，无法消费&#34;</span><span class="o">);</span>
+                    <span class="n">wait</span><span class="o">();</span>
+                    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;消费者&#34;</span> <span class="o">+</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;退出等待&#34;</span><span class="o">);</span>
+                <span class="o">}</span> <span class="k">catch</span> <span class="o">(</span><span class="n">InterruptedException</span> <span class="n">e</span><span class="o">)</span> <span class="o">{</span>
+                    <span class="n">e</span><span class="o">.</span><span class="na">printStackTrace</span><span class="o">();</span>
+                <span class="o">}</span>
+            <span class="o">}</span>
+            <span class="k">if</span> <span class="o">(</span><span class="n">queue</span><span class="o">.</span><span class="na">size</span><span class="o">()</span> <span class="o">==</span> <span class="n">maxCapacity</span><span class="o">)</span> <span class="o">{</span>
+                <span class="n">queue</span><span class="o">.</span><span class="na">notifyAll</span><span class="o">();</span>
+            <span class="o">}</span>
+
+            <span class="n">Product</span> <span class="n">product</span> <span class="o">=</span> <span class="n">queue</span><span class="o">.</span><span class="na">poll</span><span class="o">();</span>
+            <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;消费者&#34;</span> <span class="o">+</span> <span class="n">Thread</span><span class="o">.</span><span class="na">currentThread</span><span class="o">().</span><span class="na">getName</span><span class="o">()</span> <span class="o">+</span> <span class="s">&#34;消费了：&#34;</span> <span class="o">+</span> <span class="n">product</span><span class="o">.</span><span class="na">getName</span><span class="o">());</span>
+        <span class="o">}</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MzIzNDQ3MzgxMw==&amp;mid=2247486208&amp;idx=1&amp;sn=f9fd1254209b8fb094bfa422a44767b5&amp;chksm=e8f49b3adf83122c4c8eb84e730dc170bdbc04e2b6efc32b61fcf90c4cda4438f598dae3b33c&amp;scene=178&amp;cur_album_id=1499956111087616003#rd" target="_blank" rel="noopener">多线程必考的「生产者 - 消费者」模型</a>
+</li>
+</ul>
+]]></content>
+		</item>
+		
+		<item>
 			<title>Java并发之CAS原理分析</title>
 			<link>https://willje.github.io/posts/java/concurrent/java%E5%B9%B6%E5%8F%91%E4%B9%8Bcas%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/</link>
 			<pubDate>Sat, 29 Jun 2019 20:55:29 +0800</pubDate>
@@ -7551,6 +9020,113 @@ git add * <span class="o">&amp;&amp;</span> git commit -m <span class="s1">&#39;
 		</item>
 		
 		<item>
+			<title>bitmap使用</title>
+			<link>https://willje.github.io/posts/blog/bitmap%E4%BD%BF%E7%94%A8/</link>
+			<pubDate>Wed, 05 Dec 2018 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/blog/bitmap%E4%BD%BF%E7%94%A8/</guid>
+			<description>什么是bitmap Bit-map的基本思想就是用一个bit位来标记某个元素对应的Value，而Key即是该元素。由于采用了Bit为单位来存储数据， 因此在存储空间方面，可以大大节省。（PS：划重点 节省存储空间 ） 假设有这样一个需求：在20亿个随机整数中找出某个数m是否存在其中，并假设32位操作系统，4G内存 在Java中，int占4字节，1字节=8位（1 byte = 8 bi</description>
+			<content type="html"><![CDATA[<h2 id="什么是bitmap">什么是bitmap</h2>
+<p>Bit-map的基本思想就是用一个bit位来标记某个元素对应的Value，而Key即是该元素。由于采用了Bit为单位来存储数据，</p>
+<p>因此在存储空间方面，可以大大节省。（PS：划重点 <strong>节省存储空间</strong> ）</p>
+<p>假设有这样一个需求：在20亿个随机整数中找出某个数m是否存在其中，并假设32位操作系统，4G内存</p>
+<p>在Java中，int占4字节，1字节=8位（1 byte = 8 bit）</p>
+<p>如果每个数字用int存储，那就是20亿个int，因而占用的空间约为(2000000000*4/1024/1024/1024)≈<strong>7.45</strong> G</p>
+<p>如果按位存储就不一样了，20亿个数就是20亿位，占用空间约为 (2000000000/8/1024/1024/1024)≈<strong>0.23</strong> G</p>
+<p>高下立判，无需多言。</p>
+<h2 id="基础使用">基础使用</h2>
+<p>问题来了，如何表示一个数呢？</p>
+<p>刚才说了，每一位表示一个数，0表示不存在，1表示存在，这正符合二进制</p>
+<p>这样我们可以很容易表示{1,2,4,6}这几个数：</p>
+<p><p class="md__image">
+  <img src="../bitmap%e4%bd%bf%e7%94%a8.assets/20547106-a7d975ac2df7bdec.image"
+    alt="img"  />
+</p>
+</p>
+<p>计算机内存分配的最小单位是字节，也就是8位，那如果要表示{12,13,15}怎么办呢？</p>
+<p>当然是在另一个8位上表示了：</p>
+<p><p class="md__image">
+  <img src="../bitmap%e4%bd%bf%e7%94%a8.assets/20547106-8868732cc6eeb363.image"
+    alt="img"  />
+</p>
+</p>
+<p>这样的话，好像变成一个二维数组了</p>
+<p>1个int占32位，那么我们只需要申请一个int数组长度为 int tmp[1+N/32] 即可存储，其中N表示要存储的这些数中的最大值，于是乎：</p>
+<p>tmp[0]：可以表示0~31</p>
+<p>tmp[1]：可以表示32~63</p>
+<p>tmp[2]：可以表示64~95</p>
+<p>。。。</p>
+<p>如此一来，给定任意整数M，那么M/32就得到下标，M%32就知道它在此下标的哪个位置。</p>
+<h3 id="添加">添加</h3>
+<p>我们先来说说如何在bitmap中如何添加一个数值的问题，例如我们我们要添加n=14。</p>
+<p>这个其实很简单，我们先找到n在arr数组中的下标index，显然index = 1。然后再找到n在arr[index]中的位置position，显然这里position = 6。</p>
+<p>这里还是可以很容易找出index和position的公式的。即</p>
+<p>index = n / 8 = n &raquo; 3。</p>
+<p>position = n % 8 = n &amp; 0x07。</p>
+<p>接下来我们把1向右移动position个二进制位，然后把所得的结果和arr[index]做“或(or)”操作就可以了。如下图</p>
+<p><p class="md__image">
+  <img src="../bitmap%e4%bd%bf%e7%94%a8.assets/v2-a9d9e242a4441056bdfa7f2452ec0821_720w.jpg"
+    alt="img"  />
+</p>
+</p>
+<p>这里有个需要注意的地方，在画图的时候，为了方便，我们是把左边的位当作<strong>低位</strong>，右边的位当作<strong>高位</strong>来算了。不过在实际的存储中，左边的才是存高位，而右边的存的是低位。所以在我们的代码实现中，我们所说的右移对应代码的左移。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//添加数据的操作
+</span><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">){</span>
+    <span class="c1">//用&gt;&gt;的操作是，运算会比较快
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="n">3</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">position</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&amp;</span> <span class="n">0x07</span><span class="o">;</span>
+    <span class="c1">//把1右移和做or操作两步一起
+</span><span class="c1"></span>    <span class="c1">//即 &lt;&lt; 对应上图的右移，实际上&lt;&lt;是左移符。
+</span><span class="c1"></span>    <span class="n">arr</span><span class="o">[</span><span class="n">index</span><span class="o">]</span> <span class="o">|=</span> <span class="n">1</span> <span class="o">&lt;&lt;</span> <span class="n">position</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div><p>知道了add操作，其他的操作差不多类似。</p>
+<p>当然，我们实现的add操作只是简单的实现一下，假如你要严谨地实现的话，还是需要很多异常的判断的。例如判断这个数是否是非负数，判断arr数组是否下标越界，进行容量的扩充等等。有兴趣的可以严谨去实现一下。</p>
+<h3 id="查找">查找</h3>
+<p>我们把1右移之后，把结果和arr[index]做“与”操作，如何结果不为0，则证明存在，否则就不存在。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">contain</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">){</span>
+    <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="n">3</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">position</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&amp;</span> <span class="n">0x07</span><span class="o">;</span>
+    <span class="k">return</span> <span class="o">(</span><span class="n">arr</span><span class="o">[</span><span class="n">index</span><span class="o">]</span> <span class="o">&amp;</span> <span class="o">(</span><span class="n">1</span> <span class="o">&lt;&lt;</span> <span class="n">position</span><span class="o">))</span> <span class="o">!=</span> <span class="n">0</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="修改删除">修改\删除</h3>
+<p>我们只需要把对应的二进制的1变成0就可以了。</p>
+<p>我们可以把1右移(代码中对应左移)后的结果取反，然后与arr[index]做“与”操作就可以了。代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">delete</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">){</span>
+    <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="n">3</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">position</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&amp;</span> <span class="n">0x07</span><span class="o">;</span>
+    <span class="n">arr</span><span class="o">[</span><span class="n">index</span><span class="o">]</span> <span class="o">&amp;=</span> <span class="o">~(</span><span class="n">1</span> <span class="o">&lt;&lt;</span> <span class="n">position</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div><h2 id="使用场景">使用场景</h2>
+<p>大量数据的快速排序、查找、去重</p>
+<p>假设我们要对0-7内的5个元素(4,7,2,5,3)排序（这里假设这些元素没有重复）,我们就可以采用Bit-map的方法来达到排序的目的。</p>
+<p>要表示8个数，我们就只需要8个Bit（1Bytes），首先我们开辟1Byte的空间，将这些空间的所有Bit位都置为0，然后将对应位置为1。</p>
+<p>最后，遍历一遍Bit区域，将该位是一的位的编号输出（2，3，4，5，7），这样就达到了排序的目的，时间复杂度O(n)。</p>
+<p><strong>优点:</strong></p>
+<ul>
+<li>运算效率高，不需要进行比较和移位；</li>
+<li>占用内存少，比如N=10000000；只需占用内存为N/8=1250000Byte=1.25M</li>
+</ul>
+<p><strong>缺点:</strong></p>
+<ul>
+<li>所有的数据不能重复。即不可对重复的数据进行排序和查找。</li>
+<li>只有当数据比较密集时才有优势</li>
+</ul>
+<h3 id="快速去重">快速去重</h3>
+<p>20亿个整数中找出不重复的整数的个数，内存不足以容纳这20亿个整数。</p>
+<p>首先，根据“内存空间不足以容纳这05亿个整数”我们可以快速的联想到Bit-map。下边关键的问题就是怎么设计我们的Bit-map来表示这20亿个数字的状态了。其实这个问题很简单，一个数字的状态只有三种，分别为不存在，只有一个，有重复。因此，我们只需要2bits就可以对一个数字的状态进行存储了，假设我们设定一个数字不存在为00，存在一次01，存在两次及其以上为11。那我们大概需要存储空间2G左右。</p>
+<p>接下来的任务就是把这20亿个数字放进去（存储），如果对应的状态位为00，则将其变为01，表示存在一次；如果对应的状态位为01，则将其变为11，表示已经有一个了，即出现多次；如果为11，则对应的状态位保持不变，仍表示出现多次。</p>
+<p>最后，统计状态位为01的个数，就得到了不重复的数字个数，时间复杂度为O(n)。</p>
+<h3 id="快速查找">快速查找</h3>
+<p>这就是我们前面所说的了，int数组中的一个元素是4字节占32位，那么除以32就知道元素的下标，对32求余数（%32）就知道它在哪一位，如果该位是1，则表示存在。</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://juejin.cn/post/6844903769201704973#comment" target="_blank" rel="noopener">漫画：什么是Bitmap算法？</a>
+</p>
+<p><a href="https://zhuanlan.zhihu.com/p/45637038" target="_blank" rel="noopener">【算法与数据结构专场】BitMap算法基本操作代码实现</a>
+</p>
+]]></content>
+		</item>
+		
+		<item>
 			<title>vmvare虚拟机centos网络配置</title>
 			<link>https://willje.github.io/posts/net/vmware%E8%99%9A%E6%8B%9F%E6%9C%BAcentos7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/</link>
 			<pubDate>Mon, 28 May 2018 20:55:29 +0800</pubDate>
@@ -7598,6 +9174,212 @@ git add * <span class="o">&amp;&amp;</span> git commit -m <span class="s1">&#39;
 </p>
 <p>重启网络服务</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">systemctl restart network
+</code></pre></div>]]></content>
+		</item>
+		
+		<item>
+			<title>LRU的JAVA实现</title>
+			<link>https://willje.github.io/posts/java/lru%E7%9A%84java%E5%AE%9E%E7%8E%B0/</link>
+			<pubDate>Wed, 25 Apr 2018 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/java/lru%E7%9A%84java%E5%AE%9E%E7%8E%B0/</guid>
+			<description>什么是LRU算法? LRU是Least Recently Used的缩写，即最近最久未使用，是一种操作系统中常用的页面置换算法。 知道了什么是LRU后，我们再来聊下它的使用场景 在工作中，对于Redis我们一定是比较熟悉的，它是一个内存数据库；因为它是内存数据库，并且内存的空间是有限的，如果Redis中数据量很大的话，内存就可能被占满，但是此时如果还有数据存入Redis的话，那该怎</description>
+			<content type="html"><![CDATA[<p>什么是LRU算法?</p>
+<p>LRU是Least Recently Used的缩写，即<strong>最近最久未使用</strong>，是一种操作系统中常用的页面置换算法。</p>
+<p>知道了什么是LRU后，我们再来聊下它的使用场景</p>
+<p>在工作中，对于Redis我们一定是比较熟悉的，它是一个内存数据库；因为它是内存数据库，并且内存的空间是有限的，如果Redis中数据量很大的话，内存就可能被占满，但是此时如果还有数据存入Redis的话，那该怎么办呢？这就是由Redis的的内存淘汰策略所决定的。</p>
+<p>LRU最近最久未使用算法就是Redis的内存淘汰策略之一。</p>
+<h2 id="设计">设计</h2>
+<h3 id="1要求">1、要求</h3>
+<p>①、支持数据get查询和数据put插入；
+②、此数据结构的操作需要满足时间复杂度为O(1)；</p>
+<h3 id="2思路">2、思路</h3>
+<p>根据要求的时间复杂度可以立马想到Hash表，Hash表的时间复杂度为O(1)，所以可以使用Map这种key-value数据结构来满足时间复杂度；</p>
+<p>但是根据LRU最近最久未使用的原理，需要将最新访问的数据放到最前面，并且当缓存容量满了的时候，还需要将最近最久未使用的数据淘汰掉，所以还需要一种数据结构来标识最新访问数据（首部），最久未使用数据（尾部），这里可以使用双向链表实现；</p>
+<p>所以设计的LRU的数据结构是：<strong>HashMap + 双向链表</strong> ；</p>
+<blockquote>
+<p>注意：也可以使用 <strong>LinkedHashMap</strong> 尝试实现 LRU缓存的。</p>
+</blockquote>
+<h3 id="3链表节点">3、链表节点</h3>
+<blockquote>
+<p>因为LRU缓存设计中使用了双向链表，所以需要设计下链表中的节点类，如下：</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DoubleLinkedListNode</span> <span class="o">{</span>
+  <span class="n">String</span> <span class="n">key</span><span class="o">;</span>
+  <span class="n">Object</span> <span class="n">value</span><span class="o">;</span>
+  <span class="c1">// 头指针
+</span><span class="c1"></span>  <span class="n">DoubleLinkedListNode</span> <span class="n">pre</span><span class="o">;</span>
+  <span class="c1">// 尾指针
+</span><span class="c1"></span>  <span class="n">DoubleLinkedListNode</span> <span class="n">next</span><span class="o">;</span> 
+  
+  <span class="kd">public</span> <span class="nf">DoubleLinkedListNode</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">;</span>
+        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+  <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><h2 id="完整代码">完整代码</h2>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LRUCache</span> <span class="o">{</span>
+ 
+  <span class="kd">private</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">DoubleLinkedListNode</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">DoubleLinkedListNode</span><span class="o">&gt;();</span>
+  <span class="c1">// 头结点
+</span><span class="c1"></span>  <span class="kd">private</span> <span class="n">DoubleLinkedListNode</span> <span class="n">head</span><span class="o">;</span>
+  <span class="c1">// 尾节点
+</span><span class="c1"></span>  <span class="kd">private</span> <span class="n">DoubleLinkedListNode</span> <span class="n">tail</span><span class="o">;</span>
+  <span class="c1">// 双向链表的容量
+</span><span class="c1"></span>  <span class="kd">private</span> <span class="kt">int</span> <span class="n">capacity</span><span class="o">;</span>
+  <span class="c1">// 双向链表中节点的数量
+</span><span class="c1"></span>  <span class="kd">private</span> <span class="kt">int</span> <span class="n">size</span><span class="o">;</span>
+ 
+  <span class="kd">public</span> <span class="nf">LRUCache</span><span class="o">(</span><span class="kt">int</span> <span class="n">capacity</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">this</span><span class="o">.</span><span class="na">capacity</span> <span class="o">=</span> <span class="n">capacity</span><span class="o">;</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+  <span class="o">}</span>
+ 
+  <span class="cm">/**
+</span><span class="cm">   * @Description: 将节点设置为头结点
+</span><span class="cm">   * @param node
+</span><span class="cm">   */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setHead</span><span class="o">(</span><span class="n">DoubleLinkedListNode</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// 节点的尾指针执行头结点
+</span><span class="c1"></span>    <span class="n">node</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+    <span class="c1">// 节点的头指针置为空
+</span><span class="c1"></span>    <span class="n">node</span><span class="o">.</span><span class="na">pre</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">head</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// 将头结点的头指针执行节点
+</span><span class="c1"></span>      <span class="n">head</span><span class="o">.</span><span class="na">pre</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="n">head</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">tail</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="c1">// 如果双向链表中还没有节点时，头结点和尾节点都是当前节点
+</span><span class="c1"></span>      <span class="n">tail</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+ 
+  <span class="cm">/**
+</span><span class="cm">   * @Description:将双向链表中的节点移除
+</span><span class="cm">   * @param node
+</span><span class="cm">   */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">removeNode</span><span class="o">(</span><span class="n">DoubleLinkedListNode</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">DoubleLinkedListNode</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
+    <span class="n">DoubleLinkedListNode</span> <span class="n">pre</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">pre</span><span class="o">;</span>
+    <span class="n">DoubleLinkedListNode</span> <span class="n">post</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+    <span class="c1">// 如果当前节点没有头指针的话，说明它是链表的头结点
+</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">pre</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">pre</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">post</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="n">head</span> <span class="o">=</span> <span class="n">post</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">// 如果当前节点没有尾指针的话，说明当前节点是尾节点
+</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">post</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">post</span><span class="o">.</span><span class="na">pre</span> <span class="o">=</span> <span class="n">pre</span><span class="o">;</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="n">tail</span> <span class="o">=</span> <span class="n">pre</span><span class="o">;</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+ 
+  <span class="cm">/**
+</span><span class="cm">   * @Description:从缓存Cache中get
+</span><span class="cm">   * @param key
+</span><span class="cm">   * @return
+</span><span class="cm">   */</span>
+  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">get</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+    <span class="c1">// 使用hashmap进行查询，时间复杂度为O(1)，如果进行链表查询，需要遍历链表，时间复杂度为O(n)
+</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">key</span><span class="o">))</span> <span class="o">{</span>
+      <span class="n">DoubleLinkedListNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+      <span class="c1">// 将查询出的节点从链表中移除
+</span><span class="c1"></span>      <span class="n">removeNode</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+      <span class="c1">// 将查询出的节点设置为头结点
+</span><span class="c1"></span>      <span class="n">setHead</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+      <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="na">value</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="c1">// 缓存中没有要查询的内容
+</span><span class="c1"></span>    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+  <span class="o">}</span>
+ 
+  <span class="cm">/**
+</span><span class="cm">   * @Description:将key-value存储set到缓存Cache中
+</span><span class="cm">   * @param key
+</span><span class="cm">   * @param value
+</span><span class="cm">   */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+    <span class="k">if</span> <span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">key</span><span class="o">))</span> <span class="o">{</span>
+      <span class="n">DoubleLinkedListNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+      <span class="n">node</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+      <span class="n">removeNode</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+      <span class="n">setHead</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+      <span class="c1">// 如果缓存中没有词key-value
+</span><span class="c1"></span>      <span class="c1">// 创建一个新的节点
+</span><span class="c1"></span>      <span class="n">DoubleLinkedListNode</span> <span class="n">newNode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DoubleLinkedListNode</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+      <span class="c1">// 如果链表中的节点数小于链表的初始容量（还不需要进行数据置换）则直接将新节点设置为头结点
+</span><span class="c1"></span>      <span class="k">if</span> <span class="o">(</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">capacity</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">setHead</span><span class="o">(</span><span class="n">newNode</span><span class="o">);</span>
+        <span class="c1">// 将新节点放入hashmap中，用于提高查找速度
+</span><span class="c1"></span>        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">newNode</span><span class="o">);</span>
+        <span class="n">size</span><span class="o">++;</span>
+      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+        <span class="c1">// 缓存(双向链表)满了需要将&#34;最近醉酒未使用&#34;的节点(尾节点)删除，腾出新空间存放新节点
+</span><span class="c1"></span>        <span class="c1">// 首先将map中的尾节点删除
+</span><span class="c1"></span>        <span class="n">map</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">tail</span><span class="o">.</span><span class="na">key</span><span class="o">);</span>
+        <span class="c1">// 移除尾节点并重新置顶尾节点的头指针指向的节点为新尾节点
+</span><span class="c1"></span>        <span class="n">removeNode</span><span class="o">(</span><span class="n">tail</span><span class="o">);</span>
+        <span class="c1">// 将新节点设置为头节点
+</span><span class="c1"></span>        <span class="n">setHead</span><span class="o">(</span><span class="n">newNode</span><span class="o">);</span>
+        <span class="c1">// 将新节点放入到map中
+</span><span class="c1"></span>        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">newNode</span><span class="o">);</span>
+      <span class="o">}</span>
+    <span class="o">}</span>
+  <span class="o">}</span>
+ 
+  <span class="cm">/**
+</span><span class="cm">   * @Description: 遍历双向链表
+</span><span class="cm">   * @param head
+</span><span class="cm">   *            双向链表的 头结点
+</span><span class="cm">   */</span>
+  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">traverse</span><span class="o">(</span><span class="n">DoubleLinkedListNode</span> <span class="n">head</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">DoubleLinkedListNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+    <span class="k">while</span> <span class="o">(</span><span class="n">node</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">key</span> <span class="o">+</span> <span class="s">&#34;  &#34;</span><span class="o">);</span>
+      <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+    <span class="o">}</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+  <span class="o">}</span>
+ 
+  <span class="c1">// test
+</span><span class="c1"></span>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;双向链表容量为6&#34;</span><span class="o">);</span>
+    <span class="n">LRUCache</span> <span class="n">lc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LRUCache</span><span class="o">(</span><span class="n">6</span><span class="o">);</span>
+ 
+    <span class="c1">// 向缓存中插入set数据
+</span><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">6</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+      <span class="n">lc</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="s">&#34;test&#34;</span> <span class="o">+</span> <span class="n">i</span><span class="o">,</span> <span class="s">&#34;test&#34;</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>
+    <span class="o">}</span>
+ 
+    <span class="c1">// 遍历缓存中的数据，从左到右，数据越不经常使用
+</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;第一次遍历双向链表：(从头结点遍历到尾节点)&#34;</span><span class="o">);</span>
+    <span class="n">lc</span><span class="o">.</span><span class="na">traverse</span><span class="o">(</span><span class="n">lc</span><span class="o">.</span><span class="na">head</span><span class="o">);</span>
+ 
+    <span class="c1">// 使用get查询缓存中数据
+</span><span class="c1"></span>    <span class="n">lc</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;test2&#34;</span><span class="o">);</span>
+ 
+    <span class="c1">// 再次遍历缓存中的数据，从左到右，数据越不经常使用,并且此次发现刚刚操作的数据节点位于链表的头结点了。
+</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;get查询 test2节点后 ，第二次遍历双向链表：&#34;</span><span class="o">);</span>
+    <span class="n">lc</span><span class="o">.</span><span class="na">traverse</span><span class="o">(</span><span class="n">lc</span><span class="o">.</span><span class="na">head</span><span class="o">);</span>
+ 
+    <span class="c1">// 再次向缓存中插入数据，发现缓存链表已经满了，需要将尾节点移除
+</span><span class="c1"></span>    <span class="n">lc</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="s">&#34;sucess&#34;</span><span class="o">,</span> <span class="s">&#34;sucess&#34;</span><span class="o">);</span>
+ 
+    <span class="cm">/**
+</span><span class="cm">     * 再次遍历缓存中的数据，从左到右，数据越不经常使用,并且此次发现刚刚set操作时由于链表满了， 就将尾节点test0
+</span><span class="cm">     * 移除了，并且将新节点置为链表的头结点。
+</span><span class="cm">     */</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;put插入sucess节点后，第三次遍历双向链表：&#34;</span><span class="o">);</span>
+    <span class="n">lc</span><span class="o">.</span><span class="na">traverse</span><span class="o">(</span><span class="n">lc</span><span class="o">.</span><span class="na">head</span><span class="o">);</span>
+  <span class="o">}</span>
+<span class="o">}</span>
 </code></pre></div>]]></content>
 		</item>
 		

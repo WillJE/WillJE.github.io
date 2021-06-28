@@ -17,5 +17,14 @@
       <description>Nacos 是 Spring Cloud Alibaba 核心组件之一，可以用作 Spring Cloud 的注册中心和配置中心。 本文讲述如何在 Spring Cloud 中使用 Nacos 作为配置中心。 安装Nacos 与 Spring Cloud Config 和 Eureka 的使用方式不同，Nacos Server 需要独立部署。Nacos Server 的部署方式包括单机模式和集群模式，集群模式可以解决 Nacos 高可用的问题。 为简单起见，本文采用单机模式 Nacos Server 作为配置中心。单机模式搭建过程比较简单，可以通过下载源代码编译方式安装和二进制可执行</description>
     </item>
     
+    <item>
+      <title>SpringCloud学习</title>
+      <link>https://willje.github.io/posts/java/spring/springcloud%E5%AD%A6%E4%B9%A0/</link>
+      <pubDate>Thu, 25 Jun 2020 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/java/spring/springcloud%E5%AD%A6%E4%B9%A0/</guid>
+      <description>Spring Cloud是一系列框架的有序集合。它利用Spring Boot的开发便利性巧妙地简化了分布式系统基础设施的开发，如服务发现注册、配置中心、消息总线、负载均衡、断路器、数据监控等，都可以用Spring Boot的开发风格做到一键启动和部署。Spring Cloud并没有重复制造轮子，它只是将目前各家公司开发的比较成熟、经得起实际考验的服务框架组合起来，通过Spri</description>
+    </item>
+    
   </channel>
 </rss>

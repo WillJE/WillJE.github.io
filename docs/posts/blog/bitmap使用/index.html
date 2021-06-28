@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="bitmap使用">
+<meta itemprop="description" content="什么是bitmap Bit-map的基本思想就是用一个bit位来标记某个元素对应的Value，而Key即是该元素。由于采用了Bit为单位来存储数据， 因此在存储空间方面，可以大大节省。（PS：划重点 节省存储空间 ） 假设有这样一个需求：在20亿个随机整数中找出某个数m是否存在其中，并假设32位操作系统，4G内存 在Java中，int占4字节，1字节=8位（1 byte = 8 bi"><meta itemprop="datePublished" content="2018-12-05T20:55:29&#43;08:00" />
+<meta itemprop="dateModified" content="2018-12-05T20:55:29&#43;08:00" />
+<meta itemprop="wordCount" content="2216">
+<meta itemprop="keywords" content="bitmap," /><meta property="og:title" content="bitmap使用" />
+<meta property="og:description" content="什么是bitmap Bit-map的基本思想就是用一个bit位来标记某个元素对应的Value，而Key即是该元素。由于采用了Bit为单位来存储数据， 因此在存储空间方面，可以大大节省。（PS：划重点 节省存储空间 ） 假设有这样一个需求：在20亿个随机整数中找出某个数m是否存在其中，并假设32位操作系统，4G内存 在Java中，int占4字节，1字节=8位（1 byte = 8 bi" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/blog/bitmap%E4%BD%BF%E7%94%A8/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-12-05T20:55:29&#43;08:00" />
+<meta property="article:modified_time" content="2018-12-05T20:55:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="bitmap使用"/>
+<meta name="twitter:description" content="什么是bitmap Bit-map的基本思想就是用一个bit位来标记某个元素对应的Value，而Key即是该元素。由于采用了Bit为单位来存储数据， 因此在存储空间方面，可以大大节省。（PS：划重点 节省存储空间 ） 假设有这样一个需求：在20亿个随机整数中找出某个数m是否存在其中，并假设32位操作系统，4G内存 在Java中，int占4字节，1字节=8位（1 byte = 8 bi"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>bitmap使用</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Dec 5, 2018</span></div>
+				<h1>bitmap使用</h1>
+			</header>
+			<div class="content">
+				<h2 id="什么是bitmap">什么是bitmap<a href="#什么是bitmap" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Bit-map的基本思想就是用一个bit位来标记某个元素对应的Value，而Key即是该元素。由于采用了Bit为单位来存储数据，</p>
+<p>因此在存储空间方面，可以大大节省。（PS：划重点 <strong>节省存储空间</strong> ）</p>
+<p>假设有这样一个需求：在20亿个随机整数中找出某个数m是否存在其中，并假设32位操作系统，4G内存</p>
+<p>在Java中，int占4字节，1字节=8位（1 byte = 8 bit）</p>
+<p>如果每个数字用int存储，那就是20亿个int，因而占用的空间约为(2000000000*4/1024/1024/1024)≈<strong>7.45</strong> G</p>
+<p>如果按位存储就不一样了，20亿个数就是20亿位，占用空间约为 (2000000000/8/1024/1024/1024)≈<strong>0.23</strong> G</p>
+<p>高下立判，无需多言。</p>
+<h2 id="基础使用">基础使用<a href="#基础使用" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>问题来了，如何表示一个数呢？</p>
+<p>刚才说了，每一位表示一个数，0表示不存在，1表示存在，这正符合二进制</p>
+<p>这样我们可以很容易表示{1,2,4,6}这几个数：</p>
+<p><p class="md__image">
+  <img src="../bitmap%e4%bd%bf%e7%94%a8.assets/20547106-a7d975ac2df7bdec.image"
+    alt="img"  />
+</p>
+</p>
+<p>计算机内存分配的最小单位是字节，也就是8位，那如果要表示{12,13,15}怎么办呢？</p>
+<p>当然是在另一个8位上表示了：</p>
+<p><p class="md__image">
+  <img src="../bitmap%e4%bd%bf%e7%94%a8.assets/20547106-8868732cc6eeb363.image"
+    alt="img"  />
+</p>
+</p>
+<p>这样的话，好像变成一个二维数组了</p>
+<p>1个int占32位，那么我们只需要申请一个int数组长度为 int tmp[1+N/32] 即可存储，其中N表示要存储的这些数中的最大值，于是乎：</p>
+<p>tmp[0]：可以表示0~31</p>
+<p>tmp[1]：可以表示32~63</p>
+<p>tmp[2]：可以表示64~95</p>
+<p>。。。</p>
+<p>如此一来，给定任意整数M，那么M/32就得到下标，M%32就知道它在此下标的哪个位置。</p>
+<h3 id="添加">添加<a href="#添加" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>我们先来说说如何在bitmap中如何添加一个数值的问题，例如我们我们要添加n=14。</p>
+<p>这个其实很简单，我们先找到n在arr数组中的下标index，显然index = 1。然后再找到n在arr[index]中的位置position，显然这里position = 6。</p>
+<p>这里还是可以很容易找出index和position的公式的。即</p>
+<p>index = n / 8 = n &raquo; 3。</p>
+<p>position = n % 8 = n &amp; 0x07。</p>
+<p>接下来我们把1向右移动position个二进制位，然后把所得的结果和arr[index]做“或(or)”操作就可以了。如下图</p>
+<p><p class="md__image">
+  <img src="../bitmap%e4%bd%bf%e7%94%a8.assets/v2-a9d9e242a4441056bdfa7f2452ec0821_720w.jpg"
+    alt="img"  />
+</p>
+</p>
+<p>这里有个需要注意的地方，在画图的时候，为了方便，我们是把左边的位当作<strong>低位</strong>，右边的位当作<strong>高位</strong>来算了。不过在实际的存储中，左边的才是存高位，而右边的存的是低位。所以在我们的代码实现中，我们所说的右移对应代码的左移。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="c1">//添加数据的操作
+</span><span class="c1"></span><span class="kd">public</span> <span class="kt">void</span> <span class="nf">add</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">){</span>
+    <span class="c1">//用&gt;&gt;的操作是，运算会比较快
+</span><span class="c1"></span>    <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="n">3</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">position</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&amp;</span> <span class="n">0x07</span><span class="o">;</span>
+    <span class="c1">//把1右移和做or操作两步一起
+</span><span class="c1"></span>    <span class="c1">//即 &lt;&lt; 对应上图的右移，实际上&lt;&lt;是左移符。
+</span><span class="c1"></span>    <span class="n">arr</span><span class="o">[</span><span class="n">index</span><span class="o">]</span> <span class="o">|=</span> <span class="n">1</span> <span class="o">&lt;&lt;</span> <span class="n">position</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div><p>知道了add操作，其他的操作差不多类似。</p>
+<p>当然，我们实现的add操作只是简单的实现一下，假如你要严谨地实现的话，还是需要很多异常的判断的。例如判断这个数是否是非负数，判断arr数组是否下标越界，进行容量的扩充等等。有兴趣的可以严谨去实现一下。</p>
+<h3 id="查找">查找<a href="#查找" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>我们把1右移之后，把结果和arr[index]做“与”操作，如何结果不为0，则证明存在，否则就不存在。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">boolean</span> <span class="nf">contain</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">){</span>
+    <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="n">3</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">position</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&amp;</span> <span class="n">0x07</span><span class="o">;</span>
+    <span class="k">return</span> <span class="o">(</span><span class="n">arr</span><span class="o">[</span><span class="n">index</span><span class="o">]</span> <span class="o">&amp;</span> <span class="o">(</span><span class="n">1</span> <span class="o">&lt;&lt;</span> <span class="n">position</span><span class="o">))</span> <span class="o">!=</span> <span class="n">0</span><span class="o">;</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="修改删除">修改\删除<a href="#修改删除" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>我们只需要把对应的二进制的1变成0就可以了。</p>
+<p>我们可以把1右移(代码中对应左移)后的结果取反，然后与arr[index]做“与”操作就可以了。代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kt">void</span> <span class="nf">delete</span><span class="o">(</span><span class="kt">int</span> <span class="n">n</span><span class="o">){</span>
+    <span class="kt">int</span> <span class="n">index</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&gt;&gt;</span> <span class="n">3</span><span class="o">;</span>
+    <span class="kt">int</span> <span class="n">position</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&amp;</span> <span class="n">0x07</span><span class="o">;</span>
+    <span class="n">arr</span><span class="o">[</span><span class="n">index</span><span class="o">]</span> <span class="o">&amp;=</span> <span class="o">~(</span><span class="n">1</span> <span class="o">&lt;&lt;</span> <span class="n">position</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div><h2 id="使用场景">使用场景<a href="#使用场景" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>大量数据的快速排序、查找、去重</p>
+<p>假设我们要对0-7内的5个元素(4,7,2,5,3)排序（这里假设这些元素没有重复）,我们就可以采用Bit-map的方法来达到排序的目的。</p>
+<p>要表示8个数，我们就只需要8个Bit（1Bytes），首先我们开辟1Byte的空间，将这些空间的所有Bit位都置为0，然后将对应位置为1。</p>
+<p>最后，遍历一遍Bit区域，将该位是一的位的编号输出（2，3，4，5，7），这样就达到了排序的目的，时间复杂度O(n)。</p>
+<p><strong>优点:</strong></p>
+<ul>
+<li>运算效率高，不需要进行比较和移位；</li>
+<li>占用内存少，比如N=10000000；只需占用内存为N/8=1250000Byte=1.25M</li>
+</ul>
+<p><strong>缺点:</strong></p>
+<ul>
+<li>所有的数据不能重复。即不可对重复的数据进行排序和查找。</li>
+<li>只有当数据比较密集时才有优势</li>
+</ul>
+<h3 id="快速去重">快速去重<a href="#快速去重" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>20亿个整数中找出不重复的整数的个数，内存不足以容纳这20亿个整数。</p>
+<p>首先，根据“内存空间不足以容纳这05亿个整数”我们可以快速的联想到Bit-map。下边关键的问题就是怎么设计我们的Bit-map来表示这20亿个数字的状态了。其实这个问题很简单，一个数字的状态只有三种，分别为不存在，只有一个，有重复。因此，我们只需要2bits就可以对一个数字的状态进行存储了，假设我们设定一个数字不存在为00，存在一次01，存在两次及其以上为11。那我们大概需要存储空间2G左右。</p>
+<p>接下来的任务就是把这20亿个数字放进去（存储），如果对应的状态位为00，则将其变为01，表示存在一次；如果对应的状态位为01，则将其变为11，表示已经有一个了，即出现多次；如果为11，则对应的状态位保持不变，仍表示出现多次。</p>
+<p>最后，统计状态位为01的个数，就得到了不重复的数字个数，时间复杂度为O(n)。</p>
+<h3 id="快速查找">快速查找<a href="#快速查找" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>这就是我们前面所说的了，int数组中的一个元素是4字节占32位，那么除以32就知道元素的下标，对32求余数（%32）就知道它在哪一位，如果该位是1，则表示存在。</p>
+<h2 id="参考">参考<a href="#参考" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://juejin.cn/post/6844903769201704973#comment" target="_blank" rel="noopener">漫画：什么是Bitmap算法？</a>
+</p>
+<p><a href="https://zhuanlan.zhihu.com/p/45637038" target="_blank" rel="noopener">【算法与数据结构专场】BitMap算法基本操作代码实现</a>
+</p>
+
+			</div><div class="content">
+	<br>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/bitmap">bitmap</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2216 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2018-12-05 20:55 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#什么是bitmap">什么是bitmap</a></li>
+    <li><a href="#基础使用">基础使用</a>
+      <ul>
+        <li><a href="#添加">添加</a></li>
+        <li><a href="#查找">查找</a></li>
+        <li><a href="#修改删除">修改\删除</a></li>
+      </ul>
+    </li>
+    <li><a href="#使用场景">使用场景</a>
+      <ul>
+        <li><a href="#快速去重">快速去重</a></li>
+        <li><a href="#快速查找">快速查找</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/blog/hugogithubpages%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E7%BD%91%E7%AB%99/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Hugo、githubpages搭建自己的网站</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/net/vmware%E8%99%9A%E6%8B%9F%E6%9C%BAcentos7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>vmvare虚拟机centos网络配置</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

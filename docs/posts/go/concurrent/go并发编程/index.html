@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="go并发编程">
+<meta itemprop="description" content="并发与并行 并发是指同一个时间段内多个任务同时交叉执行，并且都没有执行结束，而并行是说在单位时间内多个任务同时在执行，并发任务强调在一个时间段内同时执行，而一个时间段有多个单位时间累积而成，所以说并发的多个任务在单位时间内不一定同时在执行。 在单个cpu的时代多个任务同时运行都是并发，这是因为cpu同时只能执行一个任务，单个cpu时代多任务是共享一个cpu的，当"><meta itemprop="datePublished" content="2020-12-25T20:55:29&#43;08:00" />
+<meta itemprop="dateModified" content="2020-12-25T20:55:29&#43;08:00" />
+<meta itemprop="wordCount" content="8712">
+<meta itemprop="keywords" content="go," /><meta property="og:title" content="go并发编程" />
+<meta property="og:description" content="并发与并行 并发是指同一个时间段内多个任务同时交叉执行，并且都没有执行结束，而并行是说在单位时间内多个任务同时在执行，并发任务强调在一个时间段内同时执行，而一个时间段有多个单位时间累积而成，所以说并发的多个任务在单位时间内不一定同时在执行。 在单个cpu的时代多个任务同时运行都是并发，这是因为cpu同时只能执行一个任务，单个cpu时代多任务是共享一个cpu的，当" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-12-25T20:55:29&#43;08:00" />
+<meta property="article:modified_time" content="2020-12-25T20:55:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="go并发编程"/>
+<meta name="twitter:description" content="并发与并行 并发是指同一个时间段内多个任务同时交叉执行，并且都没有执行结束，而并行是说在单位时间内多个任务同时在执行，并发任务强调在一个时间段内同时执行，而一个时间段有多个单位时间累积而成，所以说并发的多个任务在单位时间内不一定同时在执行。 在单个cpu的时代多个任务同时运行都是并发，这是因为cpu同时只能执行一个任务，单个cpu时代多任务是共享一个cpu的，当"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>go并发编程</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Dec 25, 2020</span></div>
+				<h1>go并发编程</h1>
+			</header>
+			<div class="content">
+				<h2 id="并发与并行">并发与并行<a href="#并发与并行" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><strong>并发是指同一个时间段内多个任务同时交叉执行，并且都没有执行结束</strong>，<strong>而并行是说在单位时间内多个任务同时在执行</strong>，并发任务强调在一个时间段内同时执行，而一个时间段有多个单位时间累积而成，所以说并发的多个任务在单位时间内不一定同时在执行。</p>
+<p>在单个cpu的时代多个任务同时运行都是并发，这是因为cpu同时只能执行一个任务，单个cpu时代多任务是共享一个cpu的，当一个任务占用cpu运行时候，其它任务就会被挂起，当占用cpu的任务时间片用完后，会把cpu让给其它任务来使用，所以在单cpu时代多线程编程是意义不大，并且线程间频繁的上下文切换还会带来开销。</p>
+<h2 id="并发编程难在哪">并发编程难在哪<a href="#并发编程难在哪" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="数据竞争的存在">数据竞争的存在<a href="#数据竞争的存在" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>当两个或者多个线程<code>（goroutine）</code>在没有任何同步措施的情况下同时读写同一个共享资源时候，这多个线<code>（goroutine）</code></p>
+<p>就处于数据竞争状态，数据竞争会导致程序的运行结果超出写代码的人的期望。下面我们来看个例子：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>在这段代码中包含了两个协程，一个是显式的，通过 <code>go</code> 关键字声明的这条语句，表示启用一个新的协程来处理加法运算，另一个是隐式的，即 <code>main</code> 函数本身也是运行在一个主协程中，该协程和调用 <code>add</code> 函数的子协程是并发运行的两个协程，就好比从 <code>go</code> 关键字开始，从主协程中叉出一条新路。</p>
+<p>和之前不使用协程的方式相比，由此也引入了不确定性：我们不知道子协程什么时候执行完毕，运行到了什么状态。在主协程中启动子协程后，程序就退出运行了，这就意味着包含这两个协程的处理进程退出了，<strong>所以，我们运行这段代码，不会看到子协程里运行的打印结果，因为还没来得及执行它们，进程就已经退出了</strong>。另外，我们也不要试图从 <code>add</code> 函数返回处理结果，因为在主协程中，根本获取不到子协程的返回值，从子协程开始执行起就已经和主协程没有任何关系了，返回值会被丢弃。</p>
+<p>如果要显示出子协程的打印结果，一种方式是在主协程中等待足够长的时间再退出，以便保证子协程中的所有代码执行完毕：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">//
+</span><span class="c1"></span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">=</span> <span class="mi">3</span>
+</code></pre></div><p>这看起来或许有效，但是这是非常低效，并且并不是所有情况下都可以解决的。正确的做法可以使用信号量等同步措施。</p>
+<h3 id="并发执行示例">并发执行示例<a href="#并发执行示例" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>接下来，我们通过下面这段代码来验证协程的并发执行：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d\n&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+		<span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="nx">i</span><span class="p">,</span> <span class="nx">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>很简单，我们给协程代码外层套上一个循环就可以了，这样一来，就同时启动了 10 个子协程，由于它们是并发执行的，执行的先后顺序无法保证。</p>
+<p>可以看到每个子协程中<code>add</code>函数执行完打印语句睡眠 3 秒再退出，如果不是并发执行，那么肯定至多只能打印一条结果出来，但实际情况是，仍然是打印 10 条结果，并且没有任何延迟，证明这些加法运算是并发执行的。</p>
+<h3 id="操作的原子性">操作的原子性<a href="#操作的原子性" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>所谓原子性操作是指当执行一系列操作时候，这些操作那么全部被执行，那么全部不被执行，不存在只执行其中一部分的情况。在设计<strong>计数器</strong>时候一般都是先读取当前值，然后+1，然后更新，这个过程是读-改-写的过程，如果不能保证这个过程是原子性，那么就会出现线程安全问题。如下代码是线程不安全的，因为不能保证<code>a++</code>是原子性操作:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">count</span> <span class="kt">int32</span>
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">const</span> <span class="nx">ThreadNum</span> <span class="p">=</span> <span class="mi">5000</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">ThreadNum</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span><span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">ThreadNum</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">count</span><span class="o">++</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span><span class="c1">//3. 等待goroutine运行结束
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>如上代码在main函数所在为<code>goroutine</code>内创建了<code>THREAD_NUM</code>个<code>goroutine</code>，每个新的<code>goroutine</code>执行代码对变量count计数增加1。</p>
+<p>这里创建了<code>THREADNUM</code>个信号量，用来在代码3处等待<code>THREADNUM</code>个<code>goroutine</code>执行完毕，然后输出最终计数，执行上面代码我们 期望输出1000，但是实际却不是。</p>
+<p>这是因为a++操作本身不是原子性的，其等价于b := count;b=b+1;count=b;是三步操作，所以可能导致导致计数不准确</p>
+<p>上面的程序需要保证<code>count++</code>的原子性才是正确的，可以使用<code>sync/atomic</code>包的一些原子性函数或者锁可以解决这个问题。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;sync/atomic&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">count</span> <span class="kt">int32</span>
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">const</span> <span class="nx">ThreadNum</span> <span class="p">=</span> <span class="mi">5000</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">ThreadNum</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span><span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">ThreadNum</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="c1">//count++
+</span><span class="c1"></span>			<span class="nx">atomic</span><span class="p">.</span><span class="nf">AddInt32</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">count</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="内存访问同步">内存访问同步<a href="#内存访问同步" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>上节原子性操作第一个例子有问题是因为count++操作是被分解为类似b := count;b=b+1;count =b; 的三部操作，而多个<code>goroutine</code>同时执行<code>count++</code>时候并不是顺序执行者三个步骤的，而是可能交叉访问的。所以如果能对内存变量的访问添加同步访问措施，就可以避免这个问题：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">count</span> <span class="kt">int32</span>
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">var</span> <span class="nx">lock</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+<span class="kd">const</span> <span class="nx">ThreadNum</span> <span class="p">=</span> <span class="mi">5000</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="nx">ThreadNum</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span><span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">ThreadNum</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+		<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">lock</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span><span class="c1">//2.1
+</span><span class="c1"></span>			<span class="nx">count</span><span class="o">++</span>
+			<span class="nx">lock</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+			<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="p">}()</span>
+	<span class="p">}</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>如上代码创建了一个互斥锁lock,然后<code>goroutine</code>内在执行count++前先获取锁，执行完毕后在释放锁。</p>
+<p>当1000个<code>goroutine</code>同时执行到2.1时候只有一个线程可以获取到锁，其他的线程被阻塞，直到获取到锁的<code>goroutine</code>释放了锁。也就是这1000个线程的并发行使用锁转换为了串行执行，也就是对共享内存变量的访问施加了同步措施。</p>
+<h2 id="线程模型">线程模型<a href="#线程模型" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>线程的并发执行是有操作系统来进行调度的，操作系统一般都都在内核提供对线程的支持。而我们在使用高级语言编写程序时候创建的线程是用户线程，那么用户线程与内核线程是什么关系那？其实下面将要讲解的三种线程模型就是根据用户线程与内核线程关系的不同而划分的。</p>
+<h3 id="一对一模型">一对一模型<a href="#一对一模型" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>这种线程模型下用户线程与内核线程是一一对应的，当从程序入口点（比如main函数）启动后，操作系统就创建了一个进程，这个main函数所在的线程就是主线程，在main函数内当我们使用高级语言创建一个用户线程的时候，其实对应创建了一个内核线程，如下图：</p>
+<p><p class="md__image">
+  <img src="../go%e5%b9%b6%e5%8f%91%e7%bc%96%e7%a8%8b.assets/image-20210521103541595.png"
+    alt="image-20210521103541595"  />
+</p>
+</p>
+<p>这种线程模型优点是在多处理器上，<strong>多个线程可以真正实现并行运行</strong>，并且当一个线程由于网络IO等原因被阻塞时候，其他的线程不受影响。</p>
+<p>缺点是由于一般操作系统会限制内核线程的个数，所以用户线程的个数会受到限制。另外由于用户线程与系统线程一一对应，当用户线程比如执行Io操作（执行系统调用）时候，需要从用户态的用户程序的执行切换到内核态执行内核操作，然后等执行完毕后又会从内核态切换到用户态执行用户程序，而这个切换操作开销是相对比较大的。</p>
+<p>另外这里提下高级语言Java的线程模型就是使用的这种一对一的模型，所以Java中多线程对共享变量使用锁同步时候会导致获取锁失败的线程进行上下文切换，而JUC包提供的无锁CAS操作则不会产生上下文切换。</p>
+<h3 id="多对一模型">多对一模型<a href="#多对一模型" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>多对一模型是指多个用户线程对应一个内核线程，同时同一个用户线程只能对应一个内核线程，这时候对应同一个内核线程的多个用户线程的上下文切换是由用户态的运行时线程库来做的，而不是由操作系统调度系统来做的，其模型如下：</p>
+<p><p class="md__image">
+  <img src="../go%e5%b9%b6%e5%8f%91%e7%bc%96%e7%a8%8b.assets/image-20210521103601327.png"
+    alt="image-20210521103601327"  />
+</p>
+</p>
+<p>这种模型好处是由于上下文切换在用户态，所以切换速度很快，开销很小；另外可创建的用户线程的数量可以很多，只受内存大小限制。</p>
+<p>这种模型由于多个用户线程对应一个内核线程，当该内核线程对应的一个用户线程被阻塞挂起时候，该内核线程对应的其他用户线程也不能运行了，因为这时候内核线程已经被阻塞挂起了。另外这种模型并不能很好的利用多核CPU进行并发运行。</p>
+<h3 id="多对多模型">多对多模型<a href="#多对多模型" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>多对多模型则结合一对一和多对一模型的特点，让大量的用户线程对应少数几个内核线程上，其模型图如下：<p class="md__image">
+  <img src="../go%e5%b9%b6%e5%8f%91%e7%bc%96%e7%a8%8b.assets/640"
+    alt="图片"  />
+</p>
+这时候每个内核线程对应多个用户线程，每个用户线程有可以对应多个内核线程，当一个用户线程阻塞后，其对应的当前的内核线程会被阻塞，但是被阻塞的内核线程对应的其他用户线程可以切换到其他的内核线程上继续运行，所以多对多模型是可以充分利用多核CPU提升运行效能的。</p>
+<p>另外多对多模型也对用户线程个数没有限制，理论上只要内存够用可以无限创建。</p>
+<h2 id="go的线程模型">Go的线程模型<a href="#go的线程模型" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://juejin.cn/post/6859312340630929421" target="_blank" rel="noopener">Go的线程模型 - 掘金</a>
+</p>
+<p>在操作系统提供的内核线程之上，Go搭建了一个特有的两级线程模型。</p>
+<p>一个G的执行需要P和M的支持。P和M关联之后，就形成了一个有效的G运行环境（内核线程+上下文环境）。
+每个P都会包含一个可运行的G的队列，该队列中的G会被依次传递给本地P关联的当前M,并获得运行时机。</p>
+<blockquote>
+<p><code>KSE</code>: 内核调度实体，可以被内核的调度器调度的对象，也称为内核级线程，是操作系统内核最小调度单元。</p>
+</blockquote>
+<p><p class="md__image">
+  <img src="../go%e5%b9%b6%e5%8f%91%e7%bc%96%e7%a8%8b.assets/9c4de4056a1745f7988e402f6774152f~tplv-k3u1fbpfcp-zoom-1.image"
+    alt="img"  />
+</p>
+</p>
+<p>M</p>
+<ul>
+<li>
+<p>machine的缩写，一个M代表一个用户空间的内核线程，与内核线程<code>（KSE）</code>总是一一对应,在M的生命周期内，会且仅会与一个<code>KSE</code>产生关联。</p>
+</li>
+<li>
+<p>M刚创建之初，就会被加入到<strong>全局M列表</strong>。</p>
+</li>
+<li>
+<p>有些时候，M会被停止（比如找不到可运行G时等），M会被加入到<strong>调度器的空闲M列表</strong>，在需要一个未被使用的M时，调度器会先尝试从该列表中获取。</p>
+</li>
+<li>
+<p>单个Go程序所使用的M的最大值可以设置，初始值是10000</p>
+</li>
+</ul>
+<p>P</p>
+<ul>
+<li>processor的缩写，一个P代表执行一个Go代码片段所必需的资源（上下文环境）</li>
+<li>调度器会适时的让P与不同的M建立或断开关联，使得P中的可运行G能够及时获得运行时机。</li>
+<li>P的数量默认等于当前cpu核数,可以利用函数<code>runtime.GOMAXPROCS</code>来改变P的数量。P的数量即为可运行G队列的数量。</li>
+<li>当一个P不再与任何M关联时，且它的可运行G队列为空，会被放入<strong>调度器的空闲P列表</strong>，在需要一个空闲的P关联M时，会从此列表取出。</li>
+<li>P的包含一个自由G列表，存放一些已经运行完成的G。当增长到一定程度，运行时系统会把其中的部分G转移到<strong>调度器的自由G列表</strong>中。</li>
+</ul>
+<p>G</p>
+<ul>
+<li><code>goroutine</code>的缩写，一个G代表一个go代码片段，G是对go代码的一种封装.Go的编译器会把go语句变成对内部函数<code>newproc</code>的调用，并把go函数及其参数都作为参数传递给这个函数。</li>
+<li>新建的G会被首先加入<strong>全局G列表</strong>，初始化之后，会被加入到本地P的可运行队列，还会被存储到本地P的<code>runnext</code>字段，该字段用户存放新鲜出炉的G，以便更早的运行它。如果<code>runnext</code>已经有一个G，那么这个已有G会被踢到<strong>该P的可运行G队列</strong>的末尾。如果该队列已满，那么这个G就只能追加到<strong>调度器的可运行G队列</strong>中。</li>
+<li>当go语句欲启用一个G的时候，运行时系统会先试图从相应的<strong>P的自由G列表</strong>中获取一个现成的G，来封装这个go函数。仅当获取不到G才有可能创建一个新G。</li>
+<li>运行时系统会在发现本地P自由G太少，会尝试从调度器的自由G列表中转移一些过来。如果发现本地P的自由G队列满了，会转移一些到<strong>调度器的自由G列表</strong>。</li>
+<li>所有的<strong>自由G列表</strong> 都是先进后出的。</li>
+<li>一个G在被启用之后，会先被追加到某个P的可运行G队列中，以等待运行时机。</li>
+</ul>
+<h2 id="goroutine轻量级的线程">goroutine轻量级的线程<a href="#goroutine轻量级的线程" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>在go中，使用go关键字跟上一个函数，就创建了一个<code>goroutine</code>，每个<code>goroutine</code>可以认为是一个轻量级的线程，其占用更少的堆栈空间，并且其需要的堆栈空间大小可以随着程序的运行需要动态增加或者空闲回收。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---main goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine running---&#34;</span><span class="p">)</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---wait sub goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine over---&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="cm">/**
+</span><span class="cm">---wait sub goroutine over---
+</span><span class="cm">---sub goroutine running---
+</span><span class="cm">---sub goroutine over---
+</span><span class="cm">---main goroutine over---
+</span><span class="cm">**/</span>
+</code></pre></div><p>另外我们也可以先创建一个函数，然后使用go关键字带上函数名就可以开启一个新<code>goroutine</code>来运行这个函数，如下代码创建了函数<code>printFunc</code>，然后使用 go <code>printFunc()</code>来开启新<code>goroutine</code>来启动该函数：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">printFunc</span><span class="p">(){</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine running---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---main goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">go</span> <span class="nf">printFunc</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---wait sub goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine over---&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>另外需要注意的是在go中整个进程的生命周期是与main函数所在<code>goroutine</code>一致的，只要main函数所在<code>goroutine</code>结束了，整个进程也就是结束了，而不管是否还有其他<code>goroutine</code>在运行：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---main goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;I&#39;m a goroutine&#34;</span><span class="p">)</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="c1">//无限循环
+</span><span class="c1"></span>		<span class="k">for</span>  <span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine running---&#34;</span><span class="p">)</span>
+		<span class="p">}</span>
+	<span class="p">}()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---wait sub goroutine over---&#34;</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine over---&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>如上代码在使用go关键字创建的<code>goroutine</code>内新增了for无限循环打印输出，运行上面代码后会发现随着main函数所在<code>gorroutine</code>销毁，后进程就退出了，虽然新创建的<code>goroutine</code>还没运行完毕。</p>
+<p><code>goroutine</code>是轻量级线程，并不是操作系统线程，<code>goroutine</code>与操作系统线程对应关系是<code>M：N</code>，也就是M个<code>goroutine</code>对应N个操作系统线程，<code>goroutine</code>内部实现与在多个操作系统线程(Os 线程)之间复用的协程(coroutines)一样。如果一个<code>goroutine</code>阻塞OS线程，例如等待输入，则该OS线程中的其他<code>goroutine</code>将迁移到其他OS线程，以便它们可以继续运行。</p>
+<h3 id="如何杀死一个goroutine">如何杀死一个goroutine<a href="#如何杀死一个goroutine" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>为了让一个运行中的goroutine停止，我们可以让其在一个channel上监听停止信号，如下代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">quit</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span><span class="p">{</span>
+			<span class="k">select</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">quit</span><span class="p">:</span>
+				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;sub goroutine is over&#34;</span><span class="p">)</span>
+				<span class="k">return</span>
+			<span class="k">default</span><span class="p">:</span>
+				<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;sub goroutine doing something&#34;</span><span class="p">)</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}()</span>
+
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+
+    
+	<span class="c1">//4.关闭通道quit
+</span><span class="c1"></span>	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;main goroutine start stop sub goroutine&#34;</span><span class="p">)</span>
+	<span class="nb">close</span><span class="p">(</span><span class="nx">quit</span><span class="p">)</span>
+
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;main goroutine is over&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>如上创建了一个无缓冲通道quit用来做反向通知子线程停止；开启了一个<code>goroutine</code>，该<code>goroutine</code>内使用了无限循环，内部使用了select结构，其中第一个case是从通道quit内读取元素，由于quit通道一开始没有元素，所以这个case分支不会被执行，而是转向执行defalut分支；defalut分支里面用来执行具体的业务，这里是休眠1s然后打印输出，这个<code>goroutine</code>的作用就是间隔1s执行打印输出，并且等quit通道内有元素时候执行return退出当前<code>goroutine</code></p>
+<p>代码4关闭通道，关闭通道后回向通道内写入一个零值元素，这里先让主<code>goroutine</code>休眠3秒是为了在关闭quit通道前让子<code>goroutine</code>有机会执行一些时间。</p>
+<p>代码4关闭通道后，子<code>goroutine</code>内的select语句的第一个case就会从quit读取操作中返回，然后子<code>goroutine</code>就执行return退出了。</p>
+<blockquote>
+<p>使用无缓冲通道和select结构在主<code>goroutine</code> 内反向控制子<code>goroutine</code>的生命周期在go中是一个通用的做法。</p>
+</blockquote>
+<h2 id="runtime包">runtime包<a href="#runtime包" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Go的运行时包runtime中包含了一些列的可以设置go运行时的环境的函数，比如运行最大有多少逻辑处理器（P），最多可以创建多少OS线程（M）等。</p>
+<h3 id="runtimegomaxprocsn-int"><code>runtime.GOMAXPROCS(n int)</code><a href="#runtimegomaxprocsn-int" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>设置逻辑处理器个数,也就是设置MPG中的P的个数，默认P的个数是逻辑cpu的个数，比如在4核双线程的机器上P默认个数是8，调用该函数会返回设置前P的个数。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">GOARCH</span> <span class="o">==</span> <span class="s">&#34;wasm&#34;</span> <span class="o">&amp;&amp;</span> <span class="nx">n</span> <span class="p">&gt;</span> <span class="mi">1</span> <span class="p">{</span>
+		<span class="nx">n</span> <span class="p">=</span> <span class="mi">1</span> <span class="c1">// WebAssembly has no threads yet, so only one CPU is possible.
+</span><span class="c1"></span>	<span class="p">}</span>
+	<span class="nf">lock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+	<span class="nx">ret</span> <span class="o">:=</span> <span class="nb">int</span><span class="p">(</span><span class="nx">gomaxprocs</span><span class="p">)</span>
+	<span class="nf">unlock</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">sched</span><span class="p">.</span><span class="nx">lock</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">n</span> <span class="o">==</span> <span class="nx">ret</span> <span class="p">{</span>
+		<span class="k">return</span> <span class="nx">ret</span>
+	<span class="p">}</span>
+	<span class="nf">stopTheWorldGC</span><span class="p">(</span><span class="s">&#34;GOMAXPROCS&#34;</span><span class="p">)</span>
+	<span class="c1">// newprocs will be processed by startTheWorld
+</span><span class="c1"></span>	<span class="nx">newprocs</span> <span class="p">=</span> <span class="nb">int32</span><span class="p">(</span><span class="nx">n</span><span class="p">)</span>
+	<span class="nf">startTheWorldGC</span><span class="p">()</span>
+	<span class="k">return</span> <span class="nx">ret</span>
+<span class="p">}</span>
+</code></pre></div><p>由于调用该方法会<code>stopTheWorld</code>，所以如果要设置该值，建议尽早设置该值。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;runtime&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">20</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><p>如上代码main函数内设置当前逻辑处理器P的个数为1，设置为1意味着所有的<code>goroutine</code>都被放到了这唯一一个P的本地队列里面了。然后main函数里面创建了两个<code>goroutine</code>来分别打印输出，执行上面代码会发现一种可能的序列为：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="m">10</span>
+<span class="m">11</span>
+<span class="m">12</span>
+<span class="m">13</span>
+<span class="m">14</span>
+<span class="m">15</span>
+<span class="m">16</span>
+<span class="m">17</span>
+<span class="m">18</span>
+<span class="m">19</span>
+<span class="m">0</span>
+<span class="m">1</span>
+<span class="m">2</span>
+<span class="m">3</span>
+<span class="m">4</span>
+<span class="m">5</span>
+<span class="m">6</span>
+<span class="m">7</span>
+<span class="m">8</span>
+<span class="m">9</span>
+
+Process finished with the <span class="nb">exit</span> code <span class="m">0</span>
+</code></pre></div><p>从结果看着两个<code>goroutine</code>是顺序执行的，一个执行完毕后，顺序执行第二个（其实后面会知道这是假象,这里之所以顺序输出是因为每个<code>goroutine</code>耗时太短，还没来得及做上下文切换），把上面代码修改为下面，也就是在打印一数字后休眠1s:</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;runtime&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">runtime</span><span class="p">.</span><span class="nf">GOMAXPROCS</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+			<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">20</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span><span class="p">{</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+			<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><p>一种可能输出是：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="m">10</span>
+<span class="m">0</span>
+<span class="m">1</span>
+<span class="m">11</span>
+<span class="m">12</span>
+<span class="m">2</span>
+<span class="m">3</span>
+<span class="m">13</span>
+<span class="m">14</span>
+<span class="m">4</span>
+<span class="m">5</span>
+<span class="m">15</span>
+<span class="m">16</span>
+<span class="m">6</span>
+<span class="m">7</span>
+<span class="m">17</span>
+<span class="m">18</span>
+<span class="m">8</span>
+<span class="m">9</span>
+<span class="m">19</span>
+
+Process finished with the <span class="nb">exit</span> code <span class="m">0</span>
+
+</code></pre></div><p>可知虽然在P为1的情况下，两个<code>goroutine</code>还是交叉运行，而不是顺序的。</p>
+<h3 id="runtimegosched"><code>runtime.Gosched()</code><a href="#runtimegosched" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>类似Java中线程的<code>yeild</code>方法，当一个<code>goroutine</code>执行该方法时候意味着当前<code>goroutine</code>放弃当前cpu的使用权，然后运行时会调度系统会调度其他<code>goroutine</code>占用cpu进行运行，放弃CPU使用权的<code>goroutine</code>并没有被阻塞，而是处于就绪状态，可以在随时获取到cpu情况下继续运行。</p>
+<p>前面的例子我们使用<code>time.sleep</code>方法让<code>goroutine</code>阻塞从而让出CPU让另外一个<code>goroutine</code>运行，其实也可以使用<code>Gosched</code></p>
+<h3 id="debugsetmaxthreadsthreads-int"><code>debug.SetMaxThreads(threads int)</code><a href="#debugsetmaxthreadsthreads-int" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>设置最多可以创建多少操作系统线程M，如果尝试创建比这个设置多的线程，应该程序将会崩溃，默认是10000个。</p>
+<h2 id="互斥锁">互斥锁<a href="#互斥锁" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>在go中互斥锁是在sync包提供的，其是独占锁，同时只有一个线程可以获取该锁。</p>
+<p>当一个<code>goroutine</code>持有互斥锁时候，其他请求获取锁的<code>goroutine</code>会被阻塞挂起，等获取锁的<code>goroutine</code>释放锁后，阻塞的线程中的一个才可以被唤醒并获取锁。同时该锁是<strong>不可重入锁</strong>，当前<code>goroutine</code>在获取该锁后释放前再次尝试获取该锁会被阻塞。</p>
+<p>在go中使用<code> var mutex sync.Mutex</code>就可以创建一个开箱即用的互斥锁，调用<code>mutex.Lock()</code>尝试获取锁，调用<code>mutex.Unlock()</code>释放锁，需要注意的是释放锁时候要保证某一个<code>goroutine</code>已经获取到了锁，如果在没有获取锁的<code>goroutinemutex.Unlock()</code>的情况下，会抛出错误。</p>
+<p><strong>另外需要注意的是释放锁的<code>goroutine</code>不要求与获取锁的<code>goroutine</code>是同一个</strong></p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+<span class="kd">var</span> <span class="nx">lock</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="nx">lock</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---main goroutine lock---&#34;</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;---sub goroutine unlock---&#34;</span><span class="p">)</span>
+		<span class="nx">lock</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="cm">/**
+</span><span class="cm">---main goroutine lock---
+</span><span class="cm">---sub goroutine unlock---
+</span><span class="cm">**/</span>
+</code></pre></div><p>另外go中互斥锁分为两种模式：正常与饥饿模式。</p>
+<h3 id="正常模式">正常模式<a href="#正常模式" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>在正常模式中当多个<code>goroutine</code>同时获取同一个互斥锁时候，其中一个<code>goroutine</code>会获取到该锁，其他的<code>goroutine</code>则会被放入到与该锁维护的一个FIFO队列里面，然后被阻塞挂起。</p>
+<p>当获取锁的<code>goroutine</code>释放锁后，该队列里面的某个等待的<code>goroutine</code>会被激活，激活的<code>goroutine</code>并不能马上获取到锁的所有权，这是因为当前可能有新创建的大量<code>goroutine</code>也需要获取该锁，这时候激活的<code>goroutine</code>就要与这些新的<code>goroutine</code>共同竞争锁的所有权，所以被激活的<code>goroutine</code>还是很有可能获取不到锁，如果发生了这种情况，则被激活的线程还是要被放到队列最前面（队首），最后如果一个被阻塞的<code>goroutine</code>尝试了<code>1ms</code>的时间还没获取到锁，则互斥锁的模式会被自动切换到饥饿模式。</p>
+<h3 id="饥饿模式">饥饿模式<a href="#饥饿模式" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>在饥饿模式下当多个<code>goroutine</code>同时获取同一个互斥锁时候，其中一个<code>goroutine</code>会获取到该锁，其他的<code>goroutine</code>则会被放入到与该锁维护的一个FIFO队列里面，然后被阻塞挂起</p>
+<p>当获取锁的<code>goroutine</code>释放锁后，锁的所有权会被交给FIFO队列里面队首的<code>goroutine</code>,新创建的<code>goroutine</code>尝试获取锁的时候，即使发现了当前锁是空闲的也不会去尝试获取，而是被放到锁做维护的FIFO的队尾部。</p>
+<p>如果一个激活的<code>goroutine</code>接受了锁的所有权，并且当发生了下面的某一个事情时候该锁从饥饿模式切换回正常模式：1.当前激活的<code>goroutine</code>是FIFO队列最后一个，1.当前激活的<code>goroutine</code>在<code>1ms</code>时间内就获取到了锁；</p>
+<h3 id="总结">总结<a href="#总结" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>正常模式可以提供更好的性能，因为一个<code>goroutine</code>可以在有<code>goroutine</code>处于等待锁的条件下抢占式的去获取锁，而不需要遵循先来先到的原则；而饥饿模式则可以很好的预防锁的FIFO队列队尾部的<code>goroutine</code>一直获取不到锁的情况。</p>
+<h2 id="读写锁">读写锁<a href="#读写锁" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>go语言类似Java <code>JUC</code>包也提供了一些列用于多线程之间进行同步的措施，比如低级的同步措施有 锁、<code>CAS</code>、原子变量操作类。本节我们先来看看go中读写锁，读写锁相比互斥锁来说并发度更高，在读多写少情况下比较实用。</p>
+<p>在go中可以使用<code>sync.RWMutex</code>获取一个读写锁，读写锁是读写互斥锁，读锁可以被任意多的读<code>goroutine</code>持有，但是写锁只能被某一个<code>goroutine</code>持有。当一个<code>goroutine</code>获取读锁后，其他<code>goroutine</code>也可以获取到读锁，但是如果这时候有<code>goroutine</code>尝试获取写锁，则获取写锁的线程将会被阻塞，这时候如果再有<code>goroutine</code>尝试获取读锁，则其也会被阻塞。</p>
+<p>当某个<code>goroutine</code>获取到写锁后，其后尝试获取读锁的<code>goroutine</code>都会被阻塞。</p>
+<p>读锁占用的情况会阻止写，不会阻止读，多个<code>goroutine</code>可以同时获取读锁。</p>
+<p>另外读锁是可重入锁，也就是同一个<code>goroutine</code>在可以在持有读锁的情况下再次获取读锁。</p>
+<p>在go中获取读锁和写锁方式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">rwlock</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">RWMutex</span>
+<span class="nx">rwlock</span><span class="p">.</span><span class="nf">RLock</span><span class="p">()</span><span class="c1">//获取读锁
+</span><span class="c1"></span><span class="nx">rwlock</span><span class="p">.</span><span class="nf">RUnlock</span><span class="p">()</span><span class="c1">//释放读锁
+</span><span class="c1"></span>
+<span class="nx">rwlock</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span><span class="c1">//获取写锁
+</span><span class="c1"></span><span class="nx">rwlock</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span><span class="c1">//释放写锁
+</span></code></pre></div><p>读写锁有以下三个特性：</p>
+<ol>
+<li>多个<code>goroutine</code>可以同时获取读锁</li>
+<li>读写锁是互斥锁</li>
+<li>读锁是可重入锁，即一个<code>goroutine</code>可以多次获取读锁</li>
+</ol>
+<h3 id="读写锁实现一个并发安全的map">读写锁实现一个并发安全的map<a href="#读写锁实现一个并发安全的map" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p><a href="https://www.flysnow.org/2017/05/03/go-in-action-go-read-write-lock.html" target="_blank" rel="noopener">Go语言实战笔记（十七）| Go 读写锁| 飞雪无情的博客</a>
+</p>
+<p>我们在做Java开发的时候，肯定知道<code>SynchronizedMap</code>这个Map，它是一个在多线程下安全的Map，我们可以通过<code>Collections.synchronizedMap(Map&lt;K, V&gt;)</code>来获取一个安全的Map，下面我们看看如何使用读写锁，基于Go语言来实现一个安全的Map 。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">common</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+<span class="c1">//安全的Map
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">SynchronizedMap</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">rw</span> <span class="o">*</span><span class="nx">sync</span><span class="p">.</span><span class="nx">RWMutex</span>
+	<span class="nx">data</span> <span class="kd">map</span><span class="p">[</span><span class="kd">interface</span><span class="p">{}]</span><span class="kd">interface</span><span class="p">{}</span>
+<span class="p">}</span>
+<span class="c1">//存储操作
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">sm</span> <span class="o">*</span><span class="nx">SynchronizedMap</span><span class="p">)</span> <span class="nf">Put</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span><span class="nx">v</span> <span class="kd">interface</span><span class="p">{}){</span>
+	<span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+
+	<span class="nx">sm</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]=</span><span class="nx">v</span>
+<span class="p">}</span>
+<span class="c1">//获取操作
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">sm</span> <span class="o">*</span><span class="nx">SynchronizedMap</span><span class="p">)</span> <span class="nf">Get</span><span class="p">(</span><span class="nx">k</span> <span class="kd">interface</span><span class="p">{})</span> <span class="kd">interface</span><span class="p">{}{</span>
+	<span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">RLock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">RUnlock</span><span class="p">()</span>
+
+	<span class="k">return</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">data</span><span class="p">[</span><span class="nx">k</span><span class="p">]</span>
+<span class="p">}</span>
+
+<span class="c1">//删除操作
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">sm</span> <span class="o">*</span><span class="nx">SynchronizedMap</span><span class="p">)</span> <span class="nf">Delete</span><span class="p">(</span><span class="nx">k</span> <span class="kd">interface</span><span class="p">{})</span> <span class="p">{</span>
+	<span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+
+	<span class="nb">delete</span><span class="p">(</span><span class="nx">sm</span><span class="p">.</span><span class="nx">data</span><span class="p">,</span><span class="nx">k</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="c1">//遍历Map，并且把遍历的值给回调函数，可以让调用者控制做任何事情
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">sm</span> <span class="o">*</span><span class="nx">SynchronizedMap</span><span class="p">)</span> <span class="nf">Each</span><span class="p">(</span><span class="nx">cb</span> <span class="kd">func</span> <span class="p">(</span><span class="kd">interface</span><span class="p">{},</span><span class="kd">interface</span><span class="p">{})){</span>
+	<span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">RLock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">rw</span><span class="p">.</span><span class="nf">RUnlock</span><span class="p">()</span>
+
+	<span class="k">for</span> <span class="nx">k</span><span class="p">,</span> <span class="nx">v</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">sm</span><span class="p">.</span><span class="nx">data</span> <span class="p">{</span>
+		<span class="nf">cb</span><span class="p">(</span><span class="nx">k</span><span class="p">,</span><span class="nx">v</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+
+<span class="c1">//生成初始化一个SynchronizedMap
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">NewSynchronizedMap</span><span class="p">()</span> <span class="o">*</span><span class="nx">SynchronizedMap</span><span class="p">{</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">SynchronizedMap</span><span class="p">{</span>
+		<span class="nx">rw</span><span class="p">:</span><span class="nb">new</span><span class="p">(</span><span class="nx">sync</span><span class="p">.</span><span class="nx">RWMutex</span><span class="p">),</span>
+		<span class="nx">data</span><span class="p">:</span><span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kd">interface</span><span class="p">{}]</span><span class="kd">interface</span><span class="p">{}),</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="条件变量">条件变量<a href="#条件变量" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://ilifes.com/golang/ipc-cond/" target="_blank" rel="noopener">Go并发编程之传统同步—(2)条件变量 _</a>
+</p>
+
+			</div><div class="content">
+	<br>
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/go/concurrent/sync.once%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0/">sync.once单例模式实现</a></li>
+	
+	<li><a href="/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/">golang实现单链表</a></li>
+	
+	<li><a href="/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/">go中的闭包</a></li>
+	
+	<li><a href="/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">深入解析 Go 中 Slice 底层实现</a></li>
+	
+	<li><a href="/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/">从一个yaml文件读取多个文档</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/go">go</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>8712 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-12-25 20:55 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#并发与并行">并发与并行</a></li>
+    <li><a href="#并发编程难在哪">并发编程难在哪</a>
+      <ul>
+        <li><a href="#数据竞争的存在">数据竞争的存在</a></li>
+        <li><a href="#并发执行示例">并发执行示例</a></li>
+        <li><a href="#操作的原子性">操作的原子性</a></li>
+        <li><a href="#内存访问同步">内存访问同步</a></li>
+      </ul>
+    </li>
+    <li><a href="#线程模型">线程模型</a>
+      <ul>
+        <li><a href="#一对一模型">一对一模型</a></li>
+        <li><a href="#多对一模型">多对一模型</a></li>
+        <li><a href="#多对多模型">多对多模型</a></li>
+      </ul>
+    </li>
+    <li><a href="#go的线程模型">Go的线程模型</a></li>
+    <li><a href="#goroutine轻量级的线程">goroutine轻量级的线程</a>
+      <ul>
+        <li><a href="#如何杀死一个goroutine">如何杀死一个goroutine</a></li>
+      </ul>
+    </li>
+    <li><a href="#runtime包">runtime包</a>
+      <ul>
+        <li><a href="#runtimegomaxprocsn-int"><code>runtime.GOMAXPROCS(n int)</code></a></li>
+        <li><a href="#runtimegosched"><code>runtime.Gosched()</code></a></li>
+        <li><a href="#debugsetmaxthreadsthreads-int"><code>debug.SetMaxThreads(threads int)</code></a></li>
+      </ul>
+    </li>
+    <li><a href="#互斥锁">互斥锁</a>
+      <ul>
+        <li><a href="#正常模式">正常模式</a></li>
+        <li><a href="#饥饿模式">饥饿模式</a></li>
+        <li><a href="#总结">总结</a></li>
+      </ul>
+    </li>
+    <li><a href="#读写锁">读写锁</a>
+      <ul>
+        <li><a href="#读写锁实现一个并发安全的map">读写锁实现一个并发安全的map</a></li>
+      </ul>
+    </li>
+    <li><a href="#条件变量">条件变量</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>分布式系统中的数据一致性问题</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/docker/docker%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Docker基础概念</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

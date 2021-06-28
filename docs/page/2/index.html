@@ -65,6 +65,25 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/docker/win10%E5%AE%89%E8%A3%85docker/">Win10安装docker</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>安装 主要是安装docker和wsl，先去docker官网 下载安装包，注意查看系统要求，虚拟化和安装WSL（Windows Subsystem for Linux） 。 具体可以看这个中文的：wsl官方文档 。 主要的坑在Bios启用虚拟化：3700x启用虚拟化： 看virtualisation：enabled状态 配置镜像加速 具体看这里镜像加速器 ，对于使用 Windows 10 的用户，在任务栏托盘 Docker 图标内右键菜单</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-04-20</span>
+                        <a class="tag"
+                                   href="/tags/docker/">docker</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/">从一个yaml文件读取多个文档</a>
                 </h2>
             </div>
@@ -201,6 +220,25 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/linux/%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%B6%E6%8B%B7%E8%B4%9D/">什么是零拷贝</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>前言 磁盘可以说是计算机系统最慢的硬件之一，读写速度相差内存 10 倍以上，所以针对优化磁盘的技术非常的多，比如零拷贝、直接 I/O、异步 I/O 等等，这些优化的目的就是为了提高系统的吞吐量，另外操作系统内核中的磁盘高速缓存区，可以有效的减少磁盘的访问次数。 这次，我们就以「文件传输」作为切入点，来分析 I/O 工作方式，以及如何优化传输文件的性能。 为什么要有 DMA 技术? 在没有 DMA 技术前，</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-02-25</span>
+                        <a class="tag"
+                                   href="/tags/linux/">Linux</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F-%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/">分布式系统---幂等性设计</a>
                 </h2>
             </div>
@@ -213,45 +251,6 @@
                                 class="date">2021-02-05</span>
                         <a class="tag"
                                    href="/tags/%E5%B9%82%E7%AD%89%E6%80%A7/">幂等性</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/distributed/raft-%E7%AE%97%E6%B3%95/">Raft算法</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>在一个由 Raft 协议组织的集群中有三类角色： Leader（领袖） Follower（群众） Candidate（候选人） 就像一个民主社会，领袖由民众投票选出。刚开始没有领袖，所有集群中的参与者都是群众，那么首先开启一轮大选，在大选期间所有群众都能参与竞选，这时所有群众的角色就变成了候选人，民主投票选出领袖后就开始了这届领袖的任期，然后选举结束，所有除领袖的候选人又变回</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-02-02</span>
-                        <a class="tag"
-                                   href="/tags/raft/">Raft</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9Fcap%E5%AE%9A%E7%90%86%E4%B8%8Ebase%E7%90%86%E8%AE%BA/">分布式系统CAP定理与BASE理论</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>CAP定理 在计算机科学中，CAP定理指出，对于一个分布式系统，不能同时满足一下三点，最多只能同时满足其中两点： 一致性(Consistency)：在分布式系统环境下，数据在多台机器上有多个副本。当对数据执行更新操作时，数据更新操作完成后，所有节点在同一时间的数据完全一致，客户端读取的数据永远是更新后的最新数据。 可用性(Availability) : 服务一直可用，</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-01-15</span>
-                        <a class="tag"
-                                   href="/tags/cap/">CAP</a><a class="tag"
-                                   href="/tags/base/">BASE</a>
                     </div>
                 </div>
             </div>
@@ -275,17 +274,17 @@
   <li class="page-item">
     <a class="page-link" href="/page/3/">3</a>
   </li>
-  <li class="page-item">
-    <a class="page-link" href="/page/4/">4</a>
+  <li class="page-item disabled">
+    <span aria-hidden="true">&nbsp;&hellip;&nbsp;</span>
   </li>
   <li class="page-item">
-    <a class="page-link" href="/page/5/">5</a>
+    <a class="page-link" href="/page/6/">6</a>
   </li>
   <li class="page-item">
     <a href="/page/3/" class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
   </li>
   <li class="page-item">
-    <a href="/page/5/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
+    <a href="/page/6/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
   </li>
 </ul>
 

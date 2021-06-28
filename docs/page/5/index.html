@@ -65,6 +65,123 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/mysql/mysql%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">MySQL事务隔离级别</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>MySQL事务隔离级别 什么是事务？ 数据库操作的最小工作单元，是作为单个逻辑工作单元执行的一系列操作；事务是一组不可再分割的操作集合（工作逻辑单元） 举个栗子： 事务最经典常用的栗子可能就是转账：一个账户少钱了，哪另一个账户肯定要多钱，李永龙说过，亏本的买卖咱可不干，吃亏了不高兴！ 所以，少钱和多钱这两个操作，要么同时成功，要么同时失败！ MySQL中如何开启事务？ 手</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2020-04-09</span>
+                        <a class="tag"
+                                   href="/tags/mysql/">MySQL</a><a class="tag"
+                                   href="/tags/%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">事务隔离级别</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/mysql/mysql-b-tree%E5%92%8Cb&#43;tree/">MySQL B-Tree和B&#43;tree</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>B+树索引是B+树在数据库中的一种实现，是最常见也是数据库中使用最为频繁的一种索引。 B+树中的B代表平衡（balance），而不是二叉（binary），因为B+树是从最早的平衡二叉树演化而来的。 在讲B+树之前必须先了解二叉查找树、平衡二叉树（AVLTree）和平衡多路查找树（B-Tree），B+树即由这些树逐步优化而来。 二叉查找树 定义 二叉树具有以下性质： 左子</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2020-04-02</span>
+                        <a class="tag"
+                                   href="/tags/mysql/">MySQL</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/linux/linux%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4/">Linux内核空间与用户空间</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>用户空间与内核空间 我们知道现在操作系统都是采用虚拟存储器 ，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次 方）。 操心系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。 为了保证用户进程不能直接操作内核，保证内核的安全，操心系统将虚拟空间划分为两部分，一部分为内核空间，一部分 为用户空间。针对</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2019-10-29</span>
+                        <a class="tag"
+                                   href="/tags/linux/">Linux</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/blog/elk%E5%85%A5%E9%97%A8/">ELK入门</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>介绍 ELK是Elasticsearch、Logstash、Kibana三大开源框架首字母大写简称(但是后期出现的filebeat(beats中的一种)可以用来 替代logstash的数据收集功能，比较轻量级)。市面上也被成为Elastic Stack。 Logstash是免费且开放的服务器端数据处理管道，能够从多个来源采集数据，转换数据，然后将数据发送到您最喜欢 的</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2019-10-13</span>
+                        <a class="tag"
+                                   href="/tags/elk/">ELK</a><a class="tag"
+                                   href="/tags/elasticsearch/">ElasticSearch</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/java/concurrent/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/">Java生产者与消费者</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>实现生产者消费者模型，可以使用阻塞队列，或者使用 Object 类里自带的 wait() 和 notify() 或者 notifyAll() 的消息通知机制。 实现 wait()/notify() 接下来我们需要重点看下这个通知机制。 wait() 和 notify() 都是 Java 中的 Object 类自带的方法，可以用来实现线程间的通信。 在上一节 讲的 11 个 APIs 里我也提到了它，我们这里再展开讲一下。 wait() 方法是用来让当前线程等待，直到有别的线程调用 notify() 将它唤醒，或者我们可以设定一个时间让它自动苏醒。 调用该方法之前，线程</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2019-08-05</span>
+                        <a class="tag"
+                                   href="/tags/java/">Java</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/java/concurrent/java%E5%B9%B6%E5%8F%91%E4%B9%8Bcas%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">Java并发之CAS原理分析</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>CAS（Compare-and-Swap），即比较并替换，是一种实现并发算法时常用到的技术，Java并发包中的很多类都使用了CAS技术。 什么是CAS CAS(compare and swap) 比较并替换，比较和替换是线程并发算法时用到的一种技术 CAS是原子操作，保证并发安全，而不是保证并发同步 CAS是CPU的一个指令 CAS是非阻塞的、轻量级的乐观锁 为什么说CAS是乐观锁 乐观锁，严格来说并不是锁，</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2019-06-29</span>
+                        <a class="tag"
+                                   href="/tags/java/">Java</a><a class="tag"
+                                   href="/tags/cas/">CAS</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/net/https%E8%AE%B2%E8%A7%A3/">HTTPS讲解</a>
                 </h2>
             </div>
@@ -103,6 +220,25 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/blog/bitmap%E4%BD%BF%E7%94%A8/">bitmap使用</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>什么是bitmap Bit-map的基本思想就是用一个bit位来标记某个元素对应的Value，而Key即是该元素。由于采用了Bit为单位来存储数据， 因此在存储空间方面，可以大大节省。（PS：划重点 节省存储空间 ） 假设有这样一个需求：在20亿个随机整数中找出某个数m是否存在其中，并假设32位操作系统，4G内存 在Java中，int占4字节，1字节=8位（1 byte = 8 bi</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2018-12-05</span>
+                        <a class="tag"
+                                   href="/tags/bitmap/">bitmap</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/net/vmware%E8%99%9A%E6%8B%9F%E6%9C%BAcentos7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">vmvare虚拟机centos网络配置</a>
                 </h2>
             </div>
@@ -116,32 +252,6 @@
                         <a class="tag"
                                    href="/tags/linux/">linux</a><a class="tag"
                                    href="/tags/vmvare/">vmvare</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/linux/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/"></a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>文件描述符是什么 fd 是 File descriptor 的缩写，中文名叫做：文件描述符。文件描述符是一个非负整数，本质上是一个索引值（这句话非常重要）。
-什么时候拿到的 fd ？
-当打开一个文件时，内核向进程返回一个文件描述符（ open 系统调用得到 ），后续 read、write 这个文件时，则只需要用这个文件描述符来标识该文件，将其作为参数传入 read、write 。
-fd 的值范围是什么？
-在 POSIX 语义中，0，1，2 这三个 fd 值已经被赋予特殊含义，分别是标准输入（ STDIN_FILENO ），标准输出（ STDOUT_FILENO ），标准错误（ STDERR_FILENO ）。
-文件描述符是有一个范围的：0 ～ OPEN_MAX-1 ，最早期的 UNIX 系统中范围很小，现在的主流系统单就这个值来说，变化范围是几乎不受限制的，只受到系统硬件配置和系统管理员配置的约束。
-你可以通过 ulimit 命令查看当前系统的配置：
-➜ ulimit -n 4864 如上，我系统上进程默认最多打开 4864 文件。
-参考资料  存储基础 — 文件描述符 fd 究竟是什么？   </p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">0001-01-01</span>
-                        
                     </div>
                 </div>
             </div>
@@ -171,11 +281,14 @@ fd 的值范围是什么？
   <li class="page-item active">
     <a class="page-link" href="/page/5/">5</a>
   </li>
-  <li class="page-item disabled">
-    <a  class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+  <li class="page-item">
+    <a class="page-link" href="/page/6/">6</a>
   </li>
   <li class="page-item">
-    <a href="/page/5/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
+    <a href="/page/6/" class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+  </li>
+  <li class="page-item">
+    <a href="/page/6/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
   </li>
 </ul>
 

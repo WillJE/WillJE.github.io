@@ -17,5 +17,14 @@
       <description>LRU 算法，全称是Least Recently Used。 翻译过来就是最近最少使用算法。 这个算法的思想就是：如果一个数据在最近一段时间没有被访问到，那么在将来它被访问的可能性也很小。所以，当指定的空间已存满数据时，应当把最久没有被访问到的数据淘汰。 实现LRU算法 如果我们想要查询和插入的时间复杂度都是 O(1)，那么我们需要一个满足下面三个条件的数据结构： 首先这个数据结构必须是有时序</description>
     </item>
     
+    <item>
+      <title>LRU的JAVA实现</title>
+      <link>https://willje.github.io/posts/java/lru%E7%9A%84java%E5%AE%9E%E7%8E%B0/</link>
+      <pubDate>Wed, 25 Apr 2018 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/java/lru%E7%9A%84java%E5%AE%9E%E7%8E%B0/</guid>
+      <description>什么是LRU算法? LRU是Least Recently Used的缩写，即最近最久未使用，是一种操作系统中常用的页面置换算法。 知道了什么是LRU后，我们再来聊下它的使用场景 在工作中，对于Redis我们一定是比较熟悉的，它是一个内存数据库；因为它是内存数据库，并且内存的空间是有限的，如果Redis中数据量很大的话，内存就可能被占满，但是此时如果还有数据存入Redis的话，那该怎</description>
+    </item>
+    
   </channel>
 </rss>
