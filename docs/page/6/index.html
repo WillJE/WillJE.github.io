@@ -65,6 +65,45 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/net/%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91/">转发与重定向</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>Redirect 重定向是指当浏览器请求一个URL时，服务器返回一个重定向指令，告诉浏览器地址已经变了，麻烦使用新的URL再重新发送新请求。 例如，我们已经编写了一个能处理/hello的HelloServlet，如果收到的路径为/hi，希望能重定向到/hello，可以再编写一个RedirectServlet： @WebServlet(urlPatterns = &#34;/hi&#34;) public class RedirectServlet extends HttpServlet { protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { // 构造重定向的路径: String name = req.getParameter(&#34;name&#34;); String</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2018-09-20</span>
+                        <a class="tag"
+                                   href="/tags/%E7%BD%91%E7%BB%9C/">网络</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/net/vmware%E8%99%9A%E6%8B%9F%E6%9C%BAcentos7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">vmvare虚拟机centos网络配置</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>第一步：重置虚拟网络设置 VMWARE-&gt;编辑-&gt;虚拟网络编辑器-&gt; 还原默认设置 NAT设置 记住： 子网掩码和网关IP。 还原后的默认值即可以 设置静态IP vi /etc/sysconfig/network-scripts/ifcfg-ens33 ifcfg-ens33 这个名字，每个人的电脑网卡不一样，可以从ifconfig 查看到。 这里还要设置DNS，直接取物理机的DNS即可；通过 ifconfig /all 重启网络服务 systemctl restart network</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2018-05-28</span>
+                        <a class="tag"
+                                   href="/tags/linux/">linux</a><a class="tag"
+                                   href="/tags/vmvare/">vmvare</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/java/lru%E7%9A%84java%E5%AE%9E%E7%8E%B0/">LRU的JAVA实现</a>
                 </h2>
             </div>

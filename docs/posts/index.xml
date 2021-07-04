@@ -7842,7 +7842,8 @@ user: will.change, type=yaml</p>
 <ul>
 <li><code>Read uncommitter</code>(未提交读) ： 没有解决任何问题</li>
 <li><code>Read Committer</code>(提交读) ：解决了脏读问题</li>
-<li><code>Repeatable Read</code>(可重复读)： 解决了不可重复读和脏读问题（ps:在Innodb情况下，也不可能发生幻读问题）</li>
+<li><code>Repeatable Read</code>(可重复读)： 解决了不可重复读，但没有解决幻读，幻读需要通过 next-key锁辅助解决；<a href="https://github.com/Yhzhtk/note/issues/42" target="_blank" rel="noopener">Innodb 中 RR 隔离级别能否防止幻读？</a>
+</li>
 <li><code>Serializable</code>(串行化) ：脏读、幻读、不可重复读三个问题全部解决了</li>
 </ul>
 <p>为了更好的介绍以上四种情况，再举个栗子：</p>
@@ -8552,6 +8553,181 @@ $ cat my.dic
 		</item>
 		
 		<item>
+			<title>Dubbo入门</title>
+			<link>https://willje.github.io/posts/java/dubbo%E5%85%A5%E9%97%A8/</link>
+			<pubDate>Thu, 10 Oct 2019 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/java/dubbo%E5%85%A5%E9%97%A8/</guid>
+			<description>Dubbo核心概念 Dubbo官网: https://dubbo.apache.org/zh/ Dubbo 是一款高性能、轻量级的开源Java RPC框架，它提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，服务自动注册和发现。分布式系统是将一个系统拆分为多个不同的服务。 该图来自Dubbo官网，描述了服务注册中心、服务提供方、服务消费方、服务监控中心之间的调用关系。 服务提供者（Provider）：暴露服务的服务提供</description>
+			<content type="html"><![CDATA[<h2 id="dubbo核心概念">Dubbo核心概念</h2>
+<p>Dubbo官网: <a href="https://dubbo.apache.org/zh/">https://dubbo.apache.org/zh/</a></p>
+<p>Dubbo 是一款高性能、轻量级的开源Java RPC框架，它提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，服务自动注册和发现。分布式系统是将一个系统拆分为多个不同的服务。</p>
+<p><p class="md__image">
+  <img src="../Dubbo%e5%85%a5%e9%97%a8.assets/20200610170317960.png"
+    alt="在这里插入图片描述"  />
+</p>
+</p>
+<p>该图来自Dubbo官网，描述了服务注册中心、服务提供方、服务消费方、服务监控中心之间的调用关系。</p>
+<ul>
+<li>服务提供者（Provider）：暴露服务的服务提供方，服务提供者在启动时，向注册中心注册自己提供的服务。</li>
+<li>服务消费者（Consumer）: 调用远程服务的服务消费方，服务消费者在启动时，向注册中心订阅自己所需的服务，服务消费者，从提供者地址列表中，基于软负载均衡算法，选一台提供者进行调用，如果调用失败，再选另一台调用。</li>
+<li>注册中心（Registry）：注册中心返回服务提供者地址列表给消费者，如果有变更，注册中心将基于长连接推送变更数据给消费者。</li>
+<li>监控中心（Monitor）：服务消费者和提供者，在内存中累计调用次数和调用时间，定时每分钟发送一次统计数据到监控中心。</li>
+</ul>
+<h2 id="搭建-zookeeper注册中心">搭建 ZooKeeper注册中心</h2>
+<p>可以参考这篇文章<a href="https://willje.github.io/posts/distributed/zookeeper%E5%85%A5%E9%97%A8/" target="_blank" rel="noopener">Zookeeper入门</a>
+</p>
+<h2 id="搭建zookeeper监控中心">搭建Zookeeper监控中心</h2>
+<p>dubbo-admin下载地址 ：https://github.com/apache/dubbo-admin/tree/master</p>
+<p><p class="md__image">
+  <img src="../Dubbo%e5%85%a5%e9%97%a8.assets/image-20210701105231765.png"
+    alt="image-20210701105231765"  />
+</p>
+</p>
+<p>下载-解压-打包，然后运行即可；</p>
+<p>找到<code>\incubator-dubbo-ops\dubbo-admin-server\target</code>目录下，运行</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">java -jar dubbo-admin-server-0.3.0-SNAPSHOT.jar
+</code></pre></div><p>服务启动，账户密码：root；</p>
+<p><p class="md__image">
+  <img src="../Dubbo%e5%85%a5%e9%97%a8.assets/image-20210701145524646.png"
+    alt="image-20210701145524646"  />
+</p>
+</p>
+<h2 id="dubbo环境搭建">Dubbo环境搭建</h2>
+<h3 id="父工程-learn_dubbo">父工程-learn_dubbo</h3>
+<p>引入依赖，值得关注的是引入springboot，dubbo-spring-boot-starter还有zookeeper。</p>
+<div class="highlight"><pre class="chroma"><code class="language-xml" data-lang="xml">    <span class="nt">&lt;parent&gt;</span>
+        <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+        <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-parent<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;version&gt;</span>2.1.5.RELEASE<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;relativePath/&gt;</span>
+    <span class="nt">&lt;/parent&gt;</span>
+
+    <span class="nt">&lt;properties&gt;</span>
+        <span class="nt">&lt;java.version&gt;</span>1.8<span class="nt">&lt;/java.version&gt;</span>
+        <span class="nt">&lt;zookeeper.version&gt;</span>3.4.14<span class="nt">&lt;/zookeeper.version&gt;</span>
+        <span class="nt">&lt;curator-framework.version&gt;</span>4.0.1<span class="nt">&lt;/curator-framework.version&gt;</span>
+    <span class="nt">&lt;/properties&gt;</span>
+
+    <span class="nt">&lt;dependencies&gt;</span>
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-web<span class="nt">&lt;/artifactId&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.springframework.boot<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>spring-boot-starter-test<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;scope&gt;</span>test<span class="nt">&lt;/scope&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>com.alibaba.spring.boot<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>dubbo-spring-boot-starter<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>2.0.0<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>org.apache.zookeeper<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>zookeeper<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>${zookeeper.version}<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+        <span class="nt">&lt;dependency&gt;</span>
+            <span class="nt">&lt;groupId&gt;</span>com.101tec<span class="nt">&lt;/groupId&gt;</span>
+            <span class="nt">&lt;artifactId&gt;</span>zkclient<span class="nt">&lt;/artifactId&gt;</span>
+            <span class="nt">&lt;version&gt;</span>0.10<span class="nt">&lt;/version&gt;</span>
+        <span class="nt">&lt;/dependency&gt;</span>
+
+    <span class="nt">&lt;/dependencies&gt;</span>
+</code></pre></div><h3 id="dubbo-api">dubbo-api</h3>
+<p>这是服务的API，服务的实现和消费都要依赖这个模块，以此实现生产和消费的解耦。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">interface</span> <span class="nc">HelloService</span> <span class="o">{</span>
+    <span class="n">String</span> <span class="nf">sayHello</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">);</span>
+<span class="o">}</span>
+</code></pre></div><h3 id="dubbo-provider">dubbo-provider</h3>
+<p>实现dubbo-api的接口，并注册到zookeeper中。</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Service</span><span class="o">(</span><span class="n">version</span> <span class="o">=</span> <span class="s">&#34;${demo.service.version}&#34;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloServiceImpl</span> <span class="kd">implements</span> <span class="n">HelloService</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">sayHello</span><span class="o">(</span><span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="s">&#34;Hello &#34;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#34;,This is springboot-dubbo test&#34;</span><span class="o">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p><code>@Service</code> 使用dubbo家的service暴露出来,为别的工程远程调用。</p>
+<p>暴露了服务还不够，还要开启dubbo服务，在启动类上加上注解 <code>@EnableDubbo</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@SpringBootApplication</span>
+<span class="nd">@EnableDubbo</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DubboProviderApplication</span> <span class="o">{</span>
+
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+        <span class="n">SpringApplication</span><span class="o">.</span><span class="na">run</span><span class="o">(</span><span class="n">DubboProviderApplication</span><span class="o">.</span><span class="na">class</span><span class="o">,</span> <span class="n">args</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div><p>配置文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">dubbo-provider</span><span class="w">
+</span><span class="w"></span><span class="nt">server</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">9090</span><span class="w">
+</span><span class="w">
+</span><span class="w"></span><span class="nt">dubbo</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">demo-provider</span><span class="w"> </span><span class="c"># 服务名</span><span class="w">
+</span><span class="w">  </span><span class="nt">registry</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l">zookeeper://127.0.0.1:2181</span><span class="w"> </span><span class="c"># 注册中心地址</span><span class="w">
+</span><span class="w">  </span><span class="nt">protocol</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">dubbo</span><span class="w"> </span><span class="c"># 指定通信协议</span><span class="w">
+</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">20880</span><span class="w"> </span><span class="c"># 通信端口  这里指的是与消费者间的通信协议与端口</span><span class="w">
+</span><span class="w">  </span><span class="nt">provider</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">timeout</span><span class="p">:</span><span class="w"> </span><span class="m">10000</span><span class="w"> </span><span class="c"># 配置全局调用服务超时时间，dubbo默认是1s，肯定不够用呀</span><span class="w">
+</span><span class="w">    </span><span class="nt">retries</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w"> </span><span class="c"># 重试3次</span><span class="w">
+</span><span class="w">    </span><span class="nt">delay</span><span class="p">:</span><span class="w"> </span>-<span class="m">1</span><span class="w">
+</span></code></pre></div><h3 id="dubbo-consumer">dubbo-consumer</h3>
+<p>这就是个简单的spring-boot项目，还是要依赖dubbo-api.</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">dubbo</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">dubbo-consumer</span><span class="w"> </span><span class="c"># 消息者名字</span><span class="w">
+</span><span class="w">  </span><span class="nt">registry</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">address</span><span class="p">:</span><span class="w"> </span><span class="l">zookeeper://127.0.0.1:2181</span><span class="w"> </span><span class="c"># 注册中心地址</span><span class="w">
+</span><span class="w"></span><span class="nt">spring</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">application</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">dubbo-consumer</span><span class="w">
+</span><span class="w"></span><span class="nt">server</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">9091</span><span class="w">
+</span></code></pre></div><p>通过api的形式测试dubbo-provider提供的服务</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@RestController</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">HelloConsumerController</span> <span class="o">{</span>
+    <span class="nd">@Reference</span><span class="o">(</span><span class="n">version</span> <span class="o">=</span> <span class="s">&#34;${demo.service.version}&#34;</span><span class="o">)</span>
+    <span class="kd">private</span> <span class="n">HelloService</span> <span class="n">helloService</span><span class="o">;</span>
+
+    <span class="nd">@RequestMapping</span><span class="o">(</span><span class="s">&#34;/sayHello/{name}&#34;</span><span class="o">)</span>
+    <span class="kd">public</span> <span class="n">String</span> <span class="nf">sayHello</span><span class="o">(</span><span class="nd">@PathVariable</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">)</span> <span class="n">String</span> <span class="n">name</span><span class="o">)</span> <span class="o">{</span>
+        <span class="k">return</span> <span class="n">helloService</span><span class="o">.</span><span class="na">sayHello</span><span class="o">(</span><span class="n">name</span><span class="o">);</span>
+    <span class="o">}</span>
+
+<span class="o">}</span>
+</code></pre></div><p>注意这个<code>@Reference</code>的注解，服务消费者使用<code>@Reference</code>引用服务</p>
+<h2 id="测试">测试</h2>
+<p>启动dubbo-provider及dubbo-consumer 工程
+通过consumer消费者接口调用 http://127.0.0.1:9091/will 查看调用效果</p>
+<blockquote>
+<p>完整代码：https://github.com/WillJE/learn_dubbo</p>
+</blockquote>
+<h2 id="参考">参考</h2>
+<ul>
+<li><a href="https://tomoya92.github.io/2019/01/10/spring-boot-dubbo/" target="_blank" rel="noopener">Spring-Boot集成Dubbo简单入门总结</a>
+</li>
+</ul>
+]]></content>
+		</item>
+		
+		<item>
 			<title>Java生产者与消费者</title>
 			<link>https://willje.github.io/posts/java/concurrent/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/</link>
 			<pubDate>Mon, 05 Aug 2019 20:55:29 +0800</pubDate>
@@ -9123,6 +9299,89 @@ git add * <span class="o">&amp;&amp;</span> git commit -m <span class="s1">&#39;
 </p>
 <p><a href="https://zhuanlan.zhihu.com/p/45637038" target="_blank" rel="noopener">【算法与数据结构专场】BitMap算法基本操作代码实现</a>
 </p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>转发与重定向</title>
+			<link>https://willje.github.io/posts/net/%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91/</link>
+			<pubDate>Thu, 20 Sep 2018 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/net/%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91/</guid>
+			<description>Redirect 重定向是指当浏览器请求一个URL时，服务器返回一个重定向指令，告诉浏览器地址已经变了，麻烦使用新的URL再重新发送新请求。 例如，我们已经编写了一个能处理/hello的HelloServlet，如果收到的路径为/hi，希望能重定向到/hello，可以再编写一个RedirectServlet： @WebServlet(urlPatterns = &amp;#34;/hi&amp;#34;) public class RedirectServlet extends HttpServlet { protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { // 构造重定向的路径: String name = req.getParameter(&amp;#34;name&amp;#34;); String</description>
+			<content type="html"><![CDATA[<h2 id="redirect">Redirect</h2>
+<p>重定向是指当浏览器请求一个URL时，服务器返回一个重定向指令，告诉浏览器地址已经变了，麻烦使用新的URL再重新发送新请求。</p>
+<p>例如，我们已经编写了一个能处理<code>/hello</code>的<code>HelloServlet</code>，如果收到的路径为<code>/hi</code>，希望能重定向到<code>/hello</code>，可以再编写一个<code>RedirectServlet</code>：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@WebServlet</span><span class="o">(</span><span class="n">urlPatterns</span> <span class="o">=</span> <span class="s">&#34;/hi&#34;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">RedirectServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">resp</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="c1">// 构造重定向的路径:
+</span><span class="c1"></span>        <span class="n">String</span> <span class="n">name</span> <span class="o">=</span> <span class="n">req</span><span class="o">.</span><span class="na">getParameter</span><span class="o">(</span><span class="s">&#34;name&#34;</span><span class="o">);</span>
+        <span class="n">String</span> <span class="n">redirectToUrl</span> <span class="o">=</span> <span class="s">&#34;/hello&#34;</span> <span class="o">+</span> <span class="o">(</span><span class="n">name</span> <span class="o">==</span> <span class="kc">null</span> <span class="o">?</span> <span class="s">&#34;&#34;</span> <span class="o">:</span> <span class="s">&#34;?name=&#34;</span> <span class="o">+</span> <span class="n">name</span><span class="o">);</span>
+        <span class="c1">// 发送重定向响应:
+</span><span class="c1"></span>        <span class="n">resp</span><span class="o">.</span><span class="na">sendRedirect</span><span class="o">(</span><span class="n">redirectToUrl</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p>如果浏览器发送<code>GET /hi</code>请求，<code>RedirectServlet</code>将处理此请求。由于<code>RedirectServlet</code>在内部又发送了重定向响应，因此，浏览器会收到如下响应：</p>
+<pre><code>HTTP/1.1 302 Found
+Location: /hello
+</code></pre><p>当浏览器收到302响应后，它会立刻根据<code>Location</code>的指示发送一个新的<code>GET /hello</code>请求，这个过程就是重定向：</p>
+<pre><code class="language-ascii" data-lang="ascii">┌───────┐   GET /hi     ┌───────────────┐
+│Browser│ ────────────&gt; │RedirectServlet│
+│       │ &lt;──────────── │               │
+└───────┘   302         └───────────────┘
+
+
+┌───────┐  GET /hello   ┌───────────────┐
+│Browser│ ────────────&gt; │ HelloServlet  │
+│       │ &lt;──────────── │               │
+└───────┘   200 &lt;html&gt;  └───────────────┘
+</code></pre><p>观察Chrome浏览器的网络请求，可以看到两次HTTP请求：</p>
+<p><p class="md__image">
+  <img src="../%e8%bd%ac%e5%8f%91%e4%b8%8e%e9%87%8d%e5%ae%9a%e5%90%91.assets/l"
+    alt="redirect"  />
+</p>
+</p>
+<p>并且浏览器的地址栏路径自动更新为<code>/hello</code>。</p>
+<h3 id="301和302">301和302</h3>
+<p>**重定向有两种：一种是302响应，称为临时重定向，一种是301响应，称为永久重定向。**两者的区别是，如果服务器发送301永久重定向响应，浏览器会缓存<code>/hi</code>到<code>/hello</code>这个重定向的关联，下次请求<code>/hi</code>的时候，浏览器就直接发送<code>/hello</code>请求了。</p>
+<p>重定向有什么作用？重定向的目的是当Web应用升级后，如果请求路径发生了变化，可以将原来的路径重定向到新路径，从而避免浏览器请求原路径找不到资源。</p>
+<p><code>HttpServletResponse</code>提供了快捷的<code>redirect()</code>方法实现302重定向。如果要实现301永久重定向，可以这么写：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="n">resp</span><span class="o">.</span><span class="na">setStatus</span><span class="o">(</span><span class="n">HttpServletResponse</span><span class="o">.</span><span class="na">SC_MOVED_PERMANENTLY</span><span class="o">);</span> <span class="c1">// 301
+</span><span class="c1"></span><span class="n">resp</span><span class="o">.</span><span class="na">setHeader</span><span class="o">(</span><span class="s">&#34;Location&#34;</span><span class="o">,</span> <span class="s">&#34;/hello&#34;</span><span class="o">);</span>
+</code></pre></div><h2 id="forward">Forward</h2>
+<p>Forward是指内部转发。当一个Servlet处理请求的时候，它可以决定自己不继续处理，而是转发给另一个Servlet处理。</p>
+<p>例如，我们已经编写了一个能处理<code>/hello</code>的<code>HelloServlet</code>，继续编写一个能处理<code>/morning</code>的<code>ForwardServlet</code>：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@WebServlet</span><span class="o">(</span><span class="n">urlPatterns</span> <span class="o">=</span> <span class="s">&#34;/morning&#34;</span><span class="o">)</span>
+<span class="kd">public</span> <span class="kd">class</span> <span class="nc">ForwardServlet</span> <span class="kd">extends</span> <span class="n">HttpServlet</span> <span class="o">{</span>
+    <span class="kd">protected</span> <span class="kt">void</span> <span class="nf">doGet</span><span class="o">(</span><span class="n">HttpServletRequest</span> <span class="n">req</span><span class="o">,</span> <span class="n">HttpServletResponse</span> <span class="n">resp</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">ServletException</span><span class="o">,</span> <span class="n">IOException</span> <span class="o">{</span>
+        <span class="n">req</span><span class="o">.</span><span class="na">getRequestDispatcher</span><span class="o">(</span><span class="s">&#34;/hello&#34;</span><span class="o">).</span><span class="na">forward</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="n">resp</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div><p><code>ForwardServlet</code>在收到请求后，它并不自己发送响应，而是把请求和响应都转发给路径为<code>/hello</code>的Servlet，即下面的代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="n">req</span><span class="o">.</span><span class="na">getRequestDispatcher</span><span class="o">(</span><span class="s">&#34;/hello&#34;</span><span class="o">).</span><span class="na">forward</span><span class="o">(</span><span class="n">req</span><span class="o">,</span> <span class="n">resp</span><span class="o">);</span>
+</code></pre></div><p>后续请求的处理实际上是由<code>HelloServlet</code>完成的。这种处理方式称为转发（Forward），我们用流程图画出来如下：</p>
+<pre><code class="language-ascii" data-lang="ascii">                          ┌────────────────────────┐
+                          │      ┌───────────────┐ │
+                          │ ────&gt;│ForwardServlet │ │
+┌───────┐  GET /morning   │      └───────────────┘ │
+│Browser│ ──────────────&gt; │              │         │
+│       │ &lt;────────────── │              ▼         │
+└───────┘    200 &lt;html&gt;   │      ┌───────────────┐ │
+                          │ &lt;────│ HelloServlet  │ │
+                          │      └───────────────┘ │
+                          │       Web Server       │
+                          └────────────────────────┘
+</code></pre><p>转发和重定向的区别在于，转发是在Web服务器内部完成的，对浏览器来说，它只发出了一个HTTP请求：</p>
+<p><p class="md__image">
+  <img src="../%e8%bd%ac%e5%8f%91%e4%b8%8e%e9%87%8d%e5%ae%9a%e5%90%91.assets/l"
+    alt="forward"  />
+</p>
+</p>
+<p>注意到使用转发的时候，浏览器的地址栏路径仍然是<code>/morning</code>，浏览器并不知道该请求在Web服务器内部实际上做了一次转发。</p>
+<h2 id="小结">小结</h2>
+<p>使用重定向时，浏览器知道重定向规则，并且会自动发起新的HTTP请求；</p>
+<p>使用转发时，浏览器并不知道服务器内部的转发逻辑。</p>
 ]]></content>
 		</item>
 		

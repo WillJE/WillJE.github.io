@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Dubbo on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/dubbo/</link>
+    <description>Recent content in Dubbo on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Thu, 10 Oct 2019 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/dubbo/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Dubbo入门</title>
+      <link>https://willje.github.io/posts/java/dubbo%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Thu, 10 Oct 2019 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/java/dubbo%E5%85%A5%E9%97%A8/</guid>
+      <description>Dubbo核心概念 Dubbo官网: https://dubbo.apache.org/zh/ Dubbo 是一款高性能、轻量级的开源Java RPC框架，它提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，服务自动注册和发现。分布式系统是将一个系统拆分为多个不同的服务。 该图来自Dubbo官网，描述了服务注册中心、服务提供方、服务消费方、服务监控中心之间的调用关系。 服务提供者（Provider）：暴露服务的服务提供</description>
+    </item>
+    
+  </channel>
+</rss>

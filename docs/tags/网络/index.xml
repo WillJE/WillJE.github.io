@@ -35,5 +35,14 @@
       <description>一、体系结构 计算机网络的各层及其协议的集合被称为网络的体系结构，按照不同的维度，其常被分为七层、五层、四层网络结构： 应用层 (application layer)：直接为应用进程提供服务。应用层协议定义的是应用进程间通讯和交互的规则，不同的应用有着不同的应用层协议，如 HTTP协议（万维网服务）、FTP协议（文件传输）、SMTP协议（电子邮件）、DNS（域名查询）等。 传输层 (transport layer</description>
     </item>
     
+    <item>
+      <title>转发与重定向</title>
+      <link>https://willje.github.io/posts/net/%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91/</link>
+      <pubDate>Thu, 20 Sep 2018 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/net/%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91/</guid>
+      <description>Redirect 重定向是指当浏览器请求一个URL时，服务器返回一个重定向指令，告诉浏览器地址已经变了，麻烦使用新的URL再重新发送新请求。 例如，我们已经编写了一个能处理/hello的HelloServlet，如果收到的路径为/hi，希望能重定向到/hello，可以再编写一个RedirectServlet： @WebServlet(urlPatterns = &amp;#34;/hi&amp;#34;) public class RedirectServlet extends HttpServlet { protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException { // 构造重定向的路径: String name = req.getParameter(&amp;#34;name&amp;#34;); String</description>
+    </item>
+    
   </channel>
 </rss>
