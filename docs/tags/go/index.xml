@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
-    <lastBuildDate>Sat, 15 May 2021 22:12:16 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 23 Jul 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/go/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>go并发小练习</title>
+      <link>https://willje.github.io/posts/go/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</link>
+      <pubDate>Fri, 23 Jul 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</guid>
+      <description>package main import &amp;#34;fmt&amp;#34; func add(a, b int) { var c = a + b fmt.Printf(&amp;#34;%d + %d = %d&amp;#34;, a, b, c) } func main() { go add(1, 2) } 在这段代码中包含了两个协程，一个是显式的，通过 go 关键字声明的这条语句，表示启用一个新的协程来处理加法运算，另一个是隐式的，即 main 函数本身也是运行在一个主协程中，该协程和调用 add 函数的子协程是并发运行的两个协程，就好比从 go 关键字开始，从主协程中叉出一条新路。 和之前不使用协程的方式相比，由此也引入了不确定</description>
+    </item>
+    
     <item>
       <title>go中的闭包</title>
       <link>https://willje.github.io/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/</link>
@@ -24,6 +33,15 @@
       
       <guid>https://willje.github.io/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/</guid>
       <description>一. 切片和数组 关于切片和数组怎么选择？接下来好好讨论讨论这个问题。 在 Go 中，与 C 数组变量隐式作为指针使用不同，Go 数组是值类型，赋值和函数传参操作都会复制整个数组数据。 func main() { arrayA := [2]int{100, 200} var arrayB [2]int arrayB = arrayA fmt.Printf(&amp;#34;arrayA : %p , %v\n&amp;#34;, &amp;amp;arrayA, arrayA) fmt.Printf(&amp;#34;arrayB : %p , %v\n&amp;#34;, &amp;amp;arrayB, arrayB) testArray(arrayA) } func testArray(x [2]int) { fmt.Printf(&amp;#34;func Array : %p , %v\n&amp;#34;, &amp;amp;x, x) } 打印结果： arrayA : 0xc4200bebf0 , [100 200] arrayB : 0xc4200bec00 , [100 200] func Array : 0xc4200bec30 , [100 200] 可以看到，三个内存地址都不同，这也就验证了 Go 中数组赋值和函数传</description>
+    </item>
+    
+    <item>
+      <title>由浅入深聊聊Golang的context</title>
+      <link>https://willje.github.io/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/</link>
+      <pubDate>Sat, 01 May 2021 16:23:40 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/</guid>
+      <description>context详解 1.1 产生背景 在go的1.7之前，context还是非编制的(包golang.org/x/net/context中)，golang团队发现context这个东西还挺好用的，很多地方也都用到了，就把它收编了，1.7版本正式进入标准库。 context常用的使用姿势： 1.web编程中，一个请求对应多个goroutine之间的数据交互 2.超时控制 3.上</description>
     </item>
     
     <item>
@@ -78,24 +96,6 @@
       
       <guid>https://willje.github.io/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</guid>
       <description>并发与并行 并发是指同一个时间段内多个任务同时交叉执行，并且都没有执行结束，而并行是说在单位时间内多个任务同时在执行，并发任务强调在一个时间段内同时执行，而一个时间段有多个单位时间累积而成，所以说并发的多个任务在单位时间内不一定同时在执行。 在单个cpu的时代多个任务同时运行都是并发，这是因为cpu同时只能执行一个任务，单个cpu时代多任务是共享一个cpu的，当</description>
-    </item>
-    
-    <item>
-      <title>sync.once单例模式实现</title>
-      <link>https://willje.github.io/posts/go/concurrent/sync.once%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0/</link>
-      <pubDate>Thu, 23 Jul 2020 21:23:18 +0800</pubDate>
-      
-      <guid>https://willje.github.io/posts/go/concurrent/sync.once%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0/</guid>
-      <description>并发经典场景 Go 并发编程的场景中，有一个特别经典的场景，就是并发创建对象的时候。一般伪代码如下： if ( /* 如果对象不存在 */) { // 那么就创建对象 } 因为是并发的环境，所以多个 goroutine 短时间内得出的判断都是一样的：都判断得到对象是不存在的，这时候大家的的行为也特别一致，每个 goroutine 磨刀霍霍就是创建。这时候如果不加以控制，那么会导致程序逻辑出问题。 会导致对象重复创建多次，并且可能不断的</description>
-    </item>
-    
-    <item>
-      <title>golang实现单链表</title>
-      <link>https://willje.github.io/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/</link>
-      <pubDate>Sat, 23 May 2020 21:23:18 +0800</pubDate>
-      
-      <guid>https://willje.github.io/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/</guid>
-      <description>数据结构 // Node represents a node of linked list type Node struct { value int next *Node } // LinkedList represents a linked list type LinkedList struct { head *Node len int } 新增节点 在链表末尾增加节点 // Insert inserts new node at the end of from linked list func (l *LinkedList) Insert(val int) { n := Node{} n.value = val if l.len == 0 { l.head = &amp;amp;n l.len++ return } ptr := l.head for i := 0; i &amp;lt; l.len; i++ { if ptr.next == nil { ptr.next = &amp;amp;n l.len++ return } ptr = ptr.next } } 指定位置增加节点 // InsertAt inserts new node at given position func (l *LinkedList) InsertAt(pos int, value int) { // create a new node newNode := Node{} newNode.value = value // validate the position if pos &amp;lt; 0 { return } if pos == 0 { l.head = &amp;amp;newNode l.len++ return } if pos &amp;gt; l.len { return } n := l.GetAt(pos) newNode.next</description>
     </item>
     
   </channel>

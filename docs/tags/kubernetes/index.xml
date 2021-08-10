@@ -7,7 +7,16 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
-    <lastBuildDate>Sat, 24 Apr 2021 21:57:01 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 23 Jul 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>k8s入门</title>
+      <link>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Fri, 23 Jul 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/</guid>
+      <description>创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下</description>
+    </item>
+    
     <item>
       <title>Win10使用wsl部署k8s环境</title>
       <link>https://willje.github.io/posts/docker/win10%E4%BD%BF%E7%94%A8wsl%E9%83%A8%E7%BD%B2k8s%E7%8E%AF%E5%A2%83/</link>
@@ -15,6 +24,24 @@
       
       <guid>https://willje.github.io/posts/docker/win10%E4%BD%BF%E7%94%A8wsl%E9%83%A8%E7%BD%B2k8s%E7%8E%AF%E5%A2%83/</guid>
       <description>前提 安装docker和go环境 配置wsl2 这个可以看之前的文章win10安装docker 安装kubectl 安装kubectl有几种方法，具体可以看install-kubectl-windows/ 直接使用curl curl -LO https://dl.k8s.io/release/v1.21.0/bin/windows/amd64/kubectl.exe 如果提示curl命令不存在，可以先安装一下curl，不过这里建议直接用github的curl（如果你安装了github的话），目录在github</description>
+    </item>
+    
+    <item>
+      <title>k8s概述</title>
+      <link>https://willje.github.io/posts/k8s/k8s%E6%A6%82%E8%BF%B0/</link>
+      <pubDate>Thu, 01 Apr 2021 16:23:40 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/k8s%E6%A6%82%E8%BF%B0/</guid>
+      <description>集群架构与组件 Kubernetes 集群架构以及相关的核心组件如下图所示：一个 Kubernetes 集群一般包含一个 Master 节点和多个 Node 节点，一个节点可以看成是一台物理机或虚拟机。 Master Master 是 K8S 的集群控制节点，每个 K8S 集群里需要有一个 Master 节点来负责整个集群的管理和控制，基本上 K8S 所有的控制命令都是发给它，它来负责具体的执行过程。Master 节点通常会占据一个独立的服务器，因为它太重要了，如果它不可用，那么所有的控制</description>
+    </item>
+    
+    <item>
+      <title>k8s入门2</title>
+      <link>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A82/</link>
+      <pubDate>Sat, 25 Jul 2020 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A82/</guid>
+      <description>Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &amp;#34;pi&amp;#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&amp;#34;perl&amp;#34;,&amp;#34;-Mbignum=bpi&amp;#34;,&amp;#34;-wle&amp;#34;,&amp;#34;print bpi(2000)&amp;#34;]restartPolicy:Never一段时</description>
     </item>
     
   </channel>

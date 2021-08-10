@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>context on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/context/</link>
+    <description>Recent content in context on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sat, 01 May 2021 16:23:40 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/context/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>由浅入深聊聊Golang的context</title>
+      <link>https://willje.github.io/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/</link>
+      <pubDate>Sat, 01 May 2021 16:23:40 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/</guid>
+      <description>context详解 1.1 产生背景 在go的1.7之前，context还是非编制的(包golang.org/x/net/context中)，golang团队发现context这个东西还挺好用的，很多地方也都用到了，就把它收编了，1.7版本正式进入标准库。 context常用的使用姿势： 1.web编程中，一个请求对应多个goroutine之间的数据交互 2.超时控制 3.上</description>
+    </item>
+    
+  </channel>
+</rss>

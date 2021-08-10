@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="go并发小练习">
+<meta itemprop="description" content="package main import &#34;fmt&#34; func add(a, b int) { var c = a &#43; b fmt.Printf(&#34;%d &#43; %d = %d&#34;, a, b, c) } func main() { go add(1, 2) } 在这段代码中包含了两个协程，一个是显式的，通过 go 关键字声明的这条语句，表示启用一个新的协程来处理加法运算，另一个是隐式的，即 main 函数本身也是运行在一个主协程中，该协程和调用 add 函数的子协程是并发运行的两个协程，就好比从 go 关键字开始，从主协程中叉出一条新路。 和之前不使用协程的方式相比，由此也引入了不确定"><meta itemprop="datePublished" content="2021-07-23T21:23:18&#43;08:00" />
+<meta itemprop="dateModified" content="2021-07-23T21:23:18&#43;08:00" />
+<meta itemprop="wordCount" content="2493">
+<meta itemprop="keywords" content="go,并发," /><meta property="og:title" content="go并发小练习" />
+<meta property="og:description" content="package main import &#34;fmt&#34; func add(a, b int) { var c = a &#43; b fmt.Printf(&#34;%d &#43; %d = %d&#34;, a, b, c) } func main() { go add(1, 2) } 在这段代码中包含了两个协程，一个是显式的，通过 go 关键字声明的这条语句，表示启用一个新的协程来处理加法运算，另一个是隐式的，即 main 函数本身也是运行在一个主协程中，该协程和调用 add 函数的子协程是并发运行的两个协程，就好比从 go 关键字开始，从主协程中叉出一条新路。 和之前不使用协程的方式相比，由此也引入了不确定" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/go/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-23T21:23:18&#43;08:00" />
+<meta property="article:modified_time" content="2021-07-23T21:23:18&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="go并发小练习"/>
+<meta name="twitter:description" content="package main import &#34;fmt&#34; func add(a, b int) { var c = a &#43; b fmt.Printf(&#34;%d &#43; %d = %d&#34;, a, b, c) } func main() { go add(1, 2) } 在这段代码中包含了两个协程，一个是显式的，通过 go 关键字声明的这条语句，表示启用一个新的协程来处理加法运算，另一个是隐式的，即 main 函数本身也是运行在一个主协程中，该协程和调用 add 函数的子协程是并发运行的两个协程，就好比从 go 关键字开始，从主协程中叉出一条新路。 和之前不使用协程的方式相比，由此也引入了不确定"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>go并发小练习</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jul 23, 2021</span></div>
+				<h1>go并发小练习</h1>
+			</header>
+			<div class="content">
+				<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>在这段代码中包含了两个协程，一个是显式的，通过 <code>go</code> 关键字声明的这条语句，表示启用一个新的协程来处理加法运算，另一个是隐式的，即 <code>main</code> 函数本身也是运行在一个主协程中，该协程和调用 <code>add</code> 函数的子协程是并发运行的两个协程，就好比从 <code>go</code> 关键字开始，从主协程中叉出一条新路。</p>
+<p>和之前不使用协程的方式相比，由此也引入了不确定性：我们不知道子协程什么时候执行完毕，运行到了什么状态。在主协程中启动子协程后，程序就退出运行了，这就意味着包含这两个协程的处理进程退出了，<strong>所以，我们运行这段代码，不会看到子协程里运行的打印结果，因为还没来得及执行它们，进程就已经退出了</strong>。另外，我们也不要试图从 <code>add</code> 函数返回处理结果，因为在主协程中，根本获取不到子协程的返回值，从子协程开始执行起就已经和主协程没有任何关系了，返回值会被丢弃。</p>
+<p>如果要显示出子协程的打印结果，一种方式是在主协程中等待足够长的时间再退出，以便保证子协程中的所有代码执行完毕：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">//
+</span><span class="c1"></span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">=</span> <span class="mi">3</span>
+</code></pre></div><h2 id="waitgroup">Waitgroup<a href="#waitgroup" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>在并发编程里，<code>sync.WaitGroup</code>并发原语的使用频率非常高，经常用于协同等待场景，如果在执行任务的这些worker <code>goroutine</code> 还没全部完成，等待的 <code>goroutine</code> 就会阻塞在检查点，直到所有woker <code>goroutine</code> 都完成后才能继续执行。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">defer</span> <span class="nx">waitgroup</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">waitgroup</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+	<span class="nx">waitgroup</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="测试">测试<a href="#测试" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span><span class="p">)</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="p">}()</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 无输出，正常退出</li>
+<li>C: 程序hang住</li>
+<li><strong>D: panic</strong></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+	<span class="kd">var</span> <span class="nx">ints</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">1000</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+			<span class="nx">ints</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">ints</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">1000</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+			<span class="nx">ints</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">ints</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">ints</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 输出<code>2000</code></li>
+<li><strong>C: 输出可能不是<code>2000</code></strong></li>
+<li>D: panic</li>
+</ul>
+<p>这个问题需要归咎到slice上，我们都知道slice是对数组一个连续片段的引用，当slice扩容时，可能底层的数组会被换掉。所以，如果在换底层数组之前，切片同时被多个goroutine拿到，并执行append操作。那么很多goroutine的append结果会被覆盖，导致n个gouroutine append后，长度小于n。</p>
+<p>解决方式就是加锁；</p>
+<h2 id="锁">锁<a href="#锁" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>golang 中的 sync 包实现了两种锁：</p>
+<ul>
+<li>Mutex：互斥锁</li>
+<li>RWMutex：读写锁，RWMutex 基于 Mutex 实现</li>
+</ul>
+<h3 id="mutex">Mutex<a href="#mutex" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ul>
+<li>Mutex 为互斥锁，Lock() 加锁，Unlock() 解锁</li>
+<li>在一个 goroutine 获得 Mutex 后，其他 goroutine 只能等到这个 goroutine 释放该 Mutex</li>
+<li>使用 Lock() 加锁后，不能再继续对其加锁，直到利用 Unlock() 解锁后才能再加锁</li>
+<li>在 Lock() 之前使用 Unlock() 会导致 panic 异常</li>
+<li>已经锁定的 Mutex 并不与特定的 goroutine 相关联，这样可以利用一个 goroutine 对其加锁，再利用其他 goroutine 对其解锁</li>
+<li>在同一个 goroutine 中的 Mutex 解锁之前再次进行加锁，会导致死锁</li>
+<li>适用于读写不确定，并且只有一个读或者写的场景</li>
+</ul>
+<h4 id="测试-1">测试<a href="#测试-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+<span class="kd">var</span> <span class="nx">mu</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+<span class="kd">var</span> <span class="nx">chain</span> <span class="kt">string</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">chain</span> <span class="p">=</span> <span class="s">&#34;main&#34;</span>
+	<span class="nf">A</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">chain</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">A</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="nx">chain</span> <span class="p">=</span> <span class="nx">chain</span> <span class="o">+</span> <span class="s">&#34; --&gt; A&#34;</span>
+	<span class="nf">B</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">B</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">chain</span> <span class="p">=</span> <span class="nx">chain</span> <span class="o">+</span> <span class="s">&#34; --&gt; B&#34;</span>
+	<span class="nf">C</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">C</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="nx">chain</span> <span class="p">=</span> <span class="nx">chain</span> <span class="o">+</span> <span class="s">&#34; --&gt; C&#34;</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 输出 <code>main --&gt; A --&gt; B --&gt; C</code></li>
+<li>C: 输出 <code>main</code></li>
+<li><strong>D: panic</strong></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-GO" data-lang="GO"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+<span class="kd">type</span> <span class="nx">MyMutex</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">count</span> <span class="kt">int</span>
+	<span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">mu</span> <span class="nx">MyMutex</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="kd">var</span> <span class="nx">mu2</span> <span class="p">=</span> <span class="nx">mu</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nx">count</span><span class="o">++</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="nx">mu2</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="nx">mu2</span><span class="p">.</span><span class="nx">count</span><span class="o">++</span>
+	<span class="nx">mu2</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">mu</span><span class="p">.</span><span class="nx">count</span><span class="p">,</span> <span class="nx">mu2</span><span class="p">.</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 输出 <code>1, 1</code></li>
+<li>C: 输出 <code>1, 2</code></li>
+<li><strong>D: panic</strong></li>
+</ul>
+<p>这个原因就是同步对象使用过之后不能再被拷贝，如果上面把<code>mu.Lock()</code>和<code>var mu2 = mu</code>这两行进行交换一下就可以了。
+使用过后不可以复制的对象有：</p>
+<div class="highlight"><pre class="chroma"><code class="language-GO" data-lang="GO"><span class="c1">// A Cond must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Cond</span> <span class="kd">struct</span> 
+<span class="c1">// A Map must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Map</span> <span class="kd">struct</span>
+<span class="c1">// A Mutex must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Mutex</span> <span class="kd">struct</span>
+<span class="c1">// A Pool must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Pool</span> <span class="kd">struct</span>
+<span class="c1">// A RWMutex must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">RWMutex</span> <span class="kd">struct</span>
+<span class="c1">// A WaitGroup must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">WaitGroup</span> <span class="kd">struct</span>
+</code></pre></div><h3 id="rwmutex">RWMutex<a href="#rwmutex" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ul>
+<li>RWMutex 是单写多读锁，该锁可以加多个读锁或者一个写锁</li>
+<li>读锁占用的情况下会阻止写，不会阻止读，多个 goroutine 可以同时获取读锁</li>
+<li>写锁会阻止其他 goroutine（无论读和写）进来，整个锁由该 goroutine 独占</li>
+<li>适用于读多写少的场景</li>
+</ul>
+<h4 id="lock-和-unlock">Lock() 和 Unlock()<a href="#lock-和-unlock" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<ul>
+<li>Lock() 加写锁，Unlock() 解写锁</li>
+<li>如果在加写锁之前已经有其他的读锁和写锁，则 Lock() 会阻塞直到该锁可用，为确保该锁可用，已经阻塞的 Lock() 调用会从获得的锁中排除新的读取器，即写锁权限高于读锁，有写锁时优先进行写锁定</li>
+<li>在 Lock() 之前使用 Unlock() 会导致 panic 异常</li>
+</ul>
+<h4 id="rlock-和-runlock">RLock() 和 RUnlock()<a href="#rlock-和-runlock" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<ul>
+<li>RLock() 加读锁，RUnlock() 解读锁</li>
+<li>RLock() 加读锁时，如果存在写锁，则无法加读锁；当只有读锁或者没有锁时，可以加读锁，读锁可以加载多个</li>
+<li>RUnlock() 解读锁，RUnlock() 撤销单词 RLock() 调用，对于其他同时存在的读锁则没有效果</li>
+<li>在没有读锁的情况下调用 RUnlock() 会导致 panic 错误</li>
+<li>RUnlock() 的个数不得多余 RLock()，否则会导致 panic 错误</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-GO" data-lang="GO"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+<span class="kd">var</span> <span class="nx">mu</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">RWMutex</span>
+<span class="kd">var</span> <span class="nx">count</span> <span class="kt">int</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">go</span> <span class="nf">A</span><span class="p">()</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="nx">count</span><span class="o">++</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">A</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">RLock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nf">RUnlock</span><span class="p">()</span>
+	<span class="nf">B</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">B</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="nf">C</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">C</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">RLock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nf">RUnlock</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 输出 <code>1</code></li>
+<li>C: 程序hang住</li>
+<li><strong>D: panic</strong></li>
+</ul>
+<p>这一题的原因也是一样的，<code>G</code>A休眠之后状态就会变为等待，此时,主<code>G</code>去那锁也没有那到，就会变为不可运行状态，并让出<code>cpu</code>,此时所有的<code>G</code>都不可运行就出现死锁了。</p>
+<h2 id="channel">Channel<a href="#channel" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>熟悉Golang的人都知道一句名言：“使用通信来共享内存，而不是通过共享内存来通信”。这句话有两层意思，Go语言确实在<code>sync</code>包中提供了传统的锁机制，但更推荐使用<code>channel</code>来解决并发问题。</p>
+<p>从字面上看，<code>channel</code>的意思大概就是管道的意思。<code>channel</code>是一种go协程用以接收或发送消息的安全的消息队列，<code>channel</code>就像两个go协程之间的导管，来实现各种资源的同步。</p>
+<p>使用<code>channel</code>时有几个注意点：</p>
+<ul>
+<li>向一个<code>nil</code> <code>channel</code>发送消息，会一直阻塞；</li>
+<li>向一个已经关闭的<code>channel</code>发送消息，会引发运行时恐慌<code>（panic）</code>；</li>
+<li>channel<code>关闭后不可以继续向</code>channel<code>发送消息，但可以继续从</code>channel<code>接收消息；</code></li>
+<li><code>当</code>channel<code>关闭并且缓冲区为空时，继续从从</code>channel`接收消息会得到一个对应类型的零值。</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;runtime&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">ch</span> <span class="kd">chan</span> <span class="kt">int</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">ch</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
+	<span class="p">}()</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">ch</span> <span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+		<span class="o">&lt;-</span><span class="nx">ch</span>
+	<span class="p">}(</span><span class="nx">ch</span><span class="p">)</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Tick</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="k">for</span> <span class="k">range</span> <span class="nx">c</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;#goroutines: %d\n&#34;</span><span class="p">,</span> <span class="nx">runtime</span><span class="p">.</span><span class="nf">NumGoroutine</span><span class="p">())</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 一段时间后总是输出 <code>#goroutines: 1</code></li>
+<li><strong>C: 一段时间后总是输出 <code>#goroutines: 2</code></strong></li>
+<li>D: panic</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">ch</span> <span class="kd">chan</span> <span class="kt">int</span>
+	<span class="kd">var</span> <span class="nx">count</span> <span class="kt">int</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
+	<span class="p">}()</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">count</span><span class="o">++</span>
+		<span class="nb">close</span><span class="p">(</span><span class="nx">ch</span><span class="p">)</span>
+	<span class="p">}()</span>
+	<span class="o">&lt;-</span><span class="nx">ch</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 输出 <code>1</code></li>
+<li>C: 输出 <code>0</code></li>
+<li><strong>D: panic</strong></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">ch</span> <span class="kd">chan</span> <span class="kt">int</span>
+<span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="nx">结果</span><span class="err">：</span>
+<span class="cm">/**
+</span><span class="cm">1
+</span><span class="cm">panic: send on closed channel
+</span><span class="cm">或者
+</span><span class="cm">1
+</span><span class="cm">**/</span>
+</code></pre></div><p>题目来源：https://colobu.com/2019/04/28/go-concurrency-quizzes/</p>
+
+			</div><div class="content">
+	<br>
+	<img src="https://willje.github.io/static/img/wetchat-qrcode.png">
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/go/concurrent/sync.once%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0/">sync.once单例模式实现</a></li>
+	
+	<li><a href="/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/">go中的闭包</a></li>
+	
+	<li><a href="/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">深入解析 Go 中 Slice 底层实现</a></li>
+	
+	<li><a href="/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/">由浅入深聊聊Golang的context</a></li>
+	
+	<li><a href="/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/">从一个yaml文件读取多个文档</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/go">go</a></span><span class="tag"><a href="https://willje.github.io/tags/%E5%B9%B6%E5%8F%91">并发</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>2493 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-07-23 21:23 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#waitgroup">Waitgroup</a>
+      <ul>
+        <li><a href="#测试">测试</a></li>
+      </ul>
+    </li>
+    <li><a href="#锁">锁</a>
+      <ul>
+        <li><a href="#mutex">Mutex</a></li>
+        <li><a href="#rwmutex">RWMutex</a></li>
+      </ul>
+    </li>
+    <li><a href="#channel">Channel</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>k8s入门</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

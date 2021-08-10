@@ -65,6 +65,121 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/java/dubbo%E5%85%A5%E9%97%A8/">Dubbo入门</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>Dubbo核心概念 Dubbo官网: https://dubbo.apache.org/zh/ Dubbo 是一款高性能、轻量级的开源Java RPC框架，它提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，服务自动注册和发现。分布式系统是将一个系统拆分为多个不同的服务。 该图来自Dubbo官网，描述了服务注册中心、服务提供方、服务消费方、服务监控中心之间的调用关系。 服务提供者（Provider）：暴露服务的服务提供</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2019-10-10</span>
+                        <a class="tag"
+                                   href="/tags/dubbo/">Dubbo</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/java/concurrent/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/">Java生产者与消费者</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>实现生产者消费者模型，可以使用阻塞队列，或者使用 Object 类里自带的 wait() 和 notify() 或者 notifyAll() 的消息通知机制。 实现 wait()/notify() 接下来我们需要重点看下这个通知机制。 wait() 和 notify() 都是 Java 中的 Object 类自带的方法，可以用来实现线程间的通信。 在上一节 讲的 11 个 APIs 里我也提到了它，我们这里再展开讲一下。 wait() 方法是用来让当前线程等待，直到有别的线程调用 notify() 将它唤醒，或者我们可以设定一个时间让它自动苏醒。 调用该方法之前，线程</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2019-08-05</span>
+                        <a class="tag"
+                                   href="/tags/java/">Java</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/java/concurrent/java%E5%B9%B6%E5%8F%91%E4%B9%8Bcas%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">Java并发之CAS原理分析</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>CAS（Compare-and-Swap），即比较并替换，是一种实现并发算法时常用到的技术，Java并发包中的很多类都使用了CAS技术。 什么是CAS CAS(compare and swap) 比较并替换，比较和替换是线程并发算法时用到的一种技术 CAS是原子操作，保证并发安全，而不是保证并发同步 CAS是CPU的一个指令 CAS是非阻塞的、轻量级的乐观锁 为什么说CAS是乐观锁 乐观锁，严格来说并不是锁，</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2019-06-29</span>
+                        <a class="tag"
+                                   href="/tags/java/">Java</a><a class="tag"
+                                   href="/tags/cas/">CAS</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/net/https%E8%AE%B2%E8%A7%A3/">HTTPS讲解</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>在正式开始讲解https之前我们还得先搞清楚两个概念：什么是对称加密，以及什么是非对称加密？ 这两个概念都是属于加密学中的基础知识，其实非常好懂。 对称加密和非对称加密 对称加密比较简单，就是客户端和服务器共用同一个密钥，该密钥可以用于加密一段内容，同时也可以用于解密这段内容。对称加密的优点是加解密效率高，但是在安全性方面可能存在一些问题，因为密钥存放在客户端有被</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2019-04-17</span>
+                        <a class="tag"
+                                   href="/tags/https/">HTTPS</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/blog/hugogithubpages%E6%90%AD%E5%BB%BA%E8%87%AA%E5%B7%B1%E7%9A%84%E7%BD%91%E7%AB%99/">Hugo、githubpages搭建自己的网站</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>安装hugo 直接官网 安装，windows下载的是一个压缩包，解压下来就能使用，不过要把该路径配置到环境变量里。 检查安装 hugo version 使用hugo 创建站点 hugo new site [your site name] 下一步是选择主题，我的主题是LoveIt 。 将该主题增加到网站的配置文件config.toml中，这样才能生效： &#39;theme = &#34;hermit&#34; 测试下是否成功，运行： $ hugo serve 增加文章 hugo new posts/my-first-post.md 这会在 content/posts 目录下生成一个 my-first-post.md 文件，里面内容如下： --- title:</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2019-04-05</span>
+                        <a class="tag"
+                                   href="/tags/hugo/">hugo</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/blog/bitmap%E4%BD%BF%E7%94%A8/">bitmap使用</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>什么是bitmap Bit-map的基本思想就是用一个bit位来标记某个元素对应的Value，而Key即是该元素。由于采用了Bit为单位来存储数据， 因此在存储空间方面，可以大大节省。（PS：划重点 节省存储空间 ） 假设有这样一个需求：在20亿个随机整数中找出某个数m是否存在其中，并假设32位操作系统，4G内存 在Java中，int占4字节，1字节=8位（1 byte = 8 bi</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2018-12-05</span>
+                        <a class="tag"
+                                   href="/tags/bitmap/">bitmap</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/net/%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91/">转发与重定向</a>
                 </h2>
             </div>

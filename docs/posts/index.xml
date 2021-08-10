@@ -6,8 +6,959 @@
 		<generator>Hugo -- gohugo.io</generator>
 		<language>en</language>
 		<copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
-		<lastBuildDate>Tue, 15 Jun 2021 12:10:00 +0800</lastBuildDate>
+		<lastBuildDate>Fri, 23 Jul 2021 21:23:18 +0800</lastBuildDate>
 		<atom:link href="https://willje.github.io/posts/index.xml" rel="self" type="application/rss+xml" />
+		
+		<item>
+			<title>go并发小练习</title>
+			<link>https://willje.github.io/posts/go/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</link>
+			<pubDate>Fri, 23 Jul 2021 21:23:18 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/go/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</guid>
+			<description>package main import &amp;#34;fmt&amp;#34; func add(a, b int) { var c = a + b fmt.Printf(&amp;#34;%d + %d = %d&amp;#34;, a, b, c) } func main() { go add(1, 2) } 在这段代码中包含了两个协程，一个是显式的，通过 go 关键字声明的这条语句，表示启用一个新的协程来处理加法运算，另一个是隐式的，即 main 函数本身也是运行在一个主协程中，该协程和调用 add 函数的子协程是并发运行的两个协程，就好比从 go 关键字开始，从主协程中叉出一条新路。 和之前不使用协程的方式相比，由此也引入了不确定</description>
+			<content type="html"><![CDATA[<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>在这段代码中包含了两个协程，一个是显式的，通过 <code>go</code> 关键字声明的这条语句，表示启用一个新的协程来处理加法运算，另一个是隐式的，即 <code>main</code> 函数本身也是运行在一个主协程中，该协程和调用 <code>add</code> 函数的子协程是并发运行的两个协程，就好比从 <code>go</code> 关键字开始，从主协程中叉出一条新路。</p>
+<p>和之前不使用协程的方式相比，由此也引入了不确定性：我们不知道子协程什么时候执行完毕，运行到了什么状态。在主协程中启动子协程后，程序就退出运行了，这就意味着包含这两个协程的处理进程退出了，<strong>所以，我们运行这段代码，不会看到子协程里运行的打印结果，因为还没来得及执行它们，进程就已经退出了</strong>。另外，我们也不要试图从 <code>add</code> 函数返回处理结果，因为在主协程中，根本获取不到子协程的返回值，从子协程开始执行起就已经和主协程没有任何关系了，返回值会被丢弃。</p>
+<p>如果要显示出子协程的打印结果，一种方式是在主协程中等待足够长的时间再退出，以便保证子协程中的所有代码执行完毕：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="c1">//
+</span><span class="c1"></span><span class="mi">1</span> <span class="o">+</span> <span class="mi">2</span> <span class="p">=</span> <span class="mi">3</span>
+</code></pre></div><h2 id="waitgroup">Waitgroup</h2>
+<p>在并发编程里，<code>sync.WaitGroup</code>并发原语的使用频率非常高，经常用于协同等待场景，如果在执行任务的这些worker <code>goroutine</code> 还没全部完成，等待的 <code>goroutine</code> 就会阻塞在检查点，直到所有woker <code>goroutine</code> 都完成后才能继续执行。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">add</span><span class="p">(</span><span class="nx">a</span><span class="p">,</span> <span class="nx">b</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">defer</span> <span class="nx">waitgroup</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="kd">var</span> <span class="nx">c</span> <span class="p">=</span> <span class="nx">a</span> <span class="o">+</span> <span class="nx">b</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;%d + %d = %d&#34;</span><span class="p">,</span> <span class="nx">a</span><span class="p">,</span> <span class="nx">b</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">waitgroup</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">go</span> <span class="nf">add</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+	<span class="nx">waitgroup</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><h3 id="测试">测试</h3>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Millisecond</span><span class="p">)</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+	<span class="p">}()</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 无输出，正常退出</li>
+<li>C: 程序hang住</li>
+<li><strong>D: panic</strong></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">wg</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">WaitGroup</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Add</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+	<span class="kd">var</span> <span class="nx">ints</span> <span class="p">=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">1000</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+			<span class="nx">ints</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">ints</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">1000</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+			<span class="nx">ints</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">ints</span><span class="p">,</span> <span class="nx">i</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">wg</span><span class="p">.</span><span class="nf">Done</span><span class="p">()</span>
+	<span class="p">}()</span>
+	<span class="nx">wg</span><span class="p">.</span><span class="nf">Wait</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nx">ints</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 输出<code>2000</code></li>
+<li><strong>C: 输出可能不是<code>2000</code></strong></li>
+<li>D: panic</li>
+</ul>
+<p>这个问题需要归咎到slice上，我们都知道slice是对数组一个连续片段的引用，当slice扩容时，可能底层的数组会被换掉。所以，如果在换底层数组之前，切片同时被多个goroutine拿到，并执行append操作。那么很多goroutine的append结果会被覆盖，导致n个gouroutine append后，长度小于n。</p>
+<p>解决方式就是加锁；</p>
+<h2 id="锁">锁</h2>
+<p>golang 中的 sync 包实现了两种锁：</p>
+<ul>
+<li>Mutex：互斥锁</li>
+<li>RWMutex：读写锁，RWMutex 基于 Mutex 实现</li>
+</ul>
+<h3 id="mutex">Mutex</h3>
+<ul>
+<li>Mutex 为互斥锁，Lock() 加锁，Unlock() 解锁</li>
+<li>在一个 goroutine 获得 Mutex 后，其他 goroutine 只能等到这个 goroutine 释放该 Mutex</li>
+<li>使用 Lock() 加锁后，不能再继续对其加锁，直到利用 Unlock() 解锁后才能再加锁</li>
+<li>在 Lock() 之前使用 Unlock() 会导致 panic 异常</li>
+<li>已经锁定的 Mutex 并不与特定的 goroutine 相关联，这样可以利用一个 goroutine 对其加锁，再利用其他 goroutine 对其解锁</li>
+<li>在同一个 goroutine 中的 Mutex 解锁之前再次进行加锁，会导致死锁</li>
+<li>适用于读写不确定，并且只有一个读或者写的场景</li>
+</ul>
+<h4 id="测试-1">测试</h4>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+<span class="kd">var</span> <span class="nx">mu</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+<span class="kd">var</span> <span class="nx">chain</span> <span class="kt">string</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">chain</span> <span class="p">=</span> <span class="s">&#34;main&#34;</span>
+	<span class="nf">A</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">chain</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">A</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="nx">chain</span> <span class="p">=</span> <span class="nx">chain</span> <span class="o">+</span> <span class="s">&#34; --&gt; A&#34;</span>
+	<span class="nf">B</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">B</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">chain</span> <span class="p">=</span> <span class="nx">chain</span> <span class="o">+</span> <span class="s">&#34; --&gt; B&#34;</span>
+	<span class="nf">C</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">C</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="nx">chain</span> <span class="p">=</span> <span class="nx">chain</span> <span class="o">+</span> <span class="s">&#34; --&gt; C&#34;</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 输出 <code>main --&gt; A --&gt; B --&gt; C</code></li>
+<li>C: 输出 <code>main</code></li>
+<li><strong>D: panic</strong></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-GO" data-lang="GO"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+<span class="p">)</span>
+<span class="kd">type</span> <span class="nx">MyMutex</span> <span class="kd">struct</span> <span class="p">{</span>
+	<span class="nx">count</span> <span class="kt">int</span>
+	<span class="nx">sync</span><span class="p">.</span><span class="nx">Mutex</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">mu</span> <span class="nx">MyMutex</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="kd">var</span> <span class="nx">mu2</span> <span class="p">=</span> <span class="nx">mu</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nx">count</span><span class="o">++</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="nx">mu2</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="nx">mu2</span><span class="p">.</span><span class="nx">count</span><span class="o">++</span>
+	<span class="nx">mu2</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">mu</span><span class="p">.</span><span class="nx">count</span><span class="p">,</span> <span class="nx">mu2</span><span class="p">.</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 输出 <code>1, 1</code></li>
+<li>C: 输出 <code>1, 2</code></li>
+<li><strong>D: panic</strong></li>
+</ul>
+<p>这个原因就是同步对象使用过之后不能再被拷贝，如果上面把<code>mu.Lock()</code>和<code>var mu2 = mu</code>这两行进行交换一下就可以了。
+使用过后不可以复制的对象有：</p>
+<div class="highlight"><pre class="chroma"><code class="language-GO" data-lang="GO"><span class="c1">// A Cond must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Cond</span> <span class="kd">struct</span> 
+<span class="c1">// A Map must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Map</span> <span class="kd">struct</span>
+<span class="c1">// A Mutex must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Mutex</span> <span class="kd">struct</span>
+<span class="c1">// A Pool must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">Pool</span> <span class="kd">struct</span>
+<span class="c1">// A RWMutex must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">RWMutex</span> <span class="kd">struct</span>
+<span class="c1">// A WaitGroup must not be copied after first use.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">WaitGroup</span> <span class="kd">struct</span>
+</code></pre></div><h3 id="rwmutex">RWMutex</h3>
+<ul>
+<li>RWMutex 是单写多读锁，该锁可以加多个读锁或者一个写锁</li>
+<li>读锁占用的情况下会阻止写，不会阻止读，多个 goroutine 可以同时获取读锁</li>
+<li>写锁会阻止其他 goroutine（无论读和写）进来，整个锁由该 goroutine 独占</li>
+<li>适用于读多写少的场景</li>
+</ul>
+<h4 id="lock-和-unlock">Lock() 和 Unlock()</h4>
+<ul>
+<li>Lock() 加写锁，Unlock() 解写锁</li>
+<li>如果在加写锁之前已经有其他的读锁和写锁，则 Lock() 会阻塞直到该锁可用，为确保该锁可用，已经阻塞的 Lock() 调用会从获得的锁中排除新的读取器，即写锁权限高于读锁，有写锁时优先进行写锁定</li>
+<li>在 Lock() 之前使用 Unlock() 会导致 panic 异常</li>
+</ul>
+<h4 id="rlock-和-runlock">RLock() 和 RUnlock()</h4>
+<ul>
+<li>RLock() 加读锁，RUnlock() 解读锁</li>
+<li>RLock() 加读锁时，如果存在写锁，则无法加读锁；当只有读锁或者没有锁时，可以加读锁，读锁可以加载多个</li>
+<li>RUnlock() 解读锁，RUnlock() 撤销单词 RLock() 调用，对于其他同时存在的读锁则没有效果</li>
+<li>在没有读锁的情况下调用 RUnlock() 会导致 panic 错误</li>
+<li>RUnlock() 的个数不得多余 RLock()，否则会导致 panic 错误</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-GO" data-lang="GO"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;sync&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+<span class="kd">var</span> <span class="nx">mu</span> <span class="nx">sync</span><span class="p">.</span><span class="nx">RWMutex</span>
+<span class="kd">var</span> <span class="nx">count</span> <span class="kt">int</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="k">go</span> <span class="nf">A</span><span class="p">()</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="nx">count</span><span class="o">++</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">A</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">RLock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nf">RUnlock</span><span class="p">()</span>
+	<span class="nf">B</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">B</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">5</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="nf">C</span><span class="p">()</span>
+<span class="p">}</span>
+<span class="kd">func</span> <span class="nf">C</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">mu</span><span class="p">.</span><span class="nf">RLock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">mu</span><span class="p">.</span><span class="nf">RUnlock</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 输出 <code>1</code></li>
+<li>C: 程序hang住</li>
+<li><strong>D: panic</strong></li>
+</ul>
+<p>这一题的原因也是一样的，<code>G</code>A休眠之后状态就会变为等待，此时,主<code>G</code>去那锁也没有那到，就会变为不可运行状态，并让出<code>cpu</code>,此时所有的<code>G</code>都不可运行就出现死锁了。</p>
+<h2 id="channel">Channel</h2>
+<p>熟悉Golang的人都知道一句名言：“使用通信来共享内存，而不是通过共享内存来通信”。这句话有两层意思，Go语言确实在<code>sync</code>包中提供了传统的锁机制，但更推荐使用<code>channel</code>来解决并发问题。</p>
+<p>从字面上看，<code>channel</code>的意思大概就是管道的意思。<code>channel</code>是一种go协程用以接收或发送消息的安全的消息队列，<code>channel</code>就像两个go协程之间的导管，来实现各种资源的同步。</p>
+<p>使用<code>channel</code>时有几个注意点：</p>
+<ul>
+<li>向一个<code>nil</code> <code>channel</code>发送消息，会一直阻塞；</li>
+<li>向一个已经关闭的<code>channel</code>发送消息，会引发运行时恐慌<code>（panic）</code>；</li>
+<li>channel<code>关闭后不可以继续向</code>channel<code>发送消息，但可以继续从</code>channel<code>接收消息；</code></li>
+<li><code>当</code>channel<code>关闭并且缓冲区为空时，继续从从</code>channel`接收消息会得到一个对应类型的零值。</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+	<span class="s">&#34;fmt&#34;</span>
+	<span class="s">&#34;runtime&#34;</span>
+	<span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">ch</span> <span class="kd">chan</span> <span class="kt">int</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">ch</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+		<span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
+	<span class="p">}()</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">(</span><span class="nx">ch</span> <span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+		<span class="o">&lt;-</span><span class="nx">ch</span>
+	<span class="p">}(</span><span class="nx">ch</span><span class="p">)</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Tick</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="k">for</span> <span class="k">range</span> <span class="nx">c</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;#goroutines: %d\n&#34;</span><span class="p">,</span> <span class="nx">runtime</span><span class="p">.</span><span class="nf">NumGoroutine</span><span class="p">())</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 一段时间后总是输出 <code>#goroutines: 1</code></li>
+<li><strong>C: 一段时间后总是输出 <code>#goroutines: 2</code></strong></li>
+<li>D: panic</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kd">var</span> <span class="nx">ch</span> <span class="kd">chan</span> <span class="kt">int</span>
+	<span class="kd">var</span> <span class="nx">count</span> <span class="kt">int</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">1</span>
+	<span class="p">}()</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nx">count</span><span class="o">++</span>
+		<span class="nb">close</span><span class="p">(</span><span class="nx">ch</span><span class="p">)</span>
+	<span class="p">}()</span>
+	<span class="o">&lt;-</span><span class="nx">ch</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">count</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><ul>
+<li>A: 不能编译</li>
+<li>B: 输出 <code>1</code></li>
+<li>C: 输出 <code>0</code></li>
+<li><strong>D: panic</strong></li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">ch</span> <span class="kd">chan</span> <span class="kt">int</span>
+<span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+
+<span class="nx">结果</span><span class="err">：</span>
+<span class="cm">/**
+</span><span class="cm">1
+</span><span class="cm">panic: send on closed channel
+</span><span class="cm">或者
+</span><span class="cm">1
+</span><span class="cm">**/</span>
+</code></pre></div><p>题目来源：https://colobu.com/2019/04/28/go-concurrency-quizzes/</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>k8s入门</title>
+			<link>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/</link>
+			<pubDate>Fri, 23 Jul 2021 21:23:18 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/</guid>
+			<description>创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下</description>
+			<content type="html"><![CDATA[<h1 id="创建namespace">创建namespace</h1>
+<p>Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。</p>
+<h2 id="namespaces">Namespaces</h2>
+<p>通过 <code>kubectl create -f</code>，我们可以轻松地创建一个 namespace：
+ns.yaml文件如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Namespace</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">will</span><span class="w">
+</span></code></pre></div><pre><code>$ kubectl create -f resources/ns.yaml
+namespace &quot;tutorial&quot; created
+</code></pre><p>然后通过 <code>kubectl get ns</code>，可以看到刚才创建的 namespace</p>
+<pre><code>$ kubectl get ns
+NAME              STATUS   AGE
+default           Active   27h
+kube-node-lease   Active   27h
+kube-public       Active   27h
+kube-system       Active   27h
+tutorial          Active   7s
+</code></pre><h1 id="创建-deployment">创建 deployment</h1>
+<p>k8s deployment 用来部署应用。一个常见的 deployment 配置包括几个部分，详细可以参考官网有关介绍 <a href="https://kubernetes.io/zh/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noopener">Deployments</a>
+。</p>
+<ul>
+<li>spec.selector：用于定义 deployment 如何查找要管理的 pod，例如，使用在 pod 模板中定义的标签，如 app:nginx</li>
+<li>spec.replicas：用于定义需要启动多少个副本</li>
+<li>spec.template：用于定义 pod 的属性，例如，容器名称，容器镜像，labels 字段，等</li>
+</ul>
+<p>完整的 <code>nginx-dep.yml</code> 文件如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx-deployment</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">nginx:alpine</span><span class="w">
+</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></code></pre></div><p>这里的image镜像可以选择任意网络连接的镜像仓库地址；</p>
+<p>为了创建 deployment，执行命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">kubectl apply -f nginx-dep.yml
+</code></pre></div><p>查看 deployment 状态：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">kubectl get deploy -o wide
+</code></pre></div><p>可以看到，刚创建的 <code>nginx-deployment</code> 的 3 个副本均处于 <code>READY</code> 状态：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">NAME               READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES         SELECTOR
+nginx-deployment   3/3     <span class="m">3</span>            <span class="m">3</span>           48s   nginx        nginx:alpine   <span class="nv">app</span><span class="o">=</span>nginx
+</code></pre></div><p>为了进一步验证 nginx 已成功启动，进入 pod 中容器（有关如果进入 k8s 容器的命令介绍，可以参考 <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/get-shell-running-container/" target="_blank" rel="noopener">链接</a>
+）：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">kubectl <span class="nb">exec</span> -it nginx -- /bin/sh
+</code></pre></div><p>进入容器后，执行命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">curl localhost
+</code></pre></div><p>可以正常打印出 nginx 启动成功的欢迎页面 html。</p>
+<p>退出可以使用</p>
+<pre><code>exit
+</code></pre><h2 id="获取pod-ip">获取pod IP</h2>
+<pre><code>kubectl describe pod podname
+</code></pre><p>通过describe命令获取pod详细信息，其中包含pod的IP；</p>
+<p>但是这个IP会因为pod的启停而变化，所以我们需要使用Service。</p>
+<h1 id="kubernetes-service">Kubernetes Service</h1>
+<p>kubernetes service 有以下几个作用：</p>
+<ul>
+<li>提供固定的 IP。由于 Pod 可以随时启停，Pod IP 可能随时都会变化，例如上面 nginx pod 重启之后 IP 可能不再是 172.17.0.11。Service 为 Pods 提供的固定 IP，其他服务可以通过 Service IP 找到提供服务的 Pods。</li>
+<li>提供负载均衡。Service 由多个 Pods 组成，kubernetes 对组成 Service 的 Pods 提供的负载均衡方案，例如随机访问、基于 Client IP 的 session affinity。</li>
+<li>服务发现。集群中其他服务可以通过 Service 名字访问后端服务（DNS），也可以通过环境变量访问。</li>
+</ul>
+<p>下图是 kubernetes Pods, Service 的典型关系。下图有两个 Deployment: A 和 B。其中 Deployment A 创建了一个 Pods（黄色），Deployment B 创建了三个 Pod（绿色）。我们可以创建两个 Service: A 和 B。 Service A 管理由 Deployment A 创建的 Pods，Service B 管理 Deployment B 创建的 Pods。可以看到， Service A 和 Service B 都有自己独立的 IP。无论他们所管理的容器如何变化， Service 的 IP 都不会变化。</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/deployment_service.png"
+    alt="&lt;em&gt;Image source: kubernetes guide&lt;/em&gt;"  />
+</p>
+</p>
+<h2 id="create-service">Create service</h2>
+<p>与其他资源相同，我们可以通过 <code>kubectl create -f</code> 加文件名创建 Service。但类似 Deployment，kubernetes 提供了快捷命令让我们能快速创建 Service。</p>
+<pre><code>$ kubectl expose deployment nginx --port 80 -n tutorial
+service &quot;nginx&quot; exposed
+</code></pre><p>通过这个命令把创建的service的对应yaml文件保存到指定文件中</p>
+<pre><code>kubectl get service nginx -n will -o yaml &gt; service.yaml
+</code></pre><div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">creationTimestamp</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2021-07-07T08:27:58Z&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">managedFields</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w">    </span><span class="nt">fieldsType</span><span class="p">:</span><span class="w"> </span><span class="l">FieldsV1</span><span class="w">
+</span><span class="w">    </span><span class="nt">fieldsV1</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">f:metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">f:labels</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">.</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">          </span><span class="nt">f:app</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">      </span><span class="nt">f:spec</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">f:ports</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">.</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">          </span><span class="l">k:{&#34;port&#34;:80,&#34;protocol&#34;:&#34;TCP&#34;}:</span><span class="w">
+</span><span class="w">            </span><span class="nt">.</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">            </span><span class="nt">f:port</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">            </span><span class="nt">f:protocol</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">            </span><span class="nt">f:targetPort</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">        </span><span class="nt">f:selector</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">.</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">          </span><span class="nt">f:app</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">        </span><span class="nt">f:sessionAffinity</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">        </span><span class="nt">f:type</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">    </span><span class="nt">manager</span><span class="p">:</span><span class="w"> </span><span class="l">kubectl-expose</span><span class="w">
+</span><span class="w">    </span><span class="nt">operation</span><span class="p">:</span><span class="w"> </span><span class="l">Update</span><span class="w">
+</span><span class="w">    </span><span class="nt">time</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2021-07-07T08:27:58Z&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">will</span><span class="w">
+</span><span class="w">  </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;22295691&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">selfLink</span><span class="p">:</span><span class="w"> </span><span class="l">/api/v1/namespaces/will/services/nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">8cfd1ec9-a212-4b14-b81f-da862629ab27</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">clusterIP</span><span class="p">:</span><span class="w"> </span><span class="m">10.68.76.7</span><span class="w">
+</span><span class="w">  </span><span class="nt">clusterIPs</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="m">10.68.76.7</span><span class="w">
+</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">sessionAffinity</span><span class="p">:</span><span class="w"> </span><span class="l">None</span><span class="w">
+</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterIP</span><span class="w">
+</span><span class="w"></span><span class="nt">status</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">loadBalancer</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">
+</span></code></pre></div><p>还可以通过创建yaml文件的方式生成。但不用像上面那个那么完整。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx-service</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">    </span><span class="nt">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">30080</span><span class="w">
+</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">NodePort</span><span class="w">
+</span></code></pre></div><p>注意这里的type，这个type有四种类型：ClusterIP(默认)、NodePort，LoadBalancer、ExternalName，具体可以看这两篇文章：<a href="https://blog.haohtml.com/archives/19945" target="_blank" rel="noopener">k8s中的Service与Ingress</a>
+。<a href="https://www.qikqiak.com/post/visually-explained-k8s-service/" target="_blank" rel="noopener">图解 Kubernetes Service</a>
+</p>
+<ul>
+<li>ClusterIP顾名思义就是Service管理的（通过selector或label）pod集群对外访问。当你依次访问ClusterIP的话，会发现每次响应内容不一样，说明后端请求了不同的 pod 。原因是因为 Service 提供的是 <code>Round Robin </code>方式的负载均衡。这个IP地址 <code>10.0.1.175</code> 是当前集群的IP，俗称为 <code>VIP</code>，是 Kubernetes 自动为 Service 分配的。对于这种方式称为 <code>ClusterIP 模式的 Service</code>。</li>
+</ul>
+<h2 id="get-service">Get service</h2>
+<p>通过 <code>kubectl get service</code> 命令可以查看 service 的详细信息：</p>
+<pre><code>$ kubectl get svc nginx -n will
+NAME    TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+nginx   ClusterIP   10.68.76.7   &lt;none&gt;        80/TCP    68s   app=nginx
+</code></pre><p>可以看到，Service 具有一个固定的 IP 10.68.76.7。同样，通过 describe 可以看到更多详细的信息：</p>
+<pre><code>$ kubectl describe svc nginx -n will
+Name:              nginx
+Namespace:         will
+Labels:            app=nginx
+Annotations:       &lt;none&gt;
+Selector:          app=nginx
+Type:              ClusterIP
+IP Families:       &lt;none&gt;
+IP:                10.68.76.7
+IPs:               10.68.76.7
+Port:              &lt;unset&gt;  80/TCP
+TargetPort:        80/TCP
+Endpoints:         172.20.3.171:80
+Session Affinity:  None
+Events:            &lt;none&gt;
+</code></pre><p>其中，Endpoint 表明 Service 所选中的 PodIP:PodPort。我们可以查看 Pod 信息来验证：</p>
+<pre><code>$ kubectl get pods -o wide -n will
+NAME                     READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+nginx-646b46d648-hbwg2   1/1     Running   0          14m   172.17.0.11   minikube   &lt;none&gt;           &lt;none&gt;
+</code></pre><h2 id="query-service">Query service</h2>
+<p>创建 Service 后，我们可以在主机上直接访问该 Service。下面两条命令实际上访问的都是同一个后端。第一个命令通过 Service IP 访问，第二个命令通过 Pod IP 访问。</p>
+<p>通过 Service IP 访问：</p>
+<pre><code>$ minikube ssh
+$ curl 10.96.6.136
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+...
+&lt;/html&gt;
+</code></pre><p>通过 Pod IP 访问：</p>
+<pre><code>$ minikube ssh
+$ curl 172.17.0.11
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+...
+&lt;/html&gt;
+</code></pre><p>上面的命令创建了一个名为 nginx 的 Service，并使用 80 作为服务端口。这里，我们的 nginx 容器监听的是容器的 80 端口，该端口是 Pod IP 所监听的端口；我们可以在 Service 上使用不同的端口。例如，若我们想暴露的服务端口是 8080 端口，需要使用 port 和 targetPort 选项。</p>
+<p>首先，删除已经创建的 Service：</p>
+<pre><code>$ kubectl delete svc nginx -n tutorial
+service &quot;nginx&quot; deleted
+</code></pre><p>之后，创建 Service：</p>
+<pre><code>$ kubectl expose deployment nginx --port 8080 --target-port 80 -n tutorial
+service &quot;nginx&quot; exposed
+</code></pre><p>尝试用 8080 端口访问服务</p>
+<pre><code>$ kubectl get svc nginx -n tutorial
+NAME    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+nginx   ClusterIP   10.98.125.20   &lt;none&gt;        8080/TCP   6s
+
+$ minikube ssh
+$ curl 10.98.125.20:8080
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+...
+&lt;/html&gt;
+</code></pre><p>上面是在minikube中访问，这是访问k8s集群的方式，首先进入容器，然后通过serviceIP的方式访问服务</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210707164532565.png"
+    alt="image-20210707164532565"  />
+</p>
+</p>
+<h2 id="nodeport-service">NodePort service</h2>
+<p>上述创建的 Service 只能被集群内部的节点和 Pod 访问，并不能被外部访问。我们可以通过两种方式暴露服务：<code>NodePort</code> 和 <code>LoadBalancer</code>。<code>NodePort</code> 通过在每个节点打开一个端口对外提供服务，<code>LoadBalancer</code> 通过创建一个外部负载均衡器（例如公有云负载均衡器）来对外提供服务。这里我们尝试使用 <code>NodePort</code>。</p>
+<p>首先，删除已有的 Service：</p>
+<pre><code>$ kubectl delete svc nginx -n will
+service &quot;nginx&quot; deleted
+</code></pre><p>通过 NodePort 暴露服务，注意这里使用了 <code>--type NodePort</code>：</p>
+<pre><code>$ kubectl expose deployment nginx --port 80 --type NodePort -n will
+service &quot;nginx&quot; exposed
+</code></pre><p>查看 Service 的细节：</p>
+<pre><code>[root@openshift-m1-cst ~]# kubectl get svc nginx -n will
+NAME    TYPE       CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+nginx   NodePort   10.68.92.85   &lt;none&gt;        80:30594/TCP   51s
+
+[root@openshift-m1-cst ~]# kubectl describe svc nginx -n will
+Name:                     nginx
+Namespace:                will
+Labels:                   app=nginx
+Annotations:              &lt;none&gt;
+Selector:                 app=nginx
+Type:                     NodePort
+IP Families:              &lt;none&gt;
+IP:                       10.68.92.85
+IPs:                      10.68.92.85
+Port:                     &lt;unset&gt;  80/TCP
+TargetPort:               80/TCP
+NodePort:                 &lt;unset&gt;  30594/TCP
+Endpoints:                172.20.3.171:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   &lt;none&gt;
+</code></pre><p>从以上输出可以看到，nginx 服务打开了节点的 30594端口（每个节点），我们可以通过 <code>NodeIP:NodePort</code> 访问服务。</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210708104459138.png"
+    alt="image-20210708104459138"  />
+</p>
+</p>
+<pre><code>$ curl $(minikube ip):32542
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+...
+&lt;/html&gt;
+</code></pre><blockquote>
+<p>PS：NodeIP可以通过<code>describe node nginx-7b7b957b6b-hh5v9 -n will</code>获得；</p>
+</blockquote>
+<h2 id="readings">Readings</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/services-networking/service/" target="_blank" rel="noopener">kubernetes service</a>
+. Please read as much as you can, we&rsquo;ll come back to service again.</li>
+<li><a href="https://kubernetes.io/docs/tasks/access-application-cluster/connecting-frontend-backend/" target="_blank" rel="noopener">run application with service</a>
+.</li>
+<li><a href="https://speakerdeck.com/thockin/kubernetes-a-very-brief-explanation-of-ports" target="_blank" rel="noopener">ports in kubernetes</a>
+</li>
+</ul>
+<h1 id="kubernetes-ingress">Kubernetes Ingress</h1>
+<p>上面我们提到有一个叫作 <code>LoadBalancer</code> 类型的 <code>Service</code>，它会为你在 Cloud Provider（比如：Google Cloud 或者 OpenStack）里创建一个与该 Service 对应的负载均衡服务。但是，相信你也应该能感受到，由于每个 Service 都要有一个负载均衡服务，所以这个做法实际上既浪费成本又高。作为用户，我其实更希望看到 Kubernetes 为我内置一个全局的负载均衡器。然后，通过我访问的 URL，把请求转发给不同的后端 Service。这种全局的、为了代理不同后端 Service 而设置的负载均衡服务，就是 Kubernetes 里的 <code>Ingress</code> 服务。</p>
+<p>Ingress 的功能其实很容易理解：所谓 Ingress 就是 Service 的“Service”，这就是它们两者的关系。</p>
+<pre><code> 	internet
+        |
+   [ Ingress ]
+   --|-----|--
+   [ Services ]
+</code></pre><p>通过使用 Kubernetes 的 Ingress 来创建一个统一的负载均衡器，从而实现当用户访问不同的域名时，访问后端不同的服务。</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/d2b5ca33bd970f64a6301fa75ae2eb22-8.png"
+    alt="img"  />
+</p>
+</p>
+<p>假如我现在有这样一个站点：<code>https://cafe.example.com</code>。其中 <code>https://cafe.example.com/coffee</code>，对应的是“咖啡点餐系统”。而 <code>https://cafe.example.com/tea</code>，对应的则是“茶水点餐系统”。这两个系统，分别由名叫 <code>coffee</code> 和 <code>tea</code> 这样两个 Deployment 来提供服务，可以看到这是一种经典的扇出（fanout）行为。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">extensions/v1beta1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Ingress</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cafe-ingress</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">tls</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">hosts</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="l">cafe.example.com</span><span class="w">
+</span><span class="w">    </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l">cafe-secret</span><span class="w">
+</span><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">cafe.example.com</span><span class="w">
+</span><span class="w">    </span><span class="nt">http</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/tea</span><span class="w">
+</span><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l">tea-svc</span><span class="w">
+</span><span class="w">          </span><span class="nt">servicePort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/coffee</span><span class="w">
+</span><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l">coffee-svc</span><span class="w">
+</span><span class="w">          </span><span class="nt">servicePort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></code></pre></div><p>最值得我们关注的，是 <code>rules</code> 字段。在 Kubernetes 里，这个字段叫作：<code>IngressRule</code>。
+IngressRule 的 Key，就叫做：<code>host</code>。它必须是一个标准的域名格式（Fully Qualified Domain Name）的字符串，而不能是 IP 地址。</p>
+<p><strong>Ingress 规则</strong><a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress/#ingress-rules" target="_blank" rel="noopener"> </a>
+</p>
+<p>每个 HTTP 规则都包含以下信息：</p>
+<ul>
+<li><code>host</code>。可选项。如果未指定 <code>host</code>，则该规则适用于通过指定 IP 地址的所有入站 HTTP 通信。 如果提供了 <code>host</code>，则 <code>rules</code> 适用于该 <code>host</code>。</li>
+<li><code>paths</code> 路径列表 paths（例如，<code>/testpath</code>）,每个路径都有一个由 <code>serviceName</code> 和 <code>servicePort</code> 定义的关联后端。 在负载均衡器将流量定向到引用的服务之前，主机和路径都必须匹配传入请求的内容。</li>
+<li><code>backend</code>（后端）是 <a href="https://kubernetes.io/zh/docs/concepts/services-networking/service/" target="_blank" rel="noopener">Service 文档</a>
+中所述的服务和端口名称的组合。 与规则的 <code>host</code> 和 <code>path</code> 匹配的对 Ingress 的 HTTP（和 HTTPS ）请求将发送到指定对应的 <code>backend</code>。</li>
+</ul>
+<p>通常在 Ingress 控制器中会配置 <code>defaultBackend</code>（默认后端），以服务于任何不符合规约中 <code>path</code> 的请求。</p>
+<p>所以在我们的例子里，我定义了两个 path，它们分别对应 <code>coffee</code> 和 <code>tea</code> 这两个 Deployment 的 Service（即 <code>coffee-svc</code> 和 <code>tea-svc</code>）。</p>
+<p>通过上面的介绍，不难看到所谓 Ingress 对象，其实就是 Kubernetes 项目对“<code>反向代理</code>”的一种抽象。</p>
+<p>一个 <code>Ingress</code> 对象的主要内容，实际上就是一个“反向代理”服务（比如：Nginx）的配置文件的描述。而这个代理服务对应的转发规则，就是 <code>IngressRule</code>。</p>
+<p>这就是为什么在每条 IngressRule 里，需要有一个 host 字段来作为这条 IngressRule 的入口，然后还需要有一系列 path 字段来声明具体的转发策略。这其实跟 Nginx、HAproxy 等项目的配置文件的写法是一致的。</p>
+<p>在实际使用中，我们一般选择一种<code> Ingress Controller</code>, 将其部署在k8s集群中，这样它就会根据我们定义的 Ingress 对象来提供对应的代理功能。</p>
+<p>业界常用的各种反向代理项目，比如 Nginx、HAProxy、Envoy、Traefik 等，都已经为 Kubernetes 专门维护了对应的 <code>Ingress Controller</code>。</p>
+<p>Nginx Ingress Controller 的示例请参考 <a href="https://time.geekbang.org/column/article/69214">https://time.geekbang.org/column/article/69214</a></p>
+<p>推荐参考官方推荐脚本：https://github.com/resouer/kubernetes-ingress/tree/master/examples/complete-example</p>
+<p>至此通过一张图来总结一下K8S的网络结构：</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210709091700683.png"
+    alt="image-20210709091700683"  />
+</p>
+</p>
+<p>K8S内部的请求处理：</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210709092001687.png"
+    alt="image-20210709092001687"  />
+</p>
+</p>
+<p>K8S的外部请求处理</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210709092028497.png"
+    alt="image-20210709092028497"  />
+</p>
+</p>
+<h1 id="kubernetes-labelselector">Kubernetes Label&amp;Selector</h1>
+<p>Service 通过 selector &amp; label 来选取它所管理的 Pod，同样 Deployment 也是通过 selector &amp; label 选取它所管理的 Pod。</p>
+<h1 id="kubernetes-deployment-operations">Kubernetes Deployment Operations</h1>
+<h2 id="scale-up-using-kubectl">Scale up using kubectl</h2>
+<p>接下来我们将学习 kubernetes Deployment 的另外两个操作：水平扩展应用和更新应用。下图中，Deployment A 有一个 Pod 在运行，Service A 管理该 Pod。</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/deployment_initial.png"
+    alt="deployment_initial"  />
+</p>
+</p>
+<p>通过调整 Deployment 的副本数量，我们可以将 Pod 的数量调整到 4 个。与此同时，Service 会感知到同样 label 的 Pod 被扩容到了 4 个，会将流量导到所有 Pod（而不是只有最开始的 Pod）。</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/deployment_service-1625650180585.png"
+    alt="deployment_service"  />
+</p>
+</p>
+<p>接下来，我们可以通过 <code>kubectl scale</code> 子命令将 Pod 数量扩容到四个：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl get deployments -n will</span>
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   1/1     <span class="m">1</span>            <span class="m">1</span>           23h
+<span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl scale deployment nginx --replicas=4 -n will</span>
+deployment.apps/nginx scaled
+<span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl get deployments -n will</span>
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   4/4     <span class="m">4</span>            <span class="m">4</span>           23h
+<span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl get pods -n will -o wide</span>
+NAME                     READY   STATUS    RESTARTS   AGE   IP             NODE             NOMINATED NODE   READINESS GATES
+nginx-7b7b957b6b-fnbdt   1/1     Running   <span class="m">0</span>          54s   172.20.4.92    172.18.100.162   &lt;none&gt;           &lt;none&gt;
+nginx-7b7b957b6b-hh5v9   1/1     Running   <span class="m">0</span>          23h   172.20.3.171   172.18.100.163   &lt;none&gt;           &lt;none&gt;
+nginx-7b7b957b6b-trclf   1/1     Running   <span class="m">0</span>          54s   172.20.3.172   172.18.100.163   &lt;none&gt;           &lt;none&gt;
+nginx-7b7b957b6b-v6q2n   1/1     Running   <span class="m">0</span>          54s   172.20.4.91    172.18.100.162   &lt;none&gt;           &lt;none&gt;
+</code></pre></div><p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210708104332937.png"
+    alt="image-20210708104332937"  />
+</p>
+</p>
+<p>可以看到目前有四个 Pods，其中 <code>AGE</code> 较小的是新生成的。</p>
+<h2 id="view-service">View service</h2>
+<p>之前提到，Service 会感知到 Pods 的变化，在所有的 Pods 中负载均衡，我们可以通过 kubectl 查看。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl describe service nginx -n will</span>
+Name:                     nginx
+Namespace:                will
+Labels:                   <span class="nv">app</span><span class="o">=</span>nginx
+Annotations:              &lt;none&gt;
+Selector:                 <span class="nv">app</span><span class="o">=</span>nginx
+Type:                     NodePort
+IP Families:              &lt;none&gt;
+IP:                       10.68.92.85
+IPs:                      10.68.92.85
+Port:                     &lt;unset&gt;  80/TCP
+TargetPort:               80/TCP
+NodePort:                 &lt;unset&gt;  30594/TCP
+Endpoints:                172.20.3.171:80,172.20.3.172:80,172.20.4.91:80 + <span class="m">1</span> more...
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   &lt;none&gt;
+</code></pre></div><h2 id="scale-down-using-kubectl">Scale down using kubectl</h2>
+<p>我们也可以通过同样的命令缩容（kubectl scale）。Deployment 不会区分是扩容命令或是缩容命令，它只关心将实例的数量调整到指定的数量。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl scale deployments nginx --replicas=3 -n will</span>
+deployment.apps/nginx scaled
+<span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl get pods -n will</span>
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-7b7b957b6b-fnbdt   1/1     Running   <span class="m">0</span>          5m16s
+nginx-7b7b957b6b-hh5v9   1/1     Running   <span class="m">0</span>          23h
+nginx-7b7b957b6b-trclf   1/1     Running   <span class="m">0</span>          5m16s
+</code></pre></div><h2 id="update-deployment">Update deployment</h2>
+<p>接下来，我们将了解 kubernetes 如何进行应用更新。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl <span class="nb">set</span> image deployments nginx <span class="nv">nginx</span><span class="o">=</span>cargo.caicloud.io/caicloud/nginx:1.9.3 -n tutorial
+deployment.extensions/nginx image updated
+</code></pre></div><p>分析一下上述命令，<code>kubectl set image</code> 将 Deployment 中的 nginx 镜像版本改为 1.9.3；运行该命令之后，发现 kubernetes 删掉了一个现有的 Pod，然后重新启动了两个新的 Pod（我们可以从一串数字中看出，&ldquo;86d4667764&rdquo; 是新 Pod 的 Hash 值，&ldquo;d6b94d6f6&rdquo; 是老 Pod 的 Hash 值）。等待一段时间后再次查询 Pods，发现所有新的 Pods 已经上线。整个过程中，我们都可以尝试去访问 nginx 服务，注意其版本的变化。</p>
+<h1 id="kubernetes-events">Kubernetes Events</h1>
+<p>Kubernetes events 显示了 kubernetes 集群中所有的事件。不同于其他资源，kubernetes events 并不是由用户创建的资源，而是由 kubernetes 系统组件创建，用以提示用户集群发生的各种事件。我们可以通过 kubectl get 命令来查询集群的事件。默认情况下，event 会有 TTL，超过 TTL 之后 kubernetes 会将事件删掉。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl get events -n will</span>
+LAST SEEN   TYPE     REASON              OBJECT                        MESSAGE
+8m57s       Normal   Scheduled           pod/nginx-7b7b957b6b-fnbdt    Successfully assigned will/nginx-7b7b957b6b-fnbdt to 172.18.100.162
+8m57s       Normal   Pulling             pod/nginx-7b7b957b6b-fnbdt    Pulling image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span>
+8m49s       Normal   Pulled              pod/nginx-7b7b957b6b-fnbdt    Successfully pulled image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span> in 7.582820587s
+8m49s       Normal   Created             pod/nginx-7b7b957b6b-fnbdt    Created container nginx
+8m49s       Normal   Started             pod/nginx-7b7b957b6b-fnbdt    Started container nginx
+8m57s       Normal   Scheduled           pod/nginx-7b7b957b6b-trclf    Successfully assigned will/nginx-7b7b957b6b-trclf to 172.18.100.163
+8m57s       Normal   Pulling             pod/nginx-7b7b957b6b-trclf    Pulling image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span>
+8m57s       Normal   Pulled              pod/nginx-7b7b957b6b-trclf    Successfully pulled image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span> in 62.433594ms
+8m57s       Normal   Created             pod/nginx-7b7b957b6b-trclf    Created container nginx
+8m57s       Normal   Started             pod/nginx-7b7b957b6b-trclf    Started container nginx
+8m57s       Normal   Scheduled           pod/nginx-7b7b957b6b-v6q2n    Successfully assigned will/nginx-7b7b957b6b-v6q2n to 172.18.100.162
+8m57s       Normal   Pulling             pod/nginx-7b7b957b6b-v6q2n    Pulling image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span>
+8m49s       Normal   Pulled              pod/nginx-7b7b957b6b-v6q2n    Successfully pulled image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span> in 7.643466668s
+8m49s       Normal   Created             pod/nginx-7b7b957b6b-v6q2n    Created container nginx
+8m49s       Normal   Started             pod/nginx-7b7b957b6b-v6q2n    Started container nginx
+4m10s       Normal   Killing             pod/nginx-7b7b957b6b-v6q2n    Stopping container nginx
+8m57s       Normal   SuccessfulCreate    replicaset/nginx-7b7b957b6b   Created pod: nginx-7b7b957b6b-v6q2n
+8m57s       Normal   SuccessfulCreate    replicaset/nginx-7b7b957b6b   Created pod: nginx-7b7b957b6b-fnbdt
+8m57s       Normal   SuccessfulCreate    replicaset/nginx-7b7b957b6b   Created pod: nginx-7b7b957b6b-trclf
+4m10s       Normal   SuccessfulDelete    replicaset/nginx-7b7b957b6b   Deleted pod: nginx-7b7b957b6b-v6q2n
+8m57s       Normal   ScalingReplicaSet   deployment/nginx              Scaled up replica <span class="nb">set</span> nginx-7b7b957b6b to <span class="m">4</span>
+4m10s       Normal   ScalingReplicaSet   deployment/nginx              Scaled down replica <span class="nb">set</span> nginx-7b7b957b6b to <span class="m">3</span>
+</code></pre></div><p>Event 与资源是相联系的，因此单独查询 Event 并不是非常有用，我们可以通过获取资源的详细信息来查看 Event 信息。例如， <code>kubectl describe pod &lt;pod name&gt;</code> 会返回 Pod 的 event 信息。</p>
+<h1 id="kubernetes-pod-lifecycle">Kubernetes Pod Lifecycle</h1>
+<p>od 生命周期主要包括：</p>
+<ul>
+<li>Pod Phase</li>
+<li>Pod Condition</li>
+<li>Restart Policy</li>
+<li>Container probes</li>
+</ul>
+<p>用户可以通过 <code>kubectl describe pods</code> 查看以上所有信息。Pod Phase 和 Pod Condition 比较简单，我们可以实时看到 kubernetes 的反馈。这里我们主要实践 Restart Policy 和 Container probes。</p>
+<h2 id="restart-policy">Restart policy</h2>
+<p>Restart Policy 指定当 Pod 内容器出错或执行完毕后，是否重启。</p>
+<h2 id="container-probes">Container probes</h2>
+<p>Container probes 分为两种：LivenessProbe 和 ReadinessProbe。Liveness 检查应用是否依然健康无错，若有错，则 kubernetes 会根据 policy 重启或仅更新状态。ReadinessCheck 检查应用是否可以对外提供服务，若应用 Readiness 检查不通过，则 kubernetes 会将 Pod 从服务池中剔除。两者的使用方法都相同，这里我们来看看 Container probes。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">apiVersion: v1
+kind: Pod
+metadata:
+  namespace: tutorial
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  containers:
+    - name: nginx
+      image: cargo.caicloud.io/caicloud/nginx:1.9.7
+      resources:
+        requests:
+          cpu: <span class="s2">&#34;0.1&#34;</span>
+          memory: <span class="s2">&#34;100Mi&#34;</span>
+        limits:
+          cpu: <span class="s2">&#34;0.1&#34;</span>
+          memory: <span class="s2">&#34;100Mi&#34;</span>
+      livenessProbe:
+        httpGet:
+          path: /
+          port: <span class="m">80</span>
+        initialDelaySeconds: <span class="m">5</span>
+        periodSeconds: <span class="m">5</span>
+</code></pre></div><p>可以看到里面定义了 livenessProbe。当我们运行创建该 Pod 的时候，kubernetes 就开始为我们监控该 Pod 的 liveness 信息。</p>
+<h1 id="kubernetes-configmap--secret">Kubernetes ConfigMap &amp; Secret</h1>
+<p>ConfigMap 是 kubernetes 用来管理配置信息的资源类型。我们通过单独创建 ConfigMap，再将 ConfigMap 挂载到 Pod 内的方式分离配置和应用。我们通过一个实验来学习如何正确使用 ConfigMap。</p>
+<p>创建 ConfigMap 可以通过 yaml 文件，也可以从文件直接创建。通过 yaml 文件的方式与创建其他资源类似。</p>
+<p>有两个文件game.properties</p>
+<pre><code class="language-properties" data-lang="properties">enemies=aliens
+lives=3
+enemies.cheat=true
+enemies.cheat.level=noGoodRotten
+secret.code.passphrase=UUDDLRLRBABAS
+secret.code.allowed=true
+secret.code.lives=30
+</code></pre><p>ui.properties</p>
+<pre><code class="language-properties" data-lang="properties">color.good=purple
+color.bad=yellow
+allow.textmode=true
+how.nice.to.look=fairlyNice
+</code></pre><p>我们通过 kubectl 命令创建：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create configmap game-config --from-file<span class="o">=</span>resources/game.properties --from-file<span class="o">=</span>resources/ui.properties -n will
+configmap/game-config created
+</code></pre></div><p>创建之后，通过 kubectl get configmap 来查看创建的 ConfigMap：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get configmap game-config -o wide -n will
+NAME          DATA      AGE
+game-config   <span class="m">2</span>         2m
+$ kubectl describe configmap game-config -n will
+Name:         game-config
+Namespace:    tutorial
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+
+<span class="nv">Data</span>
+<span class="o">====</span>
+game.properties:
+----
+<span class="nv">enemies</span><span class="o">=</span>aliens
+<span class="nv">lives</span><span class="o">=</span><span class="m">3</span>
+enemies.cheat<span class="o">=</span><span class="nb">true</span>
+enemies.cheat.level<span class="o">=</span>noGoodRotten
+secret.code.passphrase<span class="o">=</span>UUDDLRLRBABAS
+secret.code.allowed<span class="o">=</span><span class="nb">true</span>
+secret.code.lives<span class="o">=</span><span class="m">30</span>
+ui.properties:
+----
+color.good<span class="o">=</span>purple
+color.bad<span class="o">=</span>yellow
+allow.textmode<span class="o">=</span><span class="nb">true</span>
+how.nice.to.look<span class="o">=</span>fairlyNice
+Events:  &lt;none&gt;
+</code></pre></div><p>查看详情：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get configmap game-config -o yaml -n will
+apiVersion: v1
+data:
+  game.properties: <span class="p">|</span>-
+    <span class="nv">enemies</span><span class="o">=</span>aliens
+    <span class="nv">lives</span><span class="o">=</span><span class="m">3</span>
+    enemies.cheat<span class="o">=</span><span class="nb">true</span>
+    enemies.cheat.level<span class="o">=</span>noGoodRotten
+    secret.code.passphrase<span class="o">=</span>UUDDLRLRBABAS
+    secret.code.allowed<span class="o">=</span><span class="nb">true</span>
+    secret.code.lives<span class="o">=</span><span class="m">30</span>
+  ui.properties: <span class="p">|</span>-
+    color.good<span class="o">=</span>purple
+    color.bad<span class="o">=</span>yellow
+    allow.textmode<span class="o">=</span><span class="nb">true</span>
+    how.nice.to.look<span class="o">=</span>fairlyNice
+kind: ConfigMap
+metadata:
+  creationTimestamp: <span class="s2">&#34;2019-06-28T08:49:20Z&#34;</span>
+  name: game-config
+  namespace: tutorial
+  resourceVersion: <span class="s2">&#34;31335&#34;</span>
+  selfLink: /api/v1/namespaces/tutorial/configmaps/game-config
+  uid: 134781b7-5565-4037-b0b2-be42767255a0
+</code></pre></div><p>创建 ConfigMap 之后，我们可以创建 Pod 来使用该 ConfigMap：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tutorial</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pod-configmap</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Never</span><span class="w">
+</span><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">test-container</span><span class="w">
+</span><span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/busybox:1.26</span><span class="w">
+</span><span class="w">      </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;/bin/sh&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">      </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;-c&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;cat /etc/config/game.properties &amp;&amp; cat /etc/config/ui.properties&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">      </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">config-volume</span><span class="w">
+</span><span class="w">        </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/etc/config</span><span class="w">
+</span><span class="w">      </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0.1&#34;</span><span class="w">
+</span><span class="w">          </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;100Mi&#34;</span><span class="w">
+</span><span class="w">        </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0.1&#34;</span><span class="w">
+</span><span class="w">          </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;100Mi&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">config-volume</span><span class="w">
+</span><span class="w">      </span><span class="nt">configMap</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">game-config</span><span class="w">
+</span></code></pre></div><p>查看：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get pods -n will
+NAME                     READY     STATUS             RESTARTS   AGE
+pod-configmap            0/1       Completed          <span class="m">0</span>          2m
+
+$ kubectl logs pod-configmap -n will
+<span class="nv">enemies</span><span class="o">=</span>aliens
+<span class="nv">lives</span><span class="o">=</span><span class="m">3</span>
+enemies.cheat<span class="o">=</span><span class="nb">true</span>
+enemies.cheat.level<span class="o">=</span>noGoodRotten
+secret.code.passphrase<span class="o">=</span>UUDDLRLRBABAS
+secret.code.allowed<span class="o">=</span><span class="nb">true</span>
+secret.code.lives<span class="o">=</span>30color.good<span class="o">=</span>purple
+color.bad<span class="o">=</span>yellow
+allow.textmode<span class="o">=</span><span class="nb">true</span>
+how.nice.to.look<span class="o">=</span>fairlyNice
+</code></pre></div><p>这里我们看到了通过挂载文件的方式使用 configmap，kubernetes 同时也支持通过环境变量的方式使用 configmap。此外，Secret 的使用方式与 Configmap 类似，但内容会被加密。</p>
+<h2 id="readings-1">Readings</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/" target="_blank" rel="noopener">kubernetes configmap</a>
+</li>
+<li><a href="https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/" target="_blank" rel="noopener">distribute secret</a>
+</li>
+</ul>
+<h1 id="参考资料">参考资料</h1>
+<ul>
+<li><a href="https://github.com/caicloud/kube-ladder" target="_blank" rel="noopener">kube-ladder</a>
+</li>
+<li><a href="https://jhooq.com/get-yaml-for-deployed-kubernetes-resources/" target="_blank" rel="noopener">kubectl export yaml OR How to generate YAML for deployed kubernetes resources</a>
+</li>
+<li><a href="k8s%e5%85%a5%e9%97%a8">k8s 部署 nginx 入门</a>
+</li>
+</ul>
+]]></content>
+		</item>
 		
 		<item>
 			<title>gitignore如何忽略之前已提交的文件</title>
@@ -1538,6 +2489,8 @@
 <li>A 收到来自 B 的确认后，发出最后的确认，确认报文段的 ACK 为 1，确认号 <code>ack = y + 1</code>，序号 <code>seq = x + 1</code>。TCP 标准规定，ACK 报文段可以携带数据也可以不携带，如果不携带则该序号不被消耗，下一个数据报文段的序号仍然是 <code>seq = x + 1</code>。之后 A 进入 ESTABLISHED（已连接）状态；</li>
 <li>当 B 收到 A 的确认后，也进入 ESTABLISHED 状态。</li>
 </ol>
+<p><a href="https://draveness.me/whys-the-design-tcp-three-way-handshake/" target="_blank" rel="noopener">为什么TCP 建立连接需要三次握手- 面向信仰编程</a>
+</p>
 <h3 id="55-四次挥手">5.5 四次挥手</h3>
 <p>数据传输结束后，通信的双方都可以释放连接，具体过程如下：</p>
 <p><p class="md__image">
@@ -2193,6 +3146,274 @@
 </li>
 </ol>
 ]]></content>
+		</item>
+		
+		<item>
+			<title>由浅入深聊聊Golang的context</title>
+			<link>https://willje.github.io/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/</link>
+			<pubDate>Sat, 01 May 2021 16:23:40 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/</guid>
+			<description>context详解 1.1 产生背景 在go的1.7之前，context还是非编制的(包golang.org/x/net/context中)，golang团队发现context这个东西还挺好用的，很多地方也都用到了，就把它收编了，1.7版本正式进入标准库。 context常用的使用姿势： 1.web编程中，一个请求对应多个goroutine之间的数据交互 2.超时控制 3.上</description>
+			<content type="html"><![CDATA[<h2 id="context详解">context详解</h2>
+<h3 id="11-产生背景">1.1 产生背景</h3>
+<p>在go的1.7之前，context还是非编制的(包golang.org/x/net/context中)，golang团队发现context这个东西还挺好用的，很多地方也都用到了，就把它收编了，<strong>1.7版本正式进入标准库</strong>。</p>
+<p>context常用的使用姿势： 1.web编程中，一个请求对应多个goroutine之间的数据交互 2.超时控制 3.上下文控制</p>
+<h3 id="12-context的底层结构">1.2 context的底层结构</h3>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Context</span> <span class="kd">interface</span> <span class="p">{</span>
+    <span class="nf">Deadline</span><span class="p">()</span> <span class="p">(</span><span class="nx">deadline</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">,</span> <span class="nx">ok</span> <span class="kt">bool</span><span class="p">)</span>
+    <span class="nf">Done</span><span class="p">()</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{}</span>
+    <span class="nf">Err</span><span class="p">()</span> <span class="kt">error</span>
+    <span class="nf">Value</span><span class="p">(</span><span class="nx">key</span> <span class="kd">interface</span><span class="p">{})</span> <span class="kd">interface</span><span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div><p>这个就是Context的底层数据结构，来分析下：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Deadline</td>
+<td>返回一个time.Time，表示当前Context应该结束的时间，ok则表示有结束时间</td>
+</tr>
+<tr>
+<td>Done</td>
+<td>当Context被取消或者超时时候返回的一个close的channel，告诉给context相关的函数要停止当前工作然后返回了。(这个有点像全局广播)</td>
+</tr>
+<tr>
+<td>Err</td>
+<td>context被取消的原因</td>
+</tr>
+<tr>
+<td>Value</td>
+<td>context实现共享数据存储的地方，是协程安全的（还记得之前有说过<a href="https://blog.csdn.net/u011957758/article/details/82846609" target="_blank" rel="noopener">map是不安全</a>
+的？所以遇到map的结构,如果不是sync.Map,需要加锁来进行操作）</td>
+</tr>
+</tbody>
+</table>
+<p>同时包中也定义了提供cancel功能需要实现的接口。这个主要是后文会提到的“取消信号、超时信号”需要去实现。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// A canceler is a context type that can be canceled directly. The
+</span><span class="c1">// implementations are *cancelCtx and *timerCtx.
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">canceler</span> <span class="kd">interface</span> <span class="p">{</span>
+	<span class="nf">cancel</span><span class="p">(</span><span class="nx">removeFromParent</span> <span class="kt">bool</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span>
+	<span class="nf">Done</span><span class="p">()</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{}</span>
+<span class="p">}</span>
+</code></pre></div><p>那么库里头提供了4个Context实现，来供大家玩耍</p>
+<table>
+<thead>
+<tr>
+<th>实现</th>
+<th>结构体</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>emptyCtx</td>
+<td>type emptyCtx int</td>
+<td>完全空的Context，实现的函数也都是返回nil，仅仅只是实现了Context的接口</td>
+</tr>
+<tr>
+<td>cancelCtx</td>
+<td>type cancelCtx struct {   Context   mu   sync.Mutex   done     chan struct{}      children map[canceler]struct{}   err      error   }</td>
+<td>继承自Context，同时也实现了canceler接口</td>
+</tr>
+<tr>
+<td>timerCtx</td>
+<td>type timerCtx struct {    cancelCtx   timer *time.Timer // Under cancelCtx.mu.   deadline time.Time }</td>
+<td>继承自<strong>cancelCtx</strong>，增加了timeout机制</td>
+</tr>
+<tr>
+<td>valueCtx</td>
+<td>type valueCtx struct {   Context   key, val interface{} }</td>
+<td>存储键值对的数据</td>
+</tr>
+</tbody>
+</table>
+<h3 id="13-context的创建">1.3 context的创建</h3>
+<p>为了更方便的创建Context，包里头定义了Background来作为所有Context的根，它是一个emptyCtx的实例。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="p">(</span>
+    <span class="nx">background</span> <span class="p">=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">emptyCtx</span><span class="p">)</span>
+    <span class="nx">todo</span>       <span class="p">=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">emptyCtx</span><span class="p">)</span> <span class="c1">// 
+</span><span class="c1"></span><span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">Background</span><span class="p">()</span> <span class="nx">Context</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">background</span>
+<span class="p">}</span>
+</code></pre></div><p>你可以认为所有的Context是树的结构，Background是树的根，当任一Context被取消的时候，那么继承它的Context 都将被回收。</p>
+<h2 id="2context实战应用">2.context实战应用</h2>
+<h3 id="21-withcancel">2.1 WithCancel</h3>
+<p>实现源码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">WithCancel</span><span class="p">(</span><span class="nx">parent</span> <span class="nx">Context</span><span class="p">)</span> <span class="p">(</span><span class="nx">ctx</span> <span class="nx">Context</span><span class="p">,</span> <span class="nx">cancel</span> <span class="nx">CancelFunc</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="nf">newCancelCtx</span><span class="p">(</span><span class="nx">parent</span><span class="p">)</span>
+	<span class="nf">propagateCancel</span><span class="p">(</span><span class="nx">parent</span><span class="p">,</span> <span class="o">&amp;</span><span class="nx">c</span><span class="p">)</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">c</span><span class="p">,</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="nx">c</span><span class="p">.</span><span class="nf">cancel</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="nx">Canceled</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>实战场景： 执行一段代码，控制<strong>执行到某个度</strong>的时候，整个程序结束。</p>
+<p>吃汉堡比赛，奥特曼每秒吃0-5个，计算吃到10的用时 实战代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">ctx</span><span class="p">,</span> <span class="nx">cancel</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithCancel</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">())</span>
+	<span class="nx">eatNum</span> <span class="o">:=</span> <span class="nf">chiHanBao</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+	<span class="k">for</span> <span class="nx">n</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">eatNum</span> <span class="p">{</span>
+		<span class="k">if</span> <span class="nx">n</span> <span class="o">&gt;=</span> <span class="mi">10</span> <span class="p">{</span>
+			<span class="nf">cancel</span><span class="p">()</span>
+			<span class="k">break</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;正在统计结果。。。&#34;</span><span class="p">)</span>
+	<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">chiHanBao</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kt">int</span> <span class="p">{</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+	<span class="c1">// 个数
+</span><span class="c1"></span>	<span class="nx">n</span> <span class="o">:=</span> <span class="mi">0</span>
+	<span class="c1">// 时间
+</span><span class="c1"></span>	<span class="nx">t</span> <span class="o">:=</span> <span class="mi">0</span>
+	<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+		<span class="k">for</span> <span class="p">{</span>
+			<span class="c1">//time.Sleep(time.Second)
+</span><span class="c1"></span>			<span class="k">select</span> <span class="p">{</span>
+			<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">ctx</span><span class="p">.</span><span class="nf">Done</span><span class="p">():</span>
+				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;耗时 %d 秒，吃了 %d 个汉堡 \n&#34;</span><span class="p">,</span> <span class="nx">t</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span>
+				<span class="k">return</span>
+			<span class="k">case</span> <span class="nx">c</span> <span class="o">&lt;-</span> <span class="nx">n</span><span class="p">:</span>
+				<span class="nx">incr</span> <span class="o">:=</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">Intn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+				<span class="nx">n</span> <span class="o">+=</span> <span class="nx">incr</span>
+				<span class="k">if</span> <span class="nx">n</span> <span class="o">&gt;=</span> <span class="mi">10</span> <span class="p">{</span>
+					<span class="nx">n</span> <span class="p">=</span> <span class="mi">10</span>
+				<span class="p">}</span>
+				<span class="nx">t</span><span class="o">++</span>
+				<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;我吃了 %d 个汉堡\n&#34;</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span>
+			<span class="p">}</span>
+		<span class="p">}</span>
+	<span class="p">}()</span>
+
+	<span class="k">return</span> <span class="nx">c</span>
+<span class="p">}</span>
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">我吃了</span> <span class="mi">1</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">3</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">5</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">9</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">10</span> <span class="nx">个汉堡</span>
+<span class="nx">正在统计结果</span><span class="err">。。。</span>
+<span class="nx">耗时</span> <span class="mi">6</span> <span class="nx">秒</span><span class="err">，</span><span class="nx">吃了</span> <span class="mi">10</span> <span class="nx">个汉堡</span> 
+</code></pre></div><h3 id="22-withdeadline--withtimeout">2.2 WithDeadline &amp; WithTimeout</h3>
+<p>实现源码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">WithDeadline</span><span class="p">(</span><span class="nx">parent</span> <span class="nx">Context</span><span class="p">,</span> <span class="nx">d</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Time</span><span class="p">)</span> <span class="p">(</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">CancelFunc</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">cur</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">parent</span><span class="p">.</span><span class="nf">Deadline</span><span class="p">();</span> <span class="nx">ok</span> <span class="o">&amp;&amp;</span> <span class="nx">cur</span><span class="p">.</span><span class="nf">Before</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span> <span class="p">{</span>
+		<span class="c1">// The current deadline is already sooner than the new one.
+</span><span class="c1"></span>		<span class="k">return</span> <span class="nf">WithCancel</span><span class="p">(</span><span class="nx">parent</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="nx">c</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">timerCtx</span><span class="p">{</span>
+		<span class="nx">cancelCtx</span><span class="p">:</span> <span class="nf">newCancelCtx</span><span class="p">(</span><span class="nx">parent</span><span class="p">),</span>
+		<span class="nx">deadline</span><span class="p">:</span>  <span class="nx">d</span><span class="p">,</span>
+	<span class="p">}</span>
+	<span class="nf">propagateCancel</span><span class="p">(</span><span class="nx">parent</span><span class="p">,</span> <span class="nx">c</span><span class="p">)</span>
+	<span class="nx">dur</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Until</span><span class="p">(</span><span class="nx">d</span><span class="p">)</span>
+	<span class="k">if</span> <span class="nx">dur</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nf">cancel</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="nx">DeadlineExceeded</span><span class="p">)</span> <span class="c1">// deadline has already passed
+</span><span class="c1"></span>		<span class="k">return</span> <span class="nx">c</span><span class="p">,</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="nx">c</span><span class="p">.</span><span class="nf">cancel</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="nx">Canceled</span><span class="p">)</span> <span class="p">}</span>
+	<span class="p">}</span>
+	<span class="nx">c</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Lock</span><span class="p">()</span>
+	<span class="k">defer</span> <span class="nx">c</span><span class="p">.</span><span class="nx">mu</span><span class="p">.</span><span class="nf">Unlock</span><span class="p">()</span>
+	<span class="k">if</span> <span class="nx">c</span><span class="p">.</span><span class="nx">err</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nx">c</span><span class="p">.</span><span class="nx">timer</span> <span class="p">=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">AfterFunc</span><span class="p">(</span><span class="nx">dur</span><span class="p">,</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+			<span class="nx">c</span><span class="p">.</span><span class="nf">cancel</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="nx">DeadlineExceeded</span><span class="p">)</span>
+		<span class="p">})</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="nx">c</span><span class="p">,</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="nx">c</span><span class="p">.</span><span class="nf">cancel</span><span class="p">(</span><span class="kc">true</span><span class="p">,</span> <span class="nx">Canceled</span><span class="p">)</span> <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">WithTimeout</span><span class="p">(</span><span class="nx">parent</span> <span class="nx">Context</span><span class="p">,</span> <span class="nx">timeout</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Duration</span><span class="p">)</span> <span class="p">(</span><span class="nx">Context</span><span class="p">,</span> <span class="nx">CancelFunc</span><span class="p">)</span> <span class="p">{</span>
+	<span class="k">return</span> <span class="nf">WithDeadline</span><span class="p">(</span><span class="nx">parent</span><span class="p">,</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Now</span><span class="p">().</span><span class="nf">Add</span><span class="p">(</span><span class="nx">timeout</span><span class="p">))</span>
+<span class="p">}</span>
+</code></pre></div><p>实战场景： 执行一段代码，控制<strong>执行到某个时间</strong>的时候，整个程序结束。</p>
+<p>吃汉堡比赛，奥特曼每秒吃0-5个，用时10秒，可以吃多少个 实战代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// ctx, cancel := context.WithDeadline(context.Background(), time.Now().Add(10))
+</span><span class="c1"></span>	<span class="nx">ctx</span><span class="p">,</span> <span class="nx">cancel</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithTimeout</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="mi">10</span><span class="o">*</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="nf">chiHanBao</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+	<span class="k">defer</span> <span class="nf">cancel</span><span class="p">()</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">chiHanBao</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">n</span> <span class="o">:=</span> <span class="mi">0</span>
+	<span class="k">for</span> <span class="p">{</span>
+		<span class="k">select</span> <span class="p">{</span>
+		<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">ctx</span><span class="p">.</span><span class="nf">Done</span><span class="p">():</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;stop \n&#34;</span><span class="p">)</span>
+			<span class="k">return</span>
+		<span class="k">default</span><span class="p">:</span>
+			<span class="nx">incr</span> <span class="o">:=</span> <span class="nx">rand</span><span class="p">.</span><span class="nf">Intn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+			<span class="nx">n</span> <span class="o">+=</span> <span class="nx">incr</span>
+			<span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;我吃了 %d 个汉堡\n&#34;</span><span class="p">,</span> <span class="nx">n</span><span class="p">)</span>
+		<span class="p">}</span>
+		<span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>输出：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">我吃了</span> <span class="mi">1</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">3</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">5</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">9</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">10</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">13</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">13</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">13</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">14</span> <span class="nx">个汉堡</span>
+<span class="nx">我吃了</span> <span class="mi">14</span> <span class="nx">个汉堡</span>
+<span class="nx">stop</span> 
+</code></pre></div><h3 id="23-withvalue">2.3 WithValue</h3>
+<p>实现源码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">WithValue</span><span class="p">(</span><span class="nx">parent</span> <span class="nx">Context</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">val</span> <span class="kd">interface</span><span class="p">{})</span> <span class="nx">Context</span> <span class="p">{</span>
+	<span class="k">if</span> <span class="nx">key</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+		<span class="nb">panic</span><span class="p">(</span><span class="s">&#34;nil key&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nx">reflect</span><span class="p">.</span><span class="nf">TypeOf</span><span class="p">(</span><span class="nx">key</span><span class="p">).</span><span class="nf">Comparable</span><span class="p">()</span> <span class="p">{</span>
+		<span class="nb">panic</span><span class="p">(</span><span class="s">&#34;key is not comparable&#34;</span><span class="p">)</span>
+	<span class="p">}</span>
+	<span class="k">return</span> <span class="o">&amp;</span><span class="nx">valueCtx</span><span class="p">{</span><span class="nx">parent</span><span class="p">,</span> <span class="nx">key</span><span class="p">,</span> <span class="nx">val</span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>实战场景： 携带关键信息，为全链路提供线索，比如接入elk等系统，需要来一个trace_id，那WithValue就非常适合做这个事。 实战代码：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="nx">ctx</span> <span class="o">:=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithValue</span><span class="p">(</span><span class="nx">context</span><span class="p">.</span><span class="nf">Background</span><span class="p">(),</span> <span class="s">&#34;trace_id&#34;</span><span class="p">,</span> <span class="s">&#34;88888888&#34;</span><span class="p">)</span>
+	<span class="c1">// 携带session到后面的程序中去
+</span><span class="c1"></span>	<span class="nx">ctx</span> <span class="p">=</span> <span class="nx">context</span><span class="p">.</span><span class="nf">WithValue</span><span class="p">(</span><span class="nx">ctx</span><span class="p">,</span> <span class="s">&#34;session&#34;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+	<span class="nf">process</span><span class="p">(</span><span class="nx">ctx</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">process</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span> <span class="p">{</span>
+	<span class="nx">session</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">Value</span><span class="p">(</span><span class="s">&#34;session&#34;</span><span class="p">).(</span><span class="kt">int</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">ok</span><span class="p">)</span>
+	<span class="k">if</span> <span class="p">!</span><span class="nx">ok</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;something wrong&#34;</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+
+	<span class="k">if</span> <span class="nx">session</span> <span class="o">!=</span> <span class="mi">1</span> <span class="p">{</span>
+		<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;session 未通过&#34;</span><span class="p">)</span>
+		<span class="k">return</span>
+	<span class="p">}</span>
+
+	<span class="nx">traceID</span> <span class="o">:=</span> <span class="nx">ctx</span><span class="p">.</span><span class="nf">Value</span><span class="p">(</span><span class="s">&#34;trace_id&#34;</span><span class="p">).(</span><span class="kt">string</span><span class="p">)</span>
+	<span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;traceID:&#34;</span><span class="p">,</span> <span class="nx">traceID</span><span class="p">,</span> <span class="s">&#34;-session:&#34;</span><span class="p">,</span> <span class="nx">session</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>输出：</p>
+<pre><code>traceID: 88888888 -session: 1
+</code></pre><h2 id="3context建议">3.context建议</h2>
+<p>不多就一个。</p>
+<p><strong>Context要是全链路函数的第一个参数</strong>。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">myTest</span><span class="p">(</span><span class="nx">ctx</span> <span class="nx">context</span><span class="p">.</span><span class="nx">Context</span><span class="p">)</span>  <span class="p">{</span>
+    <span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div>]]></content>
 		</item>
 		
 		<item>
@@ -2932,6 +4153,86 @@ Then each of the goroutines runs and calls Done when finished. At the same time,
 <li>[3] <a href="https://golang.org/pkg/context/">https://golang.org/pkg/context/</a></li>
 <li>[4] <a href="http://www.moye.me/2017/05/05/go-concurrency-patterns/">http://www.moye.me/2017/05/05/go-concurrency-patterns/</a></li>
 </ul>
+]]></content>
+		</item>
+		
+		<item>
+			<title>k8s概述</title>
+			<link>https://willje.github.io/posts/k8s/k8s%E6%A6%82%E8%BF%B0/</link>
+			<pubDate>Thu, 01 Apr 2021 16:23:40 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/k8s/k8s%E6%A6%82%E8%BF%B0/</guid>
+			<description>集群架构与组件 Kubernetes 集群架构以及相关的核心组件如下图所示：一个 Kubernetes 集群一般包含一个 Master 节点和多个 Node 节点，一个节点可以看成是一台物理机或虚拟机。 Master Master 是 K8S 的集群控制节点，每个 K8S 集群里需要有一个 Master 节点来负责整个集群的管理和控制，基本上 K8S 所有的控制命令都是发给它，它来负责具体的执行过程。Master 节点通常会占据一个独立的服务器，因为它太重要了，如果它不可用，那么所有的控制</description>
+			<content type="html"><![CDATA[<h2 id="集群架构与组件">集群架构与组件</h2>
+<p>Kubernetes 集群架构以及相关的核心组件如下图所示：一个 Kubernetes 集群一般包含一个 Master 节点和多个 Node 节点，一个节点可以看成是一台物理机或虚拟机。</p>
+<p><p class="md__image">
+  <img src="../k8s%e6%a6%82%e8%bf%b0.assets/856154-20191023003358108-1816205812.png"
+    alt="img"  />
+</p>
+</p>
+<h3 id="master">Master</h3>
+<p>Master 是 K8S 的集群控制节点，每个 K8S 集群里需要有一个 Master 节点来负责整个集群的管理和控制，基本上 K8S 所有的控制命令都是发给它，它来负责具体的执行过程。Master 节点通常会占据一个独立的服务器，因为它太重要了，如果它不可用，那么所有的控制命令都将失效。</p>
+<p>Master 节点上运行着以下关键组件：</p>
+<p>① <strong>kube-apiserver</strong></p>
+<p>是集群的统一入口，各组件协调者，以 HTTP Rest 提供接口服务，所有对象资源的增、删、改、查和监听操作都交给 apiserver 处理后再提交给 Etcd 存储。</p>
+<p>② <strong>kube-controller-manager</strong></p>
+<p>是 K8S 里所有资源对象的自动化控制中心，处理集群中常规后台任务，一个资源对应一个控制器，而 controller-manager 就是负责管理这些控制器的。</p>
+<p>③ <strong>kube-scheduler</strong></p>
+<p>根据调度算法为新创建的 Pod 选择一个 Node 节点，可以任意部署，可以部署在同一个节点上，也可以部署在不同的节点上。</p>
+<p>④ <strong>etcd</strong></p>
+<p>是一个分布式的，一致的 key-value 存储，主要用途是共享配置和服务发现，保存集群状态数据，比如 Pod、Service 等对象信息。</p>
+<h3 id="node">Node</h3>
+<p>除了 Master，K8S 集群中的其它机器被称为 Node 节点，Node 节点是 K8S 集群中的工作负载节点，每个 Node 都会被 Master 分配一些工作负载，当某个 Node 宕机时，其上的工作负载会被 Master 自动转移到其它节点上去。</p>
+<p>每个 Node 节点上都运行着以下关键组件：</p>
+<p>① <strong>kubelet</strong></p>
+<p>kubelet 是 Master 在 Node 节点上的 Agent(代理)，与 Master 密切协作，管理本机运行容器的生命周期，负责 Pod 对应的容器的创建、启停等任务，实现集群管理的基本功能。</p>
+<p>② <strong>kube-proxy</strong></p>
+<p>在 Node 节点上实现 Pod 网络代理，实现 Kubernetes Service 的通信，维护网络规则和四层负载均衡工作。</p>
+<p>③ <strong>docker engine</strong></p>
+<p>Docker 引擎，负责本机的容器创建和管理工作。</p>
+<p>Node 节点可以在运行期间动态增加到 K8S 集群中，前提是这个节点上已经正确安装、配置和启动了上述关键组件。在默认情况下 kubelet 会向 Master 注册自己，一旦 Node 被纳入集群管理范围，kubelet 就会定时向 Master 节点汇报自身的情况，例如操作系统、Docker 版本、机器的 CPU 和内存情况，以及之前有哪些 Pod 在运行等，这样 Master 可以获知每个 Node 的资源使用情况，并实现高效均衡的资源调度策略。而某个 Node 超过指定时间不上报信息时，会被 Master 判定为“失联”，Node 的状态被标记为不可用（Not Ready），随后 Master 会触发“工作负载大转移”的自动流程。</p>
+<h2 id="核心概念">核心概念</h2>
+<p><strong>1、Pod</strong></p>
+<p>Pod 是 K8S 中最重要也是最基本的概念，Pod 是最小的部署单元，是一组容器的集合。每个 Pod 都由一个特殊的根容器 Pause 容器，以及一个或多个紧密相关的用户业务容器组成。</p>
+<p>Pause 容器作为 Pod 的根容器，以它的状态代表整个容器组的状态。K8S 为每个 Pod 都分配了唯一的 IP 地址，称之为 Pod IP。Pod 里的多个业务容器共享 Pause 容器的IP，共享 Pause 容器挂载的 Volume。</p>
+<p><strong>2、Label</strong></p>
+<p>标签，附加到某个资源上，用于关联对象、查询和筛选。一个 Label 是一个 key=value 的键值对，key 与 value 由用户自己指定。Label 可以附加到各种资源上，一个资源对象可以定义任意数量的 Label，同一个 Label 也可以被添加到任意数量的资源上。</p>
+<p>我们可以通过给指定的资源对象捆绑一个或多个不同的 Label 来实现多维度的资源分组管理功能，以便于灵活、方便地进行资源分配、调度、配置、部署等工作。</p>
+<p>K8S 通过 Label Selector（标签选择器）来查询和筛选拥有某些 Label 的资源对象。Label Selector 有基于等式（ name=label1 ）和基于集合（ name in (label1, label2) ）的两种方式。</p>
+<p><strong>3、ReplicaSet（RC）</strong></p>
+<p>ReplicaSet 用来确保预期的 Pod 副本数量，如果有过多的 Pod 副本在运行，系统就会停掉一些 Pod，否则系统就会再自动创建一些 Pod。</p>
+<p>我们很少单独使用 ReplicaSet，它主要被 Deployment 这个更高层的资源对象使用，从而形成一整套 Pod 创建、删除、更新的编排机制。</p>
+<p><strong>4、Deployment</strong></p>
+<p>Deployment 用于部署无状态应用，Deployment 为 Pod 和 ReplicaSet 提供声明式更新，只需要在 Deployment 描述想要的目标状态，Deployment 就会将 Pod 和 ReplicaSet 的实际状态改变到目标状态。</p>
+<p><strong>5、Horizontal Pod Autoscaler（HPA）</strong></p>
+<p>HPA 为 Pod 横向自动扩容，也是 K8S 的一种资源对象。HPA 通过追踪分析 RC 的所有目标 Pod 的负载变化情况，来确定是否需要针对性调整目标 Pod 的副本数量。</p>
+<p><strong>6、Service</strong></p>
+<p>Service 定义了一个服务的访问入口，通过 Label Selector 与 Pod 副本集群之间“无缝对接”，定义了一组 Pod 的访问策略，防止 Pod 失联。</p>
+<p>创建 Service 时，K8S会自动为它分配一个全局唯一的虚拟 IP 地址，即 Cluster IP。服务发现就是通过 Service 的 Name 和 Service 的 ClusterIP 地址做一个 DNS 域名映射来解决的。</p>
+<p><strong>7、Namespace</strong></p>
+<p>命名空间，Namespace 多用于实现多租户的资源隔离。Namespace 通过将集群内部的资源对象“分配”到不同的Namespace中，形成逻辑上分组的不同项目、小组或用户组。</p>
+<p>K8S 集群在启动后，会创建一个名为 default 的 Namespace，如果不特别指明 Namespace，创建的 Pod、RC、Service 都将被创建到 default 下。</p>
+<p>当我们给每个租户创建一个 Namespace 来实现多租户的资源隔离时，还可以结合 K8S 的资源配额管理，限定不同租户能占用的资源，例如 CPU 使用量、内存使用量等。</p>
+<h2 id="平台规划">平台规划</h2>
+<p>K8S 环境有两种架构方式，单 Master 集群和多 Master 集群，将先搭建起单 Master 集群，再扩展为多 Master 集群。开发、测试环境可以部署单 Master 集群，生产环境为了保证高可用需部署多 Master 集群。</p>
+<h3 id="单-master-集群架构"><strong>单 Master 集群架构</strong></h3>
+<p>单 Master 集群架构相比于多 Master 集群架构无法保证集群的高可用，因为 master 节点一旦宕机就无法进行集群的管理工作了。单 master 集群主要包含一台 Master 节点，及多个 Node 工作节点、多个 Etcd 数据库节点。</p>
+<p>Etcd 是 K8S 集群的数据库，可以安装在任何地方，也可以与 Master 节点在同一台机器上，只要 K8S 能连通 Etcd。</p>
+<p><p class="md__image">
+  <img src="../k8s%e6%a6%82%e8%bf%b0.assets/856154-20191029230911133-1562198790.png"
+    alt="img"  />
+</p>
+</p>
+<h3 id="多-master-集群架构"><strong>多 Master 集群架构</strong></h3>
+<p>多 Master 集群能保证集群的高可用，相比单 Master 架构，需要一个额外的负载均衡器来负载多个 Master 节点，Node 节点从连接 Master 改成连接 LB 负载均衡器。</p>
+<p><p class="md__image">
+  <img src="../k8s%e6%a6%82%e8%bf%b0.assets/856154-20191029231927413-1474291721.png"
+    alt="img"  />
+</p>
+</p>
+<h2 id="参考">参考</h2>
+<p><a href="https://www.cnblogs.com/chiangchou/p/k8s-1.html" target="_blank" rel="noopener">Kubernetes 深入学习（一） —— 入门和集群安装部署</a>
+</p>
 ]]></content>
 		</item>
 		
@@ -4031,6 +5332,8 @@ scatter-gather: on
 </p>
 </p>
 <p>综上穷举分析了最小集群（3 节点）面临的所有情况，可以看出 Raft 协议都能很好的应对一致性问题，并且很容易理解。</p>
+<p>推荐：<a href="http://thesecretlivesofdata.com/raft/" target="_blank" rel="noopener">Raft算法的动画演示</a>
+</p>
 <h1 id="参考">参考</h1>
 <ul>
 <li><a href="https://www.cnblogs.com/mindwind/p/5231986.html" target="_blank" rel="noopener">Raft 为什么是更易理解的分布式一致性算法</a>
@@ -5444,30 +6747,18 @@ $ sudo apt install netcat       <span class="c1"># ubuntu</span>
 <h2 id="四层负载均衡和七层负载均衡的区别">四层负载均衡和七层负载均衡的区别</h2>
 <h3 id="技术原理">技术原理</h3>
 <p>所谓四层负载均衡，也就是主要通过报文中的目标地址和端口，再加上负载均衡设备设置的服务器选择方式，决定最终选择的内部服务器。</p>
-<p>以常见的TCP为例，负载均衡设备在接收到第一个来自客户端的SYN 请求时，即通过上述方式选择一个最佳的服务器，并对报文中目标IP地址进行修改(改为后端服</p>
-<p>务器IP），直接转发给该服务器。TCP的连接建立，即三次握手是客户端和服务器直接建立的，负载均衡设备只是起到一个类似路由器的转发动作。在某些部署情</p>
-<p>况下，为保证服务器回包可以正确返回给负载均衡设备，在转发报文的同时可能还会对报文原来的源地址进行修改。</p>
+<p>以常见的TCP为例，负载均衡设备在接收到第一个来自客户端的SYN 请求时，即通过上述方式选择一个最佳的服务器，并对报文中目标IP地址进行修改(改为后端服务器IP），直接转发给该服务器。TCP的连接建立，即三次握手是客户端和服务器直接建立的，负载均衡设备只是起到一个类似路由器的转发动作。在某些部署情况下，为保证服务器回包可以正确返回给负载均衡设备，在转发报文的同时可能还会对报文原来的源地址进行修改。</p>
 <p><p class="md__image">
   <img src="../%e8%b4%9f%e8%bd%bd%e5%9d%87%e8%a1%a1.assets/image-20210530202533649.png"
     alt="image-20210530202533649"  />
 </p>
 </p>
 <p>所谓七层负载均衡，也称为“内容交换”，也就是主要通过报文中的真正有意义的应用层内容，再加上负载均衡设备设置的服务器选择方式，决定最终选择的内部服务器。</p>
-<p>以常见的TCP为例，负载均衡设备如果要根据真正的应用层内容再选择服务器，只能先代理最终的服务器和客户端建立连接(三次握手)后，才可能接受到客户端发</p>
-<p>送的真正应用层内容的报文，然后再根据该报文中的特定字段，再加上负载均衡设备设置的服务器选择方式，决定最终选择的内部服务器。负载均衡设备在这种情</p>
-<p>况下，更类似于一个代理服务器。负载均衡和前端的客户端以及后端的服务器会分别建立TCP连接。所以从这个技术原理上来看，七层负载均衡明显的对负载均衡</p>
-<p>设备的要求更高，处理七层的能力也必然会低于四层模式的部署方式。</p>
+<p>以常见的TCP为例，负载均衡设备如果要根据真正的应用层内容再选择服务器，只能先代理最终的服务器和客户端建立连接(三次握手)后，才可能接受到客户端发送的真正应用层内容的报文，然后再根据该报文中的特定字段，再加上负载均衡设备设置的服务器选择方式，决定最终选择的内部服务器。负载均衡设备在这种情况下，更类似于一个代理服务器。负载均衡和前端的客户端以及后端的服务器会分别建立TCP连接。所以从这个技术原理上来看，七层负载均衡明显的对负载均衡设备的要求更高，处理七层的能力也必然会低于四层模式的部署方式。</p>
 <h3 id="应用场景">应用场景</h3>
-<p>**七层应用负载的好处，是使得整个网络更智能化。**例如访问一个网站的用户流量，可以通过七层的方式，将对图片类的请求转发到特定的图片服务器并可以使用缓</p>
-<p>存技术；将对文字类的请求可以转发到特定的文字服务器并可以使用压缩技术。当然这只是七层应用的一个小案例，从技术原理上，这种方式可以对客户端的请求</p>
-<p>和服务器的响应进行任意意义上的修改，极大的提升了应用系统在网络层的灵活性。很多在后台，例如Nginx或者Apache上部署的功能可以前移到负载均衡设备</p>
-<p>上，例如客户请求中的Header重写，服务器响应中的关键字过滤或者内容插入等功能。</p>
-<p>**另外一个常常被提到功能就是安全性。**网络中最常见的SYN Flood攻击，即黑客控制众多源客户端，使用虚假IP地址对同一目标发送SYN攻击，通常这种攻击会大</p>
-<p>量发送SYN报文，耗尽服务器上的相关资源，以达到Denial of Service(<em>DoS</em>)的目的。从技术原理上也可以看出，四层模式下这些SYN攻击都会被转发到后端的服务</p>
-<p>器上；而七层模式下这些SYN攻击自然在负载均衡设备上就截止，不会影响后台服务器的正常运营。另外负载均衡设备可以在七层层面设定多种策略，过滤特定报</p>
-<p>文，例如SQL Injection等应用层面的特定攻击手段，从应用层面进一步提高系统整体安全。</p>
-<p>现在的7层负载均衡，主要还是着重于应用HTTP协议，所以其应用范围主要是众多的网站或者内部信息平台等基于B/S开发的系统。 4层负载均衡则对应其他TCP应</p>
-<p>用，例如基于C/S开发的ERP等系统。</p>
+<p>**七层应用负载的好处，是使得整个网络更智能化。**例如访问一个网站的用户流量，可以通过七层的方式，将对图片类的请求转发到特定的图片服务器并可以使用缓存技术；将对文字类的请求可以转发到特定的文字服务器并可以使用压缩技术。当然这只是七层应用的一个小案例，从技术原理上，这种方式可以对客户端的请求和服务器的响应进行任意意义上的修改，极大的提升了应用系统在网络层的灵活性。很多在后台，例如Nginx或者Apache上部署的功能可以前移到负载均衡设备上，例如客户请求中的Header重写，服务器响应中的关键字过滤或者内容插入等功能。</p>
+<p>**另外一个常常被提到功能就是安全性。**网络中最常见的SYN Flood攻击，即黑客控制众多源客户端，使用虚假IP地址对同一目标发送SYN攻击，通常这种攻击会大量发送SYN报文，耗尽服务器上的相关资源，以达到Denial of Service(<em>DoS</em>)的目的。从技术原理上也可以看出，四层模式下这些SYN攻击都会被转发到后端的服务器上；而七层模式下这些SYN攻击自然在负载均衡设备上就截止，不会影响后台服务器的正常运营。另外负载均衡设备可以在七层层面设定多种策略，过滤特定报文，例如SQL Injection等应用层面的特定攻击手段，从应用层面进一步提高系统整体安全。</p>
+<p>现在的7层负载均衡，主要还是着重于应用HTTP协议，所以其应用范围主要是众多的网站或者内部信息平台等基于B/S开发的系统。 4层负载均衡则对应其他TCP应用，例如基于C/S开发的ERP等系统。</p>
 <h2 id="负载均衡常用算法">负载均衡常用算法</h2>
 <p>常用的负载均衡算法分为两类：</p>
 <p>1）一种是静态负载均衡；</p>
@@ -5761,19 +7052,22 @@ git checkout -f newBranch
 			<pubDate>Tue, 29 Sep 2020 20:55:29 +0800</pubDate>
 			
 			<guid>https://willje.github.io/posts/algorithm/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/</guid>
-			<description>在了解一致性哈希算法之前，最好先了解一下缓存中的一个应用场景，了解了这个应用场景之后，再来理解一致性哈希算法，就容易多了，也更能体现出一致性哈 希算法的优点，那么，我们先来描述一下这个经典的分布式缓存的应用场景。 场景描述 假设，我们有三台缓存服务器，用于缓存图片，我们为这三台缓存服务器编号为0号、1号、2号，现在，有3万张图片需要缓存，我们希望这些图片被均匀的缓</description>
-			<content type="html"><![CDATA[<p>在了解一致性哈希算法之前，最好先了解一下缓存中的一个应用场景，了解了这个应用场景之后，再来理解一致性哈希算法，就容易多了，也更能体现出一致性哈</p>
-<p>希算法的优点，那么，我们先来描述一下这个经典的分布式缓存的应用场景。</p>
+			<description>在了解一致性哈希算法之前，最好先了解一下缓存中的一个应用场景，了解了这个应用场景之后，再来理解一致性哈希算 法，就容易多了，也更能体现出一致性哈希算法的优点，那么，我们先来描述一下这个经典的分布式缓存的应用场景。 场景描述 假设，我们有三台缓存服务器，用于缓存图片，我们为这三台缓存服务器编号为0号、1号、2号，现在，有3万张图片需要 缓存，我们希望这些图片被均匀的缓</description>
+			<content type="html"><![CDATA[<p>在了解一致性哈希算法之前，最好先了解一下缓存中的一个应用场景，了解了这个应用场景之后，再来理解一致性哈希算</p>
+<p>法，就容易多了，也更能体现出一致性哈希算法的优点，那么，我们先来描述一下这个经典的分布式缓存的应用场景。</p>
 <h2 id="场景描述">场景描述</h2>
-<p>假设，我们有三台缓存服务器，用于缓存图片，我们为这三台缓存服务器编号为0号、1号、2号，现在，有3万张图片需要缓存，我们希望这些图片被均匀的缓存</p>
-<p>到这3台服务器上，以便它们能够分摊缓存的压力。也就是说，我们希望每台服务器能够缓存1万张左右的图片，那么，我们应该怎样做呢？</p>
-<p>如果我们没有任何规律的将3万张图片平均的缓存在3台服务器上，可以满足我们的要求吗？可以！但是如果这样做，当我们需要访问某个缓存项时，则需要遍历3</p>
-<p>台缓存服务器，从3万个缓存项中找到我们需要访问的缓存，遍历的过程效率太低，时间太长，当我们找到需要访问的缓存项时，时长可能是不能被接受的，也就</p>
-<p>失去了缓存的意义，缓存的目的就是提高速度，改善用户体验，减轻后端服务器压力，如果每次访问一个缓存项都需要遍历所有缓存服务器的所有缓存项，想想就</p>
-<p>觉得很累，那么，我们该怎么办呢？</p>
-<p>原始的做法是对缓存项的键进行哈希，将hash后的结果对缓存服务器的数量进行取模操作，通过取模后的结果，决定缓存项将会缓存在哪一台服务器上，这样说</p>
-<p>可能不太容易理解，我们举例说明，仍然以刚才描述的场景为例，假设我们使用图片名称作为访问图片的key，假设图片名称是不重复的，那么，我们可以使用如</p>
-<p>下公式，计算出图片应该存放在哪台服务器上。</p>
+<p>假设，我们有三台缓存服务器，用于缓存图片，我们为这三台缓存服务器编号为0号、1号、2号，现在，有3万张图片需要</p>
+<p>缓存，我们希望这些图片被均匀的缓存到这3台服务器上，以便它们能够分摊缓存的压力。也就是说，我们希望每台服务</p>
+<p>器能够缓存1万张左右的图片，那么，我们应该怎样做呢？</p>
+<p>如果我们没有任何规律的将3万张图片平均的缓存在3台服务器上，可以满足我们的要求吗？可以！但是如果这样做，当我</p>
+<p>们需要访问某个缓存项时，则需要遍历3台缓存服务器，从3万个缓存项中找到我们需要访问的缓存，遍历的过程效率太</p>
+<p>低，时间太长，当我们找到需要访问的缓存项时，时长可能是不能被接受的，也就失去了缓存的意义，缓存的目的就是提</p>
+<p>高速度，改善用户体验，减轻后端服务器压力，如果每次访问一个缓存项都需要遍历所有缓存服务器的所有缓存项，想想</p>
+<p>就觉得很累，那么，我们该怎么办呢？</p>
+<p>原始的做法是对缓存项的键进行哈希，将hash后的结果对缓存服务器的数量进行取模操作，通过取模后的结果，决定缓存</p>
+<p>项将会缓存在哪一台服务器上，这样说可能不太容易理解，我们举例说明，仍然以刚才描述的场景为例，假设我们使用图</p>
+<p>片名称作为访问图片的key，假设图片名称是不重复的，那么，我们可以使用如下公式，计算出图片应该存放在哪台服务</p>
+<p>器上。</p>
 <div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">hash（图片名称）% N
 </code></pre></div><p><p class="md__image">
   <img src="../%e4%b8%80%e8%87%b4%e6%80%a7%e5%93%88%e5%b8%8c%e7%ae%97%e6%b3%95.assets/image-20210530214821507.png"
@@ -5781,23 +7075,27 @@ git checkout -f newBranch
 </p>
 </p>
 <h2 id="问题描述">问题描述</h2>
-<p>但是，使用上述HASH算法进行缓存时，会出现一些缺陷，试想一下，如果3台缓存服务器已经不能满足我们的缓存需求，那么我们应该怎么做呢？</p>
-<p>没错，很简单，多增加两台缓存服务器不就行了，假设，我们增加了一台缓存服务器，那么缓存服务器的数量就由3台变成了4台，此时，如果仍然使用上述方法对</p>
-<p>同一张图片进行缓存，那么这张图片所在的服务器编号必定与原来3台服务器时所在的服务器编号不同，因为除数由3变为了4，被除数不变的情况下，余数肯定不</p>
-<p>同，这种情况带来的结果就是当服务器数量变动时，所有缓存的位置都要发生改变，换句话说，当服务器数量发生改变时，所有缓存在一定时间内是失效的，当应</p>
-<p>用无法从缓存中获取数据时，则会向后端服务器请求数据。</p>
-<p>同理，假设3台缓存中突然有一台缓存服务器出现了故障，无法进行缓存，那么我们则需要将故障机器移除，但是如果移除了一台缓存服务器，那么缓存服务器数</p>
-<p>量从3台变为2台，如果想要访问一张图片，这张图片的缓存位置必定会发生改变，以前缓存的图片也会失去缓存的作用与意义，由于大量缓存在同一时间失效，造</p>
-<p>成了缓存的雪崩，此时前端缓存已经无法起到承担部分压力的作用，后端服务器将会承受巨大的压力，整个系统很有可能被压垮，所以，我们应该想办法不让这种</p>
-<p>情况发生，但是由于上述HASH算法本身的缘故，使用取模法进行缓存时，这种情况是无法避免的，为了解决这些问题，一致性哈希算法诞生了。</p>
+<p>但是，使用上述HASH算法进行缓存时，会出现一些缺陷，试想一下，如果3台缓存服务器已经不能满足我们的缓存需求，</p>
+<p>那么我们应该怎么做呢？</p>
+<p>没错，很简单，多增加两台缓存服务器不就行了，假设，我们增加了一台缓存服务器，那么缓存服务器的数量就由3台变</p>
+<p>成了4台，此时，如果仍然使用上述方法对同一张图片进行缓存，那么这张图片所在的服务器编号必定与原来3台服务器时</p>
+<p>所在的服务器编号不同，因为除数由3变为了4，被除数不变的情况下，余数肯定不同，这种情况带来的结果就是当服务器</p>
+<p>数量变动时，所有缓存的位置都要发生改变，换句话说，当服务器数量发生改变时，所有缓存在一定时间内是失效的，当</p>
+<p>应用无法从缓存中获取数据时，则会向后端服务器请求数据。</p>
+<p>同理，假设3台缓存中突然有一台缓存服务器出现了故障，无法进行缓存，那么我们则需要将故障机器移除，但是如果移</p>
+<p>除了一台缓存服务器，那么缓存服务器数量从3台变为2台，如果想要访问一张图片，这张图片的缓存位置必定会发生改</p>
+<p>变，以前缓存的图片也会失去缓存的作用与意义，由于大量缓存在同一时间失效，造成了缓存的雪崩，此时前端缓存已经</p>
+<p>无法起到承担部分压力的作用，后端服务器将会承受巨大的压力，整个系统很有可能被压垮，所以，我们应该想办法不让</p>
+<p>这种情况发生，但是由于上述HASH算法本身的缘故，使用取模法进行缓存时，这种情况是无法避免的，为了解决这些问</p>
+<p>题，一致性哈希算法诞生了。</p>
 <p>我们来回顾一下使用上述算法会出现的问题。</p>
 <p>问题1：当缓存服务器数量发生变化时，会引起缓存的雪崩，可能会引起整体系统压力过大而崩溃（大量缓存同一时间失效）。</p>
 <p>问题2：当缓存服务器数量发生变化时，几乎所有缓存的位置都会发生改变，怎样才能尽量减少受影响的缓存呢？</p>
 <p>其实，上面两个问题是一个问题，那么，一致性哈希算法能够解决上述问题吗？</p>
 <p>我们现在就来了解一下一致性哈希算法。</p>
 <h2 id="一致性哈希算法的基本概念">一致性哈希算法的基本概念</h2>
-<p>一致性hash算法通过一个叫作<strong>一致性hash环</strong>的数据结构实现。这个环的起点是0，终点是2^32 - 1，并且起点与终点连接，环的中间的整数按逆时针分布，故这个</p>
-<p>环的整数分布范围是[0, 2^32-1]，如下图3所示：</p>
+<p>一致性hash算法通过一个叫作<strong>一致性hash环</strong>的数据结构实现。这个环的起点是0，终点是2^32 - 1，并且起点与终点连</p>
+<p>接，环的中间的整数按逆时针分布，故这个环的整数分布范围是[0, 2^32-1]，如下图3所示：</p>
 <p><a href="https://leehao.oss-cn-shenzhen.aliyuncs.com/2019-06-03-141908.jpg" target="_blank" rel="noopener"><p class="md__image">
   <img src="../%e4%b8%80%e8%87%b4%e6%80%a7%e5%93%88%e5%b8%8c%e7%ae%97%e6%b3%95.assets/2019-06-03-141908.jpg"
     alt="img"  />
@@ -5805,11 +7103,13 @@ git checkout -f newBranch
 </a>
 </p>
 <p>图3：一致性Hash环</p>
-<p>那么，一致性哈希算法与上图中的圆环有什么关系呢？我们继续聊，仍然以之前描述的场景为例，假设我们有3台缓存服务器，服务器A、服务器B、服务器C，那</p>
-<p>么，在生产环境中，这三台服务器肯定有自己的IP地址，我们使用它们各自的IP地址进行哈希计算，使用哈希后的结果对2^32取模，可以使用如下公式示意。</p>
+<p>那么，一致性哈希算法与上图中的圆环有什么关系呢？我们继续聊，仍然以之前描述的场景为例，假设我们有3台缓存服</p>
+<p>务器，服务器A、服务器B、服务器C，那么，在生产环境中，这三台服务器肯定有自己的IP地址，我们使用它们各自的IP</p>
+<p>地址进行哈希计算，使用哈希后的结果对2^32取模，可以使用如下公式示意。</p>
 <pre><code>hash（服务器A的IP地址） %  2^32
-</code></pre><p>通过上述公式算出的结果一定是一个0到2^32-1之间的一个整数，我们就用算出的这个整数，代表服务器A，既然这个整数肯定处于0到2^32-1之间，那么，上图中</p>
-<p>的hash环上必定有一个点与这个整数对应，而我们刚才已经说明，使用这个整数代表服务器A，那么，服务器A就可以映射到这个环上，用下图示意</p>
+</code></pre><p>通过上述公式算出的结果一定是一个0到2^32-1之间的一个整数，我们就用算出的这个整数，代表服务器A，既然这个整数</p>
+<p>肯定处于0到2^32-1之间，那么，上图中的hash环上必定有一个点与这个整数对应，而我们刚才已经说明，使用这个整数</p>
+<p>代表服务器A，那么，服务器A就可以映射到这个环上，用下图示意</p>
 <p><p class="md__image">
   <img src="../%e4%b8%80%e8%87%b4%e6%80%a7%e5%93%88%e5%b8%8c%e7%ae%97%e6%b3%95.assets/020717_1707_3.png"
     alt="img"  />
@@ -5826,9 +7126,10 @@ hash（服务器C的IP地址） %  2^32
 </p>
 </p>
 <p>假设3台服务器映射到hash环上以后如上图所示（当然，这是理想的情况，我们慢慢聊）。</p>
-<p>好了，到目前为止，我们已经把缓存服务器与hash环联系在了一起，我们通过上述方法，把缓存服务器映射到了hash环上，那么使用同样的方法，我们也可以需</p>
-<p>要缓存的对象映射到hash环上。</p>
-<p>假设，我们需要使用缓存服务器缓存图片，而且我们仍然使用图片的名称作为找到图片的key，那么我们使用如下公式可以将图片映射到上图中的hash环上。</p>
+<p>好了，到目前为止，我们已经把缓存服务器与hash环联系在了一起，我们通过上述方法，把缓存服务器映射到了hash环</p>
+<p>上，那么使用同样的方法，我们也可以需要缓存的对象映射到hash环上。</p>
+<p>假设，我们需要使用缓存服务器缓存图片，而且我们仍然使用图片的名称作为找到图片的key，那么我们使用如下公式可</p>
+<p>以将图片映射到上图中的hash环上。</p>
 <pre><code>hash（图片名称） %  2^32
 </code></pre><p>映射后的示意图如下，下图中的橘黄色圆形表示图片</p>
 <p><p class="md__image">
@@ -5836,17 +7137,19 @@ hash（服务器C的IP地址） %  2^32
     alt="image-20210530215236211"  />
 </p>
 </p>
-<p>好了，现在服务器与图片都被映射到了hash环上，那么上图中的这个图片到底应该被缓存到哪一台服务器上呢？上图中的图片将会被缓存到服务器A上，为什么</p>
-<p>呢？因为从图片的位置开始，沿顺时针方向遇到的第一个服务器就是A服务器，所以，上图中的图片将会被缓存到服务器A上，如下图所示。</p>
+<p>好了，现在服务器与图片都被映射到了hash环上，那么上图中的这个图片到底应该被缓存到哪一台服务器上呢？上图中的</p>
+<p>图片将会被缓存到服务器A上，为什么呢？因为从图片的位置开始，沿顺时针方向遇到的第一个服务器就是A服务器，所</p>
+<p>以，上图中的图片将会被缓存到服务器A上，如下图所示。</p>
 <p><p class="md__image">
   <img src="../%e4%b8%80%e8%87%b4%e6%80%a7%e5%93%88%e5%b8%8c%e7%ae%97%e6%b3%95.assets/image-20210530215251837.png"
     alt="image-20210530215251837"  />
 </p>
 </p>
-<p>没错，一致性哈希算法就是通过这种方法，判断一个对象应该被缓存到哪台服务器上的，将缓存服务器与被缓存对象都映射到hash环上以后，从被缓存对象的位</p>
-<p>置出发，沿顺时针方向遇到的第一个服务器，就是当前对象将要缓存于的服务器，由于被缓存对象与服务器hash后的值是固定的，所以，在服务器不变的情况</p>
-<p>下，一张图片必定会被缓存到固定的服务器上，那么，当下次想要访问这张图片时，只要再次使用相同的算法进行计算，即可算出这个图片被缓存在哪个服务器</p>
-<p>上，直接去对应的服务器查找对应的图片即可。</p>
+<p>没错，一致性哈希算法就是通过这种方法，判断一个对象应该被缓存到哪台服务器上的，将缓存服务器与被缓存对象都映</p>
+<p>射到hash环上以后，从被缓存对象的位置出发，沿顺时针方向遇到的第一个服务器，就是当前对象将要缓存于的服务器，</p>
+<p>由于被缓存对象与服务器hash后的值是固定的，所以，在服务器不变的情况下，一张图片必定会被缓存到固定的服务器</p>
+<p>上，那么，当下次想要访问这张图片时，只要再次使用相同的算法进行计算，即可算出这个图片被缓存在哪个服务器上，</p>
+<p>直接去对应的服务器查找对应的图片即可。</p>
 <p>刚才的示例只使用了一张图片进行演示，假设有四张图片需要缓存，示意图如下</p>
 <p><p class="md__image">
   <img src="../%e4%b8%80%e8%87%b4%e6%80%a7%e5%93%88%e5%b8%8c%e7%ae%97%e6%b3%95.assets/image-20210530215306156.png"
@@ -5855,25 +7158,28 @@ hash（服务器C的IP地址） %  2^32
 </p>
 <p>1号、2号图片将会被缓存到服务器A上，3号图片将会被缓存到服务器B上，4号图片将会被缓存到服务器C上。</p>
 <h2 id="一致性哈希算法的优点">一致性哈希算法的优点</h2>
-<p>经过上述描述，我想兄弟你应该已经明白了一致性哈希算法的原理了，但是话说回来，一致性哈希算法能够解决之前出现的问题吗，我们说过，如果简单的对服务</p>
-<p>器数量进行取模，那么当服务器数量发生变化时，会产生缓存的雪崩，从而很有可能导致系统崩溃，那么使用一致性哈希算法，能够避免这个问题吗？我们来模拟</p>
-<p>一遍，即可得到答案。</p>
-<p>假设，服务器B出现了故障，我们现在需要将服务器B移除，那么，我们将上图中的服务器B从hash环上移除即可，移除服务器B以后示意图如下。</p>
+<p>经过上述描述，我想兄弟你应该已经明白了一致性哈希算法的原理了，但是话说回来，一致性哈希算法能够解决之前出现</p>
+<p>的问题吗，我们说过，如果简单的对服务器数量进行取模，那么当服务器数量发生变化时，会产生缓存的雪崩，从而很有</p>
+<p>可能导致系统崩溃，那么使用一致性哈希算法，能够避免这个问题吗？我们来模拟一遍，即可得到答案。假设，服务器B</p>
+<p>出现了故障，我们现在需要将服务器B移除，那么，我们将上图中的服务器B从hash环上移除即可，移除服务器B以后示意</p>
+<p>图如下。</p>
 <p><p class="md__image">
   <img src="../%e4%b8%80%e8%87%b4%e6%80%a7%e5%93%88%e5%b8%8c%e7%ae%97%e6%b3%95.assets/image-20210530215518047.png"
     alt="image-20210530215518047"  />
 </p>
 </p>
-<p>在服务器B未移除时，图片3应该被缓存到服务器B中，可是当服务器B移除以后，按照之前描述的一致性哈希算法的规则，图片3应该被缓存到服务器C中，因为从</p>
-<p>图片3的位置出发，沿顺时针方向遇到的第一个缓存服务器节点就是服务器C，也就是说，如果服务器B出现故障被移除时，图片3的缓存位置会发生改变</p>
+<p>在服务器B未移除时，图片3应该被缓存到服务器B中，可是当服务器B移除以后，按照之前描述的一致性哈希算法的规</p>
+<p>则，图片3应该被缓存到服务器C中，因为从图片3的位置出发，沿顺时针方向遇到的第一个缓存服务器节点就是服务器C，</p>
+<p>也就是说，如果服务器B出现故障被移除时，图片3的缓存位置会发生改变</p>
 <p><p class="md__image">
   <img src="../%e4%b8%80%e8%87%b4%e6%80%a7%e5%93%88%e5%b8%8c%e7%ae%97%e6%b3%95.assets/image-20210530215533831.png"
     alt="image-20210530215533831"  />
 </p>
 </p>
-<p>但是，图片4仍然会被缓存到服务器C中，图片1与图片2仍然会被缓存到服务器A中，这与服务器B移除之前并没有任何区别，这就是一致性哈希算法的优点，如果</p>
-<p>使用之前的hash算法，服务器数量发生改变时，所有服务器的所有缓存在同一时间失效了，而使用一致性哈希算法时，服务器的数量如果发生改变，并不是所有</p>
-<p>缓存都会失效，而是只有部分缓存会失效，前端的缓存仍然能分担整个系统的压力，而不至于所有压力都在同一时间集中到后端服务器上。</p>
+<p>但是，图片4仍然会被缓存到服务器C中，图片1与图片2仍然会被缓存到服务器A中，这与服务器B移除之前并没有任何区</p>
+<p>别，这就是一致性哈希算法的优点，如果使用之前的hash算法，服务器数量发生改变时，所有服务器的所有缓存在同一时</p>
+<p>间失效了，而使用一致性哈希算法时，服务器的数量如果发生改变，并不是所有缓存都会失效，而是只有部分缓存会失</p>
+<p>效，前端的缓存仍然能分担整个系统的压力，而不至于所有压力都在同一时间集中到后端服务器上。</p>
 <p>这就是一致性哈希算法所体现出的优点。</p>
 <h2 id="hash环的倾斜">hash环的倾斜</h2>
 <p>在介绍一致性哈希的概念时，我们理想化的将3台服务器均匀的映射到了hash环上，如下图所示</p>
@@ -5889,25 +7195,29 @@ hash（服务器C的IP地址） %  2^32
     alt="image-20210530215627245"  />
 </p>
 </p>
-<p>聪明如你一定想到了，如果服务器被映射成上图中的模样，那么被缓存的对象很有可能大部分集中缓存在某一台服务器上，如下图所示。</p>
+<p>聪明如你一定想到了，如果服务器被映射成上图中的模样，那么被缓存的对象很有可能大部分集中缓存在某一台服务器</p>
+<p>上，如下图所示。</p>
 <p><p class="md__image">
   <img src="../%e4%b8%80%e8%87%b4%e6%80%a7%e5%93%88%e5%b8%8c%e7%ae%97%e6%b3%95.assets/image-20210530215657940.png"
     alt="image-20210530215657940"  />
 </p>
 </p>
-<p>上图中，1号、2号、3号、4号、6号图片均被缓存在了服务器A上，只有5号图片被缓存在了服务器B上，服务器C上甚至没有缓存任何图片，如果出现上图中的情</p>
-<p>况，A、B、C三台服务器并没有被合理的平均的充分利用，缓存分布的极度不均匀，而且，如果此时服务器A出现故障，那么失效缓存的数量也将达到最大值，在</p>
-<p>极端情况下，仍然有可能引起系统的崩溃，上图中的情况则被称之为hash环的偏斜，那么，我们应该怎样防止hash环的偏斜呢？一致性hash算法中使用”虚拟节</p>
+<p>上图中，1号、2号、3号、4号、6号图片均被缓存在了服务器A上，只有5号图片被缓存在了服务器B上，服务器C上甚至没</p>
+<p>有缓存任何图片，如果出现上图中的情况，A、B、C三台服务器并没有被合理的平均的充分利用，缓存分布的极度不均</p>
+<p>匀，而且，如果此时服务器A出现故障，那么失效缓存的数量也将达到最大值，在极端情况下，仍然有可能引起系统的崩</p>
+<p>溃，上图中的情况则被称之为hash环的偏斜，那么，我们应该怎样防止hash环的偏斜呢？一致性hash算法中使用”虚拟节</p>
 <p>点”解决了这个问题，我们继续聊。</p>
 <h2 id="虚拟节点">虚拟节点</h2>
-<p>话接上文，由于我们只有3台服务器，当我们把服务器映射到hash环上的时候，很有可能出现hash环偏斜的情况，当hash环偏斜以后，缓存往往会极度不均衡的</p>
-<p>分布在各服务器上，聪明如你一定已经想到了，如果想要均衡的将缓存分布到3台服务器上，最好能让这3台服务器尽量多的、均匀的出现在hash环上，但是，真</p>
-<p>实的服务器资源只有3台，我们怎样凭空的让它们多起来呢，没错，就是凭空的让服务器节点多起来，既然没有多余的真正的物理服务器节点，我们就只能将现有</p>
-<p>的物理节点通过虚拟的方法复制出来，这些由实际节点虚拟复制而来的节点被称为”虚拟节点”。加入虚拟节点以后的hash环如下。</p>
-<p>“虚拟节点”是”实际节点”（实际的物理服务器）在hash环上的复制品,一个实际节点可以对应多个虚拟节点。</p>
-<p>从上图可以看出，A、B、C三台服务器分别虚拟出了一个虚拟节点，当然，如果你需要，也可以虚拟出更多的虚拟节点。引入虚拟节点的概念后，缓存的分布就均</p>
-<p>衡多了，上图中，1号、3号图片被缓存在服务器A中，5号、4号图片被缓存在服务器B中，6号、2号图片被缓存在服务器C中，如果你还不放心，可以虚拟出更多</p>
-<p>的虚拟节点，以便减小hash环偏斜所带来的影响，虚拟节点越多，hash环上的节点就越多，缓存被均匀分布的概率就越大。</p>
+<p>话接上文，由于我们只有3台服务器，当我们把服务器映射到hash环上的时候，很有可能出现hash环偏斜的情况，当hash</p>
+<p>环偏斜以后，缓存往往会极度不均衡的分布在各服务器上，聪明如你一定已经想到了，如果想要均衡的将缓存分布到3台</p>
+<p>服务器上，最好能让这3台服务器尽量多的、均匀的出现在hash环上，但是，真实的服务器资源只有3台，我们怎样凭空的</p>
+<p>让它们多起来呢，没错，就是凭空的让服务器节点多起来，既然没有多余的真正的物理服务器节点，我们就只能将现有</p>
+<p>的物理节点通过虚拟的方法复制出来，这些由实际节点虚拟复制而来的节点被称为”虚拟节点”。加入虚拟节点以后的hash</p>
+<p>环如下。“虚拟节点”是”实际节点”（实际的物理服务器）在hash环上的复制品,一个实际节点可以对应多个虚拟节点。</p>
+<p>从上图可以看出，A、B、C三台服务器分别虚拟出了一个虚拟节点，当然，如果你需要，也可以虚拟出更多的虚拟节点。</p>
+<p>引入虚拟节点的概念后，缓存的分布就均衡多了，上图中，1号、3号图片被缓存在服务器A中，5号、4号图片被缓存在服</p>
+<p>务器B中，6号、2号图片被缓存在服务器C中，如果你还不放心，可以虚拟出更多的虚拟节点，以便减小hash环偏斜所带</p>
+<p>来的影响，虚拟节点越多，hash环上的节点就越多，缓存被均匀分布的概率就越大。</p>
 <p><p class="md__image">
   <img src="../%e4%b8%80%e8%87%b4%e6%80%a7%e5%93%88%e5%b8%8c%e7%ae%97%e6%b3%95.assets/image-20210530215739628.png"
     alt="image-20210530215739628"  />
@@ -5915,6 +7225,661 @@ hash（服务器C的IP地址） %  2^32
 </p>
 <p>原文链接：<a href="https://www.zsythink.net/archives/1182" target="_blank" rel="noopener">白话解析：一致性哈希算法 consistent hashing</a>
 </p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>kafka入门</title>
+			<link>https://willje.github.io/posts/distributed/kafka%E5%85%A5%E9%97%A8/</link>
+			<pubDate>Wed, 29 Jul 2020 21:23:18 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/distributed/kafka%E5%85%A5%E9%97%A8/</guid>
+			<description>Kafka是最初由Linkedin公司开发，是一个分布式、支持分区的（partition）、多副本的（replica），基于zookeeper协调的分布式消息系统，它的最大的特性就是可以实时的处理大量数据以满足各种需求场景：比如基于hadoop的批处理系统、低延迟的实时系统、Storm/Spark流式处理引擎，web/nginx日志、访问日志，消息服务等等，</description>
+			<content type="html"><![CDATA[<p>Kafka是最初由Linkedin公司开发，是一个分布式、支持分区的（partition）、多副本的（replica），基于zookeeper协调的分布式消息系统，它的最大的特性就是可以实时的处理大量数据以满足各种需求场景：比如基于hadoop的批处理系统、低延迟的实时系统、Storm/Spark流式处理引擎，web/nginx日志、访问日志，消息服务等等，用scala语言编写，Linkedin于2010年贡献给了Apache基金会并成为顶级开源 项目。</p>
+<h1 id="快速入门">快速入门</h1>
+<p>Kafka 官网的下载地址是 <a href="https://link.juejin.cn/?target=https%3A%2F%2Fkafka.apache.org%2Fdownloads" target="_blank" rel="noopener">kafka.apache.org/downloads</a>
+ ；</p>
+<h2 id="安装">安装</h2>
+<p>我们使用docker-compose安装，由于Kafka是用Scala语言开发的，运行在JVM上，因此在安装Kafka之前需要先安装JDK。</p>
+<p>还有kafka也依赖zookeeper，所以需要先安装zookeeper。环境准备，</p>
+<p>step1:<a href="https://yeasy.gitbook.io/docker_practice/compose/usage" target="_blank" rel="noopener">安装docker compose</a>
+</p>
+<p>step2:准备一个<code>docker-compose.yml</code>文件</p>
+<p>使用Kafka官方镜像，</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">docker pull wurstmeister/kafka
+</code></pre></div><p>默认情况下，会拉取kafka的latest版本。</p>
+<p>此外，对于搭建一个Kafka集群外，除了kafka镜像外，还需要额外拉取两个镜像：</p>
+<ol>
+<li>zookeeper(wurstmeister/zookeeper:latest)</li>
+<li>kafka-manager(sheepkiller/kafka-manager:latest)</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">version</span><span class="p">:</span><span class="w"> </span><span class="s1">&#39;2&#39;</span><span class="w">
+</span><span class="w"></span><span class="nt">services</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">zookeeper</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">wurstmeister/zookeeper</span><span class="w">
+</span><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="s2">&#34;2181:2181&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">kafka</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">wurstmeister/kafka</span><span class="w">
+</span><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="s2">&#34;9092&#34;</span><span class="w">
+</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">KAFKA_ADVERTISED_HOST_NAME</span><span class="p">:</span><span class="w"> </span><span class="m">192.168.99.100</span><span class="w">  </span><span class="c"># 修改为本机地址</span><span class="w">
+</span><span class="w">      </span><span class="nt">KAFKA_ZOOKEEPER_CONNECT</span><span class="p">:</span><span class="w"> </span><span class="l">zookeeper:2181</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="l">/var/run/docker.sock:/var/run/docker.sock</span><span class="w">
+</span><span class="w">      </span>- <span class="l">/etc/localtime:/etc/localtime</span><span class="w">
+</span><span class="w">  </span><span class="nt">kafka-manager</span><span class="p">:</span><span class="w">  
+</span><span class="w">    </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">sheepkiller/kafka-manager</span><span class="w"> </span><span class="c"># 镜像：开源的web管理kafka集群的界面</span><span class="w">
+</span><span class="w">    </span><span class="nt">environment</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">ZK_HOSTS</span><span class="p">:</span><span class="w"> </span><span class="m">192.168.99.100</span><span class="w"> </span><span class="c"># 修改为本机地址</span><span class="w">
+</span><span class="w">    </span><span class="nt">ports</span><span class="p">:</span><span class="w">  
+</span><span class="w">      </span>- <span class="s2">&#34;9000:9000&#34;</span><span class="w">
+</span></code></pre></div><p>Step3：启动服务</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">docker-compose up -d
+</code></pre></div><p>Step4：对Kafka进行扩、缩容</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">docker-compose scale <span class="nv">kafka</span><span class="o">=</span><span class="m">3</span>
+</code></pre></div><h2 id="消息引擎模型">消息引擎模型</h2>
+<p><strong>我们用一句话概括Kafka就是它是一款开源的消息引擎系统。</strong></p>
+<p>其中最常见的两种消息引擎模型是点对点模型和发布／订阅模型</p>
+<h3 id="点对点模型">点对点模型</h3>
+<p>点对点模型是基于队列提供消息传输服务的，该模型定义了消息队列、发送者和接收者 , 提供了一种点对点的消息传递方式，即发送者发送每条消息到队列的指定位置，接收者从指定位置获取消息，一旦消息被消费， 就会从队列中移除该消息 。 每条消息由一个发送者生产出来， 且只被一个消费者处理一一发送者和消费者之间是一对一的关系。</p>
+<p><p class="md__image">
+  <img src="../Kafka%e5%85%a5%e9%97%a8.assets/722d93b9f9f947ea8794de02daf99128~tplv-k3u1fbpfcp-watermark.image"
+    alt="img"  />
+</p>
+</p>
+<h3 id="发布订阅模型">发布订阅模型</h3>
+<p>发布／订阅模型与前一种模型不同， 它有主题(topic)的概念。 这种模型也定义了类似于生产者／消费者这样的角色，即发布者和订阅者，发布者将消息生产出来发送到指定的topic中， 所有订阅了该 topic的订阅者都可以接收到该topic下的所有消息，通常具有相同订阅 topic 的所有订阅者将接收到 同样的消息。</p>
+<p><p class="md__image">
+  <img src="../Kafka%e5%85%a5%e9%97%a8.assets/e2c96246cc1d4b0ea272e74e8d2b3b63~tplv-k3u1fbpfcp-watermark.image"
+    alt="img"  />
+</p>
+</p>
+<h2 id="基本概念">基本概念</h2>
+<h3 id="message">Message</h3>
+<p>既然Kafka是消息引擎，这里的消息就是指 Kafka 处理的主要对象</p>
+<h3 id="broker">Broker</h3>
+<p>broker 指一个 kafka 服务器。如果多个 broker 形成集群会依靠 Zookeeper 集群进行服务的协调管理。</p>
+<p>生产者发送消息给 Kafka 服务器。消费者从 Kafka 服务器读取消息。</p>
+<h3 id="topic和partition">Topic和Partition</h3>
+<p>topic代表了一类消息， 也可以认为是消息被发送到的地方。 通常我们可以使用 topic 来区分实际业务， 比如业务 A 使用 一个 topic ， 业务 B 使用另外一个 topic。</p>
+<p>Kafka 中的 topic 通常都会被多个消费者订阅， 因此出于性能的考量 ， Kafka 并不是 topic-message 的两级结构， 而是采用了 topic-partition-message 的三级结构来分散负 载。 从本质上说， 每个 Kafka topic 都由若干个 partition 组成。</p>
+<p><p class="md__image">
+  <img src="../Kafka%e5%85%a5%e9%97%a8.assets/52dc6359f785472a9086bb8708d869c9~tplv-k3u1fbpfcp-watermark.image"
+    alt="img"  />
+</p>
+</p>
+<p>如图： topic 是由多个 partition 组成的， 而 Kafka 的 partition 是不可修改的有序消息序列， 也可以说是有序的消息日志。 每个 partition 有自己专属的 partition 号， 通常是从 0 开始的。 用户对 partition 唯一能做的操作就是在消息序列的尾部追 加写入消息。 partition 上的每条消息都会被分配一个唯一 的序列号。</p>
+<p>该序列号被称为位移（ offset ） 是从 0 开始顺序递增 的整数。 位移信息可以唯一定位到某 partition 下的一条消息 。</p>
+<p><strong>kafka为什么要设计分区？</strong></p>
+<p>解决伸缩性的问题。假如一个broker积累了太 多的数据以至于单台 Broker 机器都无法容纳了，此时应该怎么办呢？一个很自然的想法就 是，能否把数据分割成多份保存在不同的 Broker 上？所以kafka设计了分区</p>
+<h3 id="producerconsumer">Producer&amp;Consumer</h3>
+<p>向主题发布消息的客户端应用程序称为生产者（Producer），生产者程序通常持续不断地 向一个或多个主题发送消息，而订阅这些主题消息的客户端应用程序就被称为消费者 （Consumer）。和生产者类似，消费者也能够同时订阅多个主题的消息。</p>
+<h3 id="consumer-group">Consumer Group</h3>
+<p>Consumer Group 是指组里面有多个消费者或消费者实例，它 们共享一个公共的 ID，这个 ID 被称为 Group ID。组内的 所有消费者协调在一起来消费订阅主题的所有分区（Partition）。当然，每个分区只能由同一个消费者组内的一个 Consumer 实例来消费。</p>
+<p><strong>Consumer Group 三个特性。</strong></p>
+<ol>
+<li>Consumer Group 下可以有一个或多个 Consumer 实 例。</li>
+<li>Group ID 是一个字符串，在一个 Kafka 集群中，它标识 唯一的一个 Consumer Group。</li>
+<li>Consumer Group 下所有实例订阅的主题的单个分区， 只能分配给组内的某个 Consumer 实例消费。这个分区 当然也可以被其他的 Group 消费。</li>
+</ol>
+<p><strong>还记得上面提到的两种消息引擎模型</strong></p>
+<p>Kafka 仅仅使用 Consumer Group 这一种机制，却同时实现了传统消息引 擎系统的两大模型：如果所有实例都属于同一个 Group， 那么它实现的就是点对点模型；如果所有实例分别属于不同的 Group，那么它实现的就是发布 / 订阅模型。</p>
+<p><strong>在实际使用场景中，一个 Group 下该有多少个 Consumer 实例呢？</strong></p>
+<p>理想情况下， Consumer 实例的数量应该等于该 Group 订阅主题的分区 总数。</p>
+<p>举个简单的例子，假设一个 Consumer Group 订阅了 3 个 主题，分别是 A、B、C，它们的分区数依次是 1、2、3， 那么通常情况下，为该 Group 设置 6 个 Consumer 实例是 比较理想的情形，因为它能最大限度地实现高伸缩性。</p>
+<h4 id="消费顺序问题">消费顺序问题</h4>
+<p>按照上面的设计，可能会导致消费顺序问题，下面一一介绍</p>
+<p><strong>乱序场景一</strong></p>
+<p>因为一个topic可以有多个partition，kafka只能保证partition内部有序</p>
+<p>当partition数量=同一个消费者组中消费者数量时，可能需要顺序的数据分布到了不同的partition，导致处理时乱序</p>
+<p><strong>解决方案</strong></p>
+<p>1、可以设置topic 有且只有一个partition</p>
+<p>2、根据业务需要，需要顺序的指定为同一个partition</p>
+<p><strong>乱序场景二</strong></p>
+<p>对于同一业务进入了同一个消费者组之后，用了多线程来处理消息，会导致消息的乱序</p>
+<p><strong>解决方案</strong></p>
+<p>消费者内部根据线程数量创建等量的内存队列，对于需要顺序的一系列业务数据，根据key或者业务数据，放到同一个内存队列中，然后线程从对应的内存队列中取出并操作。</p>
+<h3 id="rebalance">Rebalance</h3>
+<p>Rebalance 本质上是一种协议，规定了一个 Consumer Group 下的所有 Consumer 如何达成一致，来分配订阅 Topic 的每个分区。比如某个 Group 下有 20 个 Consumer 实例，它订阅了一个具有 100 个分区的 Topic。正常情况下，Kafka 平均会为每个 Consumer 分配 5 个分区。这个分配的过程就叫 Rebalance。</p>
+<p><strong>Consumer Group 何时进行 Rebalance 呢？ Rebalance 的触发条件有 3 个。</strong></p>
+<ol>
+<li>组成员数发生变更。比如有新的 Consumer 实例加入组 或者离开组，或是有 Consumer 实例崩溃被“踢 出”组。
+<ol>
+<li>订阅主题数发生变更。Consumer Group 可以使用正则 表达式的方式订阅主题，比如<code>consumer.subscribe(Pattern.compile(“t.*c”))</code> 就表 明该 Group 订阅所有以字母 t 开头、字母 c 结尾的主 题。在 Consumer Group 的运行过程中，你新创建了一 个满足这样条件的主题，那么该 Group 就会发生 Rebalance。</li>
+</ol>
+</li>
+<li>订阅主题的分区数发生变更。Kafka 当前只能允许增加一 个主题的分区数。当分区数增加时，就会触发订阅该主题的所有 Group 开启 Rebalance。</li>
+</ol>
+<p>Rebalance 过程对 Consumer Group 消费过程有极大的影响。会stop the world，简称 STW。我们知道在 STW 期间，所有应用线程都会停止工作，表现为整个应用程序僵在那边一动不动。Rebalance 过程也和这个 类似，在 Rebalance 过程中，所有 Consumer 实例都会停止消费，等待 Rebalance 完成。这是 Rebalance 为人诟病 的一个方面。</p>
+<p>Rebalance 是 Kafka 消费者端实现高可用的重要手段。</p>
+<h3 id="offset">Offset</h3>
+<p>前面说过，topic partition 下的每条消息都被分配一个位移值。 实际上 ，Kafka消费者端也有位移（ offset）的概念， 但一定要注意 这两个offset 属于不同的概念。</p>
+<p><p class="md__image">
+  <img src="../Kafka%e5%85%a5%e9%97%a8.assets/21d3dc1beb0c47a492e9af6087656fb9~tplv-k3u1fbpfcp-watermark.image"
+    alt="img"  />
+</p>
+</p>
+<p>显然， 每条消息在某个 partition 的位移是固定的， 但消费该 partition 的消费者的位移会随着消费进度不断前移。</p>
+<h3 id="replica">Replica</h3>
+<p>既然我们己知 partition 是有序消息日志， 那么一定不能只保存这一份日志，否则一旦保存 partition 的 Kafka 服务器挂掉了， 其上保存的消息也就都丢失了。 分布式系统必然要实现高可靠性， 而目前实现的主要途径还是依靠冗余机制，通过备份多份日志 。 这些备份日志在 Kafka 中被称为副本（ replica ），它们存在的唯一目的就是防止数据丢失</p>
+<p><strong>副本分为两类 ：</strong></p>
+<p>领导者副本（ leader replica ）和追随者副本（ follower replica ）。</p>
+<p>follower replica 是不能提供服务给客户端的，也就是说不负 责响应客户端发来的消息写入和消息消费请求。它只是被动地向领导者副本（ leader replica ）获取数据， 而 一旦 leader replica 所在的 broker 岩机， Kafka 会从剩余的 replica 中选举出新的 leader 继续提供服务。</p>
+<h3 id="leader和follower">Leader和Follower</h3>
+<p>前面说的， Kafka 的 replica 分为两个角色：领导者（ leader ）和追随者（ follower ） 。 Kafka 保证同一个 partition 的多个 replica 一定不会分配在同一台 broker 上 。 毕竟如果同一个 broker 上有同一个 partition 的多个 replica， 那么将无法实现备份冗余的效果。</p>
+<p><p class="md__image">
+  <img src="../Kafka%e5%85%a5%e9%97%a8.assets/3d36fd3a385841eb9a8a12164231b9ce~tplv-k3u1fbpfcp-watermark.image"
+    alt="img"  />
+</p>
+</p>
+<h3 id="isr">ISR</h3>
+<p>ISR 的全称是 in-sync replica，翻译过来就是与 leader replica 保持同步的 replica 集合 。</p>
+<p>Kafka 为 partition 动态维护一个 replica 集合。该集合中的所有 replica 保存的消息日志都与leader replica 保持同步状态。只有这个集合中的 replica 才能被选举为 leader，也只有该集合中 所有 replica 都接收到了同一条消息， Kafka 才会将该消息置于“己提交”状态，即认为这条消 息发送成功。</p>
+<p>如果因为各种各样的原因，一小部分 replica 开始落后于 leader replica 的进度 。当滞后 到 一定程度时， Kafka 会将这些 replica “踢”出 ISR。相反地，当这些 replica 重新“追上”了 leader 的进度时 ， 那么 Kafka 会将它们加 回到 ISR 中。这一切都 是自动维护的， 不需要用户进行人工干预。</p>
+<h3 id="小结">小结</h3>
+<p><strong>最后用1张图来展示上面提到的这些概念以及运行流程：</strong></p>
+<p><p class="md__image">
+  <img src="../Kafka%e5%85%a5%e9%97%a8.assets/16eb068cc433bb21"
+    alt="img"  />
+</p>
+</p>
+<p>如上图所示，一个典型的 Kafka 集群中包含若干Producer（可以是web前端产生的Page View，或者是服务器日志，系统CPU、Memory等），若干broker（Kafka支持水平扩展，一般broker数量越多，集群吞吐率越高），若干Consumer Group，以及一个Zookeeper集群。Kafka通过Zookeeper管理集群配置，选举leader，以及在Consumer Group发生变化时进行rebalance。Producer使用push模式将消息发布到broker，Consumer使用pull模式从broker订阅并消费消息。</p>
+<h2 id="kafka为什么这么快">Kafka为什么这么快</h2>
+<p><strong>顺序读写</strong></p>
+<p>kafka的消息是不断追加到文件中的，这个特性使kafka可以充分利用磁盘的顺序读写性能</p>
+<p>顺序读写不需要硬盘磁头的寻道时间，只需很少的扇区旋转时间，所以速度远快于随机读写</p>
+<p><strong>零拷贝</strong></p>
+<p>服务器先将文件从复制到内核空间，再复制到用户空间，最后再复制到内核空间并通过网卡发送出去，而零拷贝则是直接从内核到内核再到网卡，省去了用户空间的复制。</p>
+<p>Zero copy对应的是Linux中sendfile函数，这个函数会接受一个offsize来确定从哪里开始读取。现实中，不可能将整个文件全部发给消费者，他通过消费者传递过来的偏移量来使用零拷贝读取指定内容的数据返回给消费者。</p>
+<p>关于零拷贝可以看看这篇文章：<a href="https://willje.github.io/posts/linux/%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%B6%E6%8B%B7%E8%B4%9D/" target="_blank" rel="noopener">什么是零拷贝</a>
+</p>
+<p><strong>分区</strong></p>
+<p>kafka中的topic中的内容可以被分为多分partition存在,每个partition又分为多个段segment,所以每次操作都是针对一小部分做操作，很轻便，并且增加<code>并行操作</code>的能力。</p>
+<p><strong>批量发送</strong></p>
+<p>kafka允许进行批量发送消息，producter发送消息的时候，可以将消息缓存在本地,等到了固定条件发送到kafka</p>
+<ol>
+<li>等消息条数到固定条数</li>
+<li>一段时间发送一次</li>
+</ol>
+<p><strong>数据压缩</strong></p>
+<p>Kafka还支持对消息集合进行压缩，Producer可以通过GZIP或Snappy格式对消息集合进行压缩。</p>
+<p>压缩的好处就是减少传输的数据量，减轻对网络传输的压力。</p>
+<p>Producer压缩之后，在Consumer需进行解压，虽然增加了CPU的工作，但在对大数据处理上，瓶颈在网络上而不是CPU，所以这个成本很值得</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>k8s入门2</title>
+			<link>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A82/</link>
+			<pubDate>Sat, 25 Jul 2020 21:23:18 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A82/</guid>
+			<description>Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &amp;#34;pi&amp;#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&amp;#34;perl&amp;#34;,&amp;#34;-Mbignum=bpi&amp;#34;,&amp;#34;-wle&amp;#34;,&amp;#34;print bpi(2000)&amp;#34;]restartPolicy:Never一段时</description>
+			<content type="html"><![CDATA[<h1 id="kubernetes-job">Kubernetes Job</h1>
+<h2 id="using-job">Using Job</h2>
+<p>Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。</p>
+<p>下面，我们通过创建一个 Pod 来感受一下 Job 的使用：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/job.yaml
+job <span class="s2">&#34;pi&#34;</span> created
+
+$ kubectl get job
+NAME   COMPLETIONS   DURATION   AGE
+pi     1/5           29s        29s
+
+$ kubectl get pods -l job-name<span class="o">=</span>pi
+NAME       READY   STATUS      RESTARTS   AGE
+pi-76h5p   1/1     Running     <span class="m">0</span>          12s
+pi-fhww6   0/1     Completed   <span class="m">0</span>          36s
+</code></pre></div><p>这是job.yaml</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">batch/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Job</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pi</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">completions</span><span class="p">:</span><span class="w"> </span><span class="m">5</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pi</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pi</span><span class="w">
+</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/perl:latest</span><span class="w">
+</span><span class="w">        </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;perl&#34;</span><span class="p">,</span><span class="w">  </span><span class="s2">&#34;-Mbignum=bpi&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;-wle&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;print bpi(2000)&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">      </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Never</span><span class="w">
+</span></code></pre></div><p>一段时间之后，Pod 全部运行结束，我们可以通过 <code>kubectl get pods</code> 查看：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get pods -l job-name<span class="o">=</span>pi
+NAME       READY   STATUS      RESTARTS   AGE
+pi-6lgqw   0/1     Completed   <span class="m">0</span>          45s
+pi-76h5p   0/1     Completed   <span class="m">0</span>          68s
+pi-fhww6   0/1     Completed   <span class="m">0</span>          92s
+pi-mf96j   0/1     Completed   <span class="m">0</span>          2m17s
+pi-w9v4l   0/1     Completed   <span class="m">0</span>          115s
+
+$ kubectl get job
+NAME   COMPLETIONS   DURATION   AGE
+pi     5/5           117s       3m8s
+</code></pre></div><p>观察上述 Pod 的 AGE 列，可以发现 Job 内的 Pod 都是依次运行的（总共 5 个 Pod）。Job 支持并发运行等多种控制，我们在后续任务中实现。</p>
+<p>Job 运行完之后，删除 Job 会将所有运行结束的 Pods 也同时删掉。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl delete job pi
+job <span class="s2">&#34;pi&#34;</span> deleted
+
+$ kubectl get pods -l job-name<span class="o">=</span>pi
+No resources found.
+</code></pre></div><h2 id="readings">Readings</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/" target="_blank" rel="noopener">kubernetes job</a>
+</li>
+</ul>
+<h1 id="kubernetes-cronjob">Kubernetes CronJob</h1>
+<h2 id="using-cronjob">Using CronJob</h2>
+<p>Kubernetes CronJob 即定时任务，就类似于 Linux 的 crontab，在指定的时间周期运行指定的作业。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">batch/v1beta1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">CronJob</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;*/1 * * * *&#34;</span><span class="w"> </span><span class="c"># At every minute.</span><span class="w">
+</span><span class="w">  </span><span class="nt">jobTemplate</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello</span><span class="w">
+</span><span class="w">            </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/busybox:latest</span><span class="w">
+</span><span class="w">            </span><span class="nt">args</span><span class="p">:</span><span class="w">
+</span><span class="w">            </span>- <span class="l">/bin/sh</span><span class="w">
+</span><span class="w">            </span>- -<span class="l">c</span><span class="w">
+</span><span class="w">            </span>- <span class="l">date; echo Hello from the Kubernetes cluster</span><span class="w">
+</span><span class="w">          </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">OnFailure</span><span class="w">
+</span></code></pre></div><p>这里我们通过 kubectl create 创建一个 CronJob：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/cronjob.yaml
+cronjob.batch/hello created
+</code></pre></div><p>查看 CronJob：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get cronjob
+NAME    SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+hello   */1 * * * *   False     <span class="m">0</span>        57s             69m
+$ kubectl get <span class="nb">jobs</span>
+NAME               COMPLETIONS   DURATION   AGE
+hello-1566286260   1/1           11s        46s
+</code></pre></div><p>删除 CronJob：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 删除 CronJob 会删除它创建的所有 job 和 pod，并停止正在创建的 job</span>
+$ kubectl delete cronjob hello
+cronjob.batch <span class="s2">&#34;hello&#34;</span> deleted
+</code></pre></div><h2 id="readings-1">Readings</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/" target="_blank" rel="noopener">kubernetes cronjob</a>
+</li>
+</ul>
+<h1 id="kubernetes-daemonset">Kubernetes Daemonset</h1>
+<h2 id="using-daemonset">Using Daemonset</h2>
+<p>DaemonSet 默认在每台主机上运行 Pod，典型的场景包括<strong>日志收集、存储进程</strong>等。这里，我们通过 kubectl create 来创建一个 DaemonSet：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/daemonset.yaml
+daemonset <span class="s2">&#34;ds-nginx&#34;</span> created
+
+$ kubectl get ds
+NAME       DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+ds-nginx   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       <span class="m">1</span>            <span class="m">1</span>           &lt;none&gt;          4s
+
+$ kubectl get pods
+NAME             READY     STATUS    RESTARTS   AGE
+ds-nginx-hnndc   1/1       Running   <span class="m">0</span>          8s
+</code></pre></div><p>可以看到，minikube 节点都运行了一个 DaemonSet。由于目前只有一个节点，很难观测到效果，但当我们向集群中增加新的节点， DaemonSet 会自动在新的节点中启动 Pod。</p>
+<p>我们可以通过 kubectl delete 删除 DaemonSet：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl delete daemonset ds-nginx
+daemonset.extensions <span class="s2">&#34;ds-nginx&#34;</span> deleted
+</code></pre></div><p>DaemonSet 相对于其他控制器（Deployment, Job 等）有几个特点：</p>
+<p><strong>由 DaemonSet controller 调度 (1.12 以前)</strong>：</p>
+<ul>
+<li>DaemonSet controller 创建 pod 时会将指定 nodeName（.spec.nodeName），所以 scheduler 会忽视它。因此：
+<ul>
+<li>即使调度器没有启动，DaemonSet 的 pod 也会运行</li>
+<li>即时一个节点被标记为不可调度，由 DaemonSet 启动的容器也会运行在某个节点上</li>
+</ul>
+</li>
+<li>DaemonSet 启动的 Pod 会无视优先级</li>
+</ul>
+<p><strong>由 default scheduler 调度（从 1.12 开始默认开启）</strong>：</p>
+<ul>
+<li>DaemonSet controller 通过给 pod 添加 NodeAffinity，然后 default scheduler 将其绑定到目标节点，即指定 nodeName（.spec.nodeName）</li>
+</ul>
+<h2 id="readings-2">Readings</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/daemonset/" target="_blank" rel="noopener">kubernetes daemonset</a>
+</li>
+</ul>
+<h1 id="resource-quota">Resource quota</h1>
+<p>默认情况下，namespace 只提供名字的隔离，并没有提供资源的限制（Quota）。也就是说一个 namespace 的用户可以创建任意多的资源，直到将集群的所有资源用光。为了解决这个问题，我们可以通过创建 ResourceQuota 资源来限制某个 namespace 可以使用的资源量，即：</p>
+<ul>
+<li>计算资源，包括 cpu 和 memory
+<ul>
+<li>cpu, limits.cpu, requests.cpu</li>
+<li>memory, limits.memory, requests.memory</li>
+</ul>
+</li>
+<li>存储资源，包括存储资源的总量以及指定 storage class 的总量
+<ul>
+<li>requests.storage：存储资源总量，如 500Gi</li>
+<li>persistentvolumeclaims：pvc 的个数</li>
+<li>.storageclass.storage.k8s.io/requests.storage</li>
+<li>.storageclass.storage.k8s.io/persistentvolumeclaims</li>
+<li>requests.ephemeral-storage 和 limits.ephemeral-storage （需要 v1.8+）</li>
+</ul>
+</li>
+<li>对象数量，即可创建的对象的个数
+<ul>
+<li>pods, replicationcontrollers, configmaps, secrets</li>
+<li>resourcequotas, persistentvolumeclaims</li>
+<li>services, services.loadbalancers, services.nodeports</li>
+<li>custom resources (需要 v1.15+)</li>
+</ul>
+</li>
+</ul>
+<h2 id="using-resource-quota">Using Resource quota</h2>
+<p>我们可以通过 <code>kubectl create -f</code> 创建 ResourceQuota，该 quota 限制了 tutorial namespace 只能请求 1 个 CPU 和 1Gi 内存，最多只能使用 2 个 CPU 和 2Gi 内存。这里，请求指的是 kubernetes 在调度时容器时会寻找至少有 1 个 CPU 和 1Gi 内存的节点。最多使用指的是当容器可以使用超过其请求的 1 个 CPU 数量，但是一定不可能超过 2 个 CPU。kubernetes 的这个设计目的是提供更加灵活的资源模型，支持超卖。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 这里用到了前面 lab 创建的 namespace tutorial，若已删除，需重新创建</span>
+$ kubectl create namespace tutorial
+namespace/tutorial created
+
+$ kubectl create -f resources/quota.yaml
+resourcequota/tutorial-quota created
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ResourceQuota</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">tutorial-quota</span><span class="w">
+</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tutorial</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">hard</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of CPU requests cannot exceed this value.</span><span class="w">
+</span><span class="w">    </span><span class="nt">requests.cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1&#34;</span><span class="w">
+</span><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of memory requests cannot exceed this value.</span><span class="w">
+</span><span class="w">    </span><span class="nt">requests.memory</span><span class="p">:</span><span class="w"> </span><span class="l">1Gi</span><span class="w">
+</span><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of CPU limits cannot exceed this value.</span><span class="w">
+</span><span class="w">    </span><span class="nt">limits.cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2&#34;</span><span class="w">
+</span><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of memory limits cannot exceed this value.</span><span class="w">
+</span><span class="w">    </span><span class="nt">limits.memory</span><span class="p">:</span><span class="w"> </span><span class="l">2Gi</span><span class="w">
+</span></code></pre></div><p>查看 ResourceQuota 细节：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kubectl describe quota -n tutorial
+Name:            tutorial-quota
+Namespace:       tutorial
+Resource         Used    Hard
+--------         ----    ----
+limits.cpu       500m    <span class="m">2</span>
+limits.memory    1124Mi  2Gi
+requests.cpu     300m    <span class="m">1</span>
+requests.memory  612Mi   1Gi
+</code></pre></div><p>pod_exceeds_quota.yaml</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">apiVersion: v1
+kind: Pod
+metadata:
+  name: pod
+  namespace: tutorial
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.13
+    resources:
+      requests:
+        cpu: <span class="s2">&#34;2&#34;</span>
+        memory: <span class="s2">&#34;1Gi&#34;</span>
+      limits:
+        cpu: <span class="s2">&#34;2&#34;</span>
+        memory: <span class="s2">&#34;1Gi&#34;</span>
+</code></pre></div><p>如果我们尝试在 tutorial namespace 下创建超过配额的资源，kubernetes 会直接返回错误：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kubectl create -f resources/pod_exceeds_quota.yaml -n tutorial
+Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: error when creating <span class="s2">&#34;resources/pod_exceeds_quota.yaml&#34;</span>: pods <span class="s2">&#34;pod&#34;</span> is forbidden: exceeded quota: default-quota, requested: limits.cpu<span class="o">=</span>2,requests.cpu<span class="o">=</span>2,requests.memory<span class="o">=</span>1Gi, used: limits.cpu<span class="o">=</span>200m,requests.cpu<span class="o">=</span>100m,requests.memory<span class="o">=</span>256Mi, limited: limits.cpu<span class="o">=</span>2,requests.cpu<span class="o">=</span>1,requests.memory<span class="o">=</span>1Gi
+</code></pre></div><h2 id="readings-3">Readings</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/policy/resource-quotas/" target="_blank" rel="noopener">Kubernetes Resource Quotas</a>
+</li>
+</ul>
+<h1 id="kubernetes-volume">Kubernetes Volume</h1>
+<h2 id="using-volume">Using volume</h2>
+<p>用户可以通过 Volume 来创建数据卷，使用数据卷之后，用户创建的 Pod 可以外部存储空间。Volume 是一个广义的概念，在 kubernetes 中至少包含三种类型：</p>
+<ul>
+<li>临时存储，比如 EmptyDir。当 Pod 删除后，EmptyDir Volume 也会被随之删除。</li>
+<li>持久化存储，比如 Ceph。kubernetes 通过 Volume 的方式挂载外部持久化存储。</li>
+<li>映射类存储，比如 ConfigMap。此类存储基于其他存储类型，为 Pod 提供元数据，配置等信息。</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">emptydir-pod</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/nginx:1.9.3</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">emptydir-pod</span><span class="w">
+</span><span class="w">    </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/cache</span><span class="w">
+</span><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cache-volume</span><span class="w">
+</span><span class="w">  </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cache-volume</span><span class="w">
+</span><span class="w">    </span><span class="nt">emptyDir</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></code></pre></div><p>无论是那种类型，都可以在 Pod 中直接指定 Volume 的信息。接下来我们创建一个最简单的 Pod，使用 EmptyDir 作为 Volume。可以看到，kubernetes 根据 yaml 文件的内容，为该 Pod 挂载了一个 cache 目录。对于 EmptyDir 而言，该目录的本质就是宿主机上的一个目录。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/emptydir_pod.yaml
+pod <span class="s2">&#34;emptydir-pod&#34;</span> created
+
+$ kubectl get pods
+NAME                     READY   STATUS    RESTARTS   AGE
+emptydir-pod             1/1     Running   <span class="m">0</span>          5s
+
+<span class="c1"># 进入 emptydir-pod 并创建一个文件</span>
+$ kubectl <span class="nb">exec</span> -it emptydir-pod bash
+root@emptydir-pod:/# ls cache/
+root@emptydir-pod:/# touch cache/abc
+
+<span class="c1"># 按 &#39;Ctrl + D&#39; 退出 pod</span>
+$ kubectl get pods emptydir-pod -o yaml <span class="p">|</span> grep uid
+  uid: 15ccac29-773b-41d2-bd54-8d746a009396
+
+<span class="c1"># 我们将会在宿主机上看见之前创建的文件</span>
+$ minikube ssh
+$ sudo ls /var/lib/kubelet/pods/15ccac29-773b-41d2-bd54-8d746a009396/volumes/kubernetes.io~empty-dir/cache-volume/abc
+</code></pre></div><p>可以验证，当 Pod 被删除后，数据也就丢失了。若我们想使存储与 Pod 的生命周期解耦，需要使用网络存储。如果我们查看 emptydir_pod.yaml 文件，可以看到使用方法和 ConfigMap 和 Secret 完全类似。</p>
+<h2 id="readings-4">Readings</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/storage/volumes/" target="_blank" rel="noopener">kubernetes volumes</a>
+</li>
+</ul>
+<h1 id="kubernetes-pv--pvc">Kubernetes PV &amp; PVC</h1>
+<h2 id="using-pv--pvc">Using PV &amp; PVC</h2>
+<p>对于持久化存储，Kubernetes 抽象出了 PersistentVolume (PV) 和 PersistentVolumeClaim (PVC) 两类资源。类似于 Node 与 Pod 在计算资源上的关系，PV/PVC 提供了存储的抽象。管理员创建可用的存储资源（PV），用户通过 PVC 请求需要的资源再与 Pod 进行绑定。</p>
+<p>Volume 的生命周期包括 5 个阶段：</p>
+<ul>
+<li>Provisioning，即 PV 的创建，可以直接创建 PV（静态方式），也可以使用 StorageClass 动态创建</li>
+<li>Binding，将 PV 分配给 PVC</li>
+<li>Using，Pod 通过 PVC 使用该 Volume，并可以通过 Admission Controller StorageObjectInUseProtection（1.9 及以前版本为 PVCProtection）阻止删除正在使用的 PVC</li>
+<li>Releasing，Pod 释放 Volume 并删除 PVC</li>
+<li>Reclaiming，回收 PV，可以保留 PV 以便下次使用，也可以直接从存储中删除</li>
+<li>Deleting，删除 PV 并从存储中删除后端存储</li>
+</ul>
+<p>根据这 5 个阶段，Volume 的状态有以下 4 种：</p>
+<ul>
+<li>Available：可用</li>
+<li>Bound：已经分配给 PVC</li>
+<li>Released：PVC 解绑但还未执行回收策略</li>
+<li>Failed：发生错误</li>
+</ul>
+<p>接下来，我们感受一下如何使用 PV 和 PVC。</p>
+<p>首先，我们需要创建新的 PV。类比于节点，可以理解为是向集群中添加节点，这里我们创建一个基于 hostPath 的 PV。基于 hostPath 的 PV 主要用来做测试，生产环境中一般采用其他存储方案如 NFS, GlusterFS, Ceph 等。</p>
+<p>pv_hostpath.yaml</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolume</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pv-hostpath</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">storageClassName</span><span class="p">:</span><span class="w"> </span><span class="l">standard</span><span class="w">
+</span><span class="w">  </span><span class="nt">capacity</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">10Gi</span><span class="w">
+</span><span class="w">  </span><span class="nt">accessModes</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="l">ReadWriteMany</span><span class="w">
+</span><span class="w">  </span><span class="nt">persistentVolumeReclaimPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Recycle</span><span class="w">
+</span><span class="w">  </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/tmp/data1</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/pv_hostpath.yaml
+persistentvolume <span class="s2">&#34;pv-hostpath&#34;</span> created
+
+$ kubectl get pv
+NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
+pv-hostpath   10Gi       RWX            Recycle          Available           standard                7s
+</code></pre></div><p>创建 PV 之后，我们需要申请使用 PV，因此需要在 kubernetes 中创建 PVC。</p>
+<p>pvc.yaml</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolumeClaim</span><span class="w">
+</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">myclaim</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">accessModes</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="l">ReadWriteMany</span><span class="w">
+</span><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">8Gi</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/pvc.yaml
+persistentvolumeclaim <span class="s2">&#34;myclaim&#34;</span> created
+</code></pre></div><p>kubernetes 根据 PVC 所需的容量（resources.requests.storage）和访问方式（accessMode）来调度存储资源。如下所示，我们创建的 PV 和 PVC 被 kubernetes 绑定在了一起。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get pv
+NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS   REASON   AGE
+pv-hostpath   10Gi       RWX            Recycle          Bound    default/myclaim   standard                45s
+
+$ kubectl get pvc
+NAME      STATUS   VOLUME        CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myclaim   Bound    pv-hostpath   10Gi       RWX            standard       26s
+</code></pre></div><p>PV 和 PVC 的封装主要作用是达到了平台可移植性。应用不再需要关系底层存储的细节，只需要使用 PVC 即可。接下来我们使用上面的 PVC 来创建应用。</p>
+<p>pod_with_pvc.yaml</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
+</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pod-with-pvc</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/nginx:1.9.3</span><span class="w">
+</span><span class="w">      </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/var/www/html&#34;</span><span class="w">
+</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">mypd</span><span class="w">
+</span><span class="w">  </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">mypd</span><span class="w">
+</span><span class="w">      </span><span class="nt">persistentVolumeClaim</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">claimName</span><span class="p">:</span><span class="w"> </span><span class="l">myclaim</span><span class="w">
+</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/pod_with_pvc.yaml
+pod <span class="s2">&#34;pod-with-pvc&#34;</span> created
+
+$ kubectl get pods
+NAME           READY   STATUS    RESTARTS   AGE
+pod-with-pvc   1/1     Running   <span class="m">0</span>          5s
+
+$ kubectl <span class="nb">exec</span> -it pod-with-pvc bash
+root@pod-with-pvc:/# touch /var/www/html/index.html
+
+$ minikube ssh
+$ ls /tmp/data1/
+index.html
+</code></pre></div><p>当我们删除 Pod 时，PV 和 PVC 的绑定不受任何影响，意味着我们可以重新创建 Pod 使用 PVC，数据仍然存在。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl delete pod pod-with-pvc
+pod <span class="s2">&#34;pod-with-pvc&#34;</span> deleted
+
+$ kubectl get pvc
+NAME      STATUS   VOLUME        CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+myclaim   Bound    pv-hostpath   10Gi       RWX            standard       2m26s
+
+$ kubectl get pv
+NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS   REASON   AGE
+pv-hostpath   10Gi       RWX            Recycle          Bound    default/myclaim   standard                3m7s
+</code></pre></div><p>如果进一步删除 PVC，可以看到 PV 进入了 <code>Released</code> 状态，这意味着 PV 已经被释放，但是还无法被重新使用，需要管理员手动清理 PV 数据后，将 PV 状态修改为 <code>Available</code>。PV 进入 <code>Release</code> 状态的原因是 PV 的回收策略被指定为 <code>Recycle</code>（spec.persistentVolumeReclaimPolicy: Recycle）。如果将回收策略改为 <code>Delete</code>，那么 PV 会被 kubernetes 直接删除。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl delete pvc myclaim
+persistentvolumeclaim <span class="s2">&#34;myclaim&#34;</span> deleted
+
+$ kubectl get pv
+NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM             STORAGECLASS   REASON   AGE
+pv-hostpath   10Gi       RWX            Recycle          Released   default/myclaim   standard                3m55s
+</code></pre></div><p>PV 可以被手动删除，kubernetes 不会自动清理底层的数据。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl delete pv pv-hostpath
+persistentvolume <span class="s2">&#34;pv-hostpath&#34;</span> deleted
+</code></pre></div><h2 id="readings-5">Readings</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/" target="_blank" rel="noopener">Kubernetes Persistent Volume</a>
+</li>
+<li><a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-persistent-volume-storage/" target="_blank" rel="noopener">How to Use Persistent Volume</a>
+</li>
+</ul>
+<h1 id="kubernetes-storageclass">Kubernetes StorageClass</h1>
+<h2 id="using-storageclass">Using StorageClass</h2>
+<p>从上述操作的步骤可以看出，管理员需要首先创建 PV 才能让用户使用底层存储。其次，用户在使用 PVC 申请存储的时候，只能指定存储空间大小和访问模式。假如底层同时提供 GlusterFS 和 NFS，或者是不同规格的 GlusterFS，用户并没有能力指定特定的存储系统。从 1.2 版本开始，Kubernetes 逐渐引入了 StorageClass 的概念来解决上述两个问题。</p>
+<p>首先，我们需要创建 StorageClass。minikube 自带一个基于 hostPath 类型的 StorageClass，如下所示。</p>
+<pre><code>$ kubectl get storageclass standard -o yaml
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  annotations:
+    storageclass.kubernetes.io/is-default-class: &quot;true&quot;
+  creationTimestamp: &quot;2019-06-27T03:03:57Z&quot;
+  labels:
+    addonmanager.kubernetes.io/mode: EnsureExists
+  name: standard
+  resourceVersion: &quot;356&quot;
+  selfLink: /apis/storage.k8s.io/v1/storageclasses/standard
+  uid: c9e7cc0f-2829-4adc-a313-63ea3a4950b7
+provisioner: k8s.io/minikube-hostpath
+reclaimPolicy: Delete
+volumeBindingMode: Immediate
+</code></pre><p>minikube 自带的 StorageClass 的名字为 <code>standard</code>，provisioner 名字为 <code>k8s.io/minikube-hostpath</code>。当我们创建一个 PVC 时，需要指定所需要的 StorageClass 名字，例如：</p>
+<pre><code>kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: claim-standard
+spec:
+  storageClassName: standard
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 8Gi
+</code></pre><p>上述 PVC 将会使用 <code>standard</code> StorageClass 创建一个 PV，如下所示：</p>
+<pre><code>$ kubectl get pvc
+NAME      STATUS    VOLUME                                     CAPACITY   ACCESSMODES   STORAGECLASS   AGE
+myclaim   Bound     pvc-207c1e0b-a341-11e7-bf8e-0800277a7b6e   8Gi        RWX           standard       6s
+
+$ kubectl get pv
+NAME                                       CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS    CLAIM             STORAGECLASS   REASON    AGE
+pvc-207c1e0b-a341-11e7-bf8e-0800277a7b6e   8Gi        RWX           Delete          Bound     default/myclaim   standard                 8s
+</code></pre><p>可以看到 Kubernetes 自动生成了一个 PV。注意，动态生成的 PV 其回收属性是 <code>Delete</code>，即删除 PVC 会将 PV 也同时删除：</p>
+<pre><code>$ kubectl delete pvc myclaim
+persistentvolumeclaim &quot;myclaim&quot; deleted
+
+$ kubectl get pvc
+No resources found.
+
+$ kubectl get pv
+No resources found.
+</code></pre><h2 id="default-storageclass">Default StorageClass</h2>
+<p>kubernetes 集群中可以创建多个 StorageClass，其中有且仅有一个默认 StorageClass。当创建的 PVC 没有指定需要什么类型的存储时（即 pvc.spec.storageClassName 为空），Kubernetes 使用默认 StorageClass。</p>
+<p>在 minikube 环境中，<code>standard</code> 即为默认的 StorageClass。我们在 PV &amp; PVC 章节中创建的 PVC 没有指定 storageClassName，因此默认使用 <code>standard</code>。</p>
+<pre><code>$ kubectl get storageclass
+NAME                 PROVISIONER                AGE
+standard (default)   k8s.io/minikube-hostpath   9d
+</code></pre><h2 id="storageclass-provisioner">StorageClass Provisioner</h2>
+<p>除了名字之外，每一个 StorageClass 都必须指明 provisioner。 provisioner 是真正创建底层存储的组件。provisioner 负责监听一个特定的事件 - “用户创建了一个 PVC，该 PVC 使用某个 StorageClass，该 StorageClass 的 provisioner 是我自己”。当发生该事件，provisioner 将会创建底层存储。例如：</p>
+<pre><code>apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: gluster-class
+  annotations:
+    storageclass.kubernetes.io/is-default-class: &quot;false&quot;
+provisioner: example.com/gluster
+</code></pre><p>当用户创建一个 PVC 使用 <code>gluster-class</code>，名为 <code>example.com/gluster</code> 的 provisioner 需要创建基于 GlusterFS 的 PV 供 PVC 使用。一般情况下，provisioner 以 Pod 形式运行在 kubernetes 集群中，长运行并监听上述事件。 provisioner 的稳定性和健壮性是极为重要的，否则动态创建会失效。</p>
+<h2 id="readings-6">Readings</h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/storage/storage-classes/" target="_blank" rel="noopener">Kubernetes Storage Classes</a>
+</li>
+<li><a href="https://kubernetes.io/docs/concepts/storage/dynamic-provisioning/" target="_blank" rel="noopener">Dynamic Volume Provisioning</a>
+</li>
+</ul>
+<h1 id="参考">参考</h1>
+<ul>
+<li><a href="https://github.com/caicloud/kube-ladder" target="_blank" rel="noopener">kube-ladder</a>
+</li>
+</ul>
 ]]></content>
 		</item>
 		

@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
-    <lastBuildDate>Tue, 15 Jun 2021 12:10:00 +0800</lastBuildDate><atom:link href="https://willje.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Fri, 23 Jul 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>go并发小练习</title>
+      <link>https://willje.github.io/posts/go/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</link>
+      <pubDate>Fri, 23 Jul 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</guid>
+      <description>package main import &amp;#34;fmt&amp;#34; func add(a, b int) { var c = a + b fmt.Printf(&amp;#34;%d + %d = %d&amp;#34;, a, b, c) } func main() { go add(1, 2) } 在这段代码中包含了两个协程，一个是显式的，通过 go 关键字声明的这条语句，表示启用一个新的协程来处理加法运算，另一个是隐式的，即 main 函数本身也是运行在一个主协程中，该协程和调用 add 函数的子协程是并发运行的两个协程，就好比从 go 关键字开始，从主协程中叉出一条新路。 和之前不使用协程的方式相比，由此也引入了不确定</description>
+    </item>
+    
+    <item>
+      <title>k8s入门</title>
+      <link>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Fri, 23 Jul 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/</guid>
+      <description>创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下</description>
+    </item>
+    
     <item>
       <title>gitignore如何忽略之前已提交的文件</title>
       <link>https://willje.github.io/posts/git/gitignore%E5%A6%82%E4%BD%95%E5%BF%BD%E7%95%A5%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%87%E4%BB%B6/</link>
@@ -78,24 +96,6 @@
       
       <guid>https://willje.github.io/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/</guid>
       <description>一. 切片和数组 关于切片和数组怎么选择？接下来好好讨论讨论这个问题。 在 Go 中，与 C 数组变量隐式作为指针使用不同，Go 数组是值类型，赋值和函数传参操作都会复制整个数组数据。 func main() { arrayA := [2]int{100, 200} var arrayB [2]int arrayB = arrayA fmt.Printf(&amp;#34;arrayA : %p , %v\n&amp;#34;, &amp;amp;arrayA, arrayA) fmt.Printf(&amp;#34;arrayB : %p , %v\n&amp;#34;, &amp;amp;arrayB, arrayB) testArray(arrayA) } func testArray(x [2]int) { fmt.Printf(&amp;#34;func Array : %p , %v\n&amp;#34;, &amp;amp;x, x) } 打印结果： arrayA : 0xc4200bebf0 , [100 200] arrayB : 0xc4200bec00 , [100 200] func Array : 0xc4200bec30 , [100 200] 可以看到，三个内存地址都不同，这也就验证了 Go 中数组赋值和函数传</description>
-    </item>
-    
-    <item>
-      <title>分布式事务</title>
-      <link>https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</link>
-      <pubDate>Sun, 25 Apr 2021 22:34:22 +0800</pubDate>
-      
-      <guid>https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/</guid>
-      <description>分布式事务的产生 我们先看看百度上对于分布式事务的定义：分布式事务是指事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。 当系统的体量很小时，单体架构完全可以满足现有业务需求，所有的业务共用一个数据库，整个下单流程或许只用在一个方法里同一个事务下操作数据库即可。此时做到所有操作要么全部提交 或 要么全部回滚很容易。 可随着</description>
-    </item>
-    
-    <item>
-      <title>Win10使用wsl部署k8s环境</title>
-      <link>https://willje.github.io/posts/docker/win10%E4%BD%BF%E7%94%A8wsl%E9%83%A8%E7%BD%B2k8s%E7%8E%AF%E5%A2%83/</link>
-      <pubDate>Sat, 24 Apr 2021 21:57:01 +0800</pubDate>
-      
-      <guid>https://willje.github.io/posts/docker/win10%E4%BD%BF%E7%94%A8wsl%E9%83%A8%E7%BD%B2k8s%E7%8E%AF%E5%A2%83/</guid>
-      <description>前提 安装docker和go环境 配置wsl2 这个可以看之前的文章win10安装docker 安装kubectl 安装kubectl有几种方法，具体可以看install-kubectl-windows/ 直接使用curl curl -LO https://dl.k8s.io/release/v1.21.0/bin/windows/amd64/kubectl.exe 如果提示curl命令不存在，可以先安装一下curl，不过这里建议直接用github的curl（如果你安装了github的话），目录在github</description>
     </item>
     
   </channel>

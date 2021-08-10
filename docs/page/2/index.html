@@ -65,6 +65,64 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/">由浅入深聊聊Golang的context</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>context详解 1.1 产生背景 在go的1.7之前，context还是非编制的(包golang.org/x/net/context中)，golang团队发现context这个东西还挺好用的，很多地方也都用到了，就把它收编了，1.7版本正式进入标准库。 context常用的使用姿势： 1.web编程中，一个请求对应多个goroutine之间的数据交互 2.超时控制 3.上</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-05-01</span>
+                        <a class="tag"
+                                   href="/tags/go/">go</a><a class="tag"
+                                   href="/tags/context/">context</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>分布式事务的产生 我们先看看百度上对于分布式事务的定义：分布式事务是指事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。 当系统的体量很小时，单体架构完全可以满足现有业务需求，所有的业务共用一个数据库，整个下单流程或许只用在一个方法里同一个事务下操作数据库即可。此时做到所有操作要么全部提交 或 要么全部回滚很容易。 可随着</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-04-25</span>
+                        <a class="tag"
+                                   href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/docker/win10%E4%BD%BF%E7%94%A8wsl%E9%83%A8%E7%BD%B2k8s%E7%8E%AF%E5%A2%83/">Win10使用wsl部署k8s环境</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>前提 安装docker和go环境 配置wsl2 这个可以看之前的文章win10安装docker 安装kubectl 安装kubectl有几种方法，具体可以看install-kubectl-windows/ 直接使用curl curl -LO https://dl.k8s.io/release/v1.21.0/bin/windows/amd64/kubectl.exe 如果提示curl命令不存在，可以先安装一下curl，不过这里建议直接用github的curl（如果你安装了github的话），目录在github</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-04-24</span>
+                        <a class="tag"
+                                   href="/tags/kubernetes/">Kubernetes</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/docker/win10%E5%AE%89%E8%A3%85docker/">Win10安装docker</a>
                 </h2>
             </div>
@@ -142,6 +200,25 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/k8s/k8s%E6%A6%82%E8%BF%B0/">k8s概述</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>集群架构与组件 Kubernetes 集群架构以及相关的核心组件如下图所示：一个 Kubernetes 集群一般包含一个 Master 节点和多个 Node 节点，一个节点可以看成是一台物理机或虚拟机。 Master Master 是 K8S 的集群控制节点，每个 K8S 集群里需要有一个 Master 节点来负责整个集群的管理和控制，基本上 K8S 所有的控制命令都是发给它，它来负责具体的执行过程。Master 节点通常会占据一个独立的服务器，因为它太重要了，如果它不可用，那么所有的控制</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-04-01</span>
+                        <a class="tag"
+                                   href="/tags/kubernetes/">kubernetes</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/go/basic/go%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F%E6%98%AF%E5%80%BC%E4%BC%A0%E9%80%92/">Go函数的参数传递方式是值传递</a>
                 </h2>
             </div>
@@ -174,83 +251,6 @@
                         <a class="tag"
                                    href="/tags/iota/">iota</a><a class="tag"
                                    href="/tags/go/">go</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/go/basic/golang-template%E4%BD%BF%E7%94%A8%E6%A0%B7%E4%BE%8B/">Golang template 使用样例</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>Go标准库提供了几个package可以产生输出结果，而text/template 提供了基于模板输出文本内容的功能。html/template 则是产生 安全的HTML格式的输出。 01 text/template样例 Golang text/template 包是一个数据驱动的模版渲染工具。提供条件判断，数组或map遍历；参数赋值，函数或方法调用；自定义函数扩展，模板嵌套及重用等功能。基于该工具，可以轻松实</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-03-10</span>
-                        <a class="tag"
-                                   href="/tags/template/">template</a><a class="tag"
-                                   href="/tags/go/">go</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/distributed/%E4%BC%A0%E7%BB%9F%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%9F%94%E6%80%A7%E4%BA%8B%E5%8A%A1/">传统事务与柔性事务</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>柔性事务之前我们先来回归传统事务 传统事务 第一次接触事务的时候，被人告知事务是原子的，要么都成功要么都失败。再进一步就有ACID这四 个属性，原子性（Atomictiy）、一致性（Consistency）、隔离性（Isolation）、持久性（Durabilit）。 我们首先看下一些书籍中的官方描述： 原子性：事务是一个包含一系列操作的原子操作。事务的原子性确保这些</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-03-02</span>
-                        <a class="tag"
-                                   href="/tags/%E4%BA%8B%E5%8A%A1/">事务</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/linux/%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%B6%E6%8B%B7%E8%B4%9D/">什么是零拷贝</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>前言 磁盘可以说是计算机系统最慢的硬件之一，读写速度相差内存 10 倍以上，所以针对优化磁盘的技术非常的多，比如零拷贝、直接 I/O、异步 I/O 等等，这些优化的目的就是为了提高系统的吞吐量，另外操作系统内核中的磁盘高速缓存区，可以有效的减少磁盘的访问次数。 这次，我们就以「文件传输」作为切入点，来分析 I/O 工作方式，以及如何优化传输文件的性能。 为什么要有 DMA 技术? 在没有 DMA 技术前，</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-02-25</span>
-                        <a class="tag"
-                                   href="/tags/linux/">Linux</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F-%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/">分布式系统---幂等性设计</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>WEB资源或API方法的幂等性是指一次和多次请求某一个资源应该具有同样的副作用。 幂等性是系统的接口对外一种承诺(而不是实现), 承诺只要调用接口成功, 外部多次调用对系统的影响是一致的。 幂等性是分布式系统设计中的一个重要概念，对超时处理、系统恢复等具有重要意义。声明为幂等的接口会认为外部调用失败是常态, 并且失败之后必然会有重试。例如，在因网络中断等原因导致请求方</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-02-05</span>
-                        <a class="tag"
-                                   href="/tags/%E5%B9%82%E7%AD%89%E6%80%A7/">幂等性</a>
                     </div>
                 </div>
             </div>
