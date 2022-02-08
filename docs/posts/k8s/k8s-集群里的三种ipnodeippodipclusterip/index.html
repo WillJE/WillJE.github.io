@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="Kubernetes 集群里的三种IP">
+<meta itemprop="description" content="Kubernetes集群里有三种IP地址，分别如下： Node IP：Node节点的IP地址，即物理网卡的IP地址。 Pod IP：Pod的IP地址，即docker容器的IP地址，此为虚拟IP地址。 Cluster IP：Service的IP地址，此为虚拟IP地址。 Node IP 可以是物理机的IP（也可能是虚拟机IP）。每个Service都会在Node节点上开通一个端口，外部可以通过NodeIP:No"><meta itemprop="datePublished" content="2021-11-23T21:23:18&#43;08:00" />
+<meta itemprop="dateModified" content="2021-11-23T21:23:18&#43;08:00" />
+<meta itemprop="wordCount" content="1082">
+<meta itemprop="keywords" content="kubernetes," /><meta property="og:title" content="Kubernetes 集群里的三种IP" />
+<meta property="og:description" content="Kubernetes集群里有三种IP地址，分别如下： Node IP：Node节点的IP地址，即物理网卡的IP地址。 Pod IP：Pod的IP地址，即docker容器的IP地址，此为虚拟IP地址。 Cluster IP：Service的IP地址，此为虚拟IP地址。 Node IP 可以是物理机的IP（也可能是虚拟机IP）。每个Service都会在Node节点上开通一个端口，外部可以通过NodeIP:No" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/k8s/k8s-%E9%9B%86%E7%BE%A4%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dipnodeippodipclusterip/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-11-23T21:23:18&#43;08:00" />
+<meta property="article:modified_time" content="2021-11-23T21:23:18&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Kubernetes 集群里的三种IP"/>
+<meta name="twitter:description" content="Kubernetes集群里有三种IP地址，分别如下： Node IP：Node节点的IP地址，即物理网卡的IP地址。 Pod IP：Pod的IP地址，即docker容器的IP地址，此为虚拟IP地址。 Cluster IP：Service的IP地址，此为虚拟IP地址。 Node IP 可以是物理机的IP（也可能是虚拟机IP）。每个Service都会在Node节点上开通一个端口，外部可以通过NodeIP:No"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Kubernetes 集群里的三种IP</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Nov 23, 2021</span></div>
+				<h1>Kubernetes 集群里的三种IP</h1>
+			</header>
+			<div class="content">
+				<p>Kubernetes集群里有三种IP地址，分别如下：</p>
+<p>Node IP：Node节点的IP地址，即物理网卡的IP地址。
+Pod IP：Pod的IP地址，即docker容器的IP地址，此为虚拟IP地址。
+Cluster IP：Service的IP地址，此为虚拟IP地址。</p>
+<p><strong>Node IP</strong></p>
+<p>可以是物理机的IP（也可能是虚拟机IP）。每个Service都会在Node节点上开通一个端口，外部可以通过NodeIP:NodePort即可访问Service里的Pod,和我们访问服务器部署的项目一样，IP:端口/项目名</p>
+<p>在kubernetes查询Node IP
+1.<code>kubectl get nodes</code>
+<p class="md__image">
+  <img src="../k8s-%e9%9b%86%e7%be%a4%e9%87%8c%e7%9a%84%e4%b8%89%e7%a7%8dIP%ef%bc%88NodeIP%e3%80%81PodIP%e3%80%81ClusterIP%ef%bc%89.assets/1784001-20210329163646240-961876213.png"
+    alt="img"  />
+</p>
+</p>
+<p>2.<code>kubectl describe node nodeName</code>
+<p class="md__image">
+  <img src="../k8s-%e9%9b%86%e7%be%a4%e9%87%8c%e7%9a%84%e4%b8%89%e7%a7%8dIP%ef%bc%88NodeIP%e3%80%81PodIP%e3%80%81ClusterIP%ef%bc%89.assets/1784001-20210329163809717-1944608019.png"
+    alt="img"  />
+</p>
+</p>
+<p>3.显示出来的InternalIP就是NodeIP</p>
+<p><strong>Pod IP</strong></p>
+<p>Pod IP是每个Pod的IP地址，他是Docker Engine根据docker网桥的IP地址段进行分配的，通常是一个虚拟的二层网络</p>
+<p>同Service下的pod可以直接根据PodIP相互通信
+不同Service下的pod在集群间pod通信要借助于 cluster ip
+pod和集群外通信，要借助于node ip
+在kubernetes查询Pod IP
+1.<code>kubectl get pods</code>
+<p class="md__image">
+  <img src="../k8s-%e9%9b%86%e7%be%a4%e9%87%8c%e7%9a%84%e4%b8%89%e7%a7%8dIP%ef%bc%88NodeIP%e3%80%81PodIP%e3%80%81ClusterIP%ef%bc%89.assets/1784001-20210329164039462-1456163521.png"
+    alt="img"  />
+</p>
+</p>
+<p>2.<code>kubectl describe pod podName</code>
+<p class="md__image">
+  <img src="../k8s-%e9%9b%86%e7%be%a4%e9%87%8c%e7%9a%84%e4%b8%89%e7%a7%8dIP%ef%bc%88NodeIP%e3%80%81PodIP%e3%80%81ClusterIP%ef%bc%89.assets/1784001-20210329165118141-1415895860.png"
+    alt="img"  />
+</p>
+</p>
+<p><strong>Cluster IP</strong></p>
+<p>Service的IP地址，此为虚拟IP地址。外部网络无法ping通，只有kubernetes集群内部访问使用。</p>
+<p>在kubernetes查询Cluster IP
+kubectl -n 命名空间 get Service即可看到ClusterIP
+<p class="md__image">
+  <img src="../k8s-%e9%9b%86%e7%be%a4%e9%87%8c%e7%9a%84%e4%b8%89%e7%a7%8dIP%ef%bc%88NodeIP%e3%80%81PodIP%e3%80%81ClusterIP%ef%bc%89.assets/1784001-20210329165757144-1313296989.png"
+    alt="img"  />
+</p>
+</p>
+<p>Cluster IP是一个虚拟的IP，但更像是一个伪造的IP网络，原因有以下几点</p>
+<p>Cluster IP仅仅作用于Kubernetes Service这个对象，并由Kubernetes管理和分配P地址
+Cluster IP无法被ping，他没有一个“实体网络对象”来响应
+Cluster IP只能结合Service Port组成一个具体的通信端口，单独的Cluster IP不具备通信的基础，并且他们属于Kubernetes集群这样一个封闭的空间。
+在不同Service下的pod节点在集群间相互访问可以通过Cluster IP</p>
+<p><strong>三种IP网络间的通信</strong></p>
+<p>service地址和pod地址在不同网段，service地址为虚拟地址，不配在pod上或主机上，外部访问时，先到Node节点网络，再转到service网络，最后代理给pod网络。
+<p class="md__image">
+  <img src="../k8s-%e9%9b%86%e7%be%a4%e9%87%8c%e7%9a%84%e4%b8%89%e7%a7%8dIP%ef%bc%88NodeIP%e3%80%81PodIP%e3%80%81ClusterIP%ef%bc%89.assets/1784001-20210329170021482-808579945.png"
+    alt="img"  />
+</p>
+</p>
+<p>Kubernetes在其所有节点上开放一个端口给外部访问（所有节点上都使用相同的端口号）， 并将传入的连接转发给作为Service服务对象的pod。这样我们的pod就可以被外部请求访问到
+<p class="md__image">
+  <img src="../k8s-%e9%9b%86%e7%be%a4%e9%87%8c%e7%9a%84%e4%b8%89%e7%a7%8dIP%ef%bc%88NodeIP%e3%80%81PodIP%e3%80%81ClusterIP%ef%bc%89.assets/1784001-20210329170129088-92974469.png"
+    alt="img"  />
+</p>
+</p>
+<p>注：
+k8s暴露服务给外部访问有三种方式，NodePort、LoadBalane、Ingress三种暴露服务的方式，上图是用了NodePort的方式，缺点是服务一旦多起来，NodePort 在每个节点上开启的端口数量会极其庞大，难以维护。</p>
+
+			</div><div class="content">
+	<br>
+	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/k8s/kubelet%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">Kubelet实现原理</a></li>
+	
+	<li><a href="/posts/k8s/kubernetes-port%E7%B1%BB%E5%9E%8B/">Kubernetes port类型</a></li>
+	
+	<li><a href="/posts/k8s/k8s%E5%85%A5%E9%97%A8/">k8s入门</a></li>
+	
+	<li><a href="/posts/docker/win10%E4%BD%BF%E7%94%A8wsl%E9%83%A8%E7%BD%B2k8s%E7%8E%AF%E5%A2%83/">Win10使用wsl部署k8s环境</a></li>
+	
+	<li><a href="/posts/k8s/k8s%E6%A6%82%E8%BF%B0/">k8s概述</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/kubernetes">kubernetes</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1082 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-11-23 21:23 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents"></nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="prev-post" href="https://willje.github.io/posts/linux/centos%E5%AE%89%E8%A3%85nodejs%E5%92%8Cpython/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Centos安装Nodejs和Python</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

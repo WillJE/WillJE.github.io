@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="">
+<meta itemprop="description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。
+滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。
+可用滑动窗口思想解决的问题，一般有如下特点：
+ 窗口内元素是连续的。就是说，抽象出来的这个可滑动的窗口，在原数组或字符串上是连续的。 窗口只能由左向右滑动，不能逆过来滑动。就是说，窗口的左右边界，只能从左到右增加，不能减少，即使局部也不可以。  算法思路  使用双指针中的左右指针技巧，初始化 left = right = 0，把索引闭区间 [left, right] 称为一个「窗口」。 先不断地增加 right 指针扩大窗口 [left, right]，直到窗口符合要求 停止增加 right，转而不断增加 left 指针缩小窗口 [left, right]，直到窗口中的字符串不再符合要求。同时，每次增加 left，我们都要更新一轮结果。 重复第 2 和第 3 步，直到 right 到达尽头。   第 2 步相当于在寻找一个「可行解」，然后第 3 步在优化这个「可行解」，最终找到最优解。 左右指针轮流前进，窗口大小增增减减，窗口不断向右滑动。
+ 代码模板
+left,right := 0,0 // 左右指针// 窗口右边界滑动for right &lt; length {window.add(s[right]) // 右元素进窗right&#43;&#43; // 右指针增加// 窗口满足条件for valid(window) &amp;&amp; left&lt;right {... // 满足条件后的操作window.remove(arr[left]) // 左元素出窗left&#43;&#43; // 左指针移动，直到窗口不满足条件}}注意:
+ 滑动窗口适用的题目一般具有单调性 滑动窗口、双指针、单调队列和单调栈经常配合使用  滑动窗口的思路很简单，但在leetcode上关于滑动窗口的题目一般都是mid甚至hard的题目。其难点在于，如何抽象窗口内元素的操作，验证窗口是否符合要求的过程。 即上面步骤2，步骤3的两个过程。
+说的有点生涩。来两个例子说明一下。
+连续子数组的最大和  给定一个整数数组，计算长度为n的连续子数组的最大和。
+比如，给定arr=[1,2,3,4]，n=2，则其连续子数组的最大和为7。其长度为2的连续子数组为[1,2],[2,3],[3,4]，和最大就是3&#43;4=7。
+ 所有问题都可以用穷举法解决，比如这个。我们可以穷举出所有长度为n的子数组，然后计算每个子数组的和，再求最大值。穷举法能实现，但是效率非常低。因为在穷举的过程中会嵌套循环。
+滑动窗口的思想就是，把这个要求和的子数组当成一个窗口，然后在数组上滑动。如下图所示：
+ 我们维护一个长度为2的窗口，然后依次滑动这个窗口直至结束。在滑动时，出一个左边元素，进一个右边元素，计算这个窗口内的元素和，然后和最大和比较。滑动结束，也就求出了最大和是多少。
+func maxSubSum(nums []int, n int) int { if n &lt;= 0 { return 0 } if n &gt;= len(nums) { n = len(nums) } // sum 标记窗口内元素和  // maxSum标记sum的最大值  sum, maxSum := 0, 0 // 初始化窗口  for i := 0; i &lt; n; i&#43;&#43; { sum &#43;= nums[i] } maxSum = sum // 滑动窗口  for i := n; i &lt; len(nums); i&#43;&#43; { // 左出右进  sum = sum - nums[i-n] &#43; nums[i] if sum &gt; maxSum { maxSum = sum } } return maxSum } 和为target的连续正整数序列  输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。">
+
+<meta itemprop="wordCount" content="1416">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="" />
+<meta property="og:description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。
+滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。
+可用滑动窗口思想解决的问题，一般有如下特点：
+ 窗口内元素是连续的。就是说，抽象出来的这个可滑动的窗口，在原数组或字符串上是连续的。 窗口只能由左向右滑动，不能逆过来滑动。就是说，窗口的左右边界，只能从左到右增加，不能减少，即使局部也不可以。  算法思路  使用双指针中的左右指针技巧，初始化 left = right = 0，把索引闭区间 [left, right] 称为一个「窗口」。 先不断地增加 right 指针扩大窗口 [left, right]，直到窗口符合要求 停止增加 right，转而不断增加 left 指针缩小窗口 [left, right]，直到窗口中的字符串不再符合要求。同时，每次增加 left，我们都要更新一轮结果。 重复第 2 和第 3 步，直到 right 到达尽头。   第 2 步相当于在寻找一个「可行解」，然后第 3 步在优化这个「可行解」，最终找到最优解。 左右指针轮流前进，窗口大小增增减减，窗口不断向右滑动。
+ 代码模板
+left,right := 0,0 // 左右指针// 窗口右边界滑动for right &lt; length {window.add(s[right]) // 右元素进窗right&#43;&#43; // 右指针增加// 窗口满足条件for valid(window) &amp;&amp; left&lt;right {... // 满足条件后的操作window.remove(arr[left]) // 左元素出窗left&#43;&#43; // 左指针移动，直到窗口不满足条件}}注意:
+ 滑动窗口适用的题目一般具有单调性 滑动窗口、双指针、单调队列和单调栈经常配合使用  滑动窗口的思路很简单，但在leetcode上关于滑动窗口的题目一般都是mid甚至hard的题目。其难点在于，如何抽象窗口内元素的操作，验证窗口是否符合要求的过程。 即上面步骤2，步骤3的两个过程。
+说的有点生涩。来两个例子说明一下。
+连续子数组的最大和  给定一个整数数组，计算长度为n的连续子数组的最大和。
+比如，给定arr=[1,2,3,4]，n=2，则其连续子数组的最大和为7。其长度为2的连续子数组为[1,2],[2,3],[3,4]，和最大就是3&#43;4=7。
+ 所有问题都可以用穷举法解决，比如这个。我们可以穷举出所有长度为n的子数组，然后计算每个子数组的和，再求最大值。穷举法能实现，但是效率非常低。因为在穷举的过程中会嵌套循环。
+滑动窗口的思想就是，把这个要求和的子数组当成一个窗口，然后在数组上滑动。如下图所示：
+ 我们维护一个长度为2的窗口，然后依次滑动这个窗口直至结束。在滑动时，出一个左边元素，进一个右边元素，计算这个窗口内的元素和，然后和最大和比较。滑动结束，也就求出了最大和是多少。
+func maxSubSum(nums []int, n int) int { if n &lt;= 0 { return 0 } if n &gt;= len(nums) { n = len(nums) } // sum 标记窗口内元素和  // maxSum标记sum的最大值  sum, maxSum := 0, 0 // 初始化窗口  for i := 0; i &lt; n; i&#43;&#43; { sum &#43;= nums[i] } maxSum = sum // 滑动窗口  for i := n; i &lt; len(nums); i&#43;&#43; { // 左出右进  sum = sum - nums[i-n] &#43; nums[i] if sum &gt; maxSum { maxSum = sum } } return maxSum } 和为target的连续正整数序列  输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/algorithm/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3/" /><meta property="article:section" content="posts" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。
+滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。
+可用滑动窗口思想解决的问题，一般有如下特点：
+ 窗口内元素是连续的。就是说，抽象出来的这个可滑动的窗口，在原数组或字符串上是连续的。 窗口只能由左向右滑动，不能逆过来滑动。就是说，窗口的左右边界，只能从左到右增加，不能减少，即使局部也不可以。  算法思路  使用双指针中的左右指针技巧，初始化 left = right = 0，把索引闭区间 [left, right] 称为一个「窗口」。 先不断地增加 right 指针扩大窗口 [left, right]，直到窗口符合要求 停止增加 right，转而不断增加 left 指针缩小窗口 [left, right]，直到窗口中的字符串不再符合要求。同时，每次增加 left，我们都要更新一轮结果。 重复第 2 和第 3 步，直到 right 到达尽头。   第 2 步相当于在寻找一个「可行解」，然后第 3 步在优化这个「可行解」，最终找到最优解。 左右指针轮流前进，窗口大小增增减减，窗口不断向右滑动。
+ 代码模板
+left,right := 0,0 // 左右指针// 窗口右边界滑动for right &lt; length {window.add(s[right]) // 右元素进窗right&#43;&#43; // 右指针增加// 窗口满足条件for valid(window) &amp;&amp; left&lt;right {... // 满足条件后的操作window.remove(arr[left]) // 左元素出窗left&#43;&#43; // 左指针移动，直到窗口不满足条件}}注意:
+ 滑动窗口适用的题目一般具有单调性 滑动窗口、双指针、单调队列和单调栈经常配合使用  滑动窗口的思路很简单，但在leetcode上关于滑动窗口的题目一般都是mid甚至hard的题目。其难点在于，如何抽象窗口内元素的操作，验证窗口是否符合要求的过程。 即上面步骤2，步骤3的两个过程。
+说的有点生涩。来两个例子说明一下。
+连续子数组的最大和  给定一个整数数组，计算长度为n的连续子数组的最大和。
+比如，给定arr=[1,2,3,4]，n=2，则其连续子数组的最大和为7。其长度为2的连续子数组为[1,2],[2,3],[3,4]，和最大就是3&#43;4=7。
+ 所有问题都可以用穷举法解决，比如这个。我们可以穷举出所有长度为n的子数组，然后计算每个子数组的和，再求最大值。穷举法能实现，但是效率非常低。因为在穷举的过程中会嵌套循环。
+滑动窗口的思想就是，把这个要求和的子数组当成一个窗口，然后在数组上滑动。如下图所示：
+ 我们维护一个长度为2的窗口，然后依次滑动这个窗口直至结束。在滑动时，出一个左边元素，进一个右边元素，计算这个窗口内的元素和，然后和最大和比较。滑动结束，也就求出了最大和是多少。
+func maxSubSum(nums []int, n int) int { if n &lt;= 0 { return 0 } if n &gt;= len(nums) { n = len(nums) } // sum 标记窗口内元素和  // maxSum标记sum的最大值  sum, maxSum := 0, 0 // 初始化窗口  for i := 0; i &lt; n; i&#43;&#43; { sum &#43;= nums[i] } maxSum = sum // 滑动窗口  for i := n; i &lt; len(nums); i&#43;&#43; { // 左出右进  sum = sum - nums[i-n] &#43; nums[i] if sum &gt; maxSum { maxSum = sum } } return maxSum } 和为target的连续正整数序列  输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title></title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jan 1, 0001</span></div>
+				<h1></h1>
+			</header>
+			<div class="content">
+				<p>滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。</p>
+<p>滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。</p>
+<p>可用滑动窗口思想解决的问题，一般有如下特点：</p>
+<ol>
+<li>窗口内元素是连续的。就是说，抽象出来的这个可滑动的窗口，在原数组或字符串上是连续的。</li>
+<li>窗口只能由左向右滑动，不能逆过来滑动。就是说，窗口的左右边界，只能从左到右增加，不能减少，即使局部也不可以。</li>
+</ol>
+<h2 id="算法思路">算法思路<a href="#算法思路" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ol>
+<li>使用双指针中的左右指针技巧，初始化 left = right = 0，把索引闭区间 [left, right] 称为一个「窗口」。</li>
+<li>先不断地增加 right 指针扩大窗口 [left, right]，直到窗口符合要求</li>
+<li>停止增加 right，转而不断增加 left 指针缩小窗口 [left, right]，直到窗口中的字符串不再符合要求。同时，每次增加 left，我们都要更新一轮结果。</li>
+<li>重复第 2 和第 3 步，直到 right 到达尽头。</li>
+</ol>
+<blockquote>
+<p>第 2 步相当于在寻找一个「可行解」，然后第 3 步在优化这个「可行解」，最终找到最优解。 左右指针轮流前进，窗口大小增增减减，窗口不断向右滑动。</p>
+</blockquote>
+<p><strong>代码模板</strong></p>
+<pre><code>left,right := 0,0 // 左右指针
+
+// 窗口右边界滑动
+for right &lt; length {
+  window.add(s[right])      // 右元素进窗
+  right++                   // 右指针增加
+
+  // 窗口满足条件
+  for valid(window) &amp;&amp; left&lt;right {
+    ...                      // 满足条件后的操作
+    window.remove(arr[left]) // 左元素出窗
+    left++                   // 左指针移动，直到窗口不满足条件
+  }
+}
+</code></pre><p>注意:</p>
+<ul>
+<li>滑动窗口适用的题目一般具有单调性</li>
+<li>滑动窗口、双指针、单调队列和单调栈经常配合使用</li>
+</ul>
+<p>滑动窗口的思路很简单，但在leetcode上关于滑动窗口的题目一般都是mid甚至hard的题目。其难点在于，如何抽象窗口内元素的操作，验证窗口是否符合要求的过程。
+即上面步骤2，步骤3的两个过程。</p>
+<p>说的有点生涩。来两个例子说明一下。</p>
+<h2 id="连续子数组的最大和">连续子数组的最大和<a href="#连续子数组的最大和" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<blockquote>
+<p>给定一个整数数组，计算长度为n的连续子数组的最大和。</p>
+<p>比如，给定arr=[1,2,3,4]，n=2，则其连续子数组的最大和为7。其长度为2的连续子数组为[1,2],[2,3],[3,4]，和最大就是3+4=7。</p>
+</blockquote>
+<p>所有问题都可以用穷举法解决，比如这个。我们可以穷举出所有长度为n的子数组，然后计算每个子数组的和，再求最大值。穷举法能实现，但是效率非常低。因为在穷举的过程中会嵌套循环。</p>
+<p>滑动窗口的思想就是，把这个要求和的子数组当成一个窗口，然后在数组上滑动。如下图所示：</p>
+<p><a href="https://img001-10042971.cos.ap-shanghai.myqcloud.com/blog/ccsite/Xnip2020-04-30_19-07-54.png" target="_blank" rel="noopener"><p class="md__image">
+  <img src="../%e6%bb%91%e5%8a%a8%e7%aa%97%e5%8f%a3%e7%ae%97%e6%b3%95%e6%80%9d%e6%83%b3.assets/Xnip2020-04-30_19-07-54.png"
+    alt="滑动窗口"  />
+</p>
+</a>
+</p>
+<p>我们维护一个长度为2的窗口，然后依次滑动这个窗口直至结束。在滑动时，出一个左边元素，进一个右边元素，计算这个窗口内的元素和，然后和最大和比较。滑动结束，也就求出了最大和是多少。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">maxSubSum</span><span class="p">(</span><span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+  <span class="k">if</span> <span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="mi">0</span>
+  <span class="p">}</span>
+  <span class="k">if</span> <span class="nx">n</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">n</span> <span class="p">=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span>
+  <span class="p">}</span>
+  <span class="c1">// sum 标记窗口内元素和
+</span><span class="c1"></span>  <span class="c1">// maxSum标记sum的最大值
+</span><span class="c1"></span>  <span class="nx">sum</span><span class="p">,</span> <span class="nx">maxSum</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+  <span class="c1">// 初始化窗口
+</span><span class="c1"></span>  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+    <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+  <span class="p">}</span>
+  <span class="nx">maxSum</span> <span class="p">=</span> <span class="nx">sum</span>
+  <span class="c1">// 滑动窗口
+</span><span class="c1"></span>  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+    <span class="c1">// 左出右进
+</span><span class="c1"></span>    <span class="nx">sum</span> <span class="p">=</span> <span class="nx">sum</span> <span class="o">-</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="nx">n</span><span class="p">]</span> <span class="o">+</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+    <span class="k">if</span> <span class="nx">sum</span> <span class="p">&gt;</span> <span class="nx">maxSum</span> <span class="p">{</span>
+      <span class="nx">maxSum</span> <span class="p">=</span> <span class="nx">sum</span>
+    <span class="p">}</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="nx">maxSum</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="和为target的连续正整数序列">和为target的连续正整数序列<a href="#和为target的连续正整数序列" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<blockquote>
+<p>输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。</p>
+<p>序列内的数字由小到大排列，不同序列按照首个数字从小到大排列。</p>
+<p>示例 1：
+输入：target = 9
+输出：<code>[[2,3,4],[4,5]]</code></p>
+<p>示例 2：
+输入：target = 15
+输出：<code>[[1,2,3,4,5],[4,5,6],[7,8]]</code></p>
+<p>限制：
+<code>1 &lt;= target &lt;= 10^5</code></p>
+</blockquote>
+<p>这个题目和上面这个就不大一样了。上面这个窗口的长度是固定的n，而这个，不是固定的。</p>
+<p>对于滑动窗口思想，有一点需要记住：<strong>窗口只能从左到右，沿一个方向滑动。</strong></p>
+<p>由于窗口长度不定，所以，这里分三种情况：</p>
+<ol>
+<li>窗口内元素和小于target，需要扩大窗口。窗口右边界移动。</li>
+<li>窗口内元素和大于target，需要缩小窗口。窗口左边界移动。</li>
+<li>窗口内元素和等于target，记录结果。窗口向右滑动。</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">findContinuousSequence</span><span class="p">(</span><span class="nx">target</span> <span class="kt">int</span><span class="p">)</span> <span class="p">[][]</span><span class="kt">int</span> <span class="p">{</span>
+  <span class="c1">// 记录窗口内元素和
+</span><span class="c1"></span>  <span class="nx">sum</span> <span class="o">:=</span> <span class="mi">0</span>
+  <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">right</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+    <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">i</span>
+  <span class="p">}</span>
+
+  <span class="nx">result</span> <span class="o">:=</span> <span class="p">[][]</span><span class="kt">int</span><span class="p">{}</span>
+  <span class="k">for</span> <span class="nx">left</span> <span class="o">&lt;=</span> <span class="nx">target</span><span class="o">-</span><span class="mi">1</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">sum</span> <span class="o">==</span> <span class="nx">target</span> <span class="p">{</span>
+      <span class="nx">tmp</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span><span class="p">)</span>
+      <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">left</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">right</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+        <span class="nx">tmp</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="nx">left</span><span class="p">]</span> <span class="p">=</span> <span class="nx">i</span>
+      <span class="p">}</span>
+      <span class="nx">result</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="nx">tmp</span><span class="p">)</span>
+      <span class="c1">// 窗口向右滑动
+</span><span class="c1"></span>      <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="p">=</span> <span class="nx">left</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nx">left</span><span class="o">+</span><span class="mi">3</span>
+      <span class="nx">sum</span> <span class="p">=</span> <span class="p">(</span><span class="nx">left</span> <span class="o">+</span> <span class="nx">left</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">sum</span> <span class="p">&lt;</span> <span class="nx">target</span> <span class="p">{</span>
+      <span class="c1">// 和小于target，窗口右侧向右移动
+</span><span class="c1"></span>      <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">right</span>
+      <span class="nx">right</span><span class="o">++</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">sum</span> <span class="p">&gt;</span> <span class="nx">target</span> <span class="p">{</span>
+      <span class="c1">// 和大于target，窗口左侧向右移动
+</span><span class="c1"></span>      <span class="nx">sum</span> <span class="o">-=</span> <span class="nx">left</span>
+      <span class="nx">left</span><span class="o">++</span>
+    <span class="p">}</span>
+
+    <span class="c1">// 如果窗口长度为2，且窗口内元素已经大于target，则可以终止滑动了
+</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">&amp;&amp;</span> <span class="nx">sum</span> <span class="p">&gt;</span> <span class="nx">target</span> <span class="p">{</span>
+      <span class="k">break</span>
+    <span class="p">}</span>
+
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">result</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="长度最小的子数组">长度最小的子数组<a href="#长度最小的子数组" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<blockquote>
+<p>给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的连续子数组，并返回其长度。如果不存在符合条件的连续子数组，返回 0。</p>
+<p>示例:
+输入: s = 7, nums = [2,3,1,2,4,3]
+输出: 2
+解释: 子数组 [4,3] 是该条件下的长度最小的连续子数组。</p>
+<p>进阶:
+如果你已经完成了O(n) 时间复杂度的解法, 请尝试 O(n log n) 时间复杂度的解法。</p>
+</blockquote>
+<p>这个问题可以说是上面一个题目的变形，上面一个是和正好等于target，而这个是求和大于等于target的最小子序列长度。
+上面这个题目窗口长度是固定的，这个是变长的。但其实利用滑动窗口的思想，难度也算简单。</p>
+<p>和上面一个题目一样，我们只需要一个sum变量来存储窗口内元素的和即可。</p>
+<p>当sum=s时，此时说明这个窗口是满足条件的，我们要判断此时窗口的长度是否是最小。另外，窗口左边界增加，缩小窗口。
+不断重复增大，缩小窗口的操作，直至窗口到数组末尾。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">minSubArrayLen</span><span class="p">(</span><span class="nx">s</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span>
+
+    <span class="nx">min</span> <span class="o">:=</span> <span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span>
+
+    <span class="c1">// 滑动窗口的左右指针
+</span><span class="c1"></span>    <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="c1">// 窗口内元素的和
+</span><span class="c1"></span>    <span class="nx">sum</span> <span class="o">:=</span> <span class="mi">0</span>
+    <span class="c1">// 当和小于s时，增大窗口
+</span><span class="c1"></span>    <span class="k">for</span> <span class="nx">sum</span> <span class="p">&lt;</span> <span class="nx">s</span> <span class="o">&amp;&amp;</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">length</span> <span class="p">{</span>
+
+        <span class="c1">// 如果最小窗口长度已经是1，那么窗口可终止滑动
+</span><span class="c1"></span>        <span class="k">if</span> <span class="nx">min</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+            <span class="k">break</span>
+        <span class="p">}</span>
+
+        <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span>
+        <span class="nx">right</span><span class="o">++</span>
+
+        <span class="c1">// 当和大于等于s时，缩小窗口
+</span><span class="c1"></span>        <span class="k">for</span> <span class="nx">sum</span> <span class="o">&gt;=</span> <span class="nx">s</span> <span class="p">{</span>
+            <span class="c1">// 比较此时窗口长度与记录的最小长度
+</span><span class="c1"></span>            <span class="k">if</span> <span class="nx">min</span> <span class="p">&gt;</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span> <span class="p">{</span>
+                <span class="nx">min</span> <span class="p">=</span> <span class="nx">right</span> <span class="o">-</span> <span class="nx">left</span>
+            <span class="p">}</span>
+            <span class="nx">sum</span> <span class="o">-=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span>
+            <span class="nx">left</span><span class="o">++</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="nx">min</span> <span class="o">==</span> <span class="nx">length</span><span class="o">+</span><span class="mi">1</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">min</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="水果成篮">水果成篮<a href="#水果成篮" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<blockquote>
+<p>在一排树中，第 i 棵树产生 tree[i] 型的水果。
+你可以从你选择的任何树开始，然后重复执行以下步骤：</p>
+<ol>
+<li>把这棵树上的水果放进你的篮子里。如果你做不到，就停下来。</li>
+<li>移动到当前树右侧的下一棵树。如果右边没有树，就停下来。
+请注意，在选择一颗树后，你没有任何选择：你必须执行步骤 1，然后执行步骤 2，然后返回步骤 1，然后执行步骤 2，依此类推，直至停止。</li>
+</ol>
+<p>你有两个篮子，每个篮子可以携带任何数量的水果，但你希望每个篮子只携带一种类型的水果。
+用这个程序你能收集的水果总量是多少？</p>
+<p>示例 1：
+输入：[1,2,1]
+输出：3
+解释：我们可以收集 [1,2,1]。</p>
+<p>示例 2：
+输入：[0,1,2,2]
+输出：3
+解释：我们可以收集 [1,2,2].
+如果我们从第一棵树开始，我们将只能收集到 [0, 1]。</p>
+<p>示例 3：
+输入：[1,2,3,2,2]
+输出：4
+解释：我们可以收集 [2,3,2,2].
+如果我们从第一棵树开始，我们将只能收集到 [1, 2]。</p>
+<p>示例 4：
+输入：[3,3,3,1,2,1,1,2,3,3,4]
+输出：5
+解释：我们可以收集 [1,2,1,1,2].
+如果我们从第一棵树或第八棵树开始，我们将只能收集到 4 个水果。</p>
+<p>提示：</p>
+<p>1 &lt;= tree.length &lt;= 40000
+0 &lt;= tree[i] &lt; tree.length</p>
+</blockquote>
+<p>这个题目，看完描述，都看不明白说的个啥。</p>
+<p>其实这个题目很简单，就是说，给定的一个数组，表示果树上结的水果。数组中的每一个不同的值表示一种不同类型的水果。</p>
+<p>现在你有两个篮子，需要从前往后收集水果。每个篮子只能装一种水果。收集的时候，需要注意，一个篮子只能装一种水果，且不能丢失重新装。</p>
+<p>问最后你能最多装多少个水果。</p>
+<p>再说直白点，<strong>这个题就是要你从一个整数数组中，找到其只包含两个元素的最长子数组。</strong></p>
+<p>理解了题意，这个题就很简单了。</p>
+<p>我们定义一个滑动的窗口，表示收集水果的篮子。</p>
+<p>如果窗口内收集的水果小于等于两种，那么我们增大窗口。
+如果窗口内收集的水果多于两种，那么我们减小窗口。
+然后在滑动的过程中，取到窗口的最大长度即可。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">totalFruit</span><span class="p">(</span><span class="nx">tree</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">tree</span><span class="p">)</span>
+
+    <span class="nx">max</span> <span class="o">:=</span> <span class="mi">0</span>
+    <span class="c1">// basketMap存储窗口内已收集的水果数量
+</span><span class="c1"></span>    <span class="nx">basketMap</span> <span class="o">:=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="kt">int</span><span class="p">{}</span>
+    <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+
+    <span class="c1">// 当窗口内元素个数小于等于2，增大窗口
+</span><span class="c1"></span>    <span class="k">for</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">length</span> <span class="o">&amp;&amp;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">basketMap</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="p">{</span>
+        <span class="nx">rightItem</span> <span class="o">:=</span> <span class="nx">tree</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span>
+        <span class="c1">// 增大窗口，右边元素入窗
+</span><span class="c1"></span>        <span class="nx">basketMap</span><span class="p">[</span><span class="nx">rightItem</span><span class="p">]</span><span class="o">++</span>
+        <span class="nx">right</span><span class="o">++</span>
+        <span class="c1">// 如果窗口内元素已大于2个，减小窗口
+</span><span class="c1"></span>        <span class="k">for</span> <span class="nb">len</span><span class="p">(</span><span class="nx">basketMap</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">2</span> <span class="p">{</span>
+            <span class="nx">leftItem</span> <span class="o">:=</span> <span class="nx">tree</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span>
+            <span class="nx">basketMap</span><span class="p">[</span><span class="nx">leftItem</span><span class="p">]</span><span class="o">--</span>
+            <span class="c1">// 如果左边元素出窗后，该类水果数量已为0，则delete该key
+</span><span class="c1"></span>            <span class="k">if</span> <span class="nx">basketMap</span><span class="p">[</span><span class="nx">leftItem</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+                <span class="nb">delete</span><span class="p">(</span><span class="nx">basketMap</span><span class="p">,</span> <span class="nx">leftItem</span><span class="p">)</span>
+            <span class="p">}</span>
+            <span class="nx">left</span><span class="o">++</span>
+        <span class="p">}</span>
+        <span class="nx">current</span> <span class="o">:=</span> <span class="nx">right</span> <span class="o">-</span> <span class="nx">left</span>
+        <span class="k">if</span> <span class="nx">max</span> <span class="p">&lt;</span> <span class="nx">current</span> <span class="p">{</span>
+            <span class="c1">// fmt.Printf(&#34;left: %d,right: %d\n&#34;, left, right)
+</span><span class="c1"></span>            <span class="nx">max</span> <span class="p">=</span> <span class="nx">current</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">max</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="最长不重复子串的长度">最长不重复子串的长度<a href="#最长不重复子串的长度" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<blockquote>
+<p>给定一个字符串str，找出其中不含有重复字符的最长子串的长度。</p>
+<p>例如，str=”abcabcdd”，最长不重复子串”abcd”的长度为4。</p>
+</blockquote>
+<p>这个问题和上面一个一样，也是窗口长度不定，需要变长移动窗口。</p>
+<p>不断增加窗口长度，如果在增加的过程中，遇到窗口中已经存在的字符，那么，将窗口左侧边界移动到当前已存在新入窗字符的位置。</p>
+<p><a href="https://img001-10042971.cos.ap-shanghai.myqcloud.com/blog/ccsite/slidingwindow/Xnip2020-05-01_00-11-35.png" target="_blank" rel="noopener"><p class="md__image">
+  <img src="../%e6%bb%91%e5%8a%a8%e7%aa%97%e5%8f%a3%e7%ae%97%e6%b3%95%e6%80%9d%e6%83%b3.assets/Xnip2020-05-01_00-11-35.png"
+    alt="示意图"  />
+</p>
+</a>
+</p>
+<pre><code>func lengthOfLongestSubstring(str string) int {
+  length := len(str)
+  if length == 0 || length == 1 {
+    return length
+  }
+
+  left, right := 0, 0
+  max := right - left
+
+  // 窗口，使用map保存在窗口中的子串
+  windowMap := map[byte]bool{}
+
+  for right &lt; length {
+    // 窗口右侧边界是否在窗口内
+    if !windowMap[str[right]] {
+      // 不在窗口内，右侧边界向右移动一格
+      windowMap[str[right]] = true
+      right++
+      // 判断当前窗口长度是否最大
+      if right-left &gt; max {
+        max = right - left
+      }
+    } else {
+      // 如果在窗口内，遇到重复的，窗口左侧边界移动到重复字符位置
+      for left &lt; right {
+        // 将左侧边界到重复位置的子串移出窗口
+        windowMap[str[left]] = false
+        if windowMap[str[left]] == windowMap[str[right]] {
+          left++
+          break
+        }
+        left++
+      }
+    }
+  }
+  return max
+}
+</code></pre><h2 id="字符串的排列">字符串的排列<a href="#字符串的排列" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<blockquote>
+<p>给定两个字符串 s1 和 s2，写一个函数来判断 s2 是否包含 s1 的排列。</p>
+<p>换句话说，第一个字符串的排列之一是第二个字符串的子串。</p>
+<p>示例1:
+输入: s1 = “ab” s2 = “eidbaooo”
+输出: True
+解释: s2 包含 s1 的排列之一 (“ba”).</p>
+<p>示例2:
+输入: s1= “ab” s2 = “eidboaoo”
+输出: False</p>
+<p>注意：
+输入的字符串只包含小写字母
+两个字符串的长度都在 [1, 10,000] 之间</p>
+</blockquote>
+<p>这个问题也可以用滑动窗口的思想来解决。因为我们在s2中判断子串是否是s1的排列时，这个子串在s2中一定是连续的。</p>
+<p>我们抽象一个窗口，用于记录s1中每个字符<strong>应该出现的次数</strong>，然后把这个窗口放到s2上滑动判断。</p>
+<p>当入窗时，次数减少。因为入窗相当于已经出现。
+当出窗时，次数增加。出窗相当于入窗的逆操作。</p>
+<pre><code>func checkInclusion(s1 string, s2 string) bool {
+  l1, l2 := len(s1), len(s2)
+  if l1 &gt; l2 {
+    return false
+  }
+
+  windowMap := map[byte]int{}
+
+  for i := 0; i &lt; l1; i++ {
+    windowMap[s1[i]]++
+  }
+
+  left, right := 0, 0
+  for right &lt; l2 {
+    c := s2[right]
+    // 入窗操作
+    windowMap[c]--
+    right++
+    // 如果出现次数差值为负数，说明字符出现次数过多。即s2中的这个字符其实在s1中并不存在（或存在，但比s1中个数多）
+    for left &lt; right &amp;&amp; windowMap[c] &lt; 0 {
+      // 出窗操作
+      windowMap[s2[left]]++
+      left++
+    }
+    // 如果窗口长度等于s1长度，说明窗口内的这些字符，在s1中都存在，即窗口内字符是s1的一个组合。
+    if right-left == l1 {
+      return true
+    }
+  }
+
+  return false
+}
+</code></pre><h2 id="最小覆盖子串">最小覆盖子串<a href="#最小覆盖子串" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<blockquote>
+<p>给定一个字符串S，一个字符串T，请在S中找出：包含T所有字母的最小子串。
+示例：
+输入：S=”ADOBECODEBANC”,T=”ABC”
+输出：”BANC”
+说明：
+如果S中不存在这样的子串，返回空字符串””
+如果S中存在这样的子串，我们保证它是唯一的答案。</p>
+</blockquote>
+<p>定义两个变量left,right，区间[left,right]表示窗口。</p>
+<p>滑动窗口的right边界，直到窗口内已包含T中所有字符，此时停止right的滑动。</p>
+<p>滑动窗口的left边界，直到窗口内不包含T中所有的字符，此时停止left的滑动。</p>
+<p>继续上面两个步骤，直接窗口滑动到S的末尾。</p>
+<p>滑动left，right边界简单。怎么判断窗口内是否包含T中所有字符呢？</p>
+<p>我们可以使用和上面一样的方法。记录字符应该出现的次数。当T的所有字符，在窗口内的次数都大于1时，则说明窗口内已包含T的所有字符。</p>
+<p>那么，怎么判断窗口内是否包含T中所有的字符呢？</p>
+<p>我们可以使用<strong>出现次数</strong>来判断，如同上一个题一样。先将T中所有字符出现次数放入哈希表，表示窗口中各个字符应该出现的次数。</p>
+<p>当窗口在滑动过程中，遇到T中的字符，那么说明这个字符已经出现，次数减一。当T中所有字符出现次数为0时，说明窗口内已经包含了T中所有的字符。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">minWindow</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">t</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+  <span class="nx">ls</span><span class="p">,</span> <span class="nx">lt</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span>
+  <span class="k">if</span> <span class="nx">ls</span> <span class="p">&lt;</span> <span class="nx">lt</span> <span class="p">{</span>
+  <span class="k">return</span> <span class="s">&#34;&#34;</span>
+  <span class="p">}</span>
+
+  <span class="c1">// 窗口里存的是t中字符应该出现的次数
+</span><span class="c1"></span>  <span class="c1">// 正数表示该字符还缺的出现次数，0表示刚好出现，负数表示s中字符出现的次数多于t中字符出现次数
+</span><span class="c1"></span>  <span class="nx">windowMap</span> <span class="o">:=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">byte</span><span class="p">]</span><span class="kt">int</span><span class="p">{}</span>
+  <span class="c1">// 初始化窗口
+</span><span class="c1"></span>
+  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">lt</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+    <span class="nx">windowMap</span><span class="p">[</span><span class="nx">t</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span><span class="o">++</span>
+  <span class="p">}</span>
+  <span class="nx">windowSize</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">windowMap</span><span class="p">)</span>
+  <span class="c1">// 其实在go语言里map有零值的概念，这块代码可以不要
+</span><span class="c1"></span>  <span class="c1">// 在其他语言，比如Java的HashMap没有零值概念，需要先初始化一下所有s中的字符出现次数
+</span><span class="c1"></span>  <span class="c1">// for i := 0; i &lt; ls; i++ {
+</span><span class="c1"></span>  <span class="c1">// 	if _, ok := windowMap[s[i]]; !ok {
+</span><span class="c1"></span>  <span class="c1">// 		windowMap[s[i]] = 0
+</span><span class="c1"></span>  <span class="c1">// 	}
+</span><span class="c1"></span>  <span class="c1">// }
+</span><span class="c1"></span>
+  <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+  <span class="c1">// 窗口中已经包含T的不同字符的种类
+</span><span class="c1"></span>  <span class="nx">c</span> <span class="o">:=</span> <span class="mi">0</span>
+  <span class="nx">ans</span> <span class="o">:=</span> <span class="s">&#34;&#34;</span>
+
+  <span class="k">for</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">ls</span> <span class="p">{</span>
+    <span class="c1">// 窗口右边界移动，扩大窗口
+</span><span class="c1"></span>    <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">right</span><span class="p">]]</span><span class="o">--</span>
+
+    <span class="c1">// 统计窗口中已经包含的T中的不同字符的种类
+</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">right</span><span class="p">]]</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+      <span class="nx">c</span><span class="o">++</span>
+    <span class="p">}</span>
+
+    <span class="c1">// c==windowSize说明窗口已经包含所有T中的字符
+</span><span class="c1"></span>    <span class="k">for</span> <span class="nx">c</span> <span class="o">==</span> <span class="nx">windowSize</span> <span class="o">&amp;&amp;</span> <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">left</span><span class="p">]]</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+      <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">left</span><span class="p">]]</span><span class="o">++</span>
+      <span class="nx">left</span><span class="o">++</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="nx">c</span> <span class="o">==</span> <span class="nx">windowSize</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">ans</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span><span class="o">+</span><span class="mi">1</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">ans</span><span class="p">)</span> <span class="p">{</span>
+        <span class="nx">ans</span> <span class="p">=</span> <span class="nx">s</span><span class="p">[</span><span class="nx">left</span> <span class="p">:</span> <span class="nx">right</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+      <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="nx">right</span><span class="o">++</span>
+  <span class="p">}</span>
+
+  <span class="k">return</span> <span class="nx">ans</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="滑动窗口最大值">滑动窗口最大值<a href="#滑动窗口最大值" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<blockquote>
+<p>给定一个数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。</p>
+<p>返回滑动窗口中的最大值。</p>
+<p>进阶：
+你能在线性时间复杂度内解决此题吗？</p>
+<p>示例:</p>
+<p>输入: nums = [1,3,-1,-3,5,3,6,7], 和 k = 3
+输出: [3,3,5,5,6,7]
+解释:</p>
+<pre><code>&gt;  滑动窗口的位置                最大值
+&gt; ---------------               -----
+&gt; [1  3  -1] -3  5  3  6  7      3
+&gt; 1 [3  -1  -3] 5  3  6  7       3
+&gt; 1  3 [-1  -3  5] 3  6  7       5
+&gt; 1  3  -1 [-3  5  3] 6  7       5
+&gt; 1  3  -1  -3 [5  3  6] 7       6
+&gt; 1  3  -1  -3  5 [3  6  7]      7
+&gt;
+</code></pre><p>提示：
+1 &lt;= nums.length &lt;= 10^5
+-10^4 &lt;= nums[i] &lt;= 10^4
+1 &lt;= k &lt;= nums.length</p>
+</blockquote>
+<p>这个从题目上就说的很直白，滑动窗口的最大值。输入一个数组和一个窗口的长度，然后输出这个窗口依次从左滑动到右时，窗口内的最大值。</p>
+<p>这个题目从理解上，比上面这些题目要简单（除了第一个）。因为窗口的长度是固定的，我们在移动时同步移动左右指针即可。唯一的难点在于，怎么选择窗口内的最大值。</p>
+<p>循环窗口内所有元素，选择最大值么？当然不是，如果是循环选择最大值的话，那复杂度不就是O(n*k)了么。</p>
+<p>除了同步滑动窗口的左右边界，剩下的就是如何在常数时间内获得窗口内的最大值，这个有点像leetcode 155最小栈那个类似，那个是实现一个最小栈，即支持栈的操作，然后可以在常数时间内获取栈内的最小值。这个的话，应该是实现一个最大队列，即支持队列的入队出队，然后在常数时间内获得队列里的最大值。因为这个窗口的滑动本身就是一个队列的操作，滑动一次，就是一个入队出队操作。</p>
+<p>这里我们使用双端队列来实现。由于golang中没有原生实现双端队列这个结构，因此这里自己简单用链表实现一个。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// -----双端队列实现 begin-------
+</span><span class="c1">// QueueNode 队列节点
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">QueueNode</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Val</span>  <span class="kt">int</span>
+    <span class="nx">Next</span> <span class="o">*</span><span class="nx">QueueNode</span>
+    <span class="nx">Pre</span>  <span class="o">*</span><span class="nx">QueueNode</span>
+<span class="p">}</span>
+
+<span class="c1">// DoubleQueue 双端队列
+</span><span class="c1"></span><span class="kd">type</span> <span class="nx">DoubleQueue</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Left</span>  <span class="o">*</span><span class="nx">QueueNode</span>
+    <span class="nx">Right</span> <span class="o">*</span><span class="nx">QueueNode</span>
+    <span class="nx">Size</span>  <span class="kt">int</span>
+<span class="p">}</span>
+<span class="c1">// LeftPeek 获取左端元素值
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">LeftPeek</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span><span class="p">.</span><span class="nx">Val</span>
+<span class="p">}</span>
+<span class="c1">// LeftPush 从左端插入新元素
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">LeftPush</span><span class="p">(</span><span class="nx">num</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">node</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">QueueNode</span><span class="p">)</span>
+    <span class="nx">node</span><span class="p">.</span><span class="nx">Val</span> <span class="p">=</span> <span class="nx">num</span>
+    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">node</span>
+        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">node</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span>
+        <span class="nx">current</span><span class="p">.</span><span class="nx">Pre</span> <span class="p">=</span> <span class="nx">node</span>
+        <span class="nx">node</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">current</span>
+        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">node</span>
+    <span class="p">}</span>
+
+    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">++</span>
+<span class="p">}</span>
+<span class="c1">// LeftPop 从左端弹出元素
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">LeftPop</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span>
+    <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Next</span>
+    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span><span class="p">.</span><span class="nx">Pre</span> <span class="p">=</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">--</span>
+    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Val</span>
+<span class="p">}</span>
+<span class="c1">// RightPeek 获取右端元素值
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">RightPeek</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span><span class="p">.</span><span class="nx">Val</span>
+<span class="p">}</span>
+<span class="c1">// RightPush 从右端插入新元素
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">RightPush</span><span class="p">(</span><span class="nx">num</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">node</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">QueueNode</span><span class="p">)</span>
+    <span class="nx">node</span><span class="p">.</span><span class="nx">Val</span> <span class="p">=</span> <span class="nx">num</span>
+    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">node</span>
+        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">node</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span>
+        <span class="nx">current</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">node</span>
+        <span class="nx">node</span><span class="p">.</span><span class="nx">Pre</span> <span class="p">=</span> <span class="nx">current</span>
+        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">node</span>
+    <span class="p">}</span>
+
+    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">++</span>
+<span class="p">}</span>
+<span class="c1">// RightPop 从右端弹出元素
+</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">RightPop</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span>
+    <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Pre</span>
+    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">--</span>
+    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Val</span>
+<span class="p">}</span>
+<span class="c1">// -----双端队列实现 end-------
+</span><span class="c1">// -----题目解答 begin------
+</span><span class="c1"></span><span class="kd">func</span> <span class="nf">maxSlidingWindow</span><span class="p">(</span><span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">k</span> <span class="kt">int</span><span class="p">)</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
+    <span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span>
+    <span class="nx">res</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{}</span>
+
+    <span class="c1">// 初始化一个双端队列，用于存储窗口内的最大值
+</span><span class="c1"></span>    <span class="nx">dq</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">DoubleQueue</span><span class="p">)</span>
+
+    <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">length</span> <span class="p">{</span>
+        <span class="nx">rightNum</span> <span class="o">:=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+            <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPush</span><span class="p">(</span><span class="nx">rightNum</span><span class="p">)</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">rightNum</span> <span class="p">&gt;</span> <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPeek</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPop</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPush</span><span class="p">(</span><span class="nx">rightNum</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="nx">right</span><span class="o">++</span>
+        <span class="k">if</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span> <span class="o">==</span> <span class="nx">k</span> <span class="p">{</span>
+            <span class="nx">res</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">res</span><span class="p">,</span> <span class="nx">dq</span><span class="p">.</span><span class="nf">LeftPeek</span><span class="p">())</span>
+            <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span> <span class="o">==</span> <span class="nx">dq</span><span class="p">.</span><span class="nf">LeftPeek</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">dq</span><span class="p">.</span><span class="nf">LeftPop</span><span class="p">()</span>
+            <span class="p">}</span>
+            <span class="nx">left</span><span class="o">++</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="nx">res</span>
+<span class="p">}</span>
+<span class="c1">// -----题目解答 end------
+</span></code></pre></div>
+			</div><div class="content">
+	<br>
+	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1416 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>0001-01-01 08:00 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/algorithm/leetcode/leetbook/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span></span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/distributed/cap%E5%AE%9A%E7%90%86%E7%9A%84%E8%AF%81%E6%98%8E/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span></span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

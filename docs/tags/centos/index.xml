@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Centos on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/centos/</link>
+    <description>Recent content in Centos on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sat, 30 Oct 2021 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/centos/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Centos安装Nodejs和Python</title>
+      <link>https://willje.github.io/posts/linux/centos%E5%AE%89%E8%A3%85nodejs%E5%92%8Cpython/</link>
+      <pubDate>Sat, 30 Oct 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/linux/centos%E5%AE%89%E8%A3%85nodejs%E5%92%8Cpython/</guid>
+      <description>一、node.js安装 首先下载并解压安装包： 注:历史版本可自行去https://nodejs.org/dist/ 下载 $ wget https://npm.taobao.org/mirrors/node/v14.5.0/node-v14.5.0-linux-x64.tar.gz $ tar -xzf node-v14.5.0-linux-x64.tar.gz 在/usr/local/bin中建立软连接方便我们在全局快捷运行 注：因为我得nodejs包是在/data/bin/nodejs中，各位看官请根据自己解压得路接自行更改 # 以下是把bin中所有都建立软连接 $ ln -s /data/bin/nodejs/default/bin/* /usr/local/bin/ 查看node.js是</description>
+    </item>
+    
+  </channel>
+</rss>

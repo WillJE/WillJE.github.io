@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>kubelet on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/kubelet/</link>
+    <description>Recent content in kubelet on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sun, 29 Aug 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/kubelet/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kubelet实现原理</title>
+      <link>https://willje.github.io/posts/k8s/kubelet%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Sun, 29 Aug 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/kubelet%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</guid>
+      <description>kubelet 主要功能 在kubernetes集群中，每个Node节点都会启动kubelet进程，用来处理Master节点下发到本节点的任务，管理Pod和其中的容器。 pod 管理 Kubelet 以 PodSpec 的方式工作。PodSpec 是描述一个 Pod 的 YAML 或 JSON 对象。 kubelet 采用一组通过各种机制提供的 PodSpecs（主要通过 apiserver），并确保这些 PodSpecs 中描述的 Pod 正常健康运行。 官方提供了4中方式来获取容器信息</description>
+    </item>
+    
+  </channel>
+</rss>

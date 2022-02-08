@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="Centos安装Nodejs和Python">
+<meta itemprop="description" content="一、node.js安装 首先下载并解压安装包： 注:历史版本可自行去https://nodejs.org/dist/ 下载 $ wget https://npm.taobao.org/mirrors/node/v14.5.0/node-v14.5.0-linux-x64.tar.gz $ tar -xzf node-v14.5.0-linux-x64.tar.gz 在/usr/local/bin中建立软连接方便我们在全局快捷运行 注：因为我得nodejs包是在/data/bin/nodejs中，各位看官请根据自己解压得路接自行更改 # 以下是把bin中所有都建立软连接 $ ln -s /data/bin/nodejs/default/bin/* /usr/local/bin/ 查看node.js是"><meta itemprop="datePublished" content="2021-10-30T20:55:29&#43;08:00" />
+<meta itemprop="dateModified" content="2021-10-30T20:55:29&#43;08:00" />
+<meta itemprop="wordCount" content="676">
+<meta itemprop="keywords" content="Centos,Nodejs,Python," /><meta property="og:title" content="Centos安装Nodejs和Python" />
+<meta property="og:description" content="一、node.js安装 首先下载并解压安装包： 注:历史版本可自行去https://nodejs.org/dist/ 下载 $ wget https://npm.taobao.org/mirrors/node/v14.5.0/node-v14.5.0-linux-x64.tar.gz $ tar -xzf node-v14.5.0-linux-x64.tar.gz 在/usr/local/bin中建立软连接方便我们在全局快捷运行 注：因为我得nodejs包是在/data/bin/nodejs中，各位看官请根据自己解压得路接自行更改 # 以下是把bin中所有都建立软连接 $ ln -s /data/bin/nodejs/default/bin/* /usr/local/bin/ 查看node.js是" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/linux/centos%E5%AE%89%E8%A3%85nodejs%E5%92%8Cpython/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-10-30T20:55:29&#43;08:00" />
+<meta property="article:modified_time" content="2021-10-30T20:55:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Centos安装Nodejs和Python"/>
+<meta name="twitter:description" content="一、node.js安装 首先下载并解压安装包： 注:历史版本可自行去https://nodejs.org/dist/ 下载 $ wget https://npm.taobao.org/mirrors/node/v14.5.0/node-v14.5.0-linux-x64.tar.gz $ tar -xzf node-v14.5.0-linux-x64.tar.gz 在/usr/local/bin中建立软连接方便我们在全局快捷运行 注：因为我得nodejs包是在/data/bin/nodejs中，各位看官请根据自己解压得路接自行更改 # 以下是把bin中所有都建立软连接 $ ln -s /data/bin/nodejs/default/bin/* /usr/local/bin/ 查看node.js是"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>Centos安装Nodejs和Python</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Oct 30, 2021</span></div>
+				<h1>Centos安装Nodejs和Python</h1>
+			</header>
+			<div class="content">
+				<h2 id="一nodejs安装">一、node.js安装<a href="#一nodejs安装" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>首先下载并解压安装包：
+注:历史版本可自行去<a href="https://link.segmentfault.com/?url=https%3A%2F%2Fnodejs.org%2Fdist%2F" target="_blank" rel="noopener">https://nodejs.org/dist/</a>
+下载</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ wget https://npm.taobao.org/mirrors/node/v14.5.0/node-v14.5.0-linux-x64.tar.gz
+$ tar -xzf node-v14.5.0-linux-x64.tar.gz
+</code></pre></div><p>在<code>/usr/local/bin</code>中建立软连接方便我们在全局快捷运行
+注：因为我得nodejs包是在<code>/data/bin/nodejs</code>中，各位看官请根据自己解压得路接自行更改</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># 以下是把bin中所有都建立软连接</span>
+$ ln -s /data/bin/nodejs/default/bin/* /usr/local/bin/
+</code></pre></div><p>查看<code>node.js</code>是否安装成功</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ node -v
+$ npm -v
+</code></pre></div><h2 id="二修改源">二、修改源<a href="#二修改源" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1">#查看当前镜像源</span>
+$ npm config get registry
+<span class="c1">#设置淘宝镜像源</span>
+$ npm config <span class="nb">set</span> <span class="nv">registry</span><span class="o">=</span>https://registry.npm.taobao.org
+</code></pre></div><h2 id="三安装python">三、安装Python<a href="#三安装python" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>先本地下载安装包，https://www.python.org/downloads/source/，然后上传到服务器上</p>
+<h3 id="1-我们先看看现有的-python2在哪里">1. 我们先看看现有的 python2在哪里<a href="#1-我们先看看现有的-python2在哪里" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="o">[</span>root@lidan /<span class="o">]</span><span class="c1"># whereis python</span>
+python: /usr/bin/python /usr/bin/python2.7 /usr/bin/python.bak /usr/lib/python2.7 /usr/lib64/python2.7 /etc/python /usr/include/python2.7 /usr/share/man/man1/python.1.gz
+<span class="o">[</span>root@lidan bin<span class="o">]</span><span class="c1"># ll python*</span>
+lrwxrwxrwx. <span class="m">1</span> root root    <span class="m">9</span> 5月  <span class="m">27</span> <span class="m">2016</span> python2 -&gt; python2.7
+-rwxr-xr-x. <span class="m">1</span> root root <span class="m">7136</span> 11月 <span class="m">20</span> <span class="m">2015</span> python2.7
+lrwxrwxrwx. <span class="m">1</span> root root    <span class="m">7</span> 5月  <span class="m">27</span> <span class="m">2016</span> python.bak -&gt; python2
+</code></pre></div><h3 id="2-接下来我们要安装编译-python3的相关包">2. 接下来我们要安装编译 Python3的相关包<a href="#2-接下来我们要安装编译-python3的相关包" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">yum install zlib-devel bzip2-devel openssl-devel ncurses-devel sqlite-devel readline-devel tk-devel gcc make libffi-devel
+</code></pre></div><p>这里面有一个包很关键<code>libffi-devel</code>，因为只有3.7才会用到这个包，如果不安装这个包的话，在 make 阶段会出现如下的报错：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1"># ModuleNotFoundError: No module named &#39;_ctypes&#39;</span>
+</code></pre></div><h3 id="3-安装pip因为-centos-是没有-pip-的">3. 安装pip，因为 CentOs 是没有 pip 的。<a href="#3-安装pip因为-centos-是没有-pip-的" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1">#运行这个命令添加epel扩展源 </span>
+yum -y install epel-release 
+<span class="c1">#安装pip </span>
+yum install python-pip
+</code></pre></div><h3 id="4-可以用-python-安装一下-wget">4. 可以用 python 安装一下 wget<a href="#4-可以用-python-安装一下-wget" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">pip install wget
+</code></pre></div><h3 id="5-我们可以下载-python37的源码包了">5. 我们可以下载 python3.7的源码包了<a href="#5-我们可以下载-python37的源码包了" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">wget https://www.python.org/ftp/python/3.7.0/Python-3.7.0.tgz
+<span class="c1">#解压缩</span>
+tar -zxvf Python-3.7.0.tgz
+
+<span class="c1">#进入解压后的目录，依次执行下面命令进行手动编译</span>
+./configure <span class="nv">prefix</span><span class="o">=</span>/usr/local/python3 
+make <span class="o">&amp;&amp;</span> make install
+</code></pre></div><p>如果最后没提示出错，就代表正确安装了，在/usr/local/目录下就会有python3目录</p>
+<h3 id="6-添加软链接">6. 添加软链接<a href="#6-添加软链接" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash"><span class="c1">#添加python3的软链接 </span>
+ln -s /usr/local/python3/bin/python3.7 /usr/bin/python3
+<span class="c1">#添加 pip3 的软链接 </span>
+ln -s /usr/local/python3/bin/pip3.7 /usr/bin/pip3
+<span class="c1">#测试是否安装成功了 </span>
+python3 -V
+</code></pre></div>
+			</div><div class="content">
+	<br>
+	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/centos">Centos</a></span><span class="tag"><a href="https://willje.github.io/tags/nodejs">Nodejs</a></span><span class="tag"><a href="https://willje.github.io/tags/python">Python</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>676 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-10-30 20:55 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#一nodejs安装">一、node.js安装</a></li>
+    <li><a href="#二修改源">二、修改源</a></li>
+    <li><a href="#三安装python">三、安装Python</a>
+      <ul>
+        <li><a href="#1-我们先看看现有的-python2在哪里">1. 我们先看看现有的 python2在哪里</a></li>
+        <li><a href="#2-接下来我们要安装编译-python3的相关包">2. 接下来我们要安装编译 Python3的相关包</a></li>
+        <li><a href="#3-安装pip因为-centos-是没有-pip-的">3. 安装pip，因为 CentOs 是没有 pip 的。</a></li>
+        <li><a href="#4-可以用-python-安装一下-wget">4. 可以用 python 安装一下 wget</a></li>
+        <li><a href="#5-我们可以下载-python37的源码包了">5. 我们可以下载 python3.7的源码包了</a></li>
+        <li><a href="#6-添加软链接">6. 添加软链接</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/k8s/k8s-%E9%9B%86%E7%BE%A4%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dipnodeippodipclusterip/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Kubernetes 集群里的三种IP</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/k8s/kubelet%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Kubelet实现原理</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

@@ -2,6 +2,54 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
+    <loc>https://willje.github.io/tags/kubernetes/</loc>
+    <lastmod>2021-11-23T21:23:18+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/posts/k8s/k8s-%E9%9B%86%E7%BE%A4%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dipnodeippodipclusterip/</loc>
+    <lastmod>2021-11-23T21:23:18+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/posts/</loc>
+    <lastmod>2021-11-23T21:23:18+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/tags/</loc>
+    <lastmod>2021-11-23T21:23:18+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/</loc>
+    <lastmod>2021-11-23T21:23:18+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/tags/centos/</loc>
+    <lastmod>2021-10-30T20:55:29+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/posts/linux/centos%E5%AE%89%E8%A3%85nodejs%E5%92%8Cpython/</loc>
+    <lastmod>2021-10-30T20:55:29+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/tags/nodejs/</loc>
+    <lastmod>2021-10-30T20:55:29+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/tags/python/</loc>
+    <lastmod>2021-10-30T20:55:29+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/tags/kubelet/</loc>
+    <lastmod>2021-08-29T21:23:18+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/posts/k8s/kubelet%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</loc>
+    <lastmod>2021-08-29T21:23:18+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/tags/docker/</loc>
+    <lastmod>2021-08-24T21:51:51+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/tags/gitlab/</loc>
+    <lastmod>2021-08-24T21:51:51+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/posts/docker/%E4%BD%BF%E7%94%A8docker%E5%AE%89%E8%A3%85gitlab/</loc>
+    <lastmod>2021-08-24T21:51:51+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/posts/docker/docker%E7%BD%91%E7%BB%9C/</loc>
+    <lastmod>2021-08-23T21:51:51+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/posts/k8s/kubernetes-port%E7%B1%BB%E5%9E%8B/</loc>
+    <lastmod>2021-08-23T21:23:18+08:00</lastmod>
+  </url><url>
     <loc>https://willje.github.io/tags/go/</loc>
     <lastmod>2021-07-23T21:23:18+08:00</lastmod>
   </url><url>
@@ -11,20 +59,17 @@
     <loc>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/</loc>
     <lastmod>2021-07-23T21:23:18+08:00</lastmod>
   </url><url>
-    <loc>https://willje.github.io/tags/kubernetes/</loc>
-    <lastmod>2021-07-23T21:23:18+08:00</lastmod>
-  </url><url>
-    <loc>https://willje.github.io/posts/</loc>
-    <lastmod>2021-07-23T21:23:18+08:00</lastmod>
-  </url><url>
-    <loc>https://willje.github.io/tags/</loc>
-    <lastmod>2021-07-23T21:23:18+08:00</lastmod>
-  </url><url>
-    <loc>https://willje.github.io/</loc>
-    <lastmod>2021-07-23T21:23:18+08:00</lastmod>
-  </url><url>
     <loc>https://willje.github.io/tags/%E5%B9%B6%E5%8F%91/</loc>
     <lastmod>2021-07-23T21:23:18+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/tags/helm/</loc>
+    <lastmod>2021-07-01T16:23:40+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/posts/k8s/helm%E5%AD%A6%E4%B9%A0/</loc>
+    <lastmod>2021-07-01T16:23:40+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/tags/kubernates/</loc>
+    <lastmod>2021-07-01T16:23:40+08:00</lastmod>
   </url><url>
     <loc>https://willje.github.io/tags/git/</loc>
     <lastmod>2021-06-15T12:10:00+08:00</lastmod>
@@ -88,9 +133,6 @@
   </url><url>
     <loc>https://willje.github.io/posts/docker/win10%E4%BD%BF%E7%94%A8wsl%E9%83%A8%E7%BD%B2k8s%E7%8E%AF%E5%A2%83/</loc>
     <lastmod>2021-04-24T21:57:01+08:00</lastmod>
-  </url><url>
-    <loc>https://willje.github.io/tags/docker/</loc>
-    <lastmod>2021-04-20T21:51:51+08:00</lastmod>
   </url><url>
     <loc>https://willje.github.io/posts/docker/win10%E5%AE%89%E8%A3%85docker/</loc>
     <lastmod>2021-04-20T21:51:51+08:00</lastmod>
@@ -353,6 +395,36 @@
     <loc>https://willje.github.io/posts/java/lru%E7%9A%84java%E5%AE%9E%E7%8E%B0/</loc>
     <lastmod>2018-04-25T20:55:29+08:00</lastmod>
   </url><url>
+    <loc>https://willje.github.io/posts/algorithm/leetcode/leetbook.assets/dapr%E5%85%A5%E9%97%A8/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/algorithm/leetcode/leetbook/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/algorithm/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/distributed/cap%E5%AE%9A%E7%90%86%E7%9A%84%E8%AF%81%E6%98%8E/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/docker/%E5%AE%B9%E5%99%A8%E5%8E%9F%E7%90%86/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/go/basic/context%E4%BD%BF%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/go/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8Fgolang/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/k8s/k8s%E9%89%B4%E6%9D%83/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/k8s/%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84%E5%A4%9A%E4%BA%91%E5%92%8C%E6%B7%B7%E5%90%88%E4%BA%91/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/linux/shell%E5%AD%A6%E4%B9%A0/</loc>
+  </url><url>
     <loc>https://willje.github.io/posts/linux/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/mysql/%E4%B8%80%E9%81%93sql%E7%BB%83%E4%B9%A0%E9%A2%98/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/other/concept/cncf/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/other/concept/serverless%E5%92%8Cfaas/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/other/concept/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-acl-rbac-abac/</loc>
+  </url><url>
+    <loc>https://willje.github.io/posts/other/tool/ansible%E5%85%A5%E9%97%A8/</loc>
   </url>
 </urlset>

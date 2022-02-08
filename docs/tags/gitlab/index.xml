@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>GitLab on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/gitlab/</link>
+    <description>Recent content in GitLab on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Tue, 24 Aug 2021 21:51:51 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/gitlab/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用Docker安装GitLab</title>
+      <link>https://willje.github.io/posts/docker/%E4%BD%BF%E7%94%A8docker%E5%AE%89%E8%A3%85gitlab/</link>
+      <pubDate>Tue, 24 Aug 2021 21:51:51 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/docker/%E4%BD%BF%E7%94%A8docker%E5%AE%89%E8%A3%85gitlab/</guid>
+      <description>安装GitLab gitlab 镜像分为两个版本： gitlab-ce 社区版 gitlab-ee 企业收费版 这里使用社区版则可，直接安装官方镜像，目前(2020/1/14)官方镜像大小约1.8G，如果你没有设置Docker镜像源，Docker会默认从国外Docker官方Hub去拉去进行，速度难以让人接受，参考「Centos7安装docker-ce」一文进行设置。 拉取gitlab-ce源 docker pull gitlab/gitlab-ce:latest 运行Gitlab 下</description>
+    </item>
+    
+  </channel>
+</rss>

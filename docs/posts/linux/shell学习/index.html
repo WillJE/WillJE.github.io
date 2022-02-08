@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="">
+<meta itemprop="description" content="概述 shell是一种解释器，用来
+Linux操作系统的核心是kernal（内核）！ 当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！ 程序将指令发送给内核执行！ 为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell!
+我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类
+[damon@hadoop97 ~]$ cat /etc/shells /bin/sh /bin/bash /sbin/nologin /bin/dash /bin/tcsh /bin/csh 这里要说一下的是系统默认的解析器是bash
+[damon@hadoop97 bin]$ echo $SHELL /bin/bash 也可以这样查看
+head -1 /etc/passwd //查看etc/passwd的第一行内容 每一个bash都是一个解释器，在你登录之后系统会启动默认设置的shell，也就是bash。此时在bash下再执行bash，即又开启了一个解释器。
+bash //开启了一个新的解释器 pstree //查看进程树 此时可以退出当前bash，使用exit命令。
+bash的优点  快捷键，  ctrl&#43;A：将光标移至行首； ctrl&#43;E：将光标移至行尾； ctrl&#43;D：结束任务 ctrl&#43;U：删除前面所有内容 ctrl&#43;w：删除前面一个单词，以空格为界   历史记录 补齐命令：tab键 管道|，覆盖重定向 &gt;，追加重定向 &raquo;  ">
+
+<meta itemprop="wordCount" content="49">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="" />
+<meta property="og:description" content="概述 shell是一种解释器，用来
+Linux操作系统的核心是kernal（内核）！ 当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！ 程序将指令发送给内核执行！ 为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell!
+我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类
+[damon@hadoop97 ~]$ cat /etc/shells /bin/sh /bin/bash /sbin/nologin /bin/dash /bin/tcsh /bin/csh 这里要说一下的是系统默认的解析器是bash
+[damon@hadoop97 bin]$ echo $SHELL /bin/bash 也可以这样查看
+head -1 /etc/passwd //查看etc/passwd的第一行内容 每一个bash都是一个解释器，在你登录之后系统会启动默认设置的shell，也就是bash。此时在bash下再执行bash，即又开启了一个解释器。
+bash //开启了一个新的解释器 pstree //查看进程树 此时可以退出当前bash，使用exit命令。
+bash的优点  快捷键，  ctrl&#43;A：将光标移至行首； ctrl&#43;E：将光标移至行尾； ctrl&#43;D：结束任务 ctrl&#43;U：删除前面所有内容 ctrl&#43;w：删除前面一个单词，以空格为界   历史记录 补齐命令：tab键 管道|，覆盖重定向 &gt;，追加重定向 &raquo;  " />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/linux/shell%E5%AD%A6%E4%B9%A0/" /><meta property="article:section" content="posts" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="概述 shell是一种解释器，用来
+Linux操作系统的核心是kernal（内核）！ 当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！ 程序将指令发送给内核执行！ 为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell!
+我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类
+[damon@hadoop97 ~]$ cat /etc/shells /bin/sh /bin/bash /sbin/nologin /bin/dash /bin/tcsh /bin/csh 这里要说一下的是系统默认的解析器是bash
+[damon@hadoop97 bin]$ echo $SHELL /bin/bash 也可以这样查看
+head -1 /etc/passwd //查看etc/passwd的第一行内容 每一个bash都是一个解释器，在你登录之后系统会启动默认设置的shell，也就是bash。此时在bash下再执行bash，即又开启了一个解释器。
+bash //开启了一个新的解释器 pstree //查看进程树 此时可以退出当前bash，使用exit命令。
+bash的优点  快捷键，  ctrl&#43;A：将光标移至行首； ctrl&#43;E：将光标移至行尾； ctrl&#43;D：结束任务 ctrl&#43;U：删除前面所有内容 ctrl&#43;w：删除前面一个单词，以空格为界   历史记录 补齐命令：tab键 管道|，覆盖重定向 &gt;，追加重定向 &raquo;  "/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title></title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jan 1, 0001</span></div>
+				<h1></h1>
+			</header>
+			<div class="content">
+				<h2 id="概述">概述<a href="#概述" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>shell是一种解释器，用来</p>
+<p>Linux操作系统的核心是kernal（内核）！
+当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！
+程序将指令发送给内核执行！
+为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell!</p>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/1075188-20191221111411013-65042932.png"
+    alt="img"  />
+</p>
+</p>
+<p>我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>damon@hadoop97 ~<span class="o">]</span>$ cat /etc/shells 
+/bin/sh
+/bin/bash
+/sbin/nologin
+/bin/dash
+/bin/tcsh
+/bin/csh
+</code></pre></div><p>这里要说一下的是系统默认的解析器是bash</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>damon@hadoop97 bin<span class="o">]</span>$ <span class="nb">echo</span> <span class="nv">$SHELL</span>
+/bin/bash
+</code></pre></div><p>也可以这样查看</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">head -1 /etc/passwd //查看etc/passwd的第一行内容
+</code></pre></div><p>每一个bash都是一个解释器，在你登录之后系统会启动默认设置的shell，也就是bash。此时在bash下再执行bash，即又开启了一个解释器。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">bash //开启了一个新的解释器
+pstree  //查看进程树
+</code></pre></div><p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220124174530887.png"
+    alt="image-20220124174530887"  />
+</p>
+</p>
+<p>此时可以退出当前bash，使用exit命令。</p>
+<h2 id="bash的优点">bash的优点<a href="#bash的优点" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ol>
+<li>快捷键，
+<ol>
+<li>ctrl+A：将光标移至行首；</li>
+<li>ctrl+E：将光标移至行尾；</li>
+<li>ctrl+D：结束任务</li>
+<li>ctrl+U：删除前面所有内容</li>
+<li>ctrl+w：删除前面一个单词，以空格为界</li>
+</ol>
+</li>
+<li>历史记录</li>
+<li>补齐命令：tab键</li>
+<li>管道|，覆盖重定向 &gt;，追加重定向 &raquo;</li>
+</ol>
+
+			</div><div class="content">
+	<br>
+	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>49 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>0001-01-01 08:00 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/k8s/%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84%E5%A4%9A%E4%BA%91%E5%92%8C%E6%B7%B7%E5%90%88%E4%BA%91/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span></span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/linux/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span></span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

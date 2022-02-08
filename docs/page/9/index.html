@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta name="generator" content="Hugo 0.82.0" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="will&#39;s blog">
+<meta itemprop="description" content="go,golang,源码分析,系列教程"><meta property="og:title" content="will&#39;s blog" />
+<meta property="og:description" content="go,golang,源码分析,系列教程" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://willje.github.io/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="will&#39;s blog"/>
+<meta name="twitter:description" content="go,golang,源码分析,系列教程"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>will&#39;s blog</title>
+	<link rel="alternate" type="application/rss+xml" href="https://willje.github.io/index.xml" title="will's blog" />
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+		<main class="site-main section-inner thin animated fadeIn faster">
+    
+		
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/other/concept/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-acl-rbac-abac/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>权限系统的设计模式 ACL RBAC ABAC  ACL（Access Control List）:访问权限列表 如： user1&ndash;&gt;AC1
+user1&ndash;&gt;AC2
+user2&ndash;&gt;AC1 此时权限汇总成一个列表
+这种设计最常见的应用就是文件系统的权限设计，如微软的NTFS
+对权限控制比较分散，不便于管理，比如无法简单地将一组文件设置统一的权限开放给指定的一群用户
+![img](权限系统的设计模式 ACL RBAC ABAC.assets/1112483-20190718230406812-417601866.png)
+RBAC(Role Base Access Control):基于角色的权限控制 与ACL 对比 RBAC不用给用户单个分配权限，只用指向对应的角色就会有对应的权限，而且分配权限和收回权限都很方便
+如菜单权限的设计：用户与角色关联，角色与菜单关联
+![img](权限系统的设计模式 ACL RBAC ABAC.assets/1112483-20190718230557284-1879183792.png)
+![img](权限系统的设计模式 ACL RBAC ABAC.assets/1112483-20190718230625222-839713434.png)
+ABAC（Attribute Base Access Control） 基于属性的权限控制 不同于常见的将用户通过某种方式关联到权限的方式，ABAC则是通过动态计算一个或一组属性来是否满足某种条件来进行授权判断（可以编写简单的逻辑）。属性通常来说分为四类：用户属性（如用户年龄），环境属性（如当前时间），操作属性（如读取）和对象属性（如一篇文章，又称资源属性），所以理论上能够实现非常灵活的权限控制，几乎能满足所有类型的需求。
+例如规则：“允许所有班主任在上课时间自由进出校门”这条规则，其中，“班主任”是用户的角色属性，“上课时间”是环境属性，“进出”是操作属性，而“校门”就是对象属性了。为了实现便捷的规则设置和规则判断执行，ABAC通常有配置文件（XML、YAML等）或DSL配合规则解析引擎使用。XACML（eXtensible Access Control Markup Language）是ABAC的一个实现，但是该设计过于复杂，我还没有完全理解，故不做介绍。
+总结一下，ABAC有如下特点：
+ 集中化管理 可以按需实现不同颗粒度的权限控制 不需要预定义判断逻辑，减轻了权限系统的维护成本，特别是在需求经常变化的系统中 定义权限时，不能直观看出用户和对象间的关系 规则如果稍微复杂一点，或者设计混乱，会给管理者维护和追查带来麻烦 权限判断需要实时执行，规则过多会导致性能问题  既然ABAC这么好，那最流行的为什么还是RBAC呢？
+我认为主要还是因为大部分系统对权限控制并没有过多的需求，而且ABAC的管理相对来说太复杂了。Kubernetes便因为ABAC太难用，在1.8版本里引入了RBAC的方案 。
+ ABAC有时也被称为PBAC（Policy-Based Access Control）或CBAC（Claims-Based Access Control）。
+ casbin https://github.com/casbin/casbin
+一个支持ACL、RBAC和ABAC的权限管理框架，使用go语言编写</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/other/tool/ansible%E5%85%A5%E9%97%A8/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>Ansible 什么是Ansible? Ansilbe是一个部署一群远程主机的工具。远程的主机可以是远程虚拟机或物理机， 也可以是本地主机。
+Ansible能做什么？ Ansilbe通过SSH协议实现远程节点和管理节点之间的通信。理论上说，只要管理员通过ssh登录到一台远程主机上能做的操作，Ansible都可以做到。
+包括：
+ 拷贝文件 安装软件包 启动服务 …  Ansible的架构 Ansilbe管理员节点和远程主机节点通过ssh协议进行通信。所以Ansible配置的时候只需要保证从Ansible管理节点通过SSH能够连接到被管理的远程的远程节点即可。。但是SSH必须配置为公钥认证登录方式
+连接方式SSH 在管理员节点安装Ansible，编写脚本。在管理节点执行命令或者脚本时，通过SSH连接被管理的主机。 被管理的远程节点不需要进行特殊安装软件。
+Ansible可以同时管理Redhat系的Linux，Debian系的Linux，以及Windows主机。管理节点只在执行脚本时与远程主机连接，没有特别的同步机制，所以断电等异常一般不会影响ansbile。
+Ansible Tower的架构 为什么要有Ansbile Tower Ansilbe Tower一款针对企业用户的收费软件。
+在上一节的Ansible架构中和下一章Ansbile的安装中会讲到，每一台被ansible远程管理的主机，都需要配置基于key的ssh连接。个人用户管理几台虚拟机和远程主机不会有什么问题，但是对于企业级用户，则满足不了业务和安全上的需求。
+ 首先，每增加一台主机，都需要手工配置一下ssh连接，企业级的pc主机成百上千，每个管理员都需要在自己的电脑上配置所有的ssh连接，无疑工作量巨大。 还有，在安全方面如果管理员能够拿到ssh key，或者拷贝给别人，对于生产环境来说无疑是最大的安全隐患。  Ansible Tower能做什么 Ansile Tower则是针对企业级用户的，中心化ansible管理节点。它向管理员提供 Web 页面接口，来运行ansible脚本playbook。
+ 管理员在ansible tower上使用和分享主机的ssh key，但是不能查看和拷贝key文件。 登录ansible tower的所有管理员可以共享playbook脚本，减少重复工作。 此外ansible还可以收集和展现所有主机的playbook的执行状况，便于统计和分析主机的状态。  说了这么多，看下面这张架构图就清晰了：
+参考资料 Ansible入门 </p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+    <div class="pagination">
+        
+<ul class="pagination">
+  <li class="page-item">
+    <a href="/" class="page-link" aria-label="First"><span aria-hidden="true">&laquo;&laquo;</span></a>
+  </li>
+  <li class="page-item">
+    <a href="/page/8/" class="page-link" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+  </li>
+  <li class="page-item">
+    <a class="page-link" href="/">1</a>
+  </li>
+  <li class="page-item">
+    <a class="page-link" href="/page/2/">2</a>
+  </li>
+  <li class="page-item">
+    <a class="page-link" href="/page/3/">3</a>
+  </li>
+  <li class="page-item disabled">
+    <span aria-hidden="true">&nbsp;&hellip;&nbsp;</span>
+  </li>
+  <li class="page-item">
+    <a class="page-link" href="/page/8/">8</a>
+  </li>
+  <li class="page-item active">
+    <a class="page-link" href="/page/9/">9</a>
+  </li>
+  <li class="page-item disabled">
+    <a  class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+  </li>
+  <li class="page-item">
+    <a href="/page/9/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
+  </li>
+</ul>
+
+
+    </div>
+		</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

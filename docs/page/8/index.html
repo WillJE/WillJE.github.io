@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta name="generator" content="Hugo 0.82.0" />
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="will&#39;s blog">
+<meta itemprop="description" content="go,golang,源码分析,系列教程"><meta property="og:title" content="will&#39;s blog" />
+<meta property="og:description" content="go,golang,源码分析,系列教程" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://willje.github.io/" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="will&#39;s blog"/>
+<meta name="twitter:description" content="go,golang,源码分析,系列教程"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>will&#39;s blog</title>
+	<link rel="alternate" type="application/rss+xml" href="https://willje.github.io/index.xml" title="will's blog" />
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+		<main class="site-main section-inner thin animated fadeIn faster">
+    
+		
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/docker/%E5%AE%B9%E5%99%A8%E5%8E%9F%E7%90%86/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>容器 容器其实是一种沙盒技术。顾名思义，沙盒就是能够像一个集装箱一样，把你的应用“装”起来的技术。这样，应用与应用之间，就因为有了边界而不至于相互干扰；而被装进集装箱的应用，也可以被方便地搬来搬去。
+那么，这个边界怎么产生的呢？对于Docker项目来说它最核心的原理实际上就是为待创建的用户进程：
+  启用 Linux Namespace 配置；
+  设置指定的 Cgroups 参数；
+  切换进程的根目录（Change Root）。
+  这样一个完整的边界就完成了。
+Cgroups(Control Groups) 它最主要的作用，就是限制一个进程组能够使用的资源上限，包括 CPU、内存、磁盘、网络带宽等等。
+Namespace namespace 是 Linux 内核用来隔离内核资源的方式。通过 namespace 可以让一些进程只能看到与自己相关的一部分资源，而另外一些进程也只能看到与它们自己相关的资源，这两拨进程根本就感觉不到对方的存在。
+linux支持的namespace：
+ IPC用于隔离系统消息队列; Network隔离网络; Mount隔离挂载点; PID隔离进程; User隔离用户和用户组; UTS隔离主机名nis域名  通过这些隔离机制，PID,IPC,Network等系统资源不再是全局性的，而是属于某个特定的Namespace。每个namespace下的资源对于其他namespace下的资源都是不可见的。因此在操作系统层面上看，就会出现多个相同pid的进程。系统中可以同时存在两个进程号为0,1,2的进程，由于属于不同的namespace，所以它们之间并不冲突。而在用户层面上只能看到属于用户自己namespace下的资源，例如使用ps命令只能列出自己namespace下的进程。这样每个namespace看上去就像一个单独的Linux系统。
+容器主角&ndash;进程 对于进程来说，它的静态表现就是程序，平常都安安静静地待在磁盘上；而一旦运行起来，它就变成了计算机里的数据和状态的总和，这就是它的动态表现。而容器技术的核心功能，就是通过约束和修改进程的动态表现，从而为其创造出一个“边界”。对于docker等大多数linux容器来说，
+Cgroups 技术是用来制造约束的主要手段，而 Namespace 技术则是用来修改进程视图的主要方法。简而言之就是Cgroups做资源限制，Namespace做资源隔离。
+Namespace隔离 1.首先，运行一个容器：
+[root@client /]# docker run -it busybox /bin/sh / # -i 选项指示 docker 要在容器上打开一个标准的输入接口，-t 指示 docker 要创建一个 tty 终端，连接容器的标准输入接口，之后用户就可以通过终端进行输入。上面这条指令翻译成人类的语言就是：请帮我启动一个容器，在容器里执行 /bin/sh，并且给我分配一个命令行终端跟这个容器交互。
+2.执行ps指令
+/ # ps PID USER TIME COMMAND 1 root 0:00 /bin/sh 6 root 0:00 ps 可以看到，在 Docker 里最开始执行的 /bin/sh，就是这个容器内部的第 1 号进程（PID=1），而这个容器里一共只有两个进程在运行。这就意味着，前面执行的 /bin/sh，以及刚刚执行的 ps，已经被 Docker 隔离在了一个跟宿主机完全不同的世界当中。
+本来，每当在宿主机上运行了一个 /bin/sh 程序，操作系统都会给它分配一个进程编号，比如 PID=100。这个编号是进程的唯一标识，就像员工的工牌一样。所以 PID=100，可以粗略地理解为这个 /bin/sh 是我们公司里的第 100 号员工。而现在，要通过 Docker 把这个 /bin/sh 程序运行在一个容器当中。这时候，Docker 就会在这个第 100 号员工入职时给他施一个“障眼法”，让他永远看不到前面的其他 99 个员工，他就会错误地以为自己就是公司里的第 1 号员工。这种机制，其实就是对被隔离应用的进程空间做了手脚，使得这些进程只能看到重新计算过的进程编号，比如 PID=1。可实际上，他们在宿主机的操作系统里，还是原来的第 100 号进程。
+这种技术，就是 Linux 里面的 Namespace 机制。
+而 Namespace 的使用方式也非常有意思：它其实只是 Linux 创建新进程的一个可选参数。在 Linux 系统中创建线程的系统调用是 clone()，比如：
+int` `pid = clone(main_function, stack_size, SIGCHLD, NULL); 这个系统调用就会为我们创建一个新的进程，并且返回它的进程号 pid。而当我们用 clone() 系统调用创建一个新进程时，可以在参数中指定 CLONE_NEWPID 参数，比如：
+int` `pid = clone(main_function, stack_size, CLONE_NEWPID | SIGCHLD, NULL); 这时，新创建的这个进程将会“看到”一个全新的进程空间，在这个进程空间里，它的 PID 是 1。之所以说“看到”，是因为这只是一个“障眼法”，在宿主机真实的进程空间里，这个进程的 PID 还是真实的数值，比如 100。当然，我们还可以多次执行上面的 clone() 调用，这样就会创建多个 PID Namespace，而每个 Namespace 里的应用进程，都会认为自己是当前容器里的第 1 号进程，它们既看不到宿主机里真正的进程空间，也看不到其他 PID Namespace 里的具体情况。
+比如，Mount Namespace，用于让被隔离进程只看到当前 Namespace 里的挂载点信息；Network Namespace，用于让被隔离进程看到当前 Namespace 里的网络设备和配置。docker默认启用了IPC（CLONE_NEWIPC），Network（CLONE_NEWNET），Mount（CLONE_NEWNS），PID，User（CLONE_NEWUSER），UTS（CLONE_NEWUTS）这六种Namespace。
+这，就是 Linux 容器最基本的实现原理了。</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/go/basic/context%E4%BD%BF%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>背景 上下文（Context）是 Go 语言中非常有特色的一个特性， 在 Go 1.7 版本中正式引入新标准库 context。
+其主要的作用是在 goroutine 中进行上下文的传递，而在传递信息中又包含了 goroutine 的运行控制、上下文信息传递等功能。
+使用 在 Go context 用法中，我们常常将其与 select 关键字结合使用，用于监听其是否结束、取消等。
+代码如下：
+func main() { parentCtx := context.Background() ctx, cancel := context.WithTimeout(parentCtx, 1*time.Millisecond) defer cancel() select { case &lt;-time.After(1 * time.Second): fmt.Println(&#34;overslept&#34;) case &lt;-ctx.Done(): fmt.Println(ctx.Err()) } } 输出结果：
+context deadline exceeded 如果是更进一步结合 goroutine 的话，常见的例子是：
+func(ctx context.Context) &lt;-chan int { dst := make(chan int) n := 1 go func() { for { select { case &lt;-ctx.Done(): return case dst &lt;- n: n++ } } }() return dst } 我们平时工程中会起很多的 goroutine，这时候会在 goroutine 内结合 for+select，针对 context 的事件进行处理，达到跨 goroutine 控制的目的。
+Context本质 在 Go 标准库 context 中具有以下派生 context 的标准方法：
+ WithCancel：基于父级 context，创建一个可以取消的新 context。 WithDeadline：基于父级 context，创建一个具有截止时间（Deadline）的新 context。 WithTimeout：基于父级 context，创建一个具有超时时间（Timeout）的新 context。 Background：创建一个空的 context，一般常用于作为根的父级 context。 TODO：创建一个空的 context，一般用于未确定时的声明使用。 WithValue：基于某个 context 创建并存储对应的上下文信息。  上面我们看到有不少context 的方法，其基本大同小异。看上去似乎不难，接下来我们看看其底层的基本原理和设计。
+context 相关函数的标准返回如下：
+func WithXXXX(parent Context, xxx xxx) (Context, CancelFunc) 其返回值分别是 Context 和 CancelFunc，接下来我们将进行分析这两者的作用。
+接口 Context接口 context.Context 是 Go 语言在 1.7 版本中引入标准库的接口1 ，该接口定义了四个需要实现的方法，其中包括：
+ Deadline — 返回 context.Context 被取消的时间，也就是完成工作的截止日期； Done — 返回一个 Channel，这个 Channel 会在当前工作完成或者上下文被取消后关闭，多次调用 Done 方法会返回同一个 Channel； Err返回context.Context结束的原因，它只会在Done方法对应的 Channel 关闭时返回非空的值；  如果 context.Context 被取消，会返回 Canceled 错误； 如果 context.Context 超时，会返回 DeadlineExceeded 错误；   Value — 从 context.</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/go/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8Fgolang/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>前言 设计模式 Golang实现－《研磨设计模式》读书笔记
+https://github.com/senghoo/golang-design-pattern
+创建型模式 简单工厂模式(Simple Factory) go 语言没有构造函数一说，所以一般会定义NewXXX函数来初始化相关类。 NewXXX 函数返回接口时就是简单工厂模式，也就是说Golang的一般推荐做法就是简单工厂。
+在这个simplefactory包中只有API 接口和NewAPI函数为包外可见，封装了实现细节。
+package simplefactory import &#34;fmt&#34; //API is interface type API interface { Say(name string) string } //NewAPI return Api instance by type func NewAPI(t int) API { if t == 1 { return &amp;hiAPI{} } else if t == 2 { return &amp;helloAPI{} } return nil } //hiAPI is one of API implement type hiAPI struct{} //Say hi to name func (*hiAPI) Say(name string) string { return fmt.Sprintf(&#34;Hi, %s&#34;, name) } //HelloAPI is another API implement type helloAPI struct{} //Say hello to name func (*helloAPI) Say(name string) string { return fmt.Sprintf(&#34;Hello, %s&#34;, name) } 工厂方法模式(Factory Method) 工厂方法模式使用子类的方式延迟生成对象到子类中实现。
+Go中不存在继承，所以使用匿名组合来实现
+package factorymethod //Operator 是被封装的实际类接口 type Operator interface { SetA(int) SetB(int) Result() int } //OperatorFactory 是工厂接口 type OperatorFactory interface { Create() Operator } //OperatorBase 是Operator 接口实现的基类，封装公用方法 type OperatorBase struct { a, b int } //SetA 设置 A func (o *OperatorBase) SetA(a int) { o.a = a } //SetB 设置 B func (o *OperatorBase) SetB(b int) { o.b = b } //PlusOperatorFactory 是 PlusOperator 的工厂类 type PlusOperatorFactory struct{} func (PlusOperatorFactory) Create() Operator { return &amp;PlusOperator{ OperatorBase: &amp;OperatorBase{}, } } //PlusOperator Operator 的实际加法实现 type PlusOperator struct { *OperatorBase } //Result 获取结果 func (o PlusOperator) Result() int { return o.</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/k8s/k8s%E9%89%B4%E6%9D%83/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>在k8s中，客户端对API Server访问的大体流程如下：
+用户简介 在k8s中，用户具有如下基础属性：
+ 用户名：标识用户的字符串 UID：标识用户的数字 组：即用户组，包含若干个用户 额外字段：其他信息  看起来和Linux中的系统用户一模一样。。。不过基本上只需要关心用户名。
+ 用户分类 在Kubernetes中，用户分为两类：
+ 普通用户（normal user）：为Pod外的程序设计，比如说kubectl命令。 service account：为Pod设计，方便Pod调用Kubernetes API。  这两类用户本质上并没有区别，只是service account的用户名类似于system:serviceaccount:test:default，表示在test命名空间的叫做default的用户。
+kubectl的认证方式 kubectl命令支持如上所有认证方式，其通过kubeconfig配置文件来存储和apiserver的通信方式以及认证所需要的数据，该文件往往存储于~/.kube/config中。
+kubeconfig文件结构：
+如图，该文件主要包含了如下几项：
+ clusters: 集群列表，包含访问API Server的URL和所属集群的名称等。 users：用户列表，包含访问API Server时的用户名和认证信息。 contexts：kubelet的可用上下文列表，由用户列表中的某特定用户名称和集群列表中的某特定集群名称组合而成。 current-context：kubelet当前使用的上下文名称，即上下文列表中的某个特定项。  kubeconfig文件示例：
+apiVersion:v1clusters:- cluster:certificate-authority-data:集群CA证书的base64值server:https://169.254.128.15:60002name:kubernetescontexts:- context:cluster:kubernetesnamespace:testuser:testname:kubernetescurrent-context:kuberneteskind:Configpreferences:{}users:- name:testuser:token:token值该文件定义了名为kubernetes的cluster，名为test的user，名为kubernetes的context将cluster和user组合起来，最后当前使用的是名为kubernetes的context。
+除了token外，还可以添加client-certificate-data和client-key-data字段表示使用客户端证书认证方式；添加username和password字段表示使用HTTP基本身份认证。
+此外，kubectl提供了config子命令执行对kubeconfig相关的操作，比如kubectl config view查看当前使用的kubeconfig。
+看一个config的样例
+apiVersion:v1clusters:- cluster:certificate-authority-data:LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUR1RENDQXFDZ0F3SUJBZ0lVVjdwcTdqNi9RT3NuMzd2c0ZtdTl5aWhOclI0d0RRWUpLb1pJaHZjTkFRRUwKQlFBd1lURUxNQWtHQTFVRUJoTUNRMDR4RVRBUEJnTlZCQWdUQ0VoaGJtZGFhRzkxTVFzd0NRWURWUVFIRXdKWQpVekVNTUFvR0ExVUVDaE1EYXpoek1ROHdEUVlEVlFRTEV3WlRlWE4wWlcweEV6QVJCZ05WQkFNVENtdDFZbVZ5CmJtVjBaWE13SUJjTk1qRXdOREk0TURFek9UQXdXaGdQTWpFeU1UQTBNRFF3TVRNNU1EQmFNR0V4Q3pBSkJnTlYKQkFZVEFrTk9NUkV3RHdZRFZRUUlFd2hJWVc1bldtaHZkVEVMTUFrR0ExVUVCeE1DV0ZNeEREQUtCZ05WQkFvVApBMnM0Y3pFUE1BMEdBMVVFQ3hNR1UzbHpkR1Z0TVJNd0VRWURWUVFERXdwcmRXSmxjbTVsZEdWek1JSUJJakFOCkJna3Foa2lHOXcwQkFRRUZBQU9DQVE4QU1JSUJDZ0tDQVFFQTNiKzdmVzVvZllxYW9ETkdrRG1UaXB6ejVqZU8KcnRmbnp1bWs1RHZ2QzUxRnZvcTJWd1k1Rlc2azh0QWxMblRHMWpTUmlGSEtSRW9mODdMMzFkVFROSnNUeG1BdgphTmN2NHpnaCtvdXFQdVRsZmRFUHNlL2dvOGNVb2hnSkxURXJrM2grNktNMUMxSEpsRXlzbnRBYXFWNTdVNyttCnRSTDRYZjJIOVlvaS9mTWNVOTVBM0lzNVpQYzRiUU02Q29kQTlqaFcyS0pycEdjT3c2T3E2bjJOcXI0NWdFakYKOTJmd2k4SXFENlpWQUQ5QzdqYVlBdEtnZlVESm5XS2h2QmVSZHlXaWdyWWpFNEQ5cktNQzZaRlpWV3dUazkwYQpvb0ZvZ0liU3BLcjJHeE9lWGdseGtzdnZuZXVoTFh3QmxpVU44SmxUYmdRNUhuazhFMVdCcTZKTTl3SURBUUFCCm8yWXdaREFPQmdOVkhROEJBZjhFQkFNQ0FRWXdFZ1lEVlIwVEFRSC9CQWd3QmdFQi93SUJBakFkQmdOVkhRNEUKRmdRVVNMdERZUmdIMDVZU0tNUytWMjlxUjF1R0V0SXdId1lEVlIwakJCZ3dGb0FVU0x0RFlSZ0gwNVlTS01TKwpWMjlxUjF1R0V0SXdEUVlKS29aSWh2Y05BUUVMQlFBRGdnRUJBTHZhbngwZlJCVUlnNXdtQWwzcG83S3IxRTJGCi9xeXgvZjN6R1VabFhKajJIUmVjT1lWY3VTWFpXb1RBd0xsVkprQnhuNVRRT1JUajR6OGhVTHR2OVBUaUcxNEEKb0hYRWozSEp1NDlTOUFlcnpCRDVNQW9lS21KTm5IUndsWjUrS2JMT29MK3RRSWpKVllQcnJTVk0vL1djaEVXTgpFZ2NNR1hER2czYWFZYUVFUkk3enpwR1NXbFJMcnRvWVErVkYyUGErNlcwdmd6ckdLRXJWQUVZTnFnSXNXRzNICmVpZ3BGOHlzQkJFMGM2dEk3d2QwSmx3bHdaWnZ6QVg4WHpPMGs2RTkzYkxiKzJHNjJKODAxS092R2JRQk5nVUoKa2d5anNSN2YxTXYxaDkydWJzQ3kvQW9vZGI2SzR6dW9aVy8vakI3Q3hKODJQamtDM3BRQkU3SG1VTG89Ci0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0Kserver:https://172.18.100.109:6443name:cluster1contexts:- context:cluster:cluster1user:adminname:context-cluster1current-context:context-cluster1kind:Configpreferences:{}users:- name:adminuser:client-certificate-data:LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSUQxekNDQXIrZ0F3SUJBZ0lVZjJRb3oxL1d3WmRzdm5ORXRrQkx0S0w0TlNNd0RRWUpLb1pJaHZjTkFRRUwKQlFBd1lURUxNQWtHQTFVRUJoTUNRMDR4RVRBUEJnTlZCQWdUQ0VoaGJtZGFhRzkxTVFzd0NRWURWUVFIRXdKWQpVekVNTUFvR0ExVUVDaE1EYXpoek1ROHdEUVlEVlFRTEV3WlRlWE4wWlcweEV6QVJCZ05WQkFNVENtdDFZbVZ5CmJtVjBaWE13SUJjTk1qRXdOREk0TURFek9UQXdXaGdQTWpBM01UQTBNVFl3TVRNNU1EQmFNR2N4Q3pBSkJnTlYKQkFZVEFrTk9NUkV3RHdZRFZRUUlFd2hJWVc1bldtaHZkVEVMTUFrR0ExVUVCeE1DV0ZNeEZ6QVZCZ05WQkFvVApEbk41YzNSbGJUcHRZWE4wWlhKek1ROHdEUVlEVlFRTEV3WlRlWE4wWlcweERqQU1CZ05WQkFNVEJXRmtiV2x1Ck1JSUJJakFOQmdrcWhraUc5dzBCQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBbTJIVlVXdFdFZHJFS0t0UE1WSEgKQVVLY056RVVDdG4ydGtXSlYwWDlvVllLVHhub2tTbWw0bGVzVURWMjNwWEVOSnhGVDd5cnRMa1QyN05pNXhTSApqLzAwcHVzcUxKeGlvN0ZiNVN1SERQRVJqNG9nbWlLLzZtQ1JTNmZZL0twVG1tM3JqZmF0aGFwV1d3RmVXeCtpClRDTmlpOVBpNi9aVFBkZDA3OW1haDAzQ2hlRzJWU3o2dWdGM3VMU0NvMWV6U25zWDNZRVZjSHRWOXZJVjRNMnMKWEZpOUdFYXJrK3o2YjViTGl2dnlaNDZQS0QwVkpkbFpQUjJJSFZRMG90TGw4ZzNiR2UwQVhkZWE1Y0k2TzBXOApIN3dwL1dLRE9weVpoSCtYRHVrdmx4TUhPbSs1d2RiU25reUM1dlZZazl5YU9vNnF2SlVBVk9RdGtQbUJrMStvCmh3SURBUUFCbzM4d2ZUQU9CZ05WSFE4QkFmOEVCQU1DQmFBd0hRWURWUjBsQkJZd0ZBWUlLd1lCQlFVSEF3RUcKQ0NzR0FRVUZCd01DTUF3R0ExVWRFd0VCL3dRQ01BQXdIUVlEVlIwT0JCWUVGUFRydTEwRG5xcE43MUFVci9iVQp6WnQvZUhvck1COEdBMVVkSXdRWU1CYUFGRWk3UTJFWUI5T1dFaWpFdmxkdmFrZGJoaExTTUEwR0NTcUdTSWIzCkRRRUJDd1VBQTRJQkFRQU9MbFg1TnRqSGR0UEZTV00zWit5NW5qdnRqaFlZN201Rm83cTlYcDRmMmN5TjVoYVEKTC9sVW5CY1QvMkY0Z2xPdjliY2d4UkJja0tJRjk0ajBuOTByT2JNK0lQaFV4aEtUdmMvZzZhQ0duMThETm54Kwp0SG5hMTJFRUxGNzNkaVM1Mk5LS3NSbjZMbzI1MTgvUGxHQXczOWN4aTZUU0E5TWtQZk11WWsvZHg4Q0g3UzhaClhRRkd1NDJkaGRnSngrY1FCdnk4U1pDSWxmbUFnaGNIWHZ1SndxVVUxZDlJQ1R3NlZKM05GY3N4WU1RbkUzUmQKYldCZ0FYb1ZuT1ZCZTJQWXFZQ3cwT2oxYVlYSkw1dWxpRXdaampWalNEbjhndHFmQk5xV3p2Rkg5SjBjdVQzdwpCWDZZMnpnVUtoWEwrRkdOVG1kRm12QkhKY3BXRnhCQmxBdWgKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQo=client-key-data:LS0tLS1CRUdJTiBSU0EgUFJJVkFURSBLRVktLS0tLQpNSUlFcFFJQkFBS0NBUUVBbTJIVlVXdFdFZHJFS0t0UE1WSEhBVUtjTnpFVUN0bjJ0a1dKVjBYOW9WWUtUeG5vCmtTbWw0bGVzVURWMjNwWEVOSnhGVDd5cnRMa1QyN05pNXhTSGovMDBwdXNxTEp4aW83RmI1U3VIRFBFUmo0b2cKbWlLLzZtQ1JTNmZZL0twVG1tM3JqZmF0aGFwV1d3RmVXeCtpVENOaWk5UGk2L1pUUGRkMDc5bWFoMDNDaGVHMgpWU3o2dWdGM3VMU0NvMWV6U25zWDNZRVZjSHRWOXZJVjRNMnNYRmk5R0VhcmsrejZiNWJMaXZ2eVo0NlBLRDBWCkpkbFpQUjJJSFZRMG90TGw4ZzNiR2UwQVhkZWE1Y0k2TzBXOEg3d3AvV0tET3B5WmhIK1hEdWt2bHhNSE9tKzUKd2RiU25reUM1dlZZazl5YU9vNnF2SlVBVk9RdGtQbUJrMStvaHdJREFRQUJBb0lCQUFjV0xqRjVjTUo5dE1hYQpFWkdSUmo5RGQzWjQ4WTRSSk5ScFZYczZnUGZUd2NLYnp1U1gvcTNWQzlIWXJtUTJkbTFqMXpGc3pIUUFvT3c3ClFUNkN6Qy8vLzEvQmgvbmk1QWpOTlFDOXZIb1ZvSlJvVzFaTVVXNXlHdzVWU0dzMXBYeDhtT3F2bm5oakxXOFgKSCtPT0RNdm1MVDl0V1lNamgrWmhKajh1TUlNTk1hbWdINmdxMlhrMlk2ak8wM2g3NFpOSDA2MlFHRmxmZ1NYdwpHTDB0MzVDMjJrbG5zT0pOL3N2ekVEYzNwS09NOUdodnFadVBxSW5PQjBYaHR0THozclZ6cFpPSUpGaC9JU1d1CkdpbUJBVWU2cG13aC9kdHJsQ2ttV1MwZmVtV0tNQk1Eb0QrOENUOVkzdlp6L0xxd3MwQkZDczJ0UDlRckJmcU4KVjRRaGtJRUNnWUVBeG1kbGVSODczSU95ZktTYllIWXhwRUk1MGJDWStDSjk5UWhtTmxMdndHNkZFaW9YZ05QdwprYWNuVUZJTVQwdGxkd0k3VzFBdktYY3B6SjdNMTFFcHk3VGpZNC9TL3FjdVdSanIzbHZYK3hscDQ2YkdrOXgrCmtCMEI4blVqMEFTeHFNemhFVGV2Y1ZqSE8zL2g3QiszbEpYQnBFTHl6ZWYwa1BVMCt6UzhQY0VDZ1lFQXlIMDYKeDhOalVSVFZCNmJiTDhTTENDcW1tVGhSTmhvdmhmcXY5VjdoTXJXRlRONFZub3VxYjZPMGFjL2IzV3RWWUtpRwovVTQ3eDFSVnlyOUhmeTJoRktUd3B3NzIvTWJrdWhDNy9qVlJtREdVUzhDdzFYZUVhOVlhaFdKNDdtNForTlUzClhIUTBKSm16ckZwbmc0VTh3RnVNR1N1YXM4MlBFeGhiYmdGY2lFY0NnWUVBa0VNOGFHN0treFA3bzEvNVRwR0MKbFFKR2ttOExPMW14Sm90ZDd1QXRUa25PWHAvV2lTa1NRb1k5TXMwR0FGNDlQK1NTamxubWdRc1JqS1JuSTZUegpkQmhxUXNtZ1RPUDQ4bllKZzV4YWxrMHJUb25FMkZ5NmRrVnhWZi9RODMrR1FzditWd3ViZVJwcGU1MElCQzRuCnlWVi9BTlpoUUZFSjVxRTFUZmRSYk1FQ2dZRUFoQzhVdHlwYWE5WHBVbDh2ZWtJQ1RJTWFUa0QwUWxCbmJ0VkcKZCtkellLU1BXNHU5QTBnZ09mVGIrVHVEUVd3SDRXK2JlSnpCQ3YzT2hwc3dmMmhOSUxoU3RrSkdrNGhxdTBaWApQQlpaVXBlMXAzQkc1cWNqRnBvVjZFVnhaL29OZzZMSUdsdS9HVGFCWUt4R1BVOTJLM2p3V0pRSUxtM2oyL29lCkpkd2Q3dmNDZ1lFQXMxNE9OdzRUUkV1NW5lNzlzTXNpMWNBQWZDMzNoNGVGcnFwN2VlTndheHlDM0VWNThibkEKbm9PZ0p1elo4cUZ6ZlBscG05VHBiUFI4YTArQkl6czZqRXFtb0FmaU13V3ZxTitBelVSbkZaanNYdm5BSDN5TgpIdnlMeTc3c245UDN4SGcrakFJZDIzU3N5dlJMb0ZrbExUQ1Q4WTlXa1RCTElVSWNJY0xCd2cwPQotLS0tLUVORCBSU0EgUFJJVkFURSBLRVktLS0tLQo=参考文档 Kubernetes 中的用户与身份认证授权：https://jimmysong.io/kubernetes-handbook/guide/authentication.html</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/k8s/%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84%E5%A4%9A%E4%BA%91%E5%92%8C%E6%B7%B7%E5%90%88%E4%BA%91/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>简化K8s开发！OAM与DAPR云原生应用的全流程研发实战 https://www.bilibili.com/video/av285507760/
+云原生与传统应用程序的区别  拥抱错误，容错转移，资源调配 水平缩放、可用冗余；  云原生应用的需求 快速、稳定重新发布应用 脚本-》虚拟机-》容器化
+动态、灵活的网络 配置脚本-》软件定义网路-》服务网格
+OpenApplicationModel https://oam.dev
+Dapr https://dapr.io/
+The Distributed Application Runtime
+Dapr介绍| Dapr学习笔记 - 敖小剑 工作方式 Dapr向每个计算单元注入了一个Sidecar容器/进程。Sidecar与事件触发器进行交互，并通过标准HTTP或gRPC协议与计算单元进行通信。这使Dapr能够支持所有现有和将来的编程语言，而无需您导入框架或库。
+ 基于Kubernetes的多云和混合云- 知乎  什么是多云和混合云 伴随着Kubernetes和云原生的普及，高可用、高并发以及弹性突发等也成为很多应用程序的必备要求。而要实现这些功能，就需要应用程序不仅可以跨可用区和跨地区部署，还需要在云服务商容量不足或发生故障时自动切换到其他的云服务商或者混合云环境中去。并且，很多人也不希望把自己的所有服务都绑定到某一个云服务商中。
+多云和混合云就是指应用程序可以跨本地数据中心和多家云服务商混合部署，并可以按需在它们之间进行动态调度。多云和混合云的好处包括：
+ 解除云服务商锁定：不再单纯依赖于某一家云服务商或某个地域的数据中心 可用性保障：不仅可以跨地区和跨地域，即使某个云服务商出现故障应用程序还可以继续在其他云服务商运行 成本优化：可以根据云服务商的价格选择成本较低的方案，甚至是根据友商的成本去议价 弹性突发保障：本地数据中心或云服务商容量不足时，还可以扩展到其他云服务商中去  但是，多云和混合云的难点也很明显，最突出的结果问题是：
+ 跨云网络的打通 跨云数据的一致性 海量数据的访问延迟 多云接口不一致带来的管理复杂度  为了解决这些问题，在 Kubernetes 诞生之前，其实就有很多云管理平台专门解决云平台资源异构的问题。这些云管理平台解决了云资源的管理、成本的优化甚至是应用的 Devops 等各种问题，但一般并不负责实际管理应用的编排，所以在很多地方也被称之为多云 1.0。
+Kubernetes催生了多云2.0
+在 Kubernetes 和容器技术诞生之前，要实现多云和混合云是相当难的，需要针对每一个云服务商进行定制化开发。由于应用程序跟云服务商的接口绑定，所以也会导致迁移云服务商时需要从基础架构到应用程序都做相应的适配。这是很多人在上云时都会碰到的痛点，这可以通过云管理平台来解决。
+不过，目前的云管理平台更侧重于云资源的管理。虽然很多云管理平台也会提供应用的Deveops，但实际上只是把应用分发到不同的云平台上，并不负责应用程序的编排。比如，要想实现跨云的高可用和弹性突发，应用程序还是需要去调用不同云服务商的接口。
+有了Kubernetes 和容器之后，本地数据中心和云服务商的Kubernetes集群可以提供一致的接口，这样应用程序在大部分情况下就不需要跟具体的云服务商直接绑定了。如果只考虑Kubernetes集群，云管理平台也可以进一步简化为多云的Kubernetes集群管理，再借助于Kubernetes Operator模式，很多Kubernetes应用依赖的云资源可以抽象为相同的CRD。这就进一步解耦了应用和云服务商，被很多人称之为多云 2.0。
+说到Kubernetes的多云，最理想的是同一个Kubernetes集群横跨在多个不同的云平台上，通过同一个Kubernetes API去管理所有的应用。当然，由于云服务商差异、网络延迟、数据存储以及Kubernetes自身的规模限制等等，这种理想情况并不实用。
+所以，现在主流的方法都是在不同的地区以及不同的云服务商运行多个集群，再在这些集群之上打通多个集群的应用。比如，最简单的是在多个集群中部署服务的副本，再通过 Consul、Linkerd 或者 Global DNS 去为它们做负载均衡。
+下图是 Google Cloud 推荐的一种最简单的多集群服务发现方案：
+多云和混合云都有哪些方案 云管理管理平台已经解决了多云基础设施部署的问题，而 Kubernetes 实际上在各个云服务商之上成为了新的标准。自然，多云的下一步就是如何管理好多个不同 Kubernetes 集群中的应用，从而也诞生了很多开源或者商业的方案，这些方案各有侧重点。
+第一种方案是侧重解决弹性突发的问题，典型的是 Virtual Kubelet。在本地集群容量不足时，可以把其他云服务商的容器产品作为虚拟节点接入到集群中来，从而就有了更大容量来运行应用。
+第二种方案是侧重解决服务治理和流量调度的问题，典型的是 Service Mesh。不同集群的网络可以通过 Service Mesh（或者 Mesh Federation）打通，就可以实现网络流量的灵活调度和故障转移。实际上，也有很多应用通过隧道或者专线打通多个集群，进一步保证了多集群之间网络通信的可靠性。
+第三种方案是侧重解决跨集群资源的服务发现和编排问题，典型的是 Kubernetes Cluster Federation V2。KubeFed 在 Kubernetes 原有的资源对象之上重新封装了可以跨集群的 CRD，控制器负责把它们分发到不同的集群中，再通过 ExternalDNS 等服务发现机制打通不同集群的应用。
+前两种方案都已经有了很多实践案例，这些实践也证明了它们是行之有效的方案。而第三种方案还在早期探索阶段，个人觉得不太实用，离实际应用的场景还是离的比较远，多云之间的服务治理只靠 KubeFed 这些 CRD 还远远不够。
+现在各大云平台都已经提供了托管Kubernetes服务，除去集群的创建过程，从应用程序的角度来看，绝大部分情况下没有任何区别。既然用户并不想把所有的服务都锁定在同一家云服务商中，跨云迁移就是很多用户的痛点。并且大型企业都会有跟已有应用打通的问题，所以主流的云服务商也都提供了跨云和混合云的方案，比如
+ Microsoft Azure: Arc Google Cloud: Anthos AWS: Outposts VMware: Tanzu Mission Control Banzai Cloud PKE 阿里云 ACK  多云的未来 虽然多云可以解决云服务商锁定的问题，但从前面的这些方案可以看出来，这些方案实际上只解决了某些特定的问题，而并没有很完善的方案来解决多云的所有问题。
+除此之外，多云也会带来很多新的问题，比如
+ 多云管理和编排比单个云要复杂得多，诸如数据同步、网络延迟、安全等都有很大挑战 更多的资源会带来基础设施成本的提高 对云基础设施的维护人员要求更高，需要熟悉多个云平台的基础设施，特别是都有哪些需要避免的坑  虽然问题还不少，但无论是开源社区还是各大云服务商都已经在大力解决多云和混合云中的种种问题。比如
+ 诸如 Cilium Cluster Mesh、Istio Service Mesh 等网络方案已经支持了多集群。 Linkerd 社区在设计如何支持Kubernetes多集群的场景 以及如何通过 Service Mirroring 支持 Kubernetes 多集群。 Kubernetes 社区也在讨论支持 Multi-Cluster Service API。  多云和混合云的未来值得期待！
+解决方案 端点科技 ：erda </p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/linux/shell%E5%AD%A6%E4%B9%A0/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>概述 shell是一种解释器，用来
+Linux操作系统的核心是kernal（内核）！ 当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！ 程序将指令发送给内核执行！ 为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell!
+我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类
+[damon@hadoop97 ~]$ cat /etc/shells /bin/sh /bin/bash /sbin/nologin /bin/dash /bin/tcsh /bin/csh 这里要说一下的是系统默认的解析器是bash
+[damon@hadoop97 bin]$ echo $SHELL /bin/bash 也可以这样查看
+head -1 /etc/passwd //查看etc/passwd的第一行内容 每一个bash都是一个解释器，在你登录之后系统会启动默认设置的shell，也就是bash。此时在bash下再执行bash，即又开启了一个解释器。
+bash //开启了一个新的解释器 pstree //查看进程树 此时可以退出当前bash，使用exit命令。
+bash的优点  快捷键，  ctrl+A：将光标移至行首； ctrl+E：将光标移至行尾； ctrl+D：结束任务 ctrl+U：删除前面所有内容 ctrl+w：删除前面一个单词，以空格为界   历史记录 补齐命令：tab键 管道|，覆盖重定向 &gt;，追加重定向 &raquo;  </p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/linux/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>文件描述符是什么 fd 是 File descriptor 的缩写，中文名叫做：文件描述符。文件描述符是一个非负整数，本质上是一个索引值（这句话非常重要）。
+什么时候拿到的 fd ？
+当打开一个文件时，内核向进程返回一个文件描述符（ open 系统调用得到 ），后续 read、write 这个文件时，则只需要用这个文件描述符来标识该文件，将其作为参数传入 read、write 。
+fd 的值范围是什么？
+在 POSIX 语义中，0，1，2 这三个 fd 值已经被赋予特殊含义，分别是标准输入（ STDIN_FILENO ），标准输出（ STDOUT_FILENO ），标准错误（ STDERR_FILENO ）。
+文件描述符是有一个范围的：0 ～ OPEN_MAX-1 ，最早期的 UNIX 系统中范围很小，现在的主流系统单就这个值来说，变化范围是几乎不受限制的，只受到系统硬件配置和系统管理员配置的约束。
+你可以通过 ulimit 命令查看当前系统的配置：
+➜ ulimit -n 4864 如上，我系统上进程默认最多打开 4864 文件。
+参考资料  存储基础 — 文件描述符 fd 究竟是什么？   </p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/mysql/%E4%B8%80%E9%81%93sql%E7%BB%83%E4%B9%A0%E9%A2%98/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>表结构 有三张表：students学生表,courses课程表,scores成绩表，三个表的结构如下：
+students:  courses:  scores:  1. 输出成绩表，按照 姓名,课程名,成绩 的格式输出  第一个题目很简单，要求输出学生姓名，课程名，以及每位同学的成绩，因此只需要把成绩表和学生表，课程表链接，分别获取学生名，课程名即可。
+select s.name,c.name,sc.scorefrom scores scleft join students s on sc.sid = s.idleft join course c on sc.cid = c.id;2. 输出每科的第一名，按照 课程名,学生名,成绩 的格式输出  相对于第一个题目，难度稍加，但逻辑也非常简单。
+很多同学在这个题目上折了，并不是因为不会写求第一名的SQL，而是因为其对SQL的group by理解不透彻导致的。
+写出如下SQL：
+select s.name,c.name,max(sc.score) scorefrom scores scinner join students s on sc.sid = s.idinner join course c on sc.cid = c.idgroup by sc.cid;这个SQL看上去好像没什么问题，成绩表连接学生表，连接课程表，分别拿到学生名，课程名，然后使用max函数求出每科的最高成绩，按科目分组。
+可是，这个sql在实际运行时却报错：
+[42000][1055] Expression #1 of SELECT list is not in GROUP BY clause and contains nonaggregated column 'test.s.name' which is not functionally dependent on columns in GROUP BY clause; this is incompatible with sql_mode=only_full_group_by有的同学说，哎，这是mysql的一个sql_mode=only_full_group_by导致的，把这个模式改了就不报错，正常运行了。
+真的是这样么？这么回答的同学基本是没理解sql里面group by。
+group by 是分组操作，它要求被select的列要么在group by后面，要么在聚合函数里面，否则就会上面的错误。上面的错误是说s.name这个字段，没有在group by里面，也没有在聚合函数里面。
+为什么会这样？
+想一下group by的逻辑，它是分组操作，对于一个表中的数据，按照某个字段分组后，每个分组都会有多条记录，接下来的操作，是对每个分组的多条记录进行聚合操作，而不能单独对某个字段进行操作。因为这个字段和被分组的字段，不一定是一一对应的，如果不是一一对应的，单独select这个字段的时候，mysql怎么会知道要取这个分组中的哪一条呢？
+这也就是为什么mysql中会有sql_mode这个设置，如果你确定你单独select的字段和要分组的字段是一一对应的，你可以打开这个设置，让mysql不再运行报错。但如果是某个同学对group by理解不深入，打开这个设置很容易导致，sql查询不报错，但是查出来的数据却不对，这种问题很难去排查，所以建议这个设置就是用only_full_group_by这个模式。mysql可以允许自己设置，postgresql直接就不允许用户自己设置，严格按照group by的逻辑来。
+上面sql中，s.name, c.name两个字段，都不在group by后面或者不再聚合函数后面，因此运行肯定会报错。
+正确的做法是，先从scores成绩表中查出每科第一名，然后再和scores自己连，查出对应的学生id，然后再和学生表，成绩表连接，得出学生名，课程名。
+select c.name,s.name,sc.scorefrom scores scright join (select sc.cid,max(sc.score) as scorefrom scores scgroup by sc.cid) tmp on sc.cid = tmp.cid and sc.score=tmp.scoreinner join course c on sc.cid = c.idinner join students s on sc.sid = s.idorder by c.name;子查询中，根据cid进行分组，获取每个分组下的最大成绩（也就是每个科目的最高成绩），然后和scores,students,courses连接，查询出对应的学生名，课程名和成绩即可。
+3. 输出每科成绩的前三名  这个题目，相对于上面一个，又进一步。上面只是求每科的第一名，这个要求输出前三名。
+这个也是group by ，然后limit 3么？limit 3的话只输出最终结果的3条，并不满足每个科目的前三名。
+那该如何做呢？这里就得需要知道，mysql里的自定义变量了，使用自定义变量来统计排名。
+怎么做呢？首先，我们先将每个科目按照成绩排名。
+select sc.</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/other/concept/cncf/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>云原生计算基金会(CNCF)Cloud Native Computing Foundation是Linux基金会旗下的非盈利组织，来推动云原生计算的发展，帮助云原生技术开发人员来构建出色的产品。
+CNCF的成立与一个重要项目密切相关，那就是Kubernetes。K8s最早是谷歌的内部容器编排项目Borg，为了推进其发展，谷歌决定将其开源，于是跟Linux基金会在2015年一起创办了CNCF。
+Cloud Native Landscape https://landscape.cncf.io/card-mode
+接下来，就让我们一起看看这些毕业项目在开源世界的影响力，以及它们脱胎于哪里?
+Kubernetes Kubernetes，大家再熟悉不过了，它是CNCF的第一个项目，作为开源容器编排系统，主要应用与自动化容器化应用程序的部署、扩展和管理。它已经是事实上的容器编排标准。
+Kubernetes脱胎于谷歌，“青出于蓝而胜于蓝”。如今它已经演进到v1.18版本。不论是在企业的本地环境，还是云环境中，Kubernetes都被供应商和企业广泛采用。在Github上，Kubernetes拥有超过65万的star，可见其强大的开源影响力。
+Prometheus Prometheus是第二个加入CNCF的托管项目。它脱胎于SoundCloud，是一套开源系统监控&amp;报警&amp;时间序列数据库工具包。Prometheus在2016年成为了CNCF的托管项目，于2018年8月毕业。
+Envoy Envoy是一种被广泛采用的开源网络代理，被设计为云原生应用程序的第7层边缘和服务代理。它脱胎于Lyft，Lyft是美国第二大网约车公司。Envoy在2017年成为CNCF的托管项目，于2018年11月毕业。
+从孵化到毕业，Envoy是CNCF增长最快的项目之一，其增速一直排在前三。Envoy深得大型科技公司和开源组织的青睐，目前有170多家公司为其贡献代码，其中不乏亚马逊、阿里巴巴、谷歌、IBM、VMware这样科技领头羊，包括Apache和OpenStack两大基金会也为其贡献代码。目前，Envoy已经演进到了1.14.1版本，GitHub拥有超过近13万的star。
+CoreDNS CoreDNS是DNS服务器解决方案，它既能作为独立的DNS服务器，也作为Kubernetes的默认向前的DNS服务器。它最早由前谷歌的可靠性工程师Miek Gieben创建，在2017年由CNCF托管成为孵化项目，于2019年初成为了毕业项目。
+从孵化到毕业，CoreDNS只用了一年时间，而且它替代了Kubernetes原来的DNS服务器kube-dns，凭借稳定性和安全性成为了Kubernetes的核心组件。目前CoreDNS的最新版本是1.6.9，Github拥有6000个star。
+Containerd Containerd诞生在Docker，Docker的名头不用多说了。最初Containerd是Docker引擎的底层运行时(runtime)管理器。在2017年成为CNCF托管项目，2019年从CNCF毕业。目前，Containerd作为业界标准的容器运行时被广泛采用。
+Fluentd Fluentd是用于统一日志记录层的数据收集器，它会将数据源与后端系统分离。Fluentd的最大用户使用它从50000台服务器中收集日志数据。它的创建历史也比较久，2011年由Sadayuki Furuhashi创建。在2016年成为CNCF托管项目，于2019年4月从CNCF毕业，它是10个毕业项目中，孵化时间最长的。
+Fluentd在加入CNCF之前，就已然名声在外。它拥有广泛的插件连接到不同的数据源中，有5000多家由数据驱动的企业使用Fluentd来收集数据。加入CNCF后，为其提供代码贡献的公司就超过1000多家。当前的版本是v1.0，目前在Github拥有超过9000个star。
+Jaeger Jaeger作为端到端的分布式跟踪平台，帮助企业监控云原生架构并进行故障排除。它诞生于Uber，在2017年成为CNCF的托管项目，于2019年10月从CNCF毕业。
+Jaeger能够有效帮助企业确定系统运行缓慢和性能下降的情况，被广泛集成在企业的微服务架构中。它的最新版本是1.17.1，目前在Github拥有超过1万个star。
+Vitess Vitess是用于MySQL水平扩展的数据库集群系统。Vitess在2010年诞生于Youtube，一直是其数据库基础架构的核心组件。它在2018年成为CNCF的托管项目，与2019年11月从CNCF毕业。
+Vitess最大优势在于可降低企业使用MySQL成为云原生企业进入的门槛。Vitess现在支持MySQL，Percona和MariaDB数据库。Kubernetes发布1.0后，它一直为Kubernetes提供支持，现在也与etcd，gRPC和Prometheus等许多其他云原生项目集成。最新版本是Vitess 6，目前在Github拥有超过9900个star。
+TUF(The Update Framework) TUF是用于保护软件更新系统的开源技术，提供了一个灵活的框架和规范。它由纽约大学丹顿工程学院计算机科学与工程副教授Justin Cappos于2009年首先开发了该项目。在2017年，TUF成为CNCF的托管项目，在2019年底从CNCF毕业。
+TUF的特别之处在于，它的是第一个源于学术机构并从CNCF毕业的项目;而且Cappos与来自密歇根大学交通研究所和西南研究所的研究团队一起开发了TUF的汽车应用Uptane，Uptane已经被汽车制造商所广泛使用。目前，TUF已成为保护软件更新系统安全的行业标准，不少领先的云原生公司已采用TUF。
+Helm Helm是Kubernetes的包管理器，可帮助企业管理Kubernetes的应用，如定义、安全和升级等。Helm使用charts的打包格式来描述一组相关的Kubernetes资源的文件的集合。Helm于2015年在Deis创立，后来被微软收购。在2018年，Helm成为了CNCF的托管项目，于2020年4月30日从CNCF毕业。
+Helm在云原生领域已经拥有广泛的影响力，Helm charts每月的下载量十分惊人。目前，Helm 3进一步降低了Kubernetes中安装和管理软件的准入门槛，使其更加受欢迎。目前在Github拥有超过3万个star。
+TiKV TiKV 是一个开源的分布式事务 Key-Value 数据库，专注为下一代数据库提供可靠、高质量、实用的存储架构。最初由 PingCAP 团队在 2016 年 1 月作为 TiDB 的底层存储引擎设计并开发，第一版于 2016 年 4 月开源。2018 年 8 月被 CNCF 宣布接纳为沙箱云原生项目，在 2019 年 5 月从沙箱晋级至孵化项目。目前，TiKV 已经在知乎、一点资讯、Shopee、美团、京东云、转转等多行业头部企业得到上线应用。
+TiKV 通过 Raft 一致性算法来实现数据多副本之间的一致性，本地采用了 RocksDB 存储引擎存储数据，同时 TiKV 支持数据自动切分和迁移。TiKV 的跨行事务最初参考 Google Percolator 事务模型，并进行了一些优化，提供快照隔离与带锁快照隔离，支持分布式事务。TiKV 的核心特性如下：
+Harbor Harbor，是一个英文单词，意思是港湾，港湾是干什么的呢，就是停放货物的，而货物呢，是装在集装箱中的，说到集装箱，就不得不提到Docker容器，因为docker容器的技术正是借鉴了集装箱的原理。所以，Harbor正是一个用于存储Docker镜像的企业级Registry服务。
+Docker容器应用的开发和运行离不开可靠的镜像管理，虽然Docker官方也提供了公共的镜像仓库，但是从安全和效率等方面考虑，部署我们私有环境内的Registry也是非常必要的。Harbor是由VMware公司开源的企业级的Docker Registry管理项目，它包括权限管理(RBAC)、LDAP、日志审核、管理界面、自我注册、镜像复制和中文支持等功能。
+etcd etcd 是一套面向分布式系统内关键数据的分布式、高可靠性键值存储方案，其特点包括：
+ 简单：提供定义明确、面向用户的 API（gRPC）。 安全：自动 TLS 配合可选客户端证书验证。 快速：基准性能为每秒 10000 次写入。 可靠：使用 Raft 保证正确分发。  Linkerd Linkerd 是一个提供弹性云端原生应用服务网格的开源项目。其核心是一个透明代理，可以用它来实现一个专用的基础设施层以提供服务间的通信，进而为软件应用提供服务发现、路由、错误处理以及服务可见性等功能，而无需侵入应用内部本身的实现。
+OPA(Open Policy Agent) Open Policy Agent简介| Just For Coding 在应用开发中，应用程序往往需要跟据特定策略的决策结果来判断后续执行何种操作。比如，权限校验就是策略决策的一种典型场景，它需要判断哪些用户对哪些资源能够执行哪些操作。这些策略可能随着时间需要不断的动态更新。当前策略决策的逻辑往往硬编码实现在软件的业务逻辑中，当需要更新策略规则集时，还需要修改应用代码、重新部署应用，非常不灵活。同时，不同的应用服务也都需要重复实现类似的功能，因而策略决策逻辑非常适合做为独立的模块从业务逻辑中抽离出来。
+Open Policy Agent ，官方简称OPA, 为这类策略决策需求提供了一个统一的框架与服务。它将策略决策从软件业务逻辑中解耦剥离，将策略定义、决策过程抽象为通用模型，实现为一个通用策略引擎，可适用于广泛的业务场景，比如:
+ 判断某用户可以访问哪些资源 允许哪些子网对外访问 工作负载应该部署在哪个集群 二进制物料可以从哪些仓库下载 容器能执行哪些操作系统功能 系统能在什么时间被访问  需要注意的是，OPA本身是将策略决策和策略施行解耦，OPA负责相应策略规则的评估，即决策过程，业务应用服务需要根据相应的策略评估结果执行后续操作，策略的施行是业务强相关，仍旧由业务应用来实现。
+Rook Rook 是一款云原生环境下的开源分布式存储编排系统。
+Rook将分布式存储软件转变为自我管理，自我缩放和自我修复的存储服务。它通过自动化部署，引导、配置、供应、扩展、升级、迁移、灾难恢复、监控和资源管理来实现。 Rook使用基础的云原生容器管理、调度和编排平台提供的功能来履行其职责。
+Rook利用扩展点深入融入云原生环境，为调度、生命周期管理、资源管理、安全性、监控和用户体验提供无缝体验。
+Rook现在处于alpha状态，并且最初专注于在Kubernetes之上运行Ceph。Ceph是一个分布式存储系统，提供文件、数据块和对象存储，可以部署在大型生产集群中。Rook计划在未来的版本中增加对除Ceph之外的其他存储系统以及Kubernetes之外的其他云原生环境的支持。</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/other/concept/serverless%E5%92%8Cfaas/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无需维护传统应用中永远保持在线的系统组件。Serverless 架构的长处是显著减少运维成本、复杂度、以及项目起步时间，劣势则在于更加依赖平台供应商和现阶段仍有待成熟的支持环境。
+什么是 Serverless 就像软件行业中的很多趋势一样，Serverless 的界限并不是特别清晰，尤其是它还涵盖了两个互相有重叠的概念：
+ Serverless 最早用于描述那些大部分或者完全依赖于第三方（云端）应用或服务来管理服务器端逻辑和状态的应用，这些应用通常是富客户端应用（单页应用或者移动端 App），建立在云服务生态之上，包括数据库（Parse、Firebase）、账号系统（Auth0、AWS Cognito）等。这些服务最早被称为 “(Mobile) Backend as a Service” ，下文将对此简称为 “BaaS”。 Serverless 还可以指这种情况：应用的一部分服务端逻辑依然由开发者完成，但是和传统架构不同，它运行在一个无状态的计算容器中，由事件驱动、生命周期很短（甚至只有一次调用）、完全由第三方管理（感谢 ThoughtWorks 在他们最近的“技术观察 ”中对此所做的定义）。这种情况称为 Functions as a service / FaaS。AWS Lambda 是目前的热门 FaaS 实现之一，下文将对此简称为 “FaaS”。  一些示例 界面驱动的应用（UI-driven applications） 我们来设想一个传统的三层 C/S 架构，例如一个常见的电子商务应用（比如在线宠物商店），假设它服务端用 Java，客户端用 HTML/JavaScript：
+在这个架构下客户端通常没什么功能，系统中的大部分逻辑——身份验证、页面导航、搜索、交易——都在服务端实现。
+把它改造成 Serverless 架构的话会是这样：
+这是张大幅简化的架构图，但还是有相当多变化之处：
+ 我们移除了最初应用中的身份验证逻辑，换用一个第三方的 BaaS 服务。 另一个 BaaS 示例：我们允许客户端直接访问一部分数据库内容，这部分数据完全由第三方托管（如 AWS Dynamo），这里我们会用一些安全配置来管理客户端访问相应数据的权限。 前面两点已经隐含了非常重要的第三点：先前服务器端的部分逻辑已经转移到了客户端，如保持用户 Session、理解应用的 UX 结构（做页面导航）、获取数据并渲染出用户界面等等。客户端实际上已经在逐步演变为单页应用 。 还有一些任务需要保留在服务器上，比如繁重的计算任务或者需要访问大量数据的操作。这里以“搜索”为例，搜索功能可以从持续运行的服务端中拆分出来，以 FaaS 的方式实现，从 API 网关（后文做详细解释）接收请求返回响应。这个服务器端函数可以和客户端一样，从同一个数据库读取产品数据。 我们原始的服务器端是用 Java 写的，而 AWS Lambda（假定我们用的这家 FaaS 平台）也支持 Java，那么原先的搜索代码略作修改就能实现这个搜索函数。 最后我们还可以把“购买”功能改写为另一个 FaaS 函数，出于安全考虑它需要在服务器端，而非客户端实现。它同样经由 API 网关暴露给外部使用。  消息驱动的应用（Message-driven applications） 再举一个后端数据处理服务的例子。假设你在做一个需要快速响应 UI 的用户中心应用，同时你又想捕捉记录所有的用户行为。设想一个在线广告系统，当用户点击了广告你需要立刻跳转到广告目标，同时你还需要记录这次点击以便向广告客户收费（这个例子并非虚构，我的一位前同事最近就在做这项重构）。
+传统的架构会是这样：“广告服务器”同步响应用户的点击，同时发送一条消息给“点击处理应用”，异步地更新数据库（例如从客户的账户里扣款）。
+在 Serverless 架构下会是这样：
+这里两个架构的差异比我们上一个例子要小很多。我们把一个长期保持在内存中待命的任务替换为托管在第三方平台上以事件驱动的 FaaS 函数。注意这个第三方平台提供了消息代理和 FaaS 执行环境，这两个紧密相关的系统。
+解构 “Function as a Service” 我们已经提到多次 FaaS 的概念，现在来挖掘下它究竟是什么含义。先来看看 Amazon 的 Lambda 产品简介 ：
+通过 AWS Lambda，无需配置或管理服务器*(1)**即可运行代码。您只需按消耗的计算时间付费 – 代码未运行时不产生费用。借助 Lambda，您几乎可以为任何类型的应用程序或后端服务**(2)**运行代码，而且全部无需管理。只需上传您的代码，Lambda 会处理运行**(3)**和扩展高可用性**(4)**代码所需的一切工作。您可以将您的代码设置为自动从其他 AWS 服务**(5)**触发，或者直接从任何 Web 或移动应用程序**(6)**调用。*
+ 本质上 FaaS 就是无需配置或管理你自己的服务器系统或者服务器应用即可运行后端代码，其中第二项——服务器应用——是个关键因素，使其区别于现今其他一些流行的架构趋势如容器或者 PaaS（Platform as a Service）。 回顾前面点击处理的例子，FaaS 替换掉了点击处理服务器（可能跑在一台物理服务器或者容器中，但绝对是一个独立的应用程序），它不需要服务器，也没有一个应用程序在持续运行。 FaaS 不需要代码基于特定的库或框架，从语言或环境的层面来看 FaaS 就是一个普通的应用程序。例如 AWS Lambda 支持 JavaScript、Python 以及任意 JVM 语言（Java、Clojure、Scala 等），并且你的 FaaS 函数还可以调用任何一起部署的程序，也就是说实际上你可以用任何能编译为 Unix 程序的语言（稍后我们会讲到 Apex）。FaaS 也有一些不容忽视的局限，尤其是牵涉到状态和执行时长问题，这些我们稍后详谈。 再次回顾一下点击处理的例子——代码迁移到 FaaS 唯一需要修改的是 main 方法（启动）的部分，删掉即可，也许还会有一些上层消息处理的代码（实现消息监听界面），不过这很可能只是方法签名上的小改动。所有其他代码（比如那些访问数据库的）都可以原样用在 FaaS 中。 既然我们没有服务器应用要执行，部署过程也和传统的方式大相径庭——把代码上传到 FaaS 平台，平台搞定所有其他事情。具体而言我们要做的就是上传新版的代码（zip 文件或者 jar 包）然后调用一个 API 来激活更新。 横向扩展是完全自动化、弹性十足、由 FaaS 平台供应商管理的。如果你需要并行处理 100 个请求，不用做任何处理系统可以自然而然地支持。FaaS 的“运算容器”会在运行时按需启动执行函数，飞快地完成并结束。 回到我们的点击处理应用，假设某个好日子我们的客户点击广告的数量有平日的十倍之多，我们的点击处理应用能承载得住么？我们写的代码是否支持并行处理？支持的话，一个运行实例能够处理这么多点击量吗？如果环境允许多进程执行我们能自动支持或者手动配置支持吗？以 FaaS 实现你的代码需要一开始就以并行执行为默认前提，但除此之外就没有其他要求了，平台会完成所有的伸缩性需求。 FaaS 中的函数通常都由平台指定的一些事件触发。在 AWS 上有 S3（文件）更新、时间（定时任务）、消息总线（Kinesis ）消息等，你的函数需要指定监听某个事件源。在点击处理器的例子中我们有个假设是已经采用了支持 FaaS 订阅的消息代理，如果没有的话这部分也需要一些代码量。 大部分的 FaaS 平台都支持 HTTP 请求触发函数执行，通常都是以某种 API 网关的形式实现（如 AWS API Gateway ，Webtask ）。我们在宠物商店的例子中就以此来实现搜索和购买功能。  状态 当牵涉到本地（机器或者运行实例）状态时 FaaS 有个不能忽视的限制。简单点说就是你需要接受这么一个预设：函数调用中创建的所有中间状态或环境状态都不会影响之后的任何一次调用。这里的状态包括了内存数据和本地磁盘存储数据。从部署的角度换句话说就是 FaaS 函数都是无状态的（Stateless）。</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">0001-01-01</span>
+                        
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+    <div class="pagination">
+        
+<ul class="pagination">
+  <li class="page-item">
+    <a href="/" class="page-link" aria-label="First"><span aria-hidden="true">&laquo;&laquo;</span></a>
+  </li>
+  <li class="page-item">
+    <a href="/page/7/" class="page-link" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+  </li>
+  <li class="page-item">
+    <a class="page-link" href="/">1</a>
+  </li>
+  <li class="page-item">
+    <a class="page-link" href="/page/2/">2</a>
+  </li>
+  <li class="page-item">
+    <a class="page-link" href="/page/3/">3</a>
+  </li>
+  <li class="page-item disabled">
+    <span aria-hidden="true">&nbsp;&hellip;&nbsp;</span>
+  </li>
+  <li class="page-item">
+    <a class="page-link" href="/page/7/">7</a>
+  </li>
+  <li class="page-item active">
+    <a class="page-link" href="/page/8/">8</a>
+  </li>
+  <li class="page-item">
+    <a class="page-link" href="/page/9/">9</a>
+  </li>
+  <li class="page-item">
+    <a href="/page/9/" class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
+  </li>
+  <li class="page-item">
+    <a href="/page/9/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
+  </li>
+</ul>
+
+
+    </div>
+		</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

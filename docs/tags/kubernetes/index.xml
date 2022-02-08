@@ -7,7 +7,34 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
-    <lastBuildDate>Fri, 23 Jul 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 23 Nov 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Kubernetes 集群里的三种IP</title>
+      <link>https://willje.github.io/posts/k8s/k8s-%E9%9B%86%E7%BE%A4%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dipnodeippodipclusterip/</link>
+      <pubDate>Tue, 23 Nov 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/k8s-%E9%9B%86%E7%BE%A4%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dipnodeippodipclusterip/</guid>
+      <description>Kubernetes集群里有三种IP地址，分别如下： Node IP：Node节点的IP地址，即物理网卡的IP地址。 Pod IP：Pod的IP地址，即docker容器的IP地址，此为虚拟IP地址。 Cluster IP：Service的IP地址，此为虚拟IP地址。 Node IP 可以是物理机的IP（也可能是虚拟机IP）。每个Service都会在Node节点上开通一个端口，外部可以通过NodeIP:No</description>
+    </item>
+    
+    <item>
+      <title>Kubelet实现原理</title>
+      <link>https://willje.github.io/posts/k8s/kubelet%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Sun, 29 Aug 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/kubelet%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</guid>
+      <description>kubelet 主要功能 在kubernetes集群中，每个Node节点都会启动kubelet进程，用来处理Master节点下发到本节点的任务，管理Pod和其中的容器。 pod 管理 Kubelet 以 PodSpec 的方式工作。PodSpec 是描述一个 Pod 的 YAML 或 JSON 对象。 kubelet 采用一组通过各种机制提供的 PodSpecs（主要通过 apiserver），并确保这些 PodSpecs 中描述的 Pod 正常健康运行。 官方提供了4中方式来获取容器信息</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes port类型</title>
+      <link>https://willje.github.io/posts/k8s/kubernetes-port%E7%B1%BB%E5%9E%8B/</link>
+      <pubDate>Mon, 23 Aug 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/kubernetes-port%E7%B1%BB%E5%9E%8B/</guid>
+      <description>k8s有几种port类型，分别是TargetPort，ContainerPort，NodePort，Port，那么该怎么区别她们呢，各自的使用场景又是什么呢，接下来这篇文章给你分析一下。 ContainerPort ContainerPort表示你使用的镜像需要开放的端口。例如，mysql 服务需要暴露 3306 端口，redis 暴露 6379 端口 apiVersion:v1kind:ReplicationControllermetadata:name:redis-masterlabels:name:redis-masterspec:replicas:1selector:name:redis-mastertemplate:metadata:labels:name:redis-masterspec:containers:- name:masterimage:kubeguide/redis-masterports:- containerPort:6379# 此处定义暴露的端口NodePort 一旦你的pod创建</description>
+    </item>
+    
     <item>
       <title>k8s入门</title>
       <link>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/</link>

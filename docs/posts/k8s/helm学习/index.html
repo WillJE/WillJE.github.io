@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="helm学习">
+<meta itemprop="description" content="helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release"><meta itemprop="datePublished" content="2021-07-01T16:23:40&#43;08:00" />
+<meta itemprop="dateModified" content="2021-07-01T16:23:40&#43;08:00" />
+<meta itemprop="wordCount" content="1017">
+<meta itemprop="keywords" content="kubernates,helm," /><meta property="og:title" content="helm学习" />
+<meta property="og:description" content="helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/k8s/helm%E5%AD%A6%E4%B9%A0/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-07-01T16:23:40&#43;08:00" />
+<meta property="article:modified_time" content="2021-07-01T16:23:40&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="helm学习"/>
+<meta name="twitter:description" content="helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>helm学习</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jul 1, 2021</span></div>
+				<h1>helm学习</h1>
+			</header>
+			<div class="content">
+				<h1 id="helm介绍">helm介绍<a href="#helm介绍" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="chart">chart<a href="#chart" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。</p>
+<h2 id="repoistory">Repoistory<a href="#repoistory" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。</p>
+<h2 id="release">Release<a href="#release" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release 可以理解为 Helm 使用 Chart 包部署的一个应用实例。</p>
+<h2 id="tiller">Tiller<a href="#tiller" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Tiller 是 Helm 的服务端，部署在 Kubernetes 集群中。Tiller 用于接收 Helm 的请求，并根据 Chart 生成 Kubernetes 的部署文件（ Helm 称为 Release ），然后提交给 Kubernetes 创建应用。Tiller 还提供了 Release 的升级、删除、回滚等一系列功能。</p>
+<p><p class="md__image">
+  <img src="../helm%e5%ad%a6%e4%b9%a0.assets/webp.webp"
+    alt="img"  />
+</p>
+</p>
+<h1 id="chart开发">chart开发<a href="#chart开发" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p><a href="https://cloud.tencent.com/developer/article/1627270" target="_blank" rel="noopener">helm实战之开发Chart - 云+社区- 腾讯云</a>
+</p>
+<p><a href="https://www.cnblogs.com/qiyebao/p/13389621.html" target="_blank" rel="noopener">helm3使用入门- —八戒— - 博客园</a>
+</p>
+<p><a href="https://helm.sh/zh/docs/topics/charts/" target="_blank" rel="noopener">官网的例子</a>
+</p>
+<p>创建一个mychart的chart</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm create mychart   <span class="c1">#创建一个helm项目</span>
+</code></pre></div><p>修改values.yaml下的信息。</p>
+<p>完成后，检查依赖和模板是否正确</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm lint mychart/     <span class="c1">#检查依赖和模版配置是否正确</span>
+<span class="o">==</span>&gt; Linting mychart/
+<span class="o">[</span>INFO<span class="o">]</span> Chart.yaml: icon is recommended
+
+<span class="m">1</span> chart<span class="o">(</span>s<span class="o">)</span> linted, <span class="m">0</span> chart<span class="o">(</span>s<span class="o">)</span> failed
+</code></pre></div><p>将应用打包</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm package mychart
+Successfully packaged chart and saved it to: /root/mychart-0.1.0.tgz
+</code></pre></div><h2 id="chart安装部署">chart安装部署<a href="#chart安装部署" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># 在部署前使用 --dry-run 参数验证 Chart 的配置，并不执行安装</span>
+$ helm install demo-test  --dry-run --debug myrepo/mychart
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># 方式一</span>
+$ helm install demo-test ./mychart
+
+<span class="c1"># 可根据不同的配置来install，默认是values.yaml</span>
+$ helm install demo-test ./mychart -f ./mychart/values-prod.yaml
+
+<span class="c1"># 方式二</span>
+$ helm install demo-test ./mychart-0.1.0.tgz
+</code></pre></div><p>完成后查看</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm list
+</code></pre></div><p>删除release</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">helm uninstall demo-test
+</code></pre></div><h2 id="char上传到repo">char上传到repo<a href="#char上传到repo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>将应用发布到Repository，这个仓库可以是harbor仓库，先看下helm关联的仓库</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm repo list
+</code></pre></div><p>如果需要增加仓库</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm repo add reponame repourl
+</code></pre></div><p>再执行更新</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm repo update	
+</code></pre></div><p>此时再查看仓库列表<code>helm repo list</code>就能看到添加的仓库了。</p>
+<p>推送到harbo之前需要关心一下认证的问题，具体看<a href="https://helm.sh/zh/docs/topics/chart_repository/" target="_blank" rel="noopener">官网chart repo</a>
+</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm push mychart/ chartrepo -u username -p password
+</code></pre></div><p>推送成功之后可以查找下推送的chart</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm search repo will-chart
+</code></pre></div><h2 id="chart更新">chart更新<a href="#chart更新" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>修改 mychart/Chart.yaml 文件</p>
+<p><p class="md__image">
+  <img src="../helm%e5%ad%a6%e4%b9%a0.assets/105584-20200728153858707-1189210447-16426656582032.png"
+    alt="img"  />
+</p>
+</p>
+<p>改成：</p>
+<p><p class="md__image">
+  <img src="../helm%e5%ad%a6%e4%b9%a0.assets/105584-20200728153933091-503804760.png"
+    alt="img"  />
+</p>
+</p>
+<p>然后上传chart</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">helm push mychart/ myrepo -u <span class="nb">test</span> -p Test1234
+</code></pre></div><p>查询一下</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">helm search repo mychart -l
+</code></pre></div><p>此时可以看到两个版本的mychart</p>
+<h2 id="chart回退">chart回退<a href="#chart回退" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>如果更新后的程序由于某些原因运行有问题，需要回退到旧版本的应用。可以使用 <code>helm history</code> 命令查看一个 Release 的所有变更记录</p>
+<p><p class="md__image">
+  <img src="../helm%e5%ad%a6%e4%b9%a0.assets/105584-20200728154343568-707075924.png"
+    alt="img"  />
+</p>
+</p>
+<p>其次，我们可以使用下面的命令对指定的应用进行回退。</p>
+<p><p class="md__image">
+  <img src="../helm%e5%ad%a6%e4%b9%a0.assets/105584-20200728154407421-182389844.png"
+    alt="img"  />
+</p>
+</p>
+<h1 id="其他常用命令">其他常用命令<a href="#其他常用命令" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>helm list -a查看全部的release，tag “-a”是查看全部的release，包括已部署、部署失败、正在删除、已删除release等。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm list -a
+</code></pre></div><p>helm delete命令删除一个chart：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm delete mysql
+</code></pre></div><h1 id="参考">参考<a href="#参考" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li><a href="https://helm.sh/zh/docs/howto/charts_tips_and_tricks/" target="_blank" rel="noopener">helm中文官方文档</a>
+</li>
+<li><a href="https://zhaohuabing.com/2018/04/16/using-helm-to-deploy-to-kubernetes/" target="_blank" rel="noopener">Helm介绍-赵化冰的博客</a>
+</li>
+</ul>
+
+			</div><div class="content">
+	<br>
+	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/kubernates">kubernates</a></span><span class="tag"><a href="https://willje.github.io/tags/helm">helm</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1017 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-07-01 16:23 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#chart">chart</a></li>
+    <li><a href="#repoistory">Repoistory</a></li>
+    <li><a href="#release">Release</a></li>
+    <li><a href="#tiller">Tiller</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#chart安装部署">chart安装部署</a></li>
+    <li><a href="#char上传到repo">char上传到repo</a></li>
+    <li><a href="#chart更新">chart更新</a></li>
+    <li><a href="#chart回退">chart回退</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>k8s入门</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/git/gitignore%E5%A6%82%E4%BD%95%E5%BF%BD%E7%95%A5%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%87%E4%BB%B6/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>gitignore如何忽略之前已提交的文件</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

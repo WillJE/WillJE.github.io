@@ -65,6 +65,140 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F-%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/">分布式系统---幂等性设计</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>WEB资源或API方法的幂等性是指一次和多次请求某一个资源应该具有同样的副作用。 幂等性是系统的接口对外一种承诺(而不是实现), 承诺只要调用接口成功, 外部多次调用对系统的影响是一致的。 幂等性是分布式系统设计中的一个重要概念，对超时处理、系统恢复等具有重要意义。声明为幂等的接口会认为外部调用失败是常态, 并且失败之后必然会有重试。例如，在因网络中断等原因导致请求方</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-02-05</span>
+                        <a class="tag"
+                                   href="/tags/%E5%B9%82%E7%AD%89%E6%80%A7/">幂等性</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/distributed/raft-%E7%AE%97%E6%B3%95/">Raft算法</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>在一个由 Raft 协议组织的集群中有三类角色： Leader（领袖） Follower（群众） Candidate（候选人） 就像一个民主社会，领袖由民众投票选出。刚开始没有领袖，所有集群中的参与者都是群众，那么首先开启一轮大选，在大选期间所有群众都能参与竞选，这时所有群众的角色就变成了候选人，民主投票选出领袖后就开始了这届领袖的任期，然后选举结束，所有除领袖的候选人又变回</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-02-02</span>
+                        <a class="tag"
+                                   href="/tags/raft/">Raft</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9Fcap%E5%AE%9A%E7%90%86%E4%B8%8Ebase%E7%90%86%E8%AE%BA/">分布式系统CAP定理与BASE理论</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>CAP定理 在计算机科学中，CAP定理指出，对于一个分布式系统，不能同时满足一下三点，最多只能同时满足其中两点： 一致性(Consistency)：在分布式系统环境下，数据在多台机器上有多个副本。当对数据执行更新操作时，数据更新操作完成后，所有节点在同一时间的数据完全一致，客户端读取的数据永远是更新后的最新数据。 可用性(Availability) : 服务一直可用，</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-01-15</span>
+                        <a class="tag"
+                                   href="/tags/cap/">CAP</a><a class="tag"
+                                   href="/tags/base/">BASE</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/">分布式系统中的数据一致性问题</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>数据一致性 数据库系统中的数据一致性 数据一致性问题最初是存在于数据库系统中的一个概念，数据库系统中一致性问题通常指的是关联数据之间的逻辑是否完整和正确，通常数据库系统会通过使用事务来保证数据的一致性和完整性。事务本质上就是一个操作序列的有限集合，若事务中有的操作没有成功完成，则事务中的所有操作都需要被回滚，回到事务执行前的状态。 比如当你在淘宝中购买商品进行付款</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-01-05</span>
+                        <a class="tag"
+                                   href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">数据一致性</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">go并发编程</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>并发与并行 并发是指同一个时间段内多个任务同时交叉执行，并且都没有执行结束，而并行是说在单位时间内多个任务同时在执行，并发任务强调在一个时间段内同时执行，而一个时间段有多个单位时间累积而成，所以说并发的多个任务在单位时间内不一定同时在执行。 在单个cpu的时代多个任务同时运行都是并发，这是因为cpu同时只能执行一个任务，单个cpu时代多任务是共享一个cpu的，当</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2020-12-25</span>
+                        <a class="tag"
+                                   href="/tags/go/">go</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/docker/docker%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/">Docker基础概念</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>b站教程：https://www.bilibili.com/video/BV1og4y1q7M4? 【这个教程非常简洁！且深入！基于企业应用场景！推荐！以下笔记都基于该课程】 【配套笔记：https://gitee.com/nasheishei/docker_learning/blob/master/Docker.md】 什么是docker Docker 使用 Google 公司推出的 Go 语言</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2020-12-05</span>
+                        <a class="tag"
+                                   href="/tags/docker/">docker</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/distributed/zookeeper%E5%85%A5%E9%97%A8/">Zookeeper入门</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>我们在虚拟机中安装zookeeper，首先要安装linux虚拟机。 安装linux虚拟机 安装vmvare，地址在这里 下载centos镜像，地址在这里 安装，这里要注意网络配置，Centos网络设置 我这里没有设置固定IP，因为使用的是DHCP动态分配IP，不知道明天起来IP会不会变。 补充：IP变了，于是按照下面的方法固定IP； 关键点，配置网络；vmware虚拟机c</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2020-11-28</span>
+                        <a class="tag"
+                                   href="/tags/zookeeper/">zookeeper</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/%E6%80%9D%E7%BB%B4%E9%A2%98/">思维题</a>
                 </h2>
             </div>
@@ -121,142 +255,6 @@
             </div>
 				</div>
     
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/git/git%E5%B0%8F%E8%AE%B0/">Git小记</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>分支 查看本地分支 git branch 查看远程分支 git branch -r 查看本地和远程所有分支 git branch -a 创建分支 git branch [name]//该命令创建分支后不会马上切换到新分支 创建分支并切换到该分支 git checkout -b [name] 切换分支 git checkout [name] 如果希望强制切换，即放弃本地修改，则使用命令 git checkout -f newBranch 删除分支 git branch -d [name] //选项只能删除已经参与了合并的分支，对于未有合并的分支是无法删除的。 如果想强制删除一个分支，可以使用-D选项 这只是删</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-10-05</span>
-                        <a class="tag"
-                                   href="/tags/git/">git</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/algorithm/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">一致性哈希算法</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>在了解一致性哈希算法之前，最好先了解一下缓存中的一个应用场景，了解了这个应用场景之后，再来理解一致性哈希算 法，就容易多了，也更能体现出一致性哈希算法的优点，那么，我们先来描述一下这个经典的分布式缓存的应用场景。 场景描述 假设，我们有三台缓存服务器，用于缓存图片，我们为这三台缓存服务器编号为0号、1号、2号，现在，有3万张图片需要 缓存，我们希望这些图片被均匀的缓</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-09-29</span>
-                        <a class="tag"
-                                   href="/tags/%E4%B8%80%E8%87%B4%E6%80%A7/">一致性</a><a class="tag"
-                                   href="/tags/%E5%93%88%E5%B8%8C/">哈希</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/distributed/kafka%E5%85%A5%E9%97%A8/">kafka入门</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>Kafka是最初由Linkedin公司开发，是一个分布式、支持分区的（partition）、多副本的（replica），基于zookeeper协调的分布式消息系统，它的最大的特性就是可以实时的处理大量数据以满足各种需求场景：比如基于hadoop的批处理系统、低延迟的实时系统、Storm/Spark流式处理引擎，web/nginx日志、访问日志，消息服务等等，</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-07-29</span>
-                        <a class="tag"
-                                   href="/tags/kafka/">kafka</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/k8s/k8s%E5%85%A5%E9%97%A82/">k8s入门2</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &#34;pi&#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&#34;perl&#34;,&#34;-Mbignum=bpi&#34;,&#34;-wle&#34;,&#34;print bpi(2000)&#34;]restartPolicy:Never一段时</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-07-25</span>
-                        <a class="tag"
-                                   href="/tags/kubernetes/">kubernetes</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/go/concurrent/sync.once%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0/">sync.once单例模式实现</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>并发经典场景 Go 并发编程的场景中，有一个特别经典的场景，就是并发创建对象的时候。一般伪代码如下： if ( /* 如果对象不存在 */) { // 那么就创建对象 } 因为是并发的环境，所以多个 goroutine 短时间内得出的判断都是一样的：都判断得到对象是不存在的，这时候大家的的行为也特别一致，每个 goroutine 磨刀霍霍就是创建。这时候如果不加以控制，那么会导致程序逻辑出问题。 会导致对象重复创建多次，并且可能不断的</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-07-23</span>
-                        <a class="tag"
-                                   href="/tags/go/">go</a><a class="tag"
-                                   href="/tags/%E5%B9%B6%E5%8F%91/">并发</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/java/spring/springcloudnacos%E4%BD%BF%E7%94%A8/">SpringCloudNacos使用</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>Nacos 是 Spring Cloud Alibaba 核心组件之一，可以用作 Spring Cloud 的注册中心和配置中心。 本文讲述如何在 Spring Cloud 中使用 Nacos 作为配置中心。 安装Nacos 与 Spring Cloud Config 和 Eureka 的使用方式不同，Nacos Server 需要独立部署。Nacos Server 的部署方式包括单机模式和集群模式，集群模式可以解决 Nacos 高可用的问题。 为简单起见，本文采用单机模式 Nacos Server 作为配置中心。单机模式搭建过程比较简单，可以通过下载源代码编译方式安装和二进制可执行</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-06-25</span>
-                        <a class="tag"
-                                   href="/tags/springcloud/">SpringCloud</a><a class="tag"
-                                   href="/tags/nacos/">Nacos</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/java/spring/springcloud%E5%AD%A6%E4%B9%A0/">SpringCloud学习</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>Spring Cloud是一系列框架的有序集合。它利用Spring Boot的开发便利性巧妙地简化了分布式系统基础设施的开发，如服务发现注册、配置中心、消息总线、负载均衡、断路器、数据监控等，都可以用Spring Boot的开发风格做到一键启动和部署。Spring Cloud并没有重复制造轮子，它只是将目前各家公司开发的比较成熟、经得起实际考验的服务框架组合起来，通过Spri</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-06-25</span>
-                        <a class="tag"
-                                   href="/tags/springcloud/">SpringCloud</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
     <div class="pagination">
         
 <ul class="pagination">
@@ -281,14 +279,17 @@
   <li class="page-item">
     <a class="page-link" href="/page/5/">5</a>
   </li>
+  <li class="page-item disabled">
+    <span aria-hidden="true">&nbsp;&hellip;&nbsp;</span>
+  </li>
   <li class="page-item">
-    <a class="page-link" href="/page/6/">6</a>
+    <a class="page-link" href="/page/9/">9</a>
   </li>
   <li class="page-item">
     <a href="/page/5/" class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
   </li>
   <li class="page-item">
-    <a href="/page/6/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
+    <a href="/page/9/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
   </li>
 </ul>
 
@@ -297,7 +298,7 @@
 		</main>
 
 	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
-		<p>&copy; 2019 - 2021 <a href="https://willje.github.io">will</a></p>
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
 		<p>
 			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
 		</p>

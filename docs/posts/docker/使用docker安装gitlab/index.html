@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="使用Docker安装GitLab">
+<meta itemprop="description" content="安装GitLab gitlab 镜像分为两个版本： gitlab-ce 社区版 gitlab-ee 企业收费版 这里使用社区版则可，直接安装官方镜像，目前(2020/1/14)官方镜像大小约1.8G，如果你没有设置Docker镜像源，Docker会默认从国外Docker官方Hub去拉去进行，速度难以让人接受，参考「Centos7安装docker-ce」一文进行设置。 拉取gitlab-ce源 docker pull gitlab/gitlab-ce:latest 运行Gitlab 下"><meta itemprop="datePublished" content="2021-08-24T21:51:51&#43;08:00" />
+<meta itemprop="dateModified" content="2021-08-24T21:51:51&#43;08:00" />
+<meta itemprop="wordCount" content="1086">
+<meta itemprop="keywords" content="Docker,GitLab," /><meta property="og:title" content="使用Docker安装GitLab" />
+<meta property="og:description" content="安装GitLab gitlab 镜像分为两个版本： gitlab-ce 社区版 gitlab-ee 企业收费版 这里使用社区版则可，直接安装官方镜像，目前(2020/1/14)官方镜像大小约1.8G，如果你没有设置Docker镜像源，Docker会默认从国外Docker官方Hub去拉去进行，速度难以让人接受，参考「Centos7安装docker-ce」一文进行设置。 拉取gitlab-ce源 docker pull gitlab/gitlab-ce:latest 运行Gitlab 下" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/docker/%E4%BD%BF%E7%94%A8docker%E5%AE%89%E8%A3%85gitlab/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-08-24T21:51:51&#43;08:00" />
+<meta property="article:modified_time" content="2021-08-24T21:51:51&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="使用Docker安装GitLab"/>
+<meta name="twitter:description" content="安装GitLab gitlab 镜像分为两个版本： gitlab-ce 社区版 gitlab-ee 企业收费版 这里使用社区版则可，直接安装官方镜像，目前(2020/1/14)官方镜像大小约1.8G，如果你没有设置Docker镜像源，Docker会默认从国外Docker官方Hub去拉去进行，速度难以让人接受，参考「Centos7安装docker-ce」一文进行设置。 拉取gitlab-ce源 docker pull gitlab/gitlab-ce:latest 运行Gitlab 下"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>使用Docker安装GitLab</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Aug 24, 2021</span></div>
+				<h1>使用Docker安装GitLab</h1>
+			</header>
+			<div class="content">
+				<h2 id="安装gitlab">安装GitLab<a href="#安装gitlab" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>gitlab 镜像分为两个版本：</p>
+<p>gitlab-ce 社区版
+gitlab-ee 企业收费版</p>
+<p>这里使用社区版则可，直接安装官方镜像，目前(2020/1/14)官方镜像大小约1.8G，如果你没有设置Docker镜像源，Docker会默认从国外Docker官方Hub去拉去进行，速度难以让人接受，参考「Centos7安装docker-ce」一文进行设置。</p>
+<p>拉取gitlab-ce源</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker pull gitlab/gitlab-ce:latest
+</code></pre></div><h3 id="运行gitlab">运行Gitlab<a href="#运行gitlab" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>下载完后，先不急着运行Gitlab，为了避免容器运行时数据丢失，需要使用Docker volume（容器卷）方式来将数据映射到本地，这里创建<code>/home/gitlab</code>目录来存放相应的数据，具体对应关系如下表。</p>
+<table>
+<thead>
+<tr>
+<th>宿主机位置</th>
+<th>容器位置</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>/home/gitlab/config</td>
+<td>/etc/gitlab</td>
+<td>用于存储 GitLab 配置文件</td>
+</tr>
+<tr>
+<td>/home/gitlab/logs</td>
+<td>/var/log/gitlab</td>
+<td>用于存储日志</td>
+</tr>
+<tr>
+<td>/home/gitlab/data</td>
+<td>/var/opt/gitlab</td>
+<td>用于存储应用数据</td>
+</tr>
+</tbody>
+</table>
+<p>通常gitlab会与git配置使用，而git会采用ssh协议来操作git仓库，而我们连接宿主机时也使用ssh，如果不修改默认sshd端口，git使用默认配置就会出现问题，这里将主机的sshd端口从22端口改为15678端口。</p>
+<p>Centos7防火墙机制改为了firewall，拥有更加严格的安全机制，你需要按照下面方式去修改。</p>
+<p>1.编辑<code> /etc/ssh/sshd_config</code>，将 #Port 22 注释去掉，将数字 22 更改为 15678。</p>
+<p>2.重启sshd服务</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">systemctl restart sshd
+</code></pre></div><p>3.配置firewall，使15678端口可以对外提供服务，否则无法使用ssh进行远程登录了。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">semanage port -a -t ssh_port_t -p tcp <span class="m">15678</span>
+firewall-cmd --permanent --add-port<span class="o">=</span>15678/tcp
+firewall-cmd --reload 
+</code></pre></div><p>完整上面两项配置，就可以运行docker了。</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker run <span class="se">\
+</span><span class="se"></span>    --publish 443:443 --publish 80:80 --publish 22:22 <span class="se">\
+</span><span class="se"></span>    --name gitlab <span class="se">\
+</span><span class="se"></span>    --volume /home/gitlab/config:/etc/gitlab <span class="se">\
+</span><span class="se"></span>    --volume /home/gitlab/logs:/var/log/gitlab <span class="se">\
+</span><span class="se"></span>    --volume /home/gitlab/data:/var/opt/gitlab <span class="se">\
+</span><span class="se"></span>    gitlab/gitlab-ce
+</code></pre></div><p>这里将主机的 443、80、22 端口直接转发到容，同时利用&ndash;volume将gitlab的配置、日志与数据都持久化到本地</p>
+<p>除了修改宿主机sshd端口外，你还可以选择另外一种方法，就是修改gitlab容器相应的端口，但生产环境通常会不启用22端口，避免被人恶意暴力尝试，各位可以进一步优化。</p>
+<h2 id="使用-docker-compose-安装">使用 docker-compose 安装<a href="#使用-docker-compose-安装" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>使用 docker-compose 可以更方便配置、安装 gitlab。安装 gitlab 的 <code>docker-compose.yml</code> 文件如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">version: <span class="s1">&#39;3&#39;</span>
+services:
+  web:
+    image: <span class="s1">&#39;gitlab/gitlab-ce:latest&#39;</span>
+    restart: always
+    hostname: <span class="s1">&#39;127.0.0.1&#39;</span>
+    environment:
+      GITLAB_OMNIBUS_CONFIG: <span class="p">|</span>
+        external_url <span class="s1">&#39;http://127.0.0.1&#39;</span>
+    ports:
+      - <span class="s1">&#39;80:80&#39;</span>
+      - <span class="s1">&#39;443:443&#39;</span>
+      - <span class="s1">&#39;22:22&#39;</span>
+    volumes:
+      - <span class="s1">&#39;/Users/lihao/code/docker/gitlab-compose/config:/etc/gitlab&#39;</span>
+      - <span class="s1">&#39;/Users/lihao/code/docker/gitlab-compose/logs:/var/log/gitlab&#39;</span>
+      - <span class="s1">&#39;/Users/lihao/code/docker/gitlab-compose/data:/var/opt/gitlab&#39;</span>
+</code></pre></div><p>可以看到，<code>docker-compose.yml</code> 文件的参数与上述 <code>docker run</code> 命令的参数相似。为了方便配置 gitlab 的 <code>external_url</code> 配置，我们通过直接指定环境变量 <code>GITLAB_OMNIBUS_CONFIG</code> 的方式实现。</p>
+<p>另外，为了与上面安装的 gitlab 数据不冲突，我们使用了本地另一个目录来保存容器的数据。</p>
+<p>关闭上面启动的 gitlab 容器，然后在 <code>docker-compose.yml</code> 文件所在目录，执行以下命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">docker-compose up -d
+</code></pre></div><h2 id="使用gitlab">使用Gitlab<a href="#使用gitlab" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Gitlab容器启动后，直接访问 <a href="https://link.segmentfault.com/?url=http%3A%2F%2Fip" target="_blank" rel="noopener">http://ip</a>
+ 就可以进入gitlab访问页面，第一步要做的就是给root用户设置密码，设置完后，通过root + 设置的密码登录。</p>
+<h2 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ul>
+<li><a href="https://docs.gitlab.com/omnibus/docker/">https://docs.gitlab.com/omnibus/docker/</a></li>
+</ul>
+
+			</div><div class="content">
+	<br>
+	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/docker/docker%E7%BD%91%E7%BB%9C/">docker网络</a></li>
+	
+	<li><a href="/posts/docker/win10%E5%AE%89%E8%A3%85docker/">Win10安装docker</a></li>
+	
+	<li><a href="/posts/docker/docker%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/">Docker基础概念</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/docker">Docker</a></span><span class="tag"><a href="https://willje.github.io/tags/gitlab">GitLab</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1086 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-08-24 21:51 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#安装gitlab">安装GitLab</a>
+      <ul>
+        <li><a href="#运行gitlab">运行Gitlab</a></li>
+      </ul>
+    </li>
+    <li><a href="#使用-docker-compose-安装">使用 docker-compose 安装</a></li>
+    <li><a href="#使用gitlab">使用Gitlab</a></li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/k8s/kubelet%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Kubelet实现原理</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/docker/docker%E7%BD%91%E7%BB%9C/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>docker网络</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

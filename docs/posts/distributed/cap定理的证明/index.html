@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="">
+<meta itemprop="description" content="CAP定理的证明 关于CAP这三个特性我们就介绍完了，接下来我们试着证明一下为什么CAP不能同时满足。
+为了简化证明的过程，我们假设整个集群里只有两个N1和N2两个节点，如下图：
+N1和N2当中各自有一个应用程序AB和数据库，当系统满足一致性的时候，我们认为N1和N2数据库中的数据保持一致。在满足可用性的时候，我们认为无论用户访问N1还是N2，都可以获得正确的结果，在满足分区容错性的时候，我们认为无论N1还是N2宕机或者是两者的通信中断，都不影响系统的运行。
+我们假设一种极端情况，假设某个时刻N1和N2之间的网络通信突然中断了。如果系统满足分区容错性，那么显然可以支持这种异常。问题是在此前提下，一致性和可用性是否可以做到不受影响呢？
+我们做个假象实验，如下图，突然某一时刻N1和N2之间的关联断开：
+有用户向N1发送了请求更改了数据，将数据库从V0更新成了V1。由于网络断开，所以N2数据库依然是V0，如果这个时候有一个请求发给了N2，但是N2并没有办法可以直接给出最新的结果V1，这个时候该怎么办呢？
+这个时候无法两种方法，一种是将错就错，将错误的V0数据返回给用户。第二种是阻塞等待，等待网络通信恢复，N2中的数据更新之后再返回给用户。显然前者牺牲了一致性，后者牺牲了可用性。
+这个例子虽然简单，但是说明的内容却很重要。在分布式系统当中，CAP三个特性我们是无法同时满足的，必然要舍弃一个。三者舍弃一个，显然排列组合一共有三种可能。
+1. 舍弃A，保留CP
+一个系统保证了一致性和分区容错性，舍弃可用性。也就是说在极端情况下，允许出现系统无法访问的情况出现，这个时候往往会牺牲用户体验，让用户保持等待，一直到系统数据一致了之后，再恢复服务。
+对于有些系统而言，一致性是安身立命之本，比如Hbase、Redis这种分布式存储，数据一致性是最基本的要求。不满足一致性的存储显然不会有用户愿意使用。
+ZooKeeper也是一样，任何时候访问ZK都可以获得一致性的结果。它的职责就是保证管辖下的服务保持同步和一致，显然不可能放弃一致性。但是在极端情况下，ZK可能会丢弃调一些请求，消费者需要重新请求才能获得结果。
+2. 舍弃C，保留AP
+这种是大部分的分布式系统的设计，保证高可用和分区容错，但是会牺牲一致性。比如淘宝购物以及12306购票等等，前面说过淘宝可以做到全年可用性5个9的超高级别，但是此时就无法保证数据一致性了。
+举个例子，我们在12306买票的时候就经常会遇到。在我们点击购买的时候，系统并没有提示没票。等我们输入了验证码，付款的时候才会告知，已经没有票了。这就是因为我们在点击购买的时候，数据没有达成一致性，在付款校验的时候才检验出余票不足。这种设计会牺牲一些用户体验，但是可以保证高可用，让用户不至于无法访问或者是长时间等待，也算是一种取舍吧。
+3. 舍弃P，保留CA
+很遗憾，这种情况几乎不存在。因为分布式系统，网络分区是必然的。如果要舍弃P，那么就是要舍弃分布式系统，CAP也就无从谈起了。可以说P是分布式系统的前提，所以这种情况是不存在的。
+比如一般的关系型数据库，像是MySQL或者是Oracle，它们都保证了一致性和可用性，但是并不是分布式系统。从这点上来说CAP并不是等价的，我们并不能通过牺牲CA来提升P。要想提升分区容错性，只能通过提升基础设施的稳定性来达到。也就是说这并不是一个软件问题。
+到这里CAP的理论就介绍完了，到最后会发现这其实是一个取舍问题，并没有完美的方案。每个设计分布式系统的架构师，需要根据自身业务场景的实际特性来考量。比如，像是涉及到金钱的问题，一致性是必须的，极端情况下，哪怕用户暂时无法访问， 也不能使得相关的数据不准确。这不仅会影响一个公司的声誉，也会带来许多其他方面的困扰。">
+
+<meta itemprop="wordCount" content="24">
+<meta itemprop="keywords" content="" /><meta property="og:title" content="" />
+<meta property="og:description" content="CAP定理的证明 关于CAP这三个特性我们就介绍完了，接下来我们试着证明一下为什么CAP不能同时满足。
+为了简化证明的过程，我们假设整个集群里只有两个N1和N2两个节点，如下图：
+N1和N2当中各自有一个应用程序AB和数据库，当系统满足一致性的时候，我们认为N1和N2数据库中的数据保持一致。在满足可用性的时候，我们认为无论用户访问N1还是N2，都可以获得正确的结果，在满足分区容错性的时候，我们认为无论N1还是N2宕机或者是两者的通信中断，都不影响系统的运行。
+我们假设一种极端情况，假设某个时刻N1和N2之间的网络通信突然中断了。如果系统满足分区容错性，那么显然可以支持这种异常。问题是在此前提下，一致性和可用性是否可以做到不受影响呢？
+我们做个假象实验，如下图，突然某一时刻N1和N2之间的关联断开：
+有用户向N1发送了请求更改了数据，将数据库从V0更新成了V1。由于网络断开，所以N2数据库依然是V0，如果这个时候有一个请求发给了N2，但是N2并没有办法可以直接给出最新的结果V1，这个时候该怎么办呢？
+这个时候无法两种方法，一种是将错就错，将错误的V0数据返回给用户。第二种是阻塞等待，等待网络通信恢复，N2中的数据更新之后再返回给用户。显然前者牺牲了一致性，后者牺牲了可用性。
+这个例子虽然简单，但是说明的内容却很重要。在分布式系统当中，CAP三个特性我们是无法同时满足的，必然要舍弃一个。三者舍弃一个，显然排列组合一共有三种可能。
+1. 舍弃A，保留CP
+一个系统保证了一致性和分区容错性，舍弃可用性。也就是说在极端情况下，允许出现系统无法访问的情况出现，这个时候往往会牺牲用户体验，让用户保持等待，一直到系统数据一致了之后，再恢复服务。
+对于有些系统而言，一致性是安身立命之本，比如Hbase、Redis这种分布式存储，数据一致性是最基本的要求。不满足一致性的存储显然不会有用户愿意使用。
+ZooKeeper也是一样，任何时候访问ZK都可以获得一致性的结果。它的职责就是保证管辖下的服务保持同步和一致，显然不可能放弃一致性。但是在极端情况下，ZK可能会丢弃调一些请求，消费者需要重新请求才能获得结果。
+2. 舍弃C，保留AP
+这种是大部分的分布式系统的设计，保证高可用和分区容错，但是会牺牲一致性。比如淘宝购物以及12306购票等等，前面说过淘宝可以做到全年可用性5个9的超高级别，但是此时就无法保证数据一致性了。
+举个例子，我们在12306买票的时候就经常会遇到。在我们点击购买的时候，系统并没有提示没票。等我们输入了验证码，付款的时候才会告知，已经没有票了。这就是因为我们在点击购买的时候，数据没有达成一致性，在付款校验的时候才检验出余票不足。这种设计会牺牲一些用户体验，但是可以保证高可用，让用户不至于无法访问或者是长时间等待，也算是一种取舍吧。
+3. 舍弃P，保留CA
+很遗憾，这种情况几乎不存在。因为分布式系统，网络分区是必然的。如果要舍弃P，那么就是要舍弃分布式系统，CAP也就无从谈起了。可以说P是分布式系统的前提，所以这种情况是不存在的。
+比如一般的关系型数据库，像是MySQL或者是Oracle，它们都保证了一致性和可用性，但是并不是分布式系统。从这点上来说CAP并不是等价的，我们并不能通过牺牲CA来提升P。要想提升分区容错性，只能通过提升基础设施的稳定性来达到。也就是说这并不是一个软件问题。
+到这里CAP的理论就介绍完了，到最后会发现这其实是一个取舍问题，并没有完美的方案。每个设计分布式系统的架构师，需要根据自身业务场景的实际特性来考量。比如，像是涉及到金钱的问题，一致性是必须的，极端情况下，哪怕用户暂时无法访问， 也不能使得相关的数据不准确。这不仅会影响一个公司的声誉，也会带来许多其他方面的困扰。" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/distributed/cap%E5%AE%9A%E7%90%86%E7%9A%84%E8%AF%81%E6%98%8E/" /><meta property="article:section" content="posts" />
+
+
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content=""/>
+<meta name="twitter:description" content="CAP定理的证明 关于CAP这三个特性我们就介绍完了，接下来我们试着证明一下为什么CAP不能同时满足。
+为了简化证明的过程，我们假设整个集群里只有两个N1和N2两个节点，如下图：
+N1和N2当中各自有一个应用程序AB和数据库，当系统满足一致性的时候，我们认为N1和N2数据库中的数据保持一致。在满足可用性的时候，我们认为无论用户访问N1还是N2，都可以获得正确的结果，在满足分区容错性的时候，我们认为无论N1还是N2宕机或者是两者的通信中断，都不影响系统的运行。
+我们假设一种极端情况，假设某个时刻N1和N2之间的网络通信突然中断了。如果系统满足分区容错性，那么显然可以支持这种异常。问题是在此前提下，一致性和可用性是否可以做到不受影响呢？
+我们做个假象实验，如下图，突然某一时刻N1和N2之间的关联断开：
+有用户向N1发送了请求更改了数据，将数据库从V0更新成了V1。由于网络断开，所以N2数据库依然是V0，如果这个时候有一个请求发给了N2，但是N2并没有办法可以直接给出最新的结果V1，这个时候该怎么办呢？
+这个时候无法两种方法，一种是将错就错，将错误的V0数据返回给用户。第二种是阻塞等待，等待网络通信恢复，N2中的数据更新之后再返回给用户。显然前者牺牲了一致性，后者牺牲了可用性。
+这个例子虽然简单，但是说明的内容却很重要。在分布式系统当中，CAP三个特性我们是无法同时满足的，必然要舍弃一个。三者舍弃一个，显然排列组合一共有三种可能。
+1. 舍弃A，保留CP
+一个系统保证了一致性和分区容错性，舍弃可用性。也就是说在极端情况下，允许出现系统无法访问的情况出现，这个时候往往会牺牲用户体验，让用户保持等待，一直到系统数据一致了之后，再恢复服务。
+对于有些系统而言，一致性是安身立命之本，比如Hbase、Redis这种分布式存储，数据一致性是最基本的要求。不满足一致性的存储显然不会有用户愿意使用。
+ZooKeeper也是一样，任何时候访问ZK都可以获得一致性的结果。它的职责就是保证管辖下的服务保持同步和一致，显然不可能放弃一致性。但是在极端情况下，ZK可能会丢弃调一些请求，消费者需要重新请求才能获得结果。
+2. 舍弃C，保留AP
+这种是大部分的分布式系统的设计，保证高可用和分区容错，但是会牺牲一致性。比如淘宝购物以及12306购票等等，前面说过淘宝可以做到全年可用性5个9的超高级别，但是此时就无法保证数据一致性了。
+举个例子，我们在12306买票的时候就经常会遇到。在我们点击购买的时候，系统并没有提示没票。等我们输入了验证码，付款的时候才会告知，已经没有票了。这就是因为我们在点击购买的时候，数据没有达成一致性，在付款校验的时候才检验出余票不足。这种设计会牺牲一些用户体验，但是可以保证高可用，让用户不至于无法访问或者是长时间等待，也算是一种取舍吧。
+3. 舍弃P，保留CA
+很遗憾，这种情况几乎不存在。因为分布式系统，网络分区是必然的。如果要舍弃P，那么就是要舍弃分布式系统，CAP也就无从谈起了。可以说P是分布式系统的前提，所以这种情况是不存在的。
+比如一般的关系型数据库，像是MySQL或者是Oracle，它们都保证了一致性和可用性，但是并不是分布式系统。从这点上来说CAP并不是等价的，我们并不能通过牺牲CA来提升P。要想提升分区容错性，只能通过提升基础设施的稳定性来达到。也就是说这并不是一个软件问题。
+到这里CAP的理论就介绍完了，到最后会发现这其实是一个取舍问题，并没有完美的方案。每个设计分布式系统的架构师，需要根据自身业务场景的实际特性来考量。比如，像是涉及到金钱的问题，一致性是必须的，极端情况下，哪怕用户暂时无法访问， 也不能使得相关的数据不准确。这不仅会影响一个公司的声誉，也会带来许多其他方面的困扰。"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title></title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Jan 1, 0001</span></div>
+				<h1></h1>
+			</header>
+			<div class="content">
+				<h1 id="cap定理的证明">CAP定理的证明<a href="#cap定理的证明" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>关于CAP这三个特性我们就介绍完了，接下来我们试着证明一下<strong>为什么CAP不能同时满足</strong>。</p>
+<p>为了简化证明的过程，我们假设整个集群里只有两个N1和N2两个节点，如下图：</p>
+<p><p class="md__image">
+  <img src="../CAP%e5%ae%9a%e7%90%86%e7%9a%84%e8%af%81%e6%98%8e.assets/b8f10772ad8d4da28f2b8ef2b1e8477e.jpeg"
+    alt="img"  />
+</p>
+</p>
+<p>N1和N2当中各自有一个应用程序AB和数据库，当系统满足一致性的时候，我们认为N1和N2数据库中的数据保持一致。在满足可用性的时候，我们认为无论用户访问N1还是N2，都可以获得正确的结果，在满足分区容错性的时候，我们认为无论N1还是N2宕机或者是两者的通信中断，都不影响系统的运行。</p>
+<p>我们假设一种极端情况，假设某个时刻N1和N2之间的<strong>网络通信突然中断</strong>了。如果系统满足分区容错性，那么显然可以支持这种异常。问题是在此前提下，一致性和可用性是否可以做到不受影响呢？</p>
+<p>我们做个假象实验，如下图，突然某一时刻N1和N2之间的关联断开：</p>
+<p><p class="md__image">
+  <img src="../CAP%e5%ae%9a%e7%90%86%e7%9a%84%e8%af%81%e6%98%8e.assets/a35d474a8e554970893404804148e576.jpeg"
+    alt="img"  />
+</p>
+</p>
+<p>有用户向N1发送了请求更改了数据，将数据库从V0更新成了V1。由于网络断开，所以N2数据库依然是V0，如果这个时候有一个请求发给了N2，但是N2并没有办法可以直接给出最新的结果V1，这个时候该怎么办呢？</p>
+<p>这个时候无法两种方法，<strong>一种是将错就错，将错误的V0数据返回给用户。第二种是阻塞等待，等待网络通信恢复，N2中的数据更新之后再返回给用户</strong>。显然前者牺牲了一致性，后者牺牲了可用性。</p>
+<p>这个例子虽然简单，但是说明的内容却很重要。在分布式系统当中，CAP三个特性我们是无法同时满足的，必然要舍弃一个。三者舍弃一个，显然排列组合一共有三种可能。</p>
+<p><strong>1. 舍弃A，保留CP</strong></p>
+<p>一个系统保证了一致性和分区容错性，舍弃可用性。也就是说在极端情况下，允许出现系统无法访问的情况出现，这个时候往往会牺牲用户体验，让用户保持等待，一直到系统数据一致了之后，再恢复服务。</p>
+<p>对于有些系统而言，一致性是安身立命之本，比如Hbase、Redis这种分布式存储，数据一致性是最基本的要求。不满足一致性的存储显然不会有用户愿意使用。</p>
+<p>ZooKeeper也是一样，任何时候访问ZK都可以获得一致性的结果。它的职责就是保证管辖下的服务保持同步和一致，显然不可能放弃一致性。但是在极端情况下，ZK可能会丢弃调一些请求，消费者需要重新请求才能获得结果。</p>
+<p><strong>2. 舍弃C，保留AP</strong></p>
+<p>这种是大部分的分布式系统的设计，保证高可用和分区容错，但是会牺牲一致性。比如淘宝购物以及12306购票等等，前面说过淘宝可以做到全年可用性5个9的超高级别，但是此时就无法保证数据一致性了。</p>
+<p>举个例子，我们在12306买票的时候就经常会遇到。在我们点击购买的时候，系统并没有提示没票。等我们输入了验证码，付款的时候才会告知，已经没有票了。这就是因为我们在点击购买的时候，数据没有达成一致性，在付款校验的时候才检验出余票不足。这种设计会牺牲一些用户体验，但是可以保证高可用，让用户不至于无法访问或者是长时间等待，也算是一种取舍吧。</p>
+<p><strong>3. 舍弃P，保留CA</strong></p>
+<p>很遗憾，这种情况几乎不存在。因为分布式系统，网络分区是必然的。如果要舍弃P，那么就是要舍弃分布式系统，CAP也就无从谈起了。可以说P是分布式系统的前提，所以这种情况是不存在的。</p>
+<p>比如一般的关系型数据库，像是MySQL或者是Oracle，它们都保证了一致性和可用性，但是并不是分布式系统。从这点上来说CAP并不是等价的，我们并不能通过牺牲CA来提升P。要想提升分区容错性，只能通过提升基础设施的稳定性来达到。也就是说这并不是一个软件问题。</p>
+<p>到这里CAP的理论就介绍完了，到最后会发现这其实是一个取舍问题，并没有完美的方案。每个设计分布式系统的架构师，需要根据自身业务场景的实际特性来考量。比如，像是涉及到金钱的问题，一致性是必须的，极端情况下，哪怕用户暂时无法访问， 也不能使得相关的数据不准确。这不仅会影响一个公司的声誉，也会带来许多其他方面的困扰。</p>
+
+			</div><div class="content">
+	<br>
+	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>24 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>0001-01-01 08:00 &#43;0800</p>
+			</footer>
+		</article>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/algorithm/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span></span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/docker/%E5%AE%B9%E5%99%A8%E5%8E%9F%E7%90%86/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span></span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>
