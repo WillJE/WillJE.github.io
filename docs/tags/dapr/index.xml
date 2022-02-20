@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>dapr on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/dapr/</link>
+    <description>Recent content in dapr on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sat, 13 Nov 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/dapr/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>dapr入门</title>
+      <link>https://willje.github.io/posts/k8s/dapr%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Sat, 13 Nov 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/dapr%E5%85%A5%E9%97%A8/</guid>
+      <description>Dapr是什么？ Dapr 是 Distributed Application Runtime （分布式应用运行时）的缩写。 工作方式 Dapr向每个计算单元注入了一个Sidecar容器/进程。Sidecar与事件触发器进行交互，并通过标准HTTP或gRPC协议与计算单元进行通信。这使Dapr能够支持所有现有和将来的编程语言，而无需您导入框架或库。 Dapr通过标准的HTTP verbs 或gRPC interface 提供内置的状态管理，可靠消息传递（至少一次传</description>
+    </item>
+    
+  </channel>
+</rss>

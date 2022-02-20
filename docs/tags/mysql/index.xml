@@ -7,7 +7,25 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
-    <lastBuildDate>Sat, 25 Apr 2020 22:34:22 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 13 Jan 2022 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/mysql/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySQL窗口函数</title>
+      <link>https://willje.github.io/posts/mysql/mysql%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0/</link>
+      <pubDate>Thu, 13 Jan 2022 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/mysql/mysql%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0/</guid>
+      <description>模拟问题描述 给定一组中学生的历次语文月考成绩表（每名学生含有 4 次成绩），需要实现以下 3 个需求： 对每名学生的 4 次成绩表分别进行排序，排序后每人的成绩排名 1-2-3-4 求每名学生历次月考成绩的变化幅度，即本月较上个月的成绩差值 求每名学生历次月考成绩中近 3 次平均分 数据表样例如下： 窗口函数介绍 在分析上述需求之前，首先对窗口函数进行介绍。何为窗口函数呢？既然窗口函数这个名字源于数</description>
+    </item>
+    
+    <item>
+      <title>一道SQL练习题</title>
+      <link>https://willje.github.io/posts/mysql/%E4%B8%80%E9%81%93sql%E7%BB%83%E4%B9%A0%E9%A2%98/</link>
+      <pubDate>Sat, 10 Jul 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/mysql/%E4%B8%80%E9%81%93sql%E7%BB%83%E4%B9%A0%E9%A2%98/</guid>
+      <description>表结构 有三张表：students学生表,courses课程表,scores成绩表，三个表的结构如下： students: courses: scores: 1. 输出成绩表，按照 姓名,课程名,成绩 的格式输出 第一个题目很简单，要求输出学生姓名，课程名，以及每位同学的成绩，因此只需要把成绩表和学生表，课程表链接，分别获取学生名，课程名即可。 select s.name,c.name,sc.score from scores sc left join students s on sc.sid = s.id left join course c on sc.cid = c.id; 2. 输出每科的第一名，按照 课程名,学</description>
+    </item>
+    
     <item>
       <title>MySQL_MVCC机制</title>
       <link>https://willje.github.io/posts/mysql/mysql-mvcc%E6%9C%BA%E5%88%B6/</link>

@@ -65,18 +65,19 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/net/tcp%E5%9B%BE%E8%A7%A3/">TCP图解</a>
+                <h2><a href="/posts/k8s/kubelet%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">Kubelet实现原理</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>经过网络是怎么连接 这篇文章中的一番折腾，只要你知道另一位伙伴 B 的 IP 地址，且你们之间的网络是通的，无论多远，你都可以将一个数据包发送给你的伙伴 B 这就是物理层、数据链路层、网络层这三层所做的事情。 站在第四层的你，就可以不要脸地利用下三层所做的铺垫，随心所欲地发送数据，而不必担心找不到对方了。 虽然你此时还什么都没干，但你还是给自己这一层起了个响亮的名字，叫做传输层</p></div>
+                <div class="p_part"><p>kubelet 主要功能 在kubernetes集群中，每个Node节点都会启动kubelet进程，用来处理Master节点下发到本节点的任务，管理Pod和其中的容器。 pod 管理 Kubelet 以 PodSpec 的方式工作。PodSpec 是描述一个 Pod 的 YAML 或 JSON 对象。 kubelet 采用一组通过各种机制提供的 PodSpecs（主要通过 apiserver），并确保这些 PodSpecs 中描述的 Pod 正常健康运行。 官方提供了4中方式来获取容器信息</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-29</span>
+                                class="date">2021-08-29</span>
                         <a class="tag"
-                                   href="/tags/%E7%BD%91%E7%BB%9C/">网络</a>
+                                   href="/tags/kubernetes/">kubernetes</a><a class="tag"
+                                   href="/tags/kubelet/">kubelet</a>
                     </div>
                 </div>
             </div>
@@ -84,18 +85,19 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/net/%E7%BD%91%E7%BB%9C%E6%98%AF%E6%80%8E%E4%B9%88%E8%BF%9E%E6%8E%A5%E7%9A%84/">网络是怎么连接的</a>
+                <h2><a href="/posts/docker/%E4%BD%BF%E7%94%A8docker%E5%AE%89%E8%A3%85gitlab/">使用Docker安装GitLab</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>你是一台电脑，你的名字叫 A 很久很久之前，你不与任何其他电脑相连接，孤苦伶仃。 直到有一天，你希望与另一台电脑 B 建立通信，于是你们各开了一个网口，用一根网线连接了起来。 用一根网线连接起来怎么就能&quot;通信&quot;了呢？我可以给你讲 IO、讲中断、讲缓冲区，但这不是研究网络时该关心的问题。 如果你纠结，要么去研究一下操作系统是如何处理网络 IO 的，要么去研究一下</p></div>
+                <div class="p_part"><p>安装GitLab gitlab 镜像分为两个版本： gitlab-ce 社区版 gitlab-ee 企业收费版 这里使用社区版则可，直接安装官方镜像，目前(2020/1/14)官方镜像大小约1.8G，如果你没有设置Docker镜像源，Docker会默认从国外Docker官方Hub去拉去进行，速度难以让人接受，参考「Centos7安装docker-ce」一文进行设置。 拉取gitlab-ce源 docker pull gitlab/gitlab-ce:latest 运行Gitlab 下</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-28</span>
+                                class="date">2021-08-24</span>
                         <a class="tag"
-                                   href="/tags/%E7%BD%91%E7%BB%9C/">网络</a>
+                                   href="/tags/docker/">Docker</a><a class="tag"
+                                   href="/tags/gitlab/">GitLab</a>
                     </div>
                 </div>
             </div>
@@ -103,18 +105,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8Fid%E5%AE%9E%E7%8E%B0%E6%96%B9%E6%B3%95/">分布式ID实现方法</a>
+                <h2><a href="/posts/docker/docker%E7%BD%91%E7%BB%9C/">docker网络</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>实现方式 UUID 在Java的世界里，想要得到一个具有唯一性的ID，首先被想到可能就是UUID，毕竟它有着全球唯一的特性。那么UUID可以做分布式ID吗？答案是可以的，但是并不推荐！ public static void main(String[] args) { String uuid = UUID.randomUUID().toString().replaceAll(&#34;-&#34;,&#34;&#34;); System.out.println(uuid); } UUID的生成简单到只有一行代码，输出结果 c2b8c2b9e46c47e3b30dca3b0d447718，但UUID却并不适用于实际的业务需求。像用作订单号UU</p></div>
+                <div class="p_part"><p>安装Docker时，它会自动创建三个网络，bridge（创建容器默认连接到此网络）、 none 、host 网络模式 简介 Host 容器将不会虚拟出自己的网卡，配置自己的IP等，而是使用宿主机的IP和端口。 Bridge 此模式会为每一个容器分配、设置IP等，并将容器连接到一个docker0虚拟网桥，通过docker0网桥以及Iptables nat表配置与宿主机通信。 None 该模式关闭了容器的网络功</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-27</span>
+                                class="date">2021-08-23</span>
                         <a class="tag"
-                                   href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F/">分布式</a>
+                                   href="/tags/docker/">docker</a>
                     </div>
                 </div>
             </div>
@@ -122,19 +124,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/algorithm/lru%E7%AE%97%E6%B3%95/">LRU算法</a>
+                <h2><a href="/posts/k8s/kubernetes-port%E7%B1%BB%E5%9E%8B/">Kubernetes port类型</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>LRU 算法，全称是Least Recently Used。 翻译过来就是最近最少使用算法。 这个算法的思想就是：如果一个数据在最近一段时间没有被访问到，那么在将来它被访问的可能性也很小。所以，当指定的空间已存满数据时，应当把最久没有被访问到的数据淘汰。 实现LRU算法 如果我们想要查询和插入的时间复杂度都是 O(1)，那么我们需要一个满足下面三个条件的数据结构： 首先这个数据结构必须是有时序</p></div>
+                <div class="p_part"><p>k8s有几种port类型，分别是TargetPort，ContainerPort，NodePort，Port，那么该怎么区别她们呢，各自的使用场景又是什么呢，接下来这篇文章给你分析一下。 ContainerPort ContainerPort表示你使用的镜像需要开放的端口。例如，mysql 服务需要暴露 3306 端口，redis 暴露 6379 端口 apiVersion:v1kind:ReplicationControllermetadata:name:redis-masterlabels:name:redis-masterspec:replicas:1selector:name:redis-mastertemplate:metadata:labels:name:redis-masterspec:containers:- name:masterimage:kubeguide/redis-masterports:- containerPort:6379# 此处定义暴露的端口NodePort 一旦你的pod创建</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-21</span>
+                                class="date">2021-08-23</span>
                         <a class="tag"
-                                   href="/tags/lru/">LRU</a><a class="tag"
-                                   href="/tags/redis/">Redis</a>
+                                   href="/tags/kubernetes/">kubernetes</a>
                     </div>
                 </div>
             </div>
@@ -142,38 +143,19 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/net/%E8%AF%A6%E8%A7%A3%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/">详解计算机网络模型</a>
+                <h2><a href="/posts/go/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">go并发小练习</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>一、体系结构 计算机网络的各层及其协议的集合被称为网络的体系结构，按照不同的维度，其常被分为七层、五层、四层网络结构： 应用层 (application layer)：直接为应用进程提供服务。应用层协议定义的是应用进程间通讯和交互的规则，不同的应用有着不同的应用层协议，如 HTTP协议（万维网服务）、FTP协议（文件传输）、SMTP协议（电子邮件）、DNS（域名查询）等。 传输层 (transport layer</p></div>
+                <div class="p_part"><p>package main import &#34;fmt&#34; func add(a, b int) { var c = a + b fmt.Printf(&#34;%d + %d = %d&#34;, a, b, c) } func main() { go add(1, 2) } 在这段代码中包含了两个协程，一个是显式的，通过 go 关键字声明的这条语句，表示启用一个新的协程来处理加法运算，另一个是隐式的，即 main 函数本身也是运行在一个主协程中，该协程和调用 add 函数的子协程是并发运行的两个协程，就好比从 go 关键字开始，从主协程中叉出一条新路。 和之前不使用协程的方式相比，由此也引入了不确定</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-20</span>
-                        <a class="tag"
-                                   href="/tags/%E7%BD%91%E7%BB%9C/">网络</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/">go中的闭包</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>匿名函数 参考博客： https://www.calhoun.io/what-is-a-closure/ https://blog.cloudflare.com/a-go-gotcha-when-closures-and-goroutines-collide/ 在说闭包之前，先说一下匿名函数，匿名函数就是没有名字的函数，可以将它理解为一个变量。看下面的例子： package main import &#34;fmt&#34; var DoStuff func() = func() { // Do stuff } func main() { DoStuff() DoStuff = func() { fmt.Println(&#34;Doing stuff!&#34;) } DoStuff() DoStuff = func() { fmt.Println(&#34;Doing other stuff.&#34;) } DoStuff() } //Doing stuff! //Doing other stuff. 可以在这里查看：https://play.golang.org/p/WPHkRpCzH4f 闭包 闭包是匿名函数与匿名函数所引用环境的组合。匿名函数有动态创建的特</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-15</span>
+                                class="date">2021-07-23</span>
                         <a class="tag"
                                    href="/tags/go/">go</a><a class="tag"
-                                   href="/tags/%E9%97%AD%E5%8C%85/">闭包</a>
+                                   href="/tags/%E5%B9%B6%E5%8F%91/">并发</a>
                     </div>
                 </div>
             </div>
@@ -181,20 +163,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">深入解析 Go 中 Slice 底层实现</a>
+                <h2><a href="/posts/k8s/k8s%E5%85%A5%E9%97%A8/">k8s入门</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>一. 切片和数组 关于切片和数组怎么选择？接下来好好讨论讨论这个问题。 在 Go 中，与 C 数组变量隐式作为指针使用不同，Go 数组是值类型，赋值和函数传参操作都会复制整个数组数据。 func main() { arrayA := [2]int{100, 200} var arrayB [2]int arrayB = arrayA fmt.Printf(&#34;arrayA : %p , %v\n&#34;, &amp;arrayA, arrayA) fmt.Printf(&#34;arrayB : %p , %v\n&#34;, &amp;arrayB, arrayB) testArray(arrayA) } func testArray(x [2]int) { fmt.Printf(&#34;func Array : %p , %v\n&#34;, &amp;x, x) } 打印结果： arrayA : 0xc4200bebf0 , [100 200] arrayB : 0xc4200bec00 , [100 200] func Array : 0xc4200bec30 , [100 200] 可以看到，三个内存地址都不同，这也就验证了 Go 中数组赋值和函数传</p></div>
+                <div class="p_part"><p>创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-01</span>
+                                class="date">2021-07-23</span>
                         <a class="tag"
-                                   href="/tags/slice/">slice</a><a class="tag"
-                                   href="/tags/array/">array</a><a class="tag"
-                                   href="/tags/go/">go</a>
+                                   href="/tags/kubernetes/">kubernetes</a>
                     </div>
                 </div>
             </div>
@@ -202,19 +182,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/">由浅入深聊聊Golang的context</a>
+                <h2><a href="/posts/linux/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/">文件描述符</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>context详解 1.1 产生背景 在go的1.7之前，context还是非编制的(包golang.org/x/net/context中)，golang团队发现context这个东西还挺好用的，很多地方也都用到了，就把它收编了，1.7版本正式进入标准库。 context常用的使用姿势： 1.web编程中，一个请求对应多个goroutine之间的数据交互 2.超时控制 3.上</p></div>
+                <div class="p_part"><p>文件描述符是什么 fd 是 File descriptor 的缩写，中文名叫做：文件描述符。文件描述符是一个非负整数，本质上是一个索引值（这句话非常重要）。 什么时候拿到的 fd ？ 当打开一个文件时，内核向进程返回一个文件描述符（ open 系统调用得到 ），后续 read、write 这个文件时，则只需要用这个文件描述符来标识该文件，将其作为参数传入 read、write 。 fd 的值范围是什么？ 在 POSIX 语义中，0，1，2 这三</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-01</span>
+                                class="date">2021-07-19</span>
                         <a class="tag"
-                                   href="/tags/go/">go</a><a class="tag"
-                                   href="/tags/context/">context</a>
+                                   href="/tags/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/">文件描述符</a>
                     </div>
                 </div>
             </div>
@@ -222,18 +201,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务</a>
+                <h2><a href="/posts/mysql/%E4%B8%80%E9%81%93sql%E7%BB%83%E4%B9%A0%E9%A2%98/">一道SQL练习题</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>分布式事务的产生 我们先看看百度上对于分布式事务的定义：分布式事务是指事务的参与者、支持事务的服务器、资源服务器以及事务管理器分别位于不同的分布式系统的不同节点之上。 当系统的体量很小时，单体架构完全可以满足现有业务需求，所有的业务共用一个数据库，整个下单流程或许只用在一个方法里同一个事务下操作数据库即可。此时做到所有操作要么全部提交 或 要么全部回滚很容易。 可随着</p></div>
+                <div class="p_part"><p>表结构 有三张表：students学生表,courses课程表,scores成绩表，三个表的结构如下： students: courses: scores: 1. 输出成绩表，按照 姓名,课程名,成绩 的格式输出 第一个题目很简单，要求输出学生姓名，课程名，以及每位同学的成绩，因此只需要把成绩表和学生表，课程表链接，分别获取学生名，课程名即可。 select s.name,c.name,sc.score from scores sc left join students s on sc.sid = s.id left join course c on sc.cid = c.id; 2. 输出每科的第一名，按照 课程名,学</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-04-25</span>
+                                class="date">2021-07-10</span>
                         <a class="tag"
-                                   href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务</a>
+                                   href="/tags/mysql/">MySQL</a>
                     </div>
                 </div>
             </div>
@@ -241,18 +220,38 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/docker/win10%E4%BD%BF%E7%94%A8wsl%E9%83%A8%E7%BD%B2k8s%E7%8E%AF%E5%A2%83/">Win10使用wsl部署k8s环境</a>
+                <h2><a href="/posts/k8s/helm%E5%AD%A6%E4%B9%A0/">helm学习</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>前提 安装docker和go环境 配置wsl2 这个可以看之前的文章win10安装docker 安装kubectl 安装kubectl有几种方法，具体可以看install-kubectl-windows/ 直接使用curl curl -LO https://dl.k8s.io/release/v1.21.0/bin/windows/amd64/kubectl.exe 如果提示curl命令不存在，可以先安装一下curl，不过这里建议直接用github的curl（如果你安装了github的话），目录在github</p></div>
+                <div class="p_part"><p>helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-04-24</span>
+                                class="date">2021-07-01</span>
                         <a class="tag"
-                                   href="/tags/kubernetes/">Kubernetes</a>
+                                   href="/tags/kubernates/">kubernates</a><a class="tag"
+                                   href="/tags/helm/">helm</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/git/gitignore%E5%A6%82%E4%BD%95%E5%BF%BD%E7%95%A5%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%87%E4%BB%B6/">gitignore如何忽略之前已提交的文件</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>做开发时，有些编译生成的代码我们希望不提交到 git 上，这时候就要使用 .gitignore 对文件/文件夹进行忽略，但有时候会碰到个棘手的问题，就是之前已经正常提交到 git 上的文件，即使在 .gitignore 进行了忽略，但代码仓库里依旧还是存在。 其实通过几行简单的命令就可以轻松解决这个问题 首先删除本地缓存 $ git rm -r --cached . 新建/修改 .gitignore 文件 将需要忽略的文件/文件夹路径写到 .gitignore 里 commit 本次变更 $ git commit -m &#34;本次提交说</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-06-15</span>
+                        <a class="tag"
+                                   href="/tags/git/">git</a>
                     </div>
                 </div>
             </div>

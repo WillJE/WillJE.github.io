@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>云原生 on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</link>
+    <description>Recent content in 云原生 on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Tue, 23 Nov 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>简化K8s开发！OAM与DAPR云原生应用的全流程研发实战</title>
+      <link>https://willje.github.io/posts/k8s/%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84%E5%A4%9A%E4%BA%91%E5%92%8C%E6%B7%B7%E5%90%88%E4%BA%91/</link>
+      <pubDate>Tue, 23 Nov 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84%E5%A4%9A%E4%BA%91%E5%92%8C%E6%B7%B7%E5%90%88%E4%BA%91/</guid>
+      <description>https://www.bilibili.com/video/av285507760/ 云原生与传统应用程序的区别 拥抱错误，容错转移，资源调配 水平缩放、可用冗余； 云原生应用的需求 快速、稳定重新发布应用 脚本-》虚拟机-》容器化 动态、灵活的网络 配置脚本-》软件定义网路-》服务网格 OpenApplicationModel https://oam.dev Dapr https://dapr.io/ The Distributed Application Runtime Dapr介绍| Dapr学习笔记 - 敖小剑 工作方式 Dapr向每个计算单元注入了一个Sidecar容器/进程。Sidecar与事件触发器进行交互，并通过标准HT</description>
+    </item>
+    
+  </channel>
+</rss>

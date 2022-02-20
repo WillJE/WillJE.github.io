@@ -7,41 +7,20 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
-<meta itemprop="name" content="">
-<meta itemprop="description" content="概述 shell是一种解释器，用来
-Linux操作系统的核心是kernal（内核）！ 当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！ 程序将指令发送给内核执行！ 为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell!
-我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类
-[damon@hadoop97 ~]$ cat /etc/shells /bin/sh /bin/bash /sbin/nologin /bin/dash /bin/tcsh /bin/csh 这里要说一下的是系统默认的解析器是bash
-[damon@hadoop97 bin]$ echo $SHELL /bin/bash 也可以这样查看
-head -1 /etc/passwd //查看etc/passwd的第一行内容 每一个bash都是一个解释器，在你登录之后系统会启动默认设置的shell，也就是bash。此时在bash下再执行bash，即又开启了一个解释器。
-bash //开启了一个新的解释器 pstree //查看进程树 此时可以退出当前bash，使用exit命令。
-bash的优点  快捷键，  ctrl&#43;A：将光标移至行首； ctrl&#43;E：将光标移至行尾； ctrl&#43;D：结束任务 ctrl&#43;U：删除前面所有内容 ctrl&#43;w：删除前面一个单词，以空格为界   历史记录 补齐命令：tab键 管道|，覆盖重定向 &gt;，追加重定向 &raquo;  ">
-
-<meta itemprop="wordCount" content="49">
-<meta itemprop="keywords" content="" /><meta property="og:title" content="" />
-<meta property="og:description" content="概述 shell是一种解释器，用来
-Linux操作系统的核心是kernal（内核）！ 当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！ 程序将指令发送给内核执行！ 为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell!
-我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类
-[damon@hadoop97 ~]$ cat /etc/shells /bin/sh /bin/bash /sbin/nologin /bin/dash /bin/tcsh /bin/csh 这里要说一下的是系统默认的解析器是bash
-[damon@hadoop97 bin]$ echo $SHELL /bin/bash 也可以这样查看
-head -1 /etc/passwd //查看etc/passwd的第一行内容 每一个bash都是一个解释器，在你登录之后系统会启动默认设置的shell，也就是bash。此时在bash下再执行bash，即又开启了一个解释器。
-bash //开启了一个新的解释器 pstree //查看进程树 此时可以退出当前bash，使用exit命令。
-bash的优点  快捷键，  ctrl&#43;A：将光标移至行首； ctrl&#43;E：将光标移至行尾； ctrl&#43;D：结束任务 ctrl&#43;U：删除前面所有内容 ctrl&#43;w：删除前面一个单词，以空格为界   历史记录 补齐命令：tab键 管道|，覆盖重定向 &gt;，追加重定向 &raquo;  " />
+<meta itemprop="name" content="Shell学习">
+<meta itemprop="description" content="概述 shell是一种解释器，用来 Linux操作系统的核心是kernal（内核）！ 当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！ 程序将指令发送给内核执行！ 为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell! 我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类 [damon@hadoop97 ~]$ cat /etc/shells /bin/sh /bin/bash /sbin/nologin /bin/dash /bin/tcsh /bin/csh 这里要说一下的是系统默认"><meta itemprop="datePublished" content="2021-12-10T20:55:29&#43;08:00" />
+<meta itemprop="dateModified" content="2021-12-10T20:55:29&#43;08:00" />
+<meta itemprop="wordCount" content="9387">
+<meta itemprop="keywords" content="Shell," /><meta property="og:title" content="Shell学习" />
+<meta property="og:description" content="概述 shell是一种解释器，用来 Linux操作系统的核心是kernal（内核）！ 当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！ 程序将指令发送给内核执行！ 为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell! 我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类 [damon@hadoop97 ~]$ cat /etc/shells /bin/sh /bin/bash /sbin/nologin /bin/dash /bin/tcsh /bin/csh 这里要说一下的是系统默认" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/linux/shell%E5%AD%A6%E4%B9%A0/" /><meta property="article:section" content="posts" />
-
-
+<meta property="article:published_time" content="2021-12-10T20:55:29&#43;08:00" />
+<meta property="article:modified_time" content="2021-12-10T20:55:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="概述 shell是一种解释器，用来
-Linux操作系统的核心是kernal（内核）！ 当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！ 程序将指令发送给内核执行！ 为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell!
-我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类
-[damon@hadoop97 ~]$ cat /etc/shells /bin/sh /bin/bash /sbin/nologin /bin/dash /bin/tcsh /bin/csh 这里要说一下的是系统默认的解析器是bash
-[damon@hadoop97 bin]$ echo $SHELL /bin/bash 也可以这样查看
-head -1 /etc/passwd //查看etc/passwd的第一行内容 每一个bash都是一个解释器，在你登录之后系统会启动默认设置的shell，也就是bash。此时在bash下再执行bash，即又开启了一个解释器。
-bash //开启了一个新的解释器 pstree //查看进程树 此时可以退出当前bash，使用exit命令。
-bash的优点  快捷键，  ctrl&#43;A：将光标移至行首； ctrl&#43;E：将光标移至行尾； ctrl&#43;D：结束任务 ctrl&#43;U：删除前面所有内容 ctrl&#43;w：删除前面一个单词，以空格为界   历史记录 补齐命令：tab键 管道|，覆盖重定向 &gt;，追加重定向 &raquo;  "/>
+<meta name="twitter:title" content="Shell学习"/>
+<meta name="twitter:description" content="概述 shell是一种解释器，用来 Linux操作系统的核心是kernal（内核）！ 当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！ 程序将指令发送给内核执行！ 为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell! 我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类 [damon@hadoop97 ~]$ cat /etc/shells /bin/sh /bin/bash /sbin/nologin /bin/dash /bin/tcsh /bin/csh 这里要说一下的是系统默认"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -50,7 +29,7 @@ bash的优点  快捷键，  ctrl&#43;A：将光标移至行首； ctrl&#43;E：
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
 	<link rel="shortcut icon" href="/favicon.ico">
 
-	<title></title>
+	<title>Shell学习</title>
 	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
@@ -73,7 +52,7 @@ bash的优点  快捷键，  ctrl&#43;A：将光标移至行首； ctrl&#43;E：
 				</nav>
 			</div>
 			<div class="hdr-right hdr-icons">
-				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
 			</div>
 		</div>
 	</header>
@@ -88,8 +67,8 @@ bash的优点  快捷键，  ctrl&#43;A：将光标移至行首； ctrl&#43;E：
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
-				<div class="post-meta"><span>Jan 1, 0001</span></div>
-				<h1></h1>
+				<div class="post-meta"><span>Dec 10, 2021</span></div>
+				<h1>Shell学习</h1>
 			</header>
 			<div class="content">
 				<h2 id="概述">概述<a href="#概述" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
@@ -140,6 +119,1222 @@ pstree  //查看进程树
 <li>补齐命令：tab键</li>
 <li>管道|，覆盖重定向 &gt;，追加重定向 &raquo;</li>
 </ol>
+<h3 id="执行脚本的方式">执行脚本的方式<a href="#执行脚本的方式" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>赋予执行权限（<code>chmod +x </code>脚本文件名），直接执行</p>
+<ul>
+<li>绝对路径执行</li>
+<li>相对路径执行</li>
+</ul>
+<p>不需要文件有可执行的权限</p>
+<ul>
+<li>sh | bash 脚本文件名</li>
+<li>source 脚本文件名（不会启动子进程，可通过pstree查看进程树）</li>
+</ul>
+<h2 id="变量">变量<a href="#变量" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="变量初始化">变量初始化<a href="#变量初始化" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ul>
+<li>变量有值，则返回该变量的值</li>
+<li>变量无值，则返回初始值</li>
+</ul>
+<p>格式：<code>${变量:-关键词}</code></p>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220212215431366.png"
+    alt="image-20220212215431366"  />
+</p>
+</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="nv">a</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">echo</span> <span class="nv">$1</span>
+
+<span class="nv">x</span><span class="o">=</span>centos
+<span class="nb">echo</span> <span class="si">${</span><span class="nv">x</span><span class="si">}</span>7.1 //centos7.1
+</code></pre></div><h3 id="变量类型">变量类型<a href="#变量类型" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>环境变量（etc/profile或~/.bash_profile）</p>
+<ul>
+<li>命令env可以列出所有环境变量</li>
+</ul>
+<p>位置变量（存储脚本执行时的参数）</p>
+<ul>
+<li>使用$n表示，n为数字序列号</li>
+</ul>
+<p>预定义变量（用来保存脚本程序的执行信息）</p>
+<ul>
+<li>能直接使用这些变量，但不能直接为这些变量赋值</li>
+<li>$0：表示当前所在的进程或脚本名</li>
+<li>$$：表示当前运行进程的PID号</li>
+<li>$?：命令执行后的返回状态，0表示正常，1或其他值表示异常</li>
+<li>$#：已加载的位置变量的个数</li>
+<li>$*：所有变量的值</li>
+</ul>
+<h3 id="区分多种引号的区别">区分多种引号的区别<a href="#区分多种引号的区别" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ul>
+<li>双引号&quot;&quot;：允许扩展，以$引用其他变量</li>
+<li>单引号''：禁用扩展，即便$也视为普通字符</li>
+<li>反引号``：将命令的执行输出作为变量值，$()与反引号等效</li>
+</ul>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220209141543202.png"
+    alt="image-20220209141543202"  />
+</p>
+</p>
+<p>不加引号，使用<code>touch a b c</code>，会创建三个文件，而使用<code>touch &quot;a b c&quot;</code>则只创建了a b c这一个文件，同理在删除文件的时候也是一样的。<code> rm -rf a b c</code></p>
+<p>单引号和双引号的区别</p>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220209170056796.png"
+    alt="image-20220209170056796"  />
+</p>
+</p>
+<p>反引号使用</p>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220209170229271.png"
+    alt="image-20220209170229271"  />
+</p>
+</p>
+<h3 id="read标准输入取值">read标准输入取值<a href="#read标准输入取值" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>read从键盘读入变量值完成赋值</p>
+<ul>
+<li>read [-p &ldquo;提示信息&rdquo;] 变量名</li>
+<li>-p可选，-t可指定超时秒数，-s设置是否在终端显示输入的内容</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="nb">read</span> -p <span class="s2">&#34;请输入用户名：&#34;</span> name
+<span class="nb">read</span> -p <span class="s2">&#34;请输入密码：&#34;</span> -s pass
+useradd <span class="s2">&#34;</span><span class="nv">$name</span><span class="s2">&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$pass</span><span class="s2">&#34;</span> <span class="p">|</span> passwd --stdin <span class="s2">&#34;</span><span class="nv">$name</span><span class="s2">&#34;</span>
+</code></pre></div><h3 id="变量的作用范围">变量的作用范围<a href="#变量的作用范围" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>局部变量</p>
+<ul>
+<li>新定义的变量默认只在当前Shell环境中有效，无法在子Shell环境中使用</li>
+</ul>
+<p>全局变量</p>
+<ul>
+<li>全局变量在当前Shell及子Shell环境中均有效</li>
+</ul>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220209171512460.png"
+    alt="image-20220209171512460"  />
+</p>
+</p>
+<h3 id="数组">数组<a href="#数组" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>存储多个数据的集合就是数组</p>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220211092616313.png"
+    alt="image-20220211092616313"  />
+</p>
+</p>
+<h3 id="字符串处理">字符串处理<a href="#字符串处理" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h4 id="字串截取">字串截取<a href="#字串截取" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p><code>${变量:起始位置:长度}</code>，注意编号是从0开始。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># phone=13812345678</span>
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo ${#phone}  #统计变量长度</span>
+<span class="m">11</span>
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo ${phone:0:3}</span>
+<span class="m">138</span>
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo ${phone:3:3}</span>
+<span class="m">123</span>
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo ${phone:4} #从第四位开始截取到末尾</span>
+<span class="m">2345678</span>
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo ${phone:4:-2} #截取到末尾的倒数第二位</span>
+<span class="m">23456</span>
+</code></pre></div><h4 id="字串替换">字串替换<a href="#字串替换" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<ul>
+<li>替换一个结果</li>
+</ul>
+<p><code>${变量/旧字串/新字串}</code></p>
+<ul>
+<li>替换全部结果</li>
+</ul>
+<p><code>${变量//旧字串//新字串}</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># phone=13812345678</span>
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo ${phone/3/x}</span>
+1x812345678
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo ${phone//3//x}</span>
+1/x812/x45678
+</code></pre></div><h4 id="字串掐头">字串掐头<a href="#字串掐头" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<ul>
+<li>从左向右，最短匹配删除</li>
+</ul>
+<p><code>${变量#关键词}</code></p>
+<ul>
+<li>从左向右，最长匹配删除</li>
+</ul>
+<p><code>${变量##关键词}</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># A=`head -1 /etc/passwd`</span>
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo $A</span>
+root❌0:0:root:/root:/bin/bash
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo ${A#*:}   #*表示通配符，*:表示冒号前面所有的东西</span>
+x:0:0:root:/root:/bin/bash
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo ${A##*:}</span>
+/bin/bash
+</code></pre></div><h4 id="字串去尾">字串去尾<a href="#字串去尾" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<ul>
+<li>从右向左，最短匹配删除</li>
+</ul>
+<p><code>${变量%关键词}</code></p>
+<ul>
+<li>从右向左，最长匹配删除</li>
+</ul>
+<p><code>${变量##关键词}</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># A=`head -1 /etc/passwd`</span>
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo $A</span>
+root❌0:0:root:/root:/bin/bash
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo ${A%:*}</span>
+root❌0:0:root:/root
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo ${A%%:*}</span>
+root
+</code></pre></div><p>批量修改文件扩展名</p>
+<p>修改文件名的命令为<code> mv a.txt a.doc</code>，其实就是去尾，把.后面的全部删除，然后加上.doc</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># touch {a,b,c,d,e,f}.txt</span>
+
+<span class="c1">#!/bin/bash</span>
+<span class="k">for</span> i in <span class="k">$(</span>ls *.txt<span class="k">)</span>
+<span class="k">do</span>
+	mv <span class="nv">$i</span> <span class="si">${</span><span class="nv">i</span><span class="p">%.*</span><span class="si">}</span>.doc
+<span class="k">done</span>
+</code></pre></div><p>随机密码</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1">#定义变量:10个数字+52个字母。用随机数对62取余数，返回的结果为【0-61】</span>
+<span class="nv">key</span><span class="o">=</span><span class="s2">&#34;abcdefghijklmnopqrstuvwxyzABCDEFGHIGKLMNOPQRSTUVWXYZ0123456789&#34;</span>
+<span class="nv">pass</span><span class="o">=</span><span class="s2">&#34;&#34;</span>
+<span class="k">for</span> i in <span class="o">{</span>1..10<span class="o">}</span> //密码为10位
+<span class="k">do</span>
+	<span class="nv">num</span><span class="o">=</span>$<span class="o">[</span>RANDOM%<span class="si">${#</span><span class="nv">key</span><span class="si">}</span><span class="o">]</span>
+	<span class="nv">tmp</span><span class="o">=</span><span class="si">${</span><span class="nv">key</span><span class="p">:</span><span class="nv">num</span><span class="p">:</span><span class="nv">1</span><span class="si">}</span>
+	<span class="nv">pass</span><span class="o">=</span><span class="si">${</span><span class="nv">pass</span><span class="si">}${</span><span class="nv">tmp</span><span class="si">}</span>
+<span class="k">done</span>
+<span class="nb">echo</span> <span class="nv">$pass</span>
+</code></pre></div><p>使用命令生成随机密码</p>
+<ul>
+<li>uuidgen</li>
+<li>openssl</li>
+</ul>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220212220748873.png"
+    alt="image-20220212220748873"  />
+</p>
+</p>
+<p>使用随机设备文件（/dev/random、/dev/urandom）</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">strings /dev/random
+strings /dev/urandom
+</code></pre></div><p>strings命令能查看文件中可打印的字符串。</p>
+<p>tr命令可以对数据进行替换、删除等操作。</p>
+<ul>
+<li>-c: 取反</li>
+<li>-d: 删除</li>
+</ul>
+<p>tr 指令从标准输入设备读取数据，经过字符串转译后，将结果输出到标准输出设备。</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">tr -cd <span class="s1">&#39;0-9a-zA-Z&#39;</span> &lt; /dev/urandom <span class="p">|</span> head -c <span class="m">10</span>
+
+<span class="c1">#删除随机数据中不是数字、小写字母、大写字母的数据</span>
+<span class="c1">#在截取出来的字串中提取前10个字符</span>
+</code></pre></div><h2 id="shell中的运算">shell中的运算<a href="#shell中的运算" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>使用$[]算式替换</p>
+<ul>
+<li>格式：$[整数1 运算符 整数2]</li>
+<li>计算结果替换表达式本身，可结合echo命令输出</li>
+</ul>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220209172131837.png"
+    alt="image-20220209172131837"  />
+</p>
+</p>
+<h3 id="bc计算器">bc计算器<a href="#bc计算器" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>bash内建机制仅支持整数运算，不支持小数运算，可以通过计算器软件bc实现小数运算</p>
+<ul>
+<li>如果没有该软件需要使用yum安装</li>
+<li>bc支持交互式和非交互式两种方式计算，scale=n可以约束小数位</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">yum -y install bc
+</code></pre></div><p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220209173122003.png"
+    alt="image-20220209173122003"  />
+</p>
+</p>
+<p>交互执行，使用quit退出。</p>
+<p>非交互使用，小数的大小比较</p>
+<ul>
+<li>bc支持的比较操作符：&gt;、 &gt;=、 &lt;、 &lt;=、 ==、 !=</li>
+<li>表达式成立返回1，否则返回0</li>
+</ul>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220209173241343.png"
+    alt="image-20220209173241343"  />
+</p>
+</p>
+<h2 id="echo回显">echo回显<a href="#echo回显" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>-n 选项：不换行</p>
+<p>-e 选项：支持扩展属性</p>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220210090946511.png"
+    alt="image-20220210090946511"  />
+</p>
+</p>
+<h2 id="实例">实例<a href="#实例" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>显示服务器硬件信息脚本实例</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!bin/bash
+</span><span class="cp"></span><span class="c1">#显示服务器硬件信息</span>
+<span class="nb">echo</span> -e <span class="s2">&#34;\033[34m------服务器硬件信息------\033[0m&#34;</span>
+<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m网卡信息如下:\033[0m&#34;</span>
+ifconfig eth0 <span class="p">|</span> grep <span class="s2">&#34;inet &#34;</span>
+<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m剩余内存容量信息如下：\033[0m&#34;</span>
+grep MemAvailable /proc/meminfo
+<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m磁盘容量信息如下：033[0m&#34;</span>
+df -h /
+<span class="nb">echo</span> -e <span class="s2">&#34;\033[32mCPU信息如下：\033[0m&#34;</span>
+grep <span class="s2">&#34;model name&#34;</span> /proc/cpuinfo
+</code></pre></div><p>数据计算</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!bin/bash
+</span><span class="cp"></span><span class="c1">#计算1+2+3。。。+n的和，可以使用n*(n+1)/2的公式快速计算结果</span>
+<span class="nb">read</span> -p <span class="s2">&#34;请输入一个正整数：&#34;</span>num
+<span class="nv">sum</span><span class="o">=</span>$<span class="o">[</span>num*<span class="o">(</span>num+1<span class="o">)]</span>/2<span class="o">]</span>
+<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m</span><span class="nv">$num以内整数的总和是</span><span class="s2">：</span><span class="nv">$sum</span><span class="s2">\033[0m&#34;</span>
+
+<span class="c1"># 使用三角形的底边和高计算面积：A=1/2bh</span>
+<span class="nb">read</span> -p <span class="s2">&#34;请输入三角形的底边长度&#34;</span>：bottom
+<span class="nb">read</span> -p <span class="s2">&#34;请输入三角形的高度：&#34;</span>high
+<span class="nv">A</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;scale=1;1/2*</span><span class="nv">$bottom</span><span class="s2">*</span><span class="nv">$high</span><span class="s2">&#34;</span> <span class="p">|</span> bc<span class="k">)</span>
+<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m三角形面积是：</span><span class="nv">$A</span><span class="s2">\033[0m&#34;</span>
+</code></pre></div><p>配置YUM源脚本</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!bin/bash
+</span><span class="cp"></span><span class="c1">#定义yum源的路径</span>
+<span class="nv">URL</span><span class="o">=</span>ftp://192.168.4.1/centos
+
+<span class="c1">#创建YUM源配置文件</span>
+<span class="nb">echo</span> <span class="s2">&#34;[CENTOS]&#34;</span>
+<span class="nv">name</span><span class="o">=</span>centos
+<span class="nv">baseurl</span><span class="o">=</span><span class="nv">$URL</span>
+<span class="nv">gpgcheck</span><span class="o">=</span>0<span class="s2">&#34; &gt; /etc/yum.repos.d/iyum.repo
+</span></code></pre></div><h2 id="条件测试">条件测试<a href="#条件测试" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="test测试操作">test测试操作<a href="#test测试操作" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>test 选项 参数，使用<code>help test</code>查询帮助</p>
+<h3 id="字符串比较">字符串比较<a href="#字符串比较" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ul>
+<li>是否为空[  -z  字符串 ]</li>
+<li>等于[ 字符串1 == 字符串2 ]</li>
+<li>不等于[ 字符串1 != 字符串2 ]</li>
+</ul>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220210094148228.png"
+    alt="image-20220210094148228"  />
+</p>
+</p>
+<h3 id="整数值比较">整数值比较<a href="#整数值比较" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>注意[]中，整数值1和整数值2左右需要有一个空格。</p>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220210094816664.png"
+    alt="image-20220210094816664"  />
+</p>
+</p>
+<p>查看当前登录用户数是否大于2</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@amesh-k8s-01 ~<span class="o">]</span><span class="c1"># who</span>
+root     pts/0        2022-02-10 09:18 <span class="o">(</span>172.21.32.106<span class="o">)</span>
+root     pts/1        2022-02-10 09:18 <span class="o">(</span>172.21.33.160<span class="o">)</span>
+<span class="o">[</span>root@amesh-k8s-01 ~<span class="o">]</span><span class="c1"># who | wc -l</span>
+<span class="m">2</span>
+<span class="o">[</span>root@amesh-k8s-01 ~<span class="o">]</span><span class="c1"># [ $(who | wc -l) -ge 2 ]</span>
+<span class="o">[</span>root@amesh-k8s-01 ~<span class="o">]</span><span class="c1"># echo $?</span>
+<span class="m">0</span>
+</code></pre></div><h3 id="文件状态">文件状态<a href="#文件状态" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220210103456016.png"
+    alt="image-20220210103456016"  />
+</p>
+</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">
+<span class="o">[</span>root@amesh-k8s-01 ~<span class="o">]</span><span class="c1"># [ -e /etc ]  //判断是否存在/etc</span>
+<span class="o">[</span>root@amesh-k8s-01 ~<span class="o">]</span><span class="c1"># echo $?</span>
+<span class="m">0</span>
+</code></pre></div><h2 id="控制操作符">控制操作符<a href="#控制操作符" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="组合多个命令">组合多个命令<a href="#组合多个命令" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>使用控制符组合多个命令</p>
+<ul>
+<li>;（两个命令顺序执行）</li>
+<li>&amp;&amp;（两个命令顺序执行，但是第二个命令需第一个命令执行成功才会执行）</li>
+<li>||（或的关系，优先执行前一个命令，第一个命令失败才会执行第二个命令）</li>
+</ul>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220210104125073.png"
+    alt="image-20220210104125073"  />
+</p>
+</p>
+<h3 id="实例-1">实例<a href="#实例-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>基础命令</p>
+<ul>
+<li><code>tr -s </code>删除多余重复的字符串</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@amesh-k8s-01 ~<span class="o">]</span><span class="c1"># echo &#34;a   bb  cc  dd     a&#34;|tr -s &#34; &#34;  #删除多余的空格</span>
+a bb cc dd a
+<span class="o">[</span>root@amesh-k8s-01 ~<span class="o">]</span><span class="c1"># echo &#34;aaaaaaaaaq&#34; |tr -s &#34;a&#34;  #删除多余的a</span>
+aq
+</code></pre></div><ul>
+<li><code> cut</code>过滤数据</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@amesh-k8s-01 ~<span class="o">]</span><span class="c1"># head -1 /etc/passwd</span>
+root❌0:0:root:/root:/bin/bash  <span class="c1"># 可以看到/etc/passwd的内容是以冒号为分割的</span>
+<span class="o">[</span>root@amesh-k8s-01 ~<span class="o">]</span><span class="c1"># cut -d: -f1 /etc/passwd  #以冒号为分隔，过滤第一列</span>
+</code></pre></div><p>监控系统信息脚本</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!bin/bash
+</span><span class="cp"></span><span class="c1">#本脚本获取系统各项性能参数指标，并与预设阈值进行比较</span>
+
+<span class="c1">#time:时间，loalip:eth0网卡IP，free_mem:剩余内存大小，free_disk:剩余磁盘大小</span>
+<span class="c1">#cpu_load:15min平均负载，login_user:登录系统的用户，procs:当前进程数量</span>
+
+<span class="nv">local_time</span><span class="o">=</span><span class="k">$(</span>date+<span class="s2">&#34;%Y%M%D%H:%M:%S&#34;</span><span class="k">)</span>
+<span class="nv">local_ip</span><span class="o">=</span><span class="k">$(</span>ifconfig eth0 <span class="p">|</span> grep netmask <span class="p">|</span> tr -s <span class="s2">&#34; &#34;</span> <span class="p">|</span> cut -d <span class="s2">&#34; &#34;</span> -f3<span class="k">)</span>
+<span class="nv">free_mem</span><span class="o">=</span><span class="k">$(</span>cat /proc/meminfo <span class="p">|</span> grep Avai <span class="p">|</span> tr -s <span class="s2">&#34; &#34;</span> <span class="p">|</span> cut -d <span class="s2">&#34; &#34;</span> -f2<span class="k">)</span>
+<span class="nv">free_disk</span><span class="o">=</span><span class="k">$(</span>df <span class="p">|</span> grep <span class="s2">&#34;/</span>$<span class="s2">&#34;</span> <span class="p">|</span> tr -s <span class="s2">&#34; &#34;</span> <span class="p">|</span> cut -d <span class="s1">&#39;&#39;</span> -f4<span class="k">)</span>  <span class="c1">#只看根结尾目录的数据</span>
+<span class="nv">cpu_load</span><span class="o">=</span><span class="k">$(</span> cat /proc/loadavg <span class="p">|</span> cut -d <span class="s2">&#34; &#34;</span> -f3<span class="k">)</span>
+<span class="nv">login_user</span><span class="o">=</span><span class="k">$(</span>who <span class="p">|</span> wc -l<span class="k">)</span>
+<span class="nv">procs</span><span class="o">=</span><span class="k">$(</span>ps aux <span class="p">|</span> wc -l<span class="k">)</span>
+
+<span class="c1">#当剩余内存不足1GB时发送邮件给root进行报警</span>
+<span class="o">[</span><span class="nv">$free_mem</span> -lt 1048576<span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$local_time</span><span class="s2"> Free memory not enough.Free_men:</span><span class="nv">$free_mem</span><span class="s2"> on </span><span class="nv">$local_ip</span><span class="s2"> | mail -s Warning root@localhost&#34;</span>
+
+<span class="c1">#当剩余磁盘不足10GB时发送邮件给root进行报警</span>
+<span class="o">[</span><span class="nv">$free_disk</span> -l 10485760<span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$local_time</span><span class="s2"> Free disk not enough.root_free_disk:</span><span class="nv">$free_disk</span><span class="s2"> on </span><span class="nv">$local_ip</span><span class="s2"> | mail -s Warning root@localhost&#34;</span>
+
+<span class="c1">#当CPU的15min平均负载超过4时发送邮件给root进行报警</span>
+<span class="nv">result</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$cpu_load</span><span class="s2"> &gt; 4&#34;</span> <span class="p">|</span> bc<span class="k">)</span>
+<span class="o">[</span><span class="nv">$result</span> -eq 1<span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$local_time</span><span class="s2"> CPU load too high CPU 15 averageload:</span><span class="nv">$cpu_load</span><span class="s2"> on </span><span class="nv">$local_ip</span><span class="s2"> | mail -s Warning root@localhost&#34;</span>
+
+<span class="c1">#当系统实时在线人数超过3人时发送邮件给root进行报警</span>
+<span class="o">[</span><span class="nv">$login_user</span> -gt 3<span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$local_time</span><span class="s2"> Too many user.</span><span class="nv">$login_user</span><span class="s2"> users login to </span><span class="nv">$local_ip</span><span class="s2"> | main -s Warning root@loalhost&#34;</span>
+
+<span class="c1">#当实时进程数量大于500时发送邮件给root进行报警</span>
+<span class="o">[</span><span class="nv">$procs</span> -gt 500<span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$local_time</span><span class="s2"> Too many procs.</span><span class="nv">$procs</span><span class="s2"> proc are runing on </span><span class="nv">$local_ip</span><span class="s2"> | mail -s Warning root@localhost&#34;</span>
+</code></pre></div><h2 id="if语句">if语句<a href="#if语句" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>语法1</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="k">if</span> 条件测试
+	<span class="k">then</span> 命令序列
+<span class="k">else</span>
+	命令序列
+<span class="k">fi</span>
+</code></pre></div><p>语法2</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="k">if</span> 条件测试<span class="p">;</span><span class="k">then</span>
+	命令序列
+<span class="k">else</span>
+	命令序列
+<span class="k">fi</span>
+</code></pre></div><p>区别就是有没有写在一行，用分号分隔；</p>
+<p>判断用户名与密码是否为空</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="nb">read</span> -p <span class="s2">&#34;请输入用户名:&#34;</span> user
+<span class="nb">read</span> -p -s <span class="s2">&#34;请输入密码:&#34;</span> pass
+<span class="k">if</span> <span class="o">[</span>!-z <span class="s2">&#34;</span><span class="nv">$user</span><span class="s2">&#34;</span><span class="o">]</span><span class="p">;</span><span class="k">then</span>
+	useradd <span class="s2">&#34;</span><span class="nv">$user</span><span class="s2">&#34;</span>
+<span class="k">fi</span>
+<span class="k">if</span> <span class="o">[</span>!-z <span class="s2">&#34;</span><span class="nv">$pass</span><span class="s2">&#34;</span><span class="o">]</span><span class="p">;</span><span class="k">then</span>
+	<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$pass</span><span class="s2">&#34;</span> <span class="p">|</span> passwd --stdin <span class="s2">&#34;</span><span class="nv">$user</span><span class="s2">&#34;</span>
+<span class="k">fi</span>
+<span class="nb">echo</span>  //换行
+</code></pre></div><p>测试主机是否能ping通</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1">#ping通脚本返回up,否则返回down</span>
+
+<span class="k">if</span> <span class="o">[</span>-z <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span><span class="o">]</span><span class="p">;</span><span class="k">then</span>
+	<span class="nb">echo</span> -n <span class="s2">&#34;用法：脚本&#34;</span>
+	<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m域名或IP\033[0m&#34;</span>
+	<span class="nb">exit</span>
+<span class="k">else</span>
+	<span class="c1">#-c(设置ping的次数),-i(设置ping的间隔),-w(设置超时时间),结果全部输出到/dev/null中</span>
+	ping -c2 -i0.1 -W1 <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2">&#34;</span> <span class="p">&amp;</span>&gt;/dev/null 
+	<span class="k">if</span> <span class="o">[</span><span class="nv">$?</span> -eq 0<span class="o">]</span><span class="p">;</span><span class="k">then</span>
+		<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2"> is up&#34;</span>
+	<span class="k">else</span>
+		<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$2</span><span class="s2"> is down&#34;</span>
+<span class="k">fi</span>
+</code></pre></div><p>注：<code>/dev/null</code> is the null file. Anything written to it is discarded.</p>
+<h3 id="多分支">多分支<a href="#多分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>语法</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="k">if</span> 条件测试1<span class="p">;</span><span class="k">then</span>
+	命令序列1
+<span class="k">elif</span> 条件判断2<span class="p">;</span><span class="k">then</span>
+	命令序列2
+.....
+<span class="k">else</span>
+	命令序列
+<span class="k">fi</span>
+</code></pre></div><p>应用案例之猜数字</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1">#脚本自动生成10以内的随机数，根据用户的输入，输出判断结果</span>
+clear
+<span class="nv">num</span><span class="o">=</span>$<span class="o">[</span>RANDOM%10+1<span class="o">]</span>
+<span class="nb">read</span> -p <span class="s2">&#34;请输入1-10之间的整数：&#34;</span> guess
+<span class="k">if</span><span class="o">[</span><span class="nv">$guess</span> -eq <span class="nv">$num</span><span class="o">]</span><span class="p">;</span><span class="k">then</span>
+	<span class="nb">echo</span> <span class="s2">&#34;恭喜，猜对了，就是：</span><span class="nv">$num</span><span class="s2">&#34;</span>
+<span class="k">elif</span> <span class="o">[</span><span class="nv">$guess</span> -gt <span class="nv">$num</span><span class="o">]</span><span class="p">;</span><span class="k">then</span>
+	<span class="nb">echo</span> <span class="s2">&#34;Oops,猜大了&#34;</span>
+<span class="k">else</span>
+	<span class="nb">echo</span> <span class="s2">&#34;Oops,猜小了&#34;</span>
+<span class="k">fi</span>
+</code></pre></div><p>注：RANDOM是系统变量，一个随机数</p>
+<h2 id="for循环">for循环<a href="#for循环" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="k">for</span> 变量 in 值列表
+<span class="k">do</span>
+	命令序列
+<span class="k">done</span>
+
+<span class="k">for</span><span class="o">((</span>初值<span class="p">;</span>条件<span class="p">;</span>步长<span class="o">))</span>
+<span class="k">do</span>
+	命令序列
+<span class="k">done</span>
+</code></pre></div><p>实例</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="k">for</span> i in <span class="m">1</span> <span class="m">8</span> ab <span class="m">99</span> eq
+<span class="k">do</span>
+	<span class="nb">echo</span> <span class="s2">&#34;I am </span><span class="nv">$i</span><span class="s2">&#34;</span>
+<span class="k">done</span>
+
+<span class="k">for</span> <span class="o">((</span><span class="nv">i</span><span class="o">=</span>1<span class="p">;</span> i&lt;<span class="o">=</span>5<span class="p">;</span>i++<span class="o">))</span>
+<span class="k">do</span>
+	<span class="nb">echo</span> <span class="s2">&#34;I am </span><span class="nv">$i</span><span class="s2">&#34;</span>
+<span class="k">done</span>
+</code></pre></div><p>注意：所以当需要多次循环时可以使用这种写法{1..10},{a..z}</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># echo {1..99}</span>
+<span class="m">1</span> <span class="m">2</span> <span class="m">3</span> <span class="m">4</span> <span class="m">5</span> <span class="m">6</span> <span class="m">7</span> <span class="m">8</span> <span class="m">9</span> <span class="m">10</span> <span class="m">11</span> <span class="m">12</span> <span class="m">13</span> <span class="m">14</span> <span class="m">15</span> <span class="m">16</span> <span class="m">17</span> <span class="m">18</span> <span class="m">19</span> <span class="m">20</span> <span class="m">21</span> <span class="m">22</span> <span class="m">23</span> <span class="m">24</span> <span class="m">25</span> <span class="m">26</span> <span class="m">27</span> <span class="m">28</span> <span class="m">29</span> <span class="m">30</span> <span class="m">31</span> <span class="m">32</span> <span class="m">33</span> <span class="m">34</span> <span class="m">35</span> <span class="m">36</span> <span class="m">37</span> <span class="m">38</span> <span class="m">39</span> <span class="m">40</span> <span class="m">41</span> <span class="m">42</span> <span class="m">43</span> <span class="m">44</span> <span class="m">45</span> <span class="m">46</span> <span class="m">47</span> <span class="m">48</span> <span class="m">49</span> <span class="m">50</span> <span class="m">51</span> <span class="m">52</span> <span class="m">53</span> <span class="m">54</span> <span class="m">55</span> <span class="m">56</span> <span class="m">57</span> <span class="m">58</span> <span class="m">59</span> <span class="m">60</span> <span class="m">61</span> <span class="m">62</span> <span class="m">63</span> <span class="m">64</span> <span class="m">65</span> <span class="m">66</span> <span class="m">67</span> <span class="m">68</span> <span class="m">69</span> <span class="m">70</span> <span class="m">71</span> <span class="m">72</span> <span class="m">73</span> <span class="m">74</span> <span class="m">75</span> <span class="m">76</span> <span class="m">77</span> <span class="m">78</span> <span class="m">79</span> <span class="m">80</span> <span class="m">81</span> <span class="m">82</span> <span class="m">83</span> <span class="m">84</span> <span class="m">85</span> <span class="m">86</span> <span class="m">87</span> <span class="m">88</span> <span class="m">89</span> <span class="m">90</span> <span class="m">91</span> <span class="m">92</span> <span class="m">93</span> <span class="m">94</span> <span class="m">95</span> <span class="m">96</span> <span class="m">97</span> <span class="m">98</span> <span class="m">99</span>
+
+</code></pre></div><p>读取账户名列表文件创建系统用户</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">more user.txt
+page
+ocean
+book
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="k">for</span> i in <span class="k">$(</span>cat user.txt<span class="k">)</span>
+<span class="k">do</span>
+	user add <span class="s2">&#34;</span><span class="nv">$i</span><span class="s2">&#34;</span>
+	<span class="nb">echo</span> <span class="s2">&#34;123456&#34;</span> <span class="p">|</span> passwd --stdin <span class="s2">&#34;</span><span class="nv">$i</span><span class="s2">&#34;</span>
+<span class="k">done</span>
+</code></pre></div><p>循环的嵌套</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="k">for</span> <span class="o">((</span><span class="nv">i</span><span class="o">=</span>1<span class="p">;</span> i&lt;<span class="o">=</span>9<span class="p">;</span>i++<span class="o">))</span>
+<span class="k">do</span>
+	<span class="k">for</span><span class="o">((</span><span class="nv">j</span><span class="o">=</span>1<span class="p">;</span> j&lt;<span class="o">=</span>i<span class="p">;</span> j++<span class="o">))</span>
+	<span class="k">do</span>
+		<span class="nb">echo</span> -n <span class="s2">&#34;</span><span class="nv">$i</span><span class="s2">*</span><span class="nv">$j</span><span class="s2">=</span>$<span class="s2">[i*j]&#34;</span>
+	<span class="k">done</span>
+	<span class="nb">echo</span>
+<span class="k">done</span>
+</code></pre></div><h2 id="while循环">while循环<a href="#while循环" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="k">while</span> 条件测试
+<span class="k">do</span>
+	命令序列
+<span class="k">done</span>
+</code></pre></div><p>实例</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="nv">i</span><span class="o">=</span><span class="m">1</span>
+<span class="k">while</span> <span class="o">[</span> <span class="nv">$i</span> -le 5<span class="o">]</span>
+<span class="k">do</span>
+	<span class="nb">echo</span> <span class="nv">$i</span>
+	<span class="nb">let</span> i++
+<span class="k">done</span>
+</code></pre></div><p>死循环写法</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="k">while</span> :
+<span class="k">do</span>
+	<span class="nb">echo</span> hello world
+<span class="k">done</span>
+</code></pre></div><p>猜数字改造</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1">#脚本自动生成10以内的随机数，根据用户的输入，输出判断结果</span>
+<span class="nv">num</span><span class="o">=</span>$<span class="o">[</span>RANDOM%10+1<span class="o">]</span>
+<span class="k">while</span> :
+<span class="k">do</span>
+	<span class="nb">read</span> -p <span class="s2">&#34;请输入1-10之间的整数：&#34;</span> guess
+	<span class="k">if</span><span class="o">[</span><span class="nv">$guess</span> -eq <span class="nv">$num</span><span class="o">]</span><span class="p">;</span><span class="k">then</span>
+		<span class="nb">echo</span> <span class="s2">&#34;恭喜，猜对了，就是：</span><span class="nv">$num</span><span class="s2">&#34;</span>
+		<span class="nb">exit</span>
+	<span class="k">elif</span> <span class="o">[</span><span class="nv">$guess</span> -gt <span class="nv">$num</span><span class="o">]</span><span class="p">;</span><span class="k">then</span>
+		<span class="nb">echo</span> <span class="s2">&#34;Oops,猜大了&#34;</span>
+	<span class="k">else</span>
+		<span class="nb">echo</span> <span class="s2">&#34;Oops,猜小了&#34;</span>
+	<span class="k">fi</span>
+<span class="k">done</span>
+</code></pre></div><h3 id="实例-2">实例<a href="#实例-2" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>安装ftp软件</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="k">if</span> rpm -q vsftpd <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span> <span class="k">then</span>
+	<span class="nb">echo</span> <span class="s2">&#34;vsftpd已经安装&#34;</span>
+<span class="k">else</span>
+	yum -y install vsftpd
+<span class="k">fi</span>
+systemctl restart vsftpd
+</code></pre></div><p>注：<code>rpm -q 包名</code>可以查看某个软件是否安装。更多rpm的资料：https://linuxize.com/post/rpm-command-in-linux/</p>
+<p>监控网络流量</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="k">while</span> :
+<span class="k">do</span> 
+	clear
+	<span class="nb">echo</span> <span class="s1">&#39;本地网卡eth0流量信息如下:&#39;</span>
+	ifconfig eth0 <span class="p">|</span> grep <span class="s2">&#34;RX pack&#34;</span> <span class="p">|</span> tr -s <span class="s2">&#34;&#34;</span> <span class="p">|</span> cut -d <span class="s2">&#34;&#34;</span> -f6
+	ifconfig eth0 <span class="p">|</span> grep <span class="s2">&#34;TX pack&#34;</span> <span class="p">|</span> tr -s <span class="s2">&#34;&#34;</span> <span class="p">|</span> cut -d <span class="s2">&#34;&#34;</span> -f6
+	sleep <span class="m">1</span>
+<span class="k">done</span>
+</code></pre></div><h2 id="case语句">case语句<a href="#case语句" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="k">case</span> 变量 in
+模式1<span class="o">)</span>
+	命令序列1 <span class="p">;;</span>
+模式2<span class="o">)</span>
+	命令序列2 <span class="p">;;</span>
+*<span class="o">)</span>
+	默认命令序列
+<span class="k">esac</span>
+</code></pre></div><p>注意命令序列最后必须以双分号结尾</p>
+<p>判断用户输入</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="nb">read</span> -p <span class="s2">&#34;Are you sure?[y/n]:&#34;</span> sure
+<span class="k">case</span> <span class="nv">$sure</span> in
+y<span class="p">|</span>Y<span class="p">|</span>yes<span class="p">|</span>YES<span class="o">)</span>
+	<span class="nb">echo</span> <span class="s2">&#34;you enter </span><span class="nv">$sure</span><span class="s2">,OK&#34;</span><span class="p">;;</span>
+n<span class="p">|</span>N<span class="p">|</span>no<span class="p">|</span>NO<span class="o">)</span>
+	<span class="nb">echo</span> <span class="s2">&#34;you enter </span><span class="nv">$sure</span><span class="s2">,OVER&#34;</span><span class="p">;;</span>
+*<span class="o">)</span>
+	<span class="nb">echo</span> <span class="s2">&#34;error&#34;</span><span class="p">;;</span>
+<span class="k">esac</span>
+</code></pre></div><p>石头剪刀布游戏</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="nv">game</span><span class="o">=(</span>石头 剪刀 布<span class="o">)</span>
+<span class="nv">num</span><span class="o">=</span>$<span class="o">[</span>RANDOW%3<span class="o">]</span>
+<span class="nv">computer</span><span class="o">=</span><span class="si">${</span><span class="nv">game</span><span class="p">[</span><span class="nv">$num</span><span class="p">]</span><span class="si">}</span>
+
+<span class="c1">#通过随机数获取计算机的出拳</span>
+<span class="c1">#出拳的可能性保存在一个数组中：game[0],game[1],game[2]</span>
+
+<span class="nb">echo</span> <span class="s2">&#34;请根据下列提示选择您的出拳手势&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;1.石头&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;2.剪刀&#34;</span>
+<span class="nb">echo</span> <span class="s2">&#34;3.布&#34;</span>
+
+<span class="nb">read</span> -p <span class="s2">&#34;请选择1-3:&#34;</span>person
+<span class="k">case</span> <span class="nv">$person</span> in
+1<span class="o">)</span>
+	<span class="k">if</span> <span class="o">[</span><span class="nv">$num</span> -eq 0<span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+		<span class="nb">echo</span> <span class="s2">&#34;平局&#34;</span>
+	<span class="k">if</span> <span class="o">[</span><span class="nv">$num</span> -eq 1<span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+		<span class="nb">echo</span> <span class="s2">&#34;你赢&#34;</span>
+	<span class="k">else</span>
+		<span class="nb">echo</span> <span class="s2">&#34;计算机赢&#34;</span>
+	<span class="k">fi</span><span class="p">;;</span>
+2<span class="o">)</span>
+	<span class="k">if</span> <span class="o">[</span><span class="nv">$num</span> -eq 0<span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+		<span class="nb">echo</span> <span class="s2">&#34;计算机赢&#34;</span>
+	<span class="k">if</span> <span class="o">[</span><span class="nv">$num</span> -eq 1<span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+		<span class="nb">echo</span> <span class="s2">&#34;平局&#34;</span>
+	<span class="k">else</span>
+		<span class="nb">echo</span> <span class="s2">&#34;你赢&#34;</span>
+	<span class="k">fi</span><span class="p">;;</span>
+3<span class="o">)</span>
+	<span class="k">if</span> <span class="o">[</span><span class="nv">$num</span> -eq 0<span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+		<span class="nb">echo</span> <span class="s2">&#34;你赢&#34;</span>
+	<span class="k">if</span> <span class="o">[</span><span class="nv">$num</span> -eq 1<span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+		<span class="nb">echo</span> <span class="s2">&#34;计算机赢&#34;</span>
+	<span class="k">else</span>
+		<span class="nb">echo</span> <span class="s2">&#34;平局&#34;</span>
+	<span class="k">fi</span><span class="p">;;</span>
+*<span class="o">)</span>
+	<span class="nb">echo</span> <span class="s2">&#34;必须输入1-3的数字&#34;</span>
+<span class="k">esac</span>
+</code></pre></div><h2 id="shell函数">shell函数<a href="#shell函数" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="实例-3">实例<a href="#实例-3" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="k">function</span> 函数名<span class="o">{</span>
+	命令序列
+<span class="o">}</span>
+
+函数名<span class="o">()</span> <span class="o">{</span>
+	命令序列
+<span class="o">}</span>
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># imsg(){</span>
+&gt; <span class="nb">echo</span> <span class="s2">&#34;hello world&#34;</span>
+&gt; <span class="nb">echo</span> <span class="s2">&#34;compute cloud&#34;</span>
+&gt; <span class="o">}</span>
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># imsg</span>
+hello world
+compute cloud
+</code></pre></div><p>传递参数</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># add(){</span>
+&gt; <span class="nb">echo</span> $<span class="o">[</span><span class="nv">$1</span>+<span class="nv">$2</span><span class="o">]</span>
+&gt; <span class="o">}</span>
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1"># add 1 3</span>
+<span class="m">4</span>
+<span class="o">[</span>root@ado-01 ~<span class="o">]</span><span class="c1">#</span>
+</code></pre></div><p>带颜色的输出</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span>cecho<span class="o">(){</span>
+	<span class="nb">echo</span> -e <span class="s2">&#34;\-33[</span><span class="nv">$1</span><span class="s2">m</span><span class="nv">$2</span><span class="s2">\033[0m&#34;</span>
+<span class="o">}</span>
+
+cecho <span class="m">31</span> ok
+cecho <span class="m">32</span> ok
+cecho <span class="m">33</span> ok
+cecho <span class="m">34</span> ok
+cecho <span class="m">35</span> error
+</code></pre></div><p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220211163329076.png"
+    alt="image-20220211163329076"  />
+</p>
+</p>
+<p>多进程版ping测试</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span>myping<span class="o">(){</span>
+	ping -c3 -i0.2 -W1 <span class="nv">$1</span> <span class="p">&amp;</span>&gt;/dev/null
+	<span class="k">if</span> <span class="o">[</span><span class="nv">$?</span> -eq 0<span class="o">]</span><span class="p">;</span><span class="k">then</span>
+		<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2"> is up&#34;</span>
+    <span class="k">else</span>
+    	<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$1</span><span class="s2"> is down&#34;</span>
+    <span class="k">fi</span>
+<span class="o">}</span>
+
+<span class="k">for</span> i in <span class="o">{</span>1..254<span class="o">}</span>
+<span class="k">do</span>
+	myping <span class="s2">&#34;192.168.4.</span><span class="nv">$i</span><span class="s2">&#34;</span> <span class="p">&amp;</span>
+<span class="k">done</span>
+<span class="nb">wait</span>
+</code></pre></div><p><strong>使用&amp;符号，将执行的函数放入后台执行，wait等待所有后台进程结束后退出脚本</strong></p>
+<h3 id="中断与退出">中断与退出<a href="#中断与退出" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<ul>
+<li><code>continue</code>可以结束单次循环</li>
+<li><code>break</code>可以结束循环体</li>
+<li><code>exit</code>可以退出脚本</li>
+</ul>
+<p>双色球脚本</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1">#功能描述：机选双色球</span>
+<span class="nv">red_ball</span><span class="o">=</span><span class="s2">&#34;&#34;</span>
+<span class="nv">blue_ball</span><span class="o">=</span><span class="s2">&#34;&#34;</span>
+
+<span class="c1">#每选出一个号码通过+=的方式存到变量中</span>
+<span class="c1">#通过grep判断机选的红色号码是否已经存在-w选项过滤单词</span>
+<span class="k">while</span>:
+<span class="k">do</span>
+	clear
+	<span class="nb">echo</span> <span class="s2">&#34;---机选双色球---&#34;</span>
+	<span class="nv">tmp</span><span class="o">=</span>$<span class="o">[</span>RANDOM%33+1<span class="o">]</span> <span class="c1">#红球是1-33中的随机数</span>
+	<span class="c1">#下面这条命令是保证不会存在相同的红球</span>
+	<span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$red_ball</span><span class="s2">&#34;</span> <span class="p">|</span> grep -q -w <span class="nv">$tmp</span> <span class="o">&amp;&amp;</span> <span class="k">continue</span> <span class="c1">#-q表示查找内容并且不显示，-w表示查找指定内容的单词，</span>
+	<span class="c1">#注意这里有一个空格，即将数字依次连接</span>
+	<span class="nv">red_ball</span><span class="o">+=</span><span class="s2">&#34; </span><span class="nv">$tmp</span><span class="s2">&#34;</span>
+	<span class="nb">echo</span> -en <span class="s2">&#34;\033[91m</span><span class="nv">$red_ball</span><span class="s2">\-33[0m&#34;</span>
+	<span class="c1">#wc -w是统计单词数，即红球的个数</span>
+	<span class="nv">word</span><span class="o">=</span><span class="k">$(</span><span class="nb">echo</span> <span class="s2">&#34;</span><span class="nv">$red_ball</span><span class="s2">||&#34;</span> wc -w<span class="k">)</span>
+	<span class="k">if</span> <span class="o">[</span><span class="nv">$word</span> -eq 6<span class="o">]</span><span class="p">;</span><span class="k">then</span>
+		<span class="nv">blue_ball</span><span class="o">=</span>$<span class="o">[</span>RANDOM%16+1<span class="o">]</span> <span class="c1">#蓝球是从1-16，取出一个蓝球</span>
+		<span class="nb">echo</span> -e <span class="s2">&#34;\033[34m </span><span class="nv">$blue_ball</span><span class="s2">\033[0m&#34;</span>
+		<span class="nb">break</span>
+	<span class="k">fi</span>
+	sleep 0.5
+<span class="k">done</span>
+
+</code></pre></div><p>关于<code>grep -q -w</code>命令可以看这个</p>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220211170034898.png"
+    alt="image-20220211170034898"  />
+</p>
+</p>
+<h2 id="综合案例">综合案例<a href="#综合案例" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h3 id="进度条">进度条<a href="#进度条" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span>bar<span class="o">(){</span>
+	<span class="k">while</span>:
+	<span class="k">do</span>
+		<span class="nb">echo</span> -en <span class="s2">&#34;\033[42m\033[0m&#34;</span>
+		sleep 0.5
+	<span class="k">done</span>
+<span class="o">}</span>
+bar <span class="p">&amp;</span> cp -r <span class="nv">$1</span> <span class="nv">$2</span>  <span class="c1">#复制文件，&amp;表示这个bar方法放入后台执行</span>
+<span class="nb">kill</span> <span class="nv">$!</span>  <span class="c1">#kill杀掉的是bar这个进程 $!表示的最后一个进程的PID</span>
+<span class="nb">echo</span>
+</code></pre></div><p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220212222847899.png"
+    alt="image-20220212222847899"  />
+</p>
+</p>
+<h3 id="fork炸弹">fork炸弹<a href="#fork炸弹" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>无限循环自己，消耗系统资源，执行会让电脑瞬间死机</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1">#.(){.|.&amp;};.  #仅需13个字符</span>
+
+.<span class="o">(){</span>		<span class="c1">#定义函数,函数名为.</span>
+	.<span class="p">|</span>.<span class="p">&amp;</span>	<span class="c1">#在函数内调用自己</span>
+<span class="o">}</span>
+.			<span class="c1">#执行函数</span>
+</code></pre></div><h2 id="正则表达式">正则表达式<a href="#正则表达式" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Regular Expression（RegEx）：描述一个字符集合的表达方式，是一个模糊匹配</p>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220213140451931.png"
+    alt="image-20220213140451931"  />
+</p>
+</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">grep root /etc/passwd
+grep ^root /ect/passwd
+grep bash$ /etc/passwd
+grep <span class="s2">&#34;[abc]&#34;</span> /etc/passwd
+grep <span class="s2">&#34;[^abc]&#34;</span> /etc/passwd
+grep . /etc/passwd
+grep r.*t /etc/passwd  <span class="c1">#r开头t结尾的内容</span>
+grep <span class="s2">&#34;[0-9]*&#34;</span> /etc/passwd
+grep <span class="s2">&#34;[0-9]\{3,4\}&#34;</span> /etc/passwd
+grep <span class="s2">&#34;[0-9]\{3\}&#34;</span> /etc/passwd
+</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># grep &#34;[0-9]\{3\}&#34; /etc/passwd</span>
+games❌12💯games:/usr/games:/sbin/nologin
+systemd-network❌192:192:systemd Network Management:/:/sbin/nologin
+polkitd❌999:998:User <span class="k">for</span> polkitd:/:/sbin/nologin
+chrony❌998:996::/var/lib/chrony:/sbin/nologin
+</code></pre></div><h3 id="扩展正则">扩展正则<a href="#扩展正则" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220213143953880.png"
+    alt="image-20220213143953880"  />
+</p>
+</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">grep -E <span class="s2">&#34;0{2,3}&#34;</span> /etc/passwd  <span class="c1">#0出现2次或者3次</span>
+grep -E <span class="s2">&#34;[a-z]+&#34;</span> /etc/passwd
+grep -E <span class="s2">&#34;s?bin&#34;</span> /etc/passwd   <span class="c1">#过滤出sbin或者bin</span>
+grep -E <span class="s2">&#34;(root|daemon)&#34;</span> /etc/passwd
+</code></pre></div><h3 id="perl兼容的正则">Perl兼容的正则<a href="#perl兼容的正则" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220213144804224.png"
+    alt="image-20220213144804224"  />
+</p>
+</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">grep -P <span class="s2">&#34;\bbin\b&#34;</span> /etc/passwd
+</code></pre></div><h2 id="linux文本三剑客">linux文本三剑客<a href="#linux文本三剑客" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://blog.windanchaos.tech/2020/05/17/shell%E4%B8%89%E5%89%91%E5%AE%A2%E5%AE%9E%E6%88%98/" target="_blank" rel="noopener">shell三剑客实战</a>
+</p>
+<ul>
+<li>
+<p>awk：最基本的作用，按规则输出列。</p>
+</li>
+<li>
+<p>sed，用途：数据选、换、增、查。</p>
+</li>
+<li>
+<p>grep，数据查找和定位。</p>
+</li>
+</ul>
+<h3 id="grep">grep<a href="#grep" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>语法格式，用法：<code>grep [选项] 匹配模式 [文件]</code></p>
+<p>常用选项：</p>
+<ul>
+<li>-i 忽略大小写</li>
+<li>-v 取反匹配</li>
+<li>-w 匹配单词</li>
+<li>-q 静默匹配，不将结果显示在屏幕</li>
+</ul>
+<p>有一个test.txt的文档，从中执行一些过滤</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1">#过滤包含the的行</span>
+grep the test.txt
+<span class="c1">#不区分大小写过滤包含the的行</span>
+grep -i the test.txt
+<span class="c1">#过滤不包含the的行</span>
+<span class="c1">#过滤包含数字的行</span>
+grep <span class="s2">&#34;[0-9]&#34;</span> test.txt
+<span class="c1">#过滤包含bet或者better的行</span>
+grep -E <span class="s2">&#34;(bet|better)&#34;</span> test.txt
+<span class="c1">#过滤包含两个字母o的行</span>
+grep <span class="s2">&#34;oo&#34;</span> test.txt
+grep <span class="s2">&#34;o\{2\}&#34;</span> test.txt
+grep -E <span class="s2">&#34;o&#34;</span> test.txt
+<span class="c1">#过滤包含一个字母o的行</span>
+<span class="c1">#过滤不包含字母o的行</span>
+grep -v <span class="s2">&#34;o&#34;</span> test.txt
+<span class="c1">#过滤大写字母开头的行</span>
+grep <span class="s2">&#34;^[A-Z]&#34;</span> test.txt
+<span class="c1">#过滤小写字母开头的行</span>
+grep <span class="s2">&#34;^[a-z]&#34;</span> test.txt
+<span class="c1">#过滤ou前面不是th的行</span>
+grep -E <span class="s2">&#34;[^(th)]ou&#34;</span> test.txt
+<span class="c1">#过滤不以标点符号结束的行</span>
+grep <span class="s2">&#34;[^.]</span>$<span class="s2">&#34;</span>
+<span class="c1">#过滤空白行</span>
+grep <span class="s2">&#34;^</span>$<span class="s2">&#34;</span> test.txt
+<span class="c1">#过滤以.结尾的行</span>
+grep <span class="s2">&#34;\.</span>$<span class="s2">&#34;</span> test.txt
+<span class="c1">#过滤以数字开始的行</span>
+grep <span class="s2">&#34;^[0-9]&#34;</span> test.txt
+<span class="c1">#过滤包含两个以上z的行</span>
+grep -E <span class="s2">&#34;z{2,}&#34;</span> test.txt
+<span class="c1">#过滤所有字母</span>
+grep <span class="s2">&#34;[a-zA-z]&#34;</span> test.txt
+<span class="c1">#过滤所有标点符号</span>
+grep -P <span class="s2">&#34;\W&#34;</span> test.txt
+</code></pre></div><h3 id="sed">sed<a href="#sed" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>Stream Editor：流式编辑器</p>
+<ul>
+<li>非交互式(vim 是交互式)</li>
+<li>逐行处理</li>
+<li>可以对文本进行增删改查等操作</li>
+</ul>
+<p>语法：</p>
+<p><code> sed [选项] '[定位符]指令' 文件名</code></p>
+<p>或者通过管道，命令| <code> sed [选项] '[定位符]指令' 文件名</code></p>
+<p>常用命令选项</p>
+<ul>
+<li>-n :屏蔽默认输出</li>
+<li>-i: 直接修改源文件</li>
+<li>-r: 支持扩展正则</li>
+</ul>
+<p>常用sed指令</p>
+<ul>
+<li>p(print)：打印行</li>
+<li>d(delete)：删除行</li>
+<li>c(replace)：替换行</li>
+<li>s(substitution)：替换关键词</li>
+<li>=：打印行号</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed -n &#39;3p&#39; /etc/passwd  #打印第三行，3指第三行，p指打印，默认是全文打印加了-n则关闭全文打印</span>
+daemon❌2:2:daemon:/sbin:/sbin/nologin
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed -n &#39;1,3p&#39; /etc/passwd</span>
+root❌0:0:root:/root:/bin/bash
+bin❌1:1:bin:/bin:/sbin/nologin
+daemon❌2:2:daemon:/sbin:/sbin/nologin
+</code></pre></div><h4 id="行号定位">行号定位<a href="#行号定位" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>sed可以使用行号来定位自己需要修改的数据内容</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">sed -n <span class="s1">&#39;3p&#39;</span> /etc/passwd			<span class="c1">#打印第三行</span>
+sed -n <span class="s1">&#39;1,3p&#39;</span> /etc/passwd		<span class="c1">#打印1到3行</span>
+sed -n <span class="s1">&#39;1~2p&#39;</span> /etc/passwd		<span class="c1">#第1行开始，步长为2</span>
+sed -n <span class="s1">&#39;2~2p&#39;</span> /etc/passwd		<span class="c1">#第2行开始，步长为2</span>
+sed -n <span class="s1">&#39;2,+3p&#39;</span>/etc/passwd		<span class="c1">#第2行以及后面的3行</span>
+</code></pre></div><h4 id="正则定位">正则定位<a href="#正则定位" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">grep ^root /etc/passwd		<span class="c1">#过滤root开头的行</span>
+sed -n <span class="s1">&#39;/^root/p&#39;</span> /etc/passwd	
+grep <span class="s2">&#34;[0-9]{3}&#34;</span> /etc/passwd		<span class="c1">#过滤包含3个数字的行</span>
+sed -rn <span class="s1">&#39;/[0-9]{3}/p&#39;</span> /etc/passwd <span class="c1">#因为使用扩展正则，所以是-r</span>
+</code></pre></div><h4 id="多行文本处理">多行文本处理<a href="#多行文本处理" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<ul>
+<li>i(insert)</li>
+<li>a(append)</li>
+<li>r(read)</li>
+<li>w(write)</li>
+</ul>
+<p>Insert（插入，行前写入）</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">vim test.txt
+<span class="m">2046</span> <span class="m">2048</span> <span class="m">2046</span> <span class="m">2046</span>
+<span class="m">1001</span> <span class="m">2046</span> <span class="m">2999</span> <span class="m">1888</span>
+<span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span>
+
+
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;2i ABC_XYZ&#39; test.txt</span>
+<span class="m">2046</span> <span class="m">2048</span> <span class="m">2046</span> <span class="m">2046</span>
+ABC_XYZ
+<span class="m">1001</span> <span class="m">2046</span> <span class="m">2999</span> <span class="m">1888</span>
+<span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span>
+
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;3i ABC_XYZ&#39; test.txt</span>
+<span class="m">2046</span> <span class="m">2048</span> <span class="m">2046</span> <span class="m">2046</span>
+<span class="m">1001</span> <span class="m">2046</span> <span class="m">2999</span> <span class="m">1888</span>
+ABC_XYZ
+<span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span>
+
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;/2046/i ABC\nXYZ&#39; test.txt</span>
+ABC
+XYZ
+<span class="m">2046</span> <span class="m">2048</span> <span class="m">2046</span> <span class="m">2046</span>
+ABC
+XYZ
+<span class="m">1001</span> <span class="m">2046</span> <span class="m">2999</span> <span class="m">1888</span>
+ABC
+XYZ
+<span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span>
+
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;/1888/i ABC\nXYZ&#39; test.txt</span>
+<span class="m">2046</span> <span class="m">2048</span> <span class="m">2046</span> <span class="m">2046</span>
+ABC
+XYZ
+<span class="m">1001</span> <span class="m">2046</span> <span class="m">2999</span> <span class="m">1888</span>
+<span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span>
+</code></pre></div><p>Append（追加，行后写入）</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;2a ABC_XYZ&#39; test.txt</span>
+<span class="m">2046</span> <span class="m">2048</span> <span class="m">2046</span> <span class="m">2046</span>
+<span class="m">1001</span> <span class="m">2046</span> <span class="m">2999</span> <span class="m">1888</span>
+ABC_XYZ
+<span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span>
+
+</code></pre></div><p>Read（将其他文件的内容导入）</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># cat /etc/hosts</span>
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;2r /etc/hosts&#39; test.txt</span>
+<span class="m">2046</span> <span class="m">2048</span> <span class="m">2046</span> <span class="m">2046</span>
+<span class="m">1001</span> <span class="m">2046</span> <span class="m">2999</span> <span class="m">1888</span>
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
+<span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span>
+
+</code></pre></div><p>Write（将文件内容导出另存到其他文件）</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1">#将test.txt文件的所有内容另存为一个新文件copy_test.txt</span>
+sed <span class="s1">&#39;W copy_test.txt&#39;</span> test.txt
+<span class="c1">#将test.txt文件中所有包含1888的行另存为新文件1888.txt</span>
+sed <span class="s1">&#39;/1888/w 1888.txt&#39;</span> test.txt
+<span class="c1">#将test.txt文件的2到3行另存为新文件line.txt</span>
+sed <span class="s1">&#39;2,3w line.txt&#39;</span> test.txt
+</code></pre></div><h4 id="实例-4">实例<a href="#实例-4" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>过滤数据</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1">#过滤网卡ip地址</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed -n &#39;/IPADDR/p&#39; /etc/sysconfig/network-scripts/ifcfg-ens33</span>
+<span class="nv">IPADDR</span><span class="o">=</span><span class="s2">&#34;192.168.150.220&#34;</span>
+
+<span class="c1">#过滤内存信息</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># free</span>
+              total        used        free      shared  buff/cache   available
+Mem:        <span class="m">1863004</span>      <span class="m">229032</span>     <span class="m">1485972</span>        <span class="m">9852</span>      <span class="m">148000</span>     <span class="m">1481696</span>
+Swap:       <span class="m">2097148</span>           <span class="m">0</span>     <span class="m">2097148</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># free | sed -n &#39;/Mem/p&#39;</span>
+Mem:        <span class="m">1863004</span>      <span class="m">229176</span>     <span class="m">1485824</span>        <span class="m">9852</span>      <span class="m">148004</span>     <span class="m">1481568</span>
+
+<span class="c1">#过滤磁盘根分区信息(根分区是以/结尾的分区)</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># df -h</span>
+文件系统                     容量  已用  可用 已用% 挂载点
+devtmpfs                     898M     <span class="m">0</span>  898M    0% /dev
+tmpfs                        910M     <span class="m">0</span>  910M    0% /dev/shm
+tmpfs                        910M  9.7M  901M    2% /run
+tmpfs                        910M     <span class="m">0</span>  910M    0% /sys/fs/cgroup
+/dev/mapper/centos_192-root   17G  1.6G   16G   10% /
+/dev/sda1                   1014M  150M  865M   15% /boot
+tmpfs                        182M     <span class="m">0</span>  182M    0% /run/user/0
+
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># df -h | sed -n &#39;/\/$/p&#39;</span>
+/dev/mapper/centos_192-root   17G  1.6G   16G   10% /
+
+<span class="c1">#显示第1、3、4行内容</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed -n &#39;1p;3p;6p&#39; /etc/passwd</span>
+root❌0:0:root:/root:/bin/bash
+daemon❌2:2:daemon:/sbin:/sbin/nologin
+sync❌5:0:sync:/sbin:/bin/sync
+
+<span class="c1">#打印第2行以外的所有其他行内容</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed -n &#39;2!p&#39; /etc/hosts</span>
+127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
+</code></pre></div><p>删除数据(不使用-i选项，源文件不会被修改)</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1">#删除/etc/hosts全文，没有定位条件等于匹配所有行</span>
+sed <span class="s1">&#39;d&#39;</span> /etc/hosts
+
+cat /etc/fstab &gt; /tmp/fstab <span class="c1">#备份一下/etc/fstab文件</span>
+<span class="c1">#不包含dev的行都删除</span>
+sed <span class="s1">&#39;/dev/!d&#39;</span> /tmp/fstab
+<span class="c1">#删除所有以符号#开头的行</span>
+sed <span class="s1">&#39;/^#/d&#39;</span> /tmp/fstab
+<span class="c1">#删除空白行</span>
+sed <span class="s1">&#39;/^$/d&#39;</span> /tmp/fstab
+</code></pre></div><p>替换行</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1">#所有行替换为123456</span>
+sed <span class="s1">&#39;c 123456&#39;</span> /tmp/fstab
+
+<span class="c1">#替换IP地址</span>
+<span class="nv">file</span><span class="o">=</span>/etc/sysconfig/network-scripts/ifcfg-ens33
+sed <span class="s1">&#39;/IPADDR/c IPADDR=1.1.1.1&#39;</span> <span class="nv">$FILE</span>
+
+sed <span class="s1">&#39;/127/c 127.0.0.1 localhost&#39;</span> /etc/hosts
+
+sed <span class="s1">&#39;4c xxxx&#39;</span> /etc/shells  <span class="c1">#修改第四行数据改为xxxx</span>
+</code></pre></div><p>替换关键词</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">vim test.txt
+<span class="m">2046</span> <span class="m">2048</span> <span class="m">2046</span> <span class="m">2046</span>
+<span class="m">1001</span> <span class="m">2046</span> <span class="m">2999</span> <span class="m">1888</span>
+<span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span>
+
+<span class="c1">#逐行处理，处理了第一个之后就不会处理后面的了</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;s/2046/XXXX/&#39; test.txt</span>
+XXXX <span class="m">2048</span> <span class="m">2046</span> <span class="m">2046</span>
+<span class="m">1001</span> XXXX <span class="m">2999</span> <span class="m">1888</span>
+XXXX <span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span>
+
+<span class="c1">#加了g结尾之后则每一行的所有匹配数据都会被替换</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;s/2046/XXXX/g&#39; test.txt</span>
+XXXX <span class="m">2048</span> XXXX XXXX
+<span class="m">1001</span> XXXX <span class="m">2999</span> <span class="m">1888</span>
+XXXX XXXX XXXX XXXX
+<span class="c1">#替换每一行的第二个</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;s/2046/XXXX/2&#39; test.txt</span>
+<span class="m">2046</span> <span class="m">2048</span> XXXX <span class="m">2046</span>
+<span class="m">1001</span> <span class="m">2046</span> <span class="m">2999</span> <span class="m">1888</span>
+<span class="m">2046</span> XXXX <span class="m">2046</span> <span class="m">2046</span>
+
+<span class="c1">#加&amp;的表示替换的旧的内容</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;s/2046/(&amp;)/g&#39; test.txt</span>
+<span class="o">(</span>2046<span class="o">)</span> <span class="m">2048</span> <span class="o">(</span>2046<span class="o">)</span> <span class="o">(</span>2046<span class="o">)</span>
+<span class="m">1001</span> <span class="o">(</span>2046<span class="o">)</span> <span class="m">2999</span> <span class="m">1888</span>
+<span class="o">(</span>2046<span class="o">)</span> <span class="o">(</span>2046<span class="o">)</span> <span class="o">(</span>2046<span class="o">)</span> <span class="o">(</span>2046<span class="o">)</span>
+
+<span class="c1">#指定了第二行而不是全文替换</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;2s/2046/XXXX/g&#39; test.txt</span>
+<span class="m">2046</span> <span class="m">2048</span> <span class="m">2046</span> <span class="m">2046</span>
+<span class="m">1001</span> XXXX <span class="m">2999</span> <span class="m">1888</span>
+<span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span>
+
+<span class="c1">#2046替换为空，就是删除了2046</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;2s/2046//g&#39; test.txt</span>
+<span class="m">2046</span> <span class="m">2048</span> <span class="m">2046</span> <span class="m">2046</span>
+<span class="m">1001</span>  <span class="m">2999</span> <span class="m">1888</span>
+<span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span> <span class="m">2046</span>
+
+<span class="c1">#加了—n其他行不显示</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed -n &#39;2s/2046/XXXX/&#39; test.txt #直接执行这个因为有-n所以不会有输出</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed -n &#39;2s/2046/XXXX/p&#39; test.txt #加了p命令所以会输出当前修改行</span>
+<span class="m">1001</span> XXXX <span class="m">2999</span> <span class="m">1888</span>
+
+<span class="c1">#替换符/可以换成其他字符</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed &#39;s#2046#XXXX#g&#39; test.txt</span>
+XXXX <span class="m">2048</span> XXXX XXXX
+<span class="m">1001</span> XXXX <span class="m">2999</span> <span class="m">1888</span>
+XXXX XXXX XXXX XXXX
+
+sed <span class="s1">&#39;s,2046,XXXX,g&#39;</span> test.txt <span class="c1">#,为替换符</span>
+sed <span class="s1">&#39;s!2046!XXXX!g&#39;</span> test.txt <span class="c1">#!为替换符</span>
+sed <span class="s1">&#39;s2\20462XXXX2g&#39;</span> test.txt <span class="c1">#2为替换符</span>
+sed <span class="s1">&#39;s2\20462\20482g&#39;</span> test.txt <span class="c1">#2为替换符</span>
+</code></pre></div><p>正则符号()具有保留的功能</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># echo &#34;hello the world&#34; | sed -r &#39;s/^(.)(.*)(.)$/\3\2\1/&#39;</span>
+dello the worlh
+</code></pre></div><p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220213162328784.png"
+    alt="image-20220213162328784"  />
+</p>
+</p>
+<ul>
+<li>(.)匹配到h</li>
+<li>(.*)匹配到黑色块ello the worl</li>
+<li>(.)匹配到d</li>
+<li>替换后的内容为第三部分，第二部分，第一部分</li>
+</ul>
+<p>打印行号：=关键符号</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed -n &#39;1=&#39; /etc/passwd #打印第一行的行号</span>
+<span class="m">1</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed -n &#39;8=&#39; /etc/passwd</span>
+<span class="m">8</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed -n &#39;/root/=&#39; /etc/passwd</span>
+<span class="m">1</span>
+<span class="m">10</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># sed -n &#39;/bash$/=&#39; /etc/passwd #以bash结尾的行号</span>
+<span class="m">1</span>
+</code></pre></div><p>点名器</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">vim name.txt
+李白
+杜甫
+白居易
+孟浩然
+苏轼
+</code></pre></div><p>随机点名脚本</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1">#功能描述：随机点名抽奖器，按ctrl+c结束脚本</span>
+<span class="nv">name_file</span><span class="o">=</span><span class="s2">&#34;name.txt&#34;</span>
+<span class="nv">line_file</span><span class="o">=</span><span class="k">$(</span>sed -n <span class="s1">&#39;$=&#39;</span><span class="nv">$name_file</span><span class="k">)</span>
+<span class="k">while</span>:
+	<span class="k">do</span>
+	clear
+	<span class="nv">tmp</span><span class="o">=</span><span class="k">$(</span>sed -n <span class="s2">&#34;</span>$<span class="s2">[RANDOM%line_file+1]p&#34;</span> <span class="nv">$name_file</span><span class="k">)</span>
+	<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m	随机点名器（按ctrl+c停止]：\033[0m&#34;</span>
+	<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m##########################\033[0m&#34;</span>
+	<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m						   \033[0m&#34;</span>
+	<span class="nb">echo</span> -e <span class="s2">&#34;\033[30m		   </span><span class="nv">$tmp</span><span class="s2">	           \033[0m&#34;</span>
+	<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m				   		   \033[0m&#34;</span>
+	<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m##########################\033[0m&#34;</span>
+	sleep 0.1
+<span class="k">done</span>
+</code></pre></div><p>抓取tmooc首页的所有图片</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="cp">#!/bin/bash
+</span><span class="cp"></span><span class="c1">#功能描述：编写脚本抓取单个网页中的图片数据 $$表示当前进程的PID</span>
+<span class="nv">URL</span><span class="o">=</span><span class="s2">&#34;/tmp/spider_</span><span class="nv">$$</span><span class="s2">.txt&#34;</span>
+
+<span class="c1">#将网页源代码保存到文件中 -s表示静默下载，不会有输出</span>
+curl -s http://www.tmooc.cn/ &gt; <span class="nv">$URL</span>
+
+<span class="c1">#对文件进行过滤和清洗，获取需要的种子URL链接</span>
+<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m正在获取种子URL，请稍后..\033[0m&#34;</span>
+sed -i <span class="s1">&#39;&lt;img/!d&#39;</span> <span class="nv">$URL</span> <span class="c1">#删除不包含&lt;img的行</span>
+sed -i <span class="s1">&#39;s/.*src=&#34;//&#34;&#39;</span> <span class="nv">$URL</span> <span class="c1">#删除src=&#34;及其前面的所有内容</span>
+sed -i <span class="s1">&#39;s/&#34;.*//&#39;</span> <span class="nv">$URL</span> <span class="c1">#删除&#34;及其后面的所有内容</span>
+<span class="nb">echo</span>
+
+<span class="c1">#检测系统如果没有wget下载工具则安装该软件</span>
+<span class="k">if</span> !rpm -q wget <span class="p">&amp;</span>&gt; /dev/null<span class="p">;</span>
+<span class="k">then</span>
+	yum -y install wget
+<span class="k">fi</span>
+<span class="c1">#wget为下载工具，其参数选项描述如下：-P指定将数据下载到特定目录，-q不显示下载过程</span>
+<span class="nb">echo</span> -e <span class="s2">&#34;\033[32m正在批量下载种子数据，请稍候。。。\033[0m&#34;</span>
+<span class="k">for</span> i in <span class="k">$(</span>cat <span class="nv">$URL</span><span class="k">)</span>
+<span class="k">do</span>
+	wget -P /tmp/ -q <span class="nv">$i</span>
+<span class="k">done</span>
+<span class="c1">#删除临时种子列表文件</span>
+rm -rf <span class="nv">$URL</span>
+</code></pre></div><h3 id="awk">awk<a href="#awk" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<h4 id="基础语法">基础语法<a href="#基础语法" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<ul>
+<li>创造者：Aho、Weinberger、Kernighan</li>
+<li>基于模式匹配检查输入文本，逐行处理并输出</li>
+<li>通常用在shell脚本中，获取指定数据</li>
+<li>单独用时，可对文本数据做统计</li>
+</ul>
+<p>格式1：前置命令 | awk [选项] &lsquo;[条件]{指令}&rsquo;</p>
+<p>格式2：awk [选项] &lsquo;[条件]{指令}&rsquo; 文件</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># cat hello.txt</span>
+hello the world
+welcome to Beijing
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># awk &#39;{print $1,$3}&#39; hello.txt #没有条件，直接逐行输出，$1表示第一列，$3表示第三列</span>
+hello world
+welcome Beijing
+</code></pre></div><p>常用选项：-F 可以指定分隔符，默认分隔符为（空格或Tab键）</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># awk -F: &#39;{print $1,$3}&#39; /etc/passwd  #以:作为分隔符</span>
+root <span class="m">0</span>
+bin <span class="m">1</span>
+</code></pre></div><h4 id="awk内置变量">awk内置变量<a href="#awk内置变量" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>内置变量都有特殊含义，可直接使用</p>
+<p><p class="md__image">
+  <img src="../shell%e5%ad%a6%e4%b9%a0.assets/image-20220213211108090.png"
+    alt="image-20220213211108090"  />
+</p>
+</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">awk -F: <span class="s1">&#39;{print NF}&#39;</span> /etc/passwd <span class="c1">#输出每行有多上列</span>
+awk -F: <span class="s1">&#39;{print $NF}&#39;</span> /etc/passwd <span class="c1">#总是输出最后一列</span>
+awk -F: <span class="s1">&#39;{print $(NF-1)}&#39;</span> /etc/passwd <span class="c1">#总是输出倒数第二列</span>
+
+awk -F: <span class="s1">&#39;{print NR}&#39;</span> /etc/passwd <span class="c1">#输出行号，没有条件则逐行输出</span>
+
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># awk -F: &#39;{print &#34;用户名：&#34; $1,&#34;UID:&#34;$3}&#39; /etc/passwd</span>
+用户名：root UID:0
+用户名：bin UID:1
+</code></pre></div><h4 id="awk过滤的时机">awk过滤的时机<a href="#awk过滤的时机" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<ul>
+<li>在所有行前处理，BEGIN{}
+<ul>
+<li>读入第一行文本之前执行</li>
+<li>一般用来初始化操作</li>
+</ul>
+</li>
+<li>逐行处理，{}
+<ul>
+<li>逐行读入文本执行相应的处理</li>
+<li>是最常见的编辑指令块</li>
+</ul>
+</li>
+<li>在所有行后处理，END{}
+<ul>
+<li>处理完最后一行文本之后执行</li>
+<li>一般用来输出处理结果</li>
+</ul>
+</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># awk &#39;BEGIN {a=34;print a+12}&#39;  #可以用来计算加减乘除</span>
+<span class="m">46</span>
+
+<span class="c1">#共输出19行，这是没有条件的</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># awk &#39;{x++;print x}&#39; /etc/passwd</span>
+<span class="m">1</span>
+...
+<span class="m">19</span>
+
+<span class="c1">#以bash结尾的才执行X++，在所有数据处理完之后，然后输出x</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># awk &#39;BEGIN{x=0}/bash$/{x++}END{print x}&#39; /etc/passwd </span>
+<span class="m">1</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># awk -F: &#39;BEGIN {print NR} END {print NR}&#39; /etc/passwd</span>
+<span class="m">0</span>
+<span class="m">19</span>
+<span class="o">[</span>root@localhost ~<span class="o">]</span><span class="c1"># wc -l /etc/passwd</span>
+<span class="m">19</span> /etc/passwd
+</code></pre></div><h4 id="基础案例">基础案例<a href="#基础案例" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>过滤内存信息</p>
+<pre><code></code></pre><h2 id="参考">参考<a href="#参考" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ul>
+<li><a href="https://www.bilibili.com/video/BV1qA411L7XW?p=3&amp;spm_id_from=pageDriver" target="_blank" rel="noopener">视频学习</a>
+</li>
+</ul>
 
 			</div><div class="content">
 	<br>
@@ -148,16 +1343,102 @@ pstree  //查看进程树
 
 			<hr class="post-end">
 			<footer class="post-info">
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>49 字</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>0001-01-01 08:00 &#43;0800</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/shell">Shell</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>9387 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-12-10 20:55 &#43;0800</p>
 			</footer>
 		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#概述">概述</a></li>
+    <li><a href="#bash的优点">bash的优点</a>
+      <ul>
+        <li><a href="#执行脚本的方式">执行脚本的方式</a></li>
+      </ul>
+    </li>
+    <li><a href="#变量">变量</a>
+      <ul>
+        <li><a href="#变量初始化">变量初始化</a></li>
+        <li><a href="#变量类型">变量类型</a></li>
+        <li><a href="#区分多种引号的区别">区分多种引号的区别</a></li>
+        <li><a href="#read标准输入取值">read标准输入取值</a></li>
+        <li><a href="#变量的作用范围">变量的作用范围</a></li>
+        <li><a href="#数组">数组</a></li>
+        <li><a href="#字符串处理">字符串处理</a></li>
+      </ul>
+    </li>
+    <li><a href="#shell中的运算">shell中的运算</a>
+      <ul>
+        <li><a href="#bc计算器">bc计算器</a></li>
+      </ul>
+    </li>
+    <li><a href="#echo回显">echo回显</a></li>
+    <li><a href="#实例">实例</a></li>
+    <li><a href="#条件测试">条件测试</a>
+      <ul>
+        <li><a href="#test测试操作">test测试操作</a></li>
+        <li><a href="#字符串比较">字符串比较</a></li>
+        <li><a href="#整数值比较">整数值比较</a></li>
+        <li><a href="#文件状态">文件状态</a></li>
+      </ul>
+    </li>
+    <li><a href="#控制操作符">控制操作符</a>
+      <ul>
+        <li><a href="#组合多个命令">组合多个命令</a></li>
+        <li><a href="#实例-1">实例</a></li>
+      </ul>
+    </li>
+    <li><a href="#if语句">if语句</a>
+      <ul>
+        <li><a href="#多分支">多分支</a></li>
+      </ul>
+    </li>
+    <li><a href="#for循环">for循环</a></li>
+    <li><a href="#while循环">while循环</a>
+      <ul>
+        <li><a href="#实例-2">实例</a></li>
+      </ul>
+    </li>
+    <li><a href="#case语句">case语句</a></li>
+    <li><a href="#shell函数">shell函数</a>
+      <ul>
+        <li><a href="#实例-3">实例</a></li>
+        <li><a href="#中断与退出">中断与退出</a></li>
+      </ul>
+    </li>
+    <li><a href="#综合案例">综合案例</a>
+      <ul>
+        <li><a href="#进度条">进度条</a></li>
+        <li><a href="#fork炸弹">fork炸弹</a></li>
+      </ul>
+    </li>
+    <li><a href="#正则表达式">正则表达式</a>
+      <ul>
+        <li><a href="#扩展正则">扩展正则</a></li>
+        <li><a href="#perl兼容的正则">Perl兼容的正则</a></li>
+      </ul>
+    </li>
+    <li><a href="#linux文本三剑客">linux文本三剑客</a>
+      <ul>
+        <li><a href="#grep">grep</a></li>
+        <li><a href="#sed">sed</a></li>
+        <li><a href="#awk">awk</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+		</aside>
 		<div class="post-nav thin">
-			<a class="next-post" href="https://willje.github.io/posts/k8s/%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84%E5%A4%9A%E4%BA%91%E5%92%8C%E6%B7%B7%E5%90%88%E4%BA%91/">
-				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span></span>
+			<a class="next-post" href="https://willje.github.io/posts/mysql/mysql%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>MySQL窗口函数</span>
 			</a>
-			<a class="prev-post" href="https://willje.github.io/posts/linux/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/">
-				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span></span>
+			<a class="prev-post" href="https://willje.github.io/posts/k8s/k8s-%E9%9B%86%E7%BE%A4%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dipnodeippodipclusterip/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Kubernetes 集群里的三种IP</span>
 			</a>
 		</div>
 		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"

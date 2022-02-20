@@ -18,6 +18,15 @@
     </item>
     
     <item>
+      <title>Context使用和原理</title>
+      <link>https://willje.github.io/posts/go/basic/context%E4%BD%BF%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Wed, 09 Jun 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/context%E4%BD%BF%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86/</guid>
+      <description>背景 上下文（Context）是 Go 语言中非常有特色的一个特性， 在 Go 1.7 版本中正式引入新标准库 context。 其主要的作用是在 goroutine 中进行上下文的传递，而在传递信息中又包含了 goroutine 的运行控制、上下文信息传递等功能。 使用 在 Go context 用法中，我们常常将其与 select 关键字结合使用，用于监听其是否结束、取消等。 代码如下： func main() { parentCtx := context.Background() ctx, cancel := context.WithTimeout(parentCtx, 1*time.Millisecond) defer cancel() select { case &amp;lt;-time.After(1 * time.Second): fmt.Println(&amp;#34;overslept&amp;#34;) case &amp;lt;-ctx.Done(): fmt.Println(ctx.Err()) } } 输出结果： context deadline exceeded 如果是</description>
+    </item>
+    
+    <item>
       <title>go中的闭包</title>
       <link>https://willje.github.io/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/</link>
       <pubDate>Sat, 15 May 2021 22:12:16 +0800</pubDate>
@@ -87,15 +96,6 @@
       
       <guid>https://willje.github.io/posts/go/basic/golang-template%E4%BD%BF%E7%94%A8%E6%A0%B7%E4%BE%8B/</guid>
       <description>Go标准库提供了几个package可以产生输出结果，而text/template 提供了基于模板输出文本内容的功能。html/template 则是产生 安全的HTML格式的输出。 01 text/template样例 Golang text/template 包是一个数据驱动的模版渲染工具。提供条件判断，数组或map遍历；参数赋值，函数或方法调用；自定义函数扩展，模板嵌套及重用等功能。基于该工具，可以轻松实</description>
-    </item>
-    
-    <item>
-      <title>go并发编程</title>
-      <link>https://willje.github.io/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</link>
-      <pubDate>Fri, 25 Dec 2020 20:55:29 +0800</pubDate>
-      
-      <guid>https://willje.github.io/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</guid>
-      <description>并发与并行 并发是指同一个时间段内多个任务同时交叉执行，并且都没有执行结束，而并行是说在单位时间内多个任务同时在执行，并发任务强调在一个时间段内同时执行，而一个时间段有多个单位时间累积而成，所以说并发的多个任务在单位时间内不一定同时在执行。 在单个cpu的时代多个任务同时运行都是并发，这是因为cpu同时只能执行一个任务，单个cpu时代多任务是共享一个cpu的，当</description>
     </item>
     
   </channel>

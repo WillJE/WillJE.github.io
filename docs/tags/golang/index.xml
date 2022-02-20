@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>golang on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/golang/</link>
+    <description>Recent content in golang on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sun, 02 May 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/golang/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>golang设计模式</title>
+      <link>https://willje.github.io/posts/go/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8Fgolang/</link>
+      <pubDate>Sun, 02 May 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8Fgolang/</guid>
+      <description>前言 设计模式 Golang实现－《研磨设计模式》读书笔记 https://github.com/senghoo/golang-design-pattern 创建型模式 简单工厂模式(Simple Factory) go 语言没有构造函数一说，所以一般会定义NewXXX函数来初始化相关类。 NewXXX 函数返回接口时就是简单工厂模式，也就是说Golang的一般推荐做法就是简单工厂。 在这个simplefactory包中只有API 接口和NewAPI函数为包外可见，封装了实现细节。 package simplefactory import &amp;#34;fmt&amp;#34; //API is interface type API</description>
+    </item>
+    
+  </channel>
+</rss>

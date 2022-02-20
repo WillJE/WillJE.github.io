@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>FaaS on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/faas/</link>
+    <description>Recent content in FaaS on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Sun, 10 Oct 2021 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/faas/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Serveless和FaaS</title>
+      <link>https://willje.github.io/posts/other/concept/serverless%E5%92%8Cfaas/</link>
+      <pubDate>Sun, 10 Oct 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/other/concept/serverless%E5%92%8Cfaas/</guid>
+      <description>无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无</description>
+    </item>
+    
+  </channel>
+</rss>

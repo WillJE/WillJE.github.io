@@ -7,59 +7,20 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
-<meta itemprop="name" content="">
-<meta itemprop="description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。
-滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。
-可用滑动窗口思想解决的问题，一般有如下特点：
- 窗口内元素是连续的。就是说，抽象出来的这个可滑动的窗口，在原数组或字符串上是连续的。 窗口只能由左向右滑动，不能逆过来滑动。就是说，窗口的左右边界，只能从左到右增加，不能减少，即使局部也不可以。  算法思路  使用双指针中的左右指针技巧，初始化 left = right = 0，把索引闭区间 [left, right] 称为一个「窗口」。 先不断地增加 right 指针扩大窗口 [left, right]，直到窗口符合要求 停止增加 right，转而不断增加 left 指针缩小窗口 [left, right]，直到窗口中的字符串不再符合要求。同时，每次增加 left，我们都要更新一轮结果。 重复第 2 和第 3 步，直到 right 到达尽头。   第 2 步相当于在寻找一个「可行解」，然后第 3 步在优化这个「可行解」，最终找到最优解。 左右指针轮流前进，窗口大小增增减减，窗口不断向右滑动。
- 代码模板
-left,right := 0,0 // 左右指针// 窗口右边界滑动for right &lt; length {window.add(s[right]) // 右元素进窗right&#43;&#43; // 右指针增加// 窗口满足条件for valid(window) &amp;&amp; left&lt;right {... // 满足条件后的操作window.remove(arr[left]) // 左元素出窗left&#43;&#43; // 左指针移动，直到窗口不满足条件}}注意:
- 滑动窗口适用的题目一般具有单调性 滑动窗口、双指针、单调队列和单调栈经常配合使用  滑动窗口的思路很简单，但在leetcode上关于滑动窗口的题目一般都是mid甚至hard的题目。其难点在于，如何抽象窗口内元素的操作，验证窗口是否符合要求的过程。 即上面步骤2，步骤3的两个过程。
-说的有点生涩。来两个例子说明一下。
-连续子数组的最大和  给定一个整数数组，计算长度为n的连续子数组的最大和。
-比如，给定arr=[1,2,3,4]，n=2，则其连续子数组的最大和为7。其长度为2的连续子数组为[1,2],[2,3],[3,4]，和最大就是3&#43;4=7。
- 所有问题都可以用穷举法解决，比如这个。我们可以穷举出所有长度为n的子数组，然后计算每个子数组的和，再求最大值。穷举法能实现，但是效率非常低。因为在穷举的过程中会嵌套循环。
-滑动窗口的思想就是，把这个要求和的子数组当成一个窗口，然后在数组上滑动。如下图所示：
- 我们维护一个长度为2的窗口，然后依次滑动这个窗口直至结束。在滑动时，出一个左边元素，进一个右边元素，计算这个窗口内的元素和，然后和最大和比较。滑动结束，也就求出了最大和是多少。
-func maxSubSum(nums []int, n int) int { if n &lt;= 0 { return 0 } if n &gt;= len(nums) { n = len(nums) } // sum 标记窗口内元素和  // maxSum标记sum的最大值  sum, maxSum := 0, 0 // 初始化窗口  for i := 0; i &lt; n; i&#43;&#43; { sum &#43;= nums[i] } maxSum = sum // 滑动窗口  for i := n; i &lt; len(nums); i&#43;&#43; { // 左出右进  sum = sum - nums[i-n] &#43; nums[i] if sum &gt; maxSum { maxSum = sum } } return maxSum } 和为target的连续正整数序列  输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。">
-
-<meta itemprop="wordCount" content="1416">
-<meta itemprop="keywords" content="" /><meta property="og:title" content="" />
-<meta property="og:description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。
-滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。
-可用滑动窗口思想解决的问题，一般有如下特点：
- 窗口内元素是连续的。就是说，抽象出来的这个可滑动的窗口，在原数组或字符串上是连续的。 窗口只能由左向右滑动，不能逆过来滑动。就是说，窗口的左右边界，只能从左到右增加，不能减少，即使局部也不可以。  算法思路  使用双指针中的左右指针技巧，初始化 left = right = 0，把索引闭区间 [left, right] 称为一个「窗口」。 先不断地增加 right 指针扩大窗口 [left, right]，直到窗口符合要求 停止增加 right，转而不断增加 left 指针缩小窗口 [left, right]，直到窗口中的字符串不再符合要求。同时，每次增加 left，我们都要更新一轮结果。 重复第 2 和第 3 步，直到 right 到达尽头。   第 2 步相当于在寻找一个「可行解」，然后第 3 步在优化这个「可行解」，最终找到最优解。 左右指针轮流前进，窗口大小增增减减，窗口不断向右滑动。
- 代码模板
-left,right := 0,0 // 左右指针// 窗口右边界滑动for right &lt; length {window.add(s[right]) // 右元素进窗right&#43;&#43; // 右指针增加// 窗口满足条件for valid(window) &amp;&amp; left&lt;right {... // 满足条件后的操作window.remove(arr[left]) // 左元素出窗left&#43;&#43; // 左指针移动，直到窗口不满足条件}}注意:
- 滑动窗口适用的题目一般具有单调性 滑动窗口、双指针、单调队列和单调栈经常配合使用  滑动窗口的思路很简单，但在leetcode上关于滑动窗口的题目一般都是mid甚至hard的题目。其难点在于，如何抽象窗口内元素的操作，验证窗口是否符合要求的过程。 即上面步骤2，步骤3的两个过程。
-说的有点生涩。来两个例子说明一下。
-连续子数组的最大和  给定一个整数数组，计算长度为n的连续子数组的最大和。
-比如，给定arr=[1,2,3,4]，n=2，则其连续子数组的最大和为7。其长度为2的连续子数组为[1,2],[2,3],[3,4]，和最大就是3&#43;4=7。
- 所有问题都可以用穷举法解决，比如这个。我们可以穷举出所有长度为n的子数组，然后计算每个子数组的和，再求最大值。穷举法能实现，但是效率非常低。因为在穷举的过程中会嵌套循环。
-滑动窗口的思想就是，把这个要求和的子数组当成一个窗口，然后在数组上滑动。如下图所示：
- 我们维护一个长度为2的窗口，然后依次滑动这个窗口直至结束。在滑动时，出一个左边元素，进一个右边元素，计算这个窗口内的元素和，然后和最大和比较。滑动结束，也就求出了最大和是多少。
-func maxSubSum(nums []int, n int) int { if n &lt;= 0 { return 0 } if n &gt;= len(nums) { n = len(nums) } // sum 标记窗口内元素和  // maxSum标记sum的最大值  sum, maxSum := 0, 0 // 初始化窗口  for i := 0; i &lt; n; i&#43;&#43; { sum &#43;= nums[i] } maxSum = sum // 滑动窗口  for i := n; i &lt; len(nums); i&#43;&#43; { // 左出右进  sum = sum - nums[i-n] &#43; nums[i] if sum &gt; maxSum { maxSum = sum } } return maxSum } 和为target的连续正整数序列  输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。" />
+<meta itemprop="name" content="滑动窗口算法思想">
+<meta itemprop="description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。 滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。 可用滑动窗口思想解决的问"><meta itemprop="datePublished" content="2021-09-13T21:23:18&#43;08:00" />
+<meta itemprop="dateModified" content="2021-09-13T21:23:18&#43;08:00" />
+<meta itemprop="wordCount" content="6016">
+<meta itemprop="keywords" content="滑动窗口," /><meta property="og:title" content="滑动窗口算法思想" />
+<meta property="og:description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。 滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。 可用滑动窗口思想解决的问" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/algorithm/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3/" /><meta property="article:section" content="posts" />
-
-
+<meta property="article:published_time" content="2021-09-13T21:23:18&#43;08:00" />
+<meta property="article:modified_time" content="2021-09-13T21:23:18&#43;08:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。
-滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。
-可用滑动窗口思想解决的问题，一般有如下特点：
- 窗口内元素是连续的。就是说，抽象出来的这个可滑动的窗口，在原数组或字符串上是连续的。 窗口只能由左向右滑动，不能逆过来滑动。就是说，窗口的左右边界，只能从左到右增加，不能减少，即使局部也不可以。  算法思路  使用双指针中的左右指针技巧，初始化 left = right = 0，把索引闭区间 [left, right] 称为一个「窗口」。 先不断地增加 right 指针扩大窗口 [left, right]，直到窗口符合要求 停止增加 right，转而不断增加 left 指针缩小窗口 [left, right]，直到窗口中的字符串不再符合要求。同时，每次增加 left，我们都要更新一轮结果。 重复第 2 和第 3 步，直到 right 到达尽头。   第 2 步相当于在寻找一个「可行解」，然后第 3 步在优化这个「可行解」，最终找到最优解。 左右指针轮流前进，窗口大小增增减减，窗口不断向右滑动。
- 代码模板
-left,right := 0,0 // 左右指针// 窗口右边界滑动for right &lt; length {window.add(s[right]) // 右元素进窗right&#43;&#43; // 右指针增加// 窗口满足条件for valid(window) &amp;&amp; left&lt;right {... // 满足条件后的操作window.remove(arr[left]) // 左元素出窗left&#43;&#43; // 左指针移动，直到窗口不满足条件}}注意:
- 滑动窗口适用的题目一般具有单调性 滑动窗口、双指针、单调队列和单调栈经常配合使用  滑动窗口的思路很简单，但在leetcode上关于滑动窗口的题目一般都是mid甚至hard的题目。其难点在于，如何抽象窗口内元素的操作，验证窗口是否符合要求的过程。 即上面步骤2，步骤3的两个过程。
-说的有点生涩。来两个例子说明一下。
-连续子数组的最大和  给定一个整数数组，计算长度为n的连续子数组的最大和。
-比如，给定arr=[1,2,3,4]，n=2，则其连续子数组的最大和为7。其长度为2的连续子数组为[1,2],[2,3],[3,4]，和最大就是3&#43;4=7。
- 所有问题都可以用穷举法解决，比如这个。我们可以穷举出所有长度为n的子数组，然后计算每个子数组的和，再求最大值。穷举法能实现，但是效率非常低。因为在穷举的过程中会嵌套循环。
-滑动窗口的思想就是，把这个要求和的子数组当成一个窗口，然后在数组上滑动。如下图所示：
- 我们维护一个长度为2的窗口，然后依次滑动这个窗口直至结束。在滑动时，出一个左边元素，进一个右边元素，计算这个窗口内的元素和，然后和最大和比较。滑动结束，也就求出了最大和是多少。
-func maxSubSum(nums []int, n int) int { if n &lt;= 0 { return 0 } if n &gt;= len(nums) { n = len(nums) } // sum 标记窗口内元素和  // maxSum标记sum的最大值  sum, maxSum := 0, 0 // 初始化窗口  for i := 0; i &lt; n; i&#43;&#43; { sum &#43;= nums[i] } maxSum = sum // 滑动窗口  for i := n; i &lt; len(nums); i&#43;&#43; { // 左出右进  sum = sum - nums[i-n] &#43; nums[i] if sum &gt; maxSum { maxSum = sum } } return maxSum } 和为target的连续正整数序列  输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。"/>
+<meta name="twitter:title" content="滑动窗口算法思想"/>
+<meta name="twitter:description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。 滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。 可用滑动窗口思想解决的问"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -68,7 +29,7 @@ func maxSubSum(nums []int, n int) int { if n &lt;= 0 { return 0 } if n &gt;= len
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
 	<link rel="shortcut icon" href="/favicon.ico">
 
-	<title></title>
+	<title>滑动窗口算法思想</title>
 	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
@@ -91,7 +52,7 @@ func maxSubSum(nums []int, n int) int { if n &lt;= 0 { return 0 } if n &gt;= len
 				</nav>
 			</div>
 			<div class="hdr-right hdr-icons">
-				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
 			</div>
 		</div>
 	</header>
@@ -106,8 +67,8 @@ func maxSubSum(nums []int, n int) int { if n &lt;= 0 { return 0 } if n &gt;= len
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
-				<div class="post-meta"><span>Jan 1, 0001</span></div>
-				<h1></h1>
+				<div class="post-meta"><span>Sep 13, 2021</span></div>
+				<h1>滑动窗口算法思想</h1>
 			</header>
 			<div class="content">
 				<p>滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。</p>
@@ -382,11 +343,10 @@ for right &lt; length {
 </blockquote>
 <p>这个问题和上面一个一样，也是窗口长度不定，需要变长移动窗口。</p>
 <p>不断增加窗口长度，如果在增加的过程中，遇到窗口中已经存在的字符，那么，将窗口左侧边界移动到当前已存在新入窗字符的位置。</p>
-<p><a href="https://img001-10042971.cos.ap-shanghai.myqcloud.com/blog/ccsite/slidingwindow/Xnip2020-05-01_00-11-35.png" target="_blank" rel="noopener"><p class="md__image">
-  <img src="../%e6%bb%91%e5%8a%a8%e7%aa%97%e5%8f%a3%e7%ae%97%e6%b3%95%e6%80%9d%e6%83%b3.assets/Xnip2020-05-01_00-11-35.png"
-    alt="示意图"  />
+<p><p class="md__image">
+  <img src="https://img001-10042971.cos.ap-shanghai.myqcloud.com/blog/ccsite/slidingwindow/Xnip2020-05-01_00-11-35.png"
+    alt=""  />
 </p>
-</a>
 </p>
 <pre><code>func lengthOfLongestSubstring(str string) int {
   length := len(str)
@@ -697,16 +657,35 @@ for right &lt; length {
 
 			<hr class="post-end">
 			<footer class="post-info">
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1416 字</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>0001-01-01 08:00 &#43;0800</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3">滑动窗口</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>6016 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-09-13 21:23 &#43;0800</p>
 			</footer>
 		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#算法思路">算法思路</a></li>
+    <li><a href="#连续子数组的最大和">连续子数组的最大和</a></li>
+    <li><a href="#和为target的连续正整数序列">和为target的连续正整数序列</a></li>
+    <li><a href="#长度最小的子数组">长度最小的子数组</a></li>
+    <li><a href="#水果成篮">水果成篮</a></li>
+    <li><a href="#最长不重复子串的长度">最长不重复子串的长度</a></li>
+    <li><a href="#字符串的排列">字符串的排列</a></li>
+    <li><a href="#最小覆盖子串">最小覆盖子串</a></li>
+    <li><a href="#滑动窗口最大值">滑动窗口最大值</a></li>
+  </ul>
+</nav>
+		</aside>
 		<div class="post-nav thin">
-			<a class="next-post" href="https://willje.github.io/posts/algorithm/leetcode/leetbook/">
-				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span></span>
+			<a class="next-post" href="https://willje.github.io/posts/other/concept/serverless%E5%92%8Cfaas/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Serveless和FaaS</span>
 			</a>
-			<a class="prev-post" href="https://willje.github.io/posts/distributed/cap%E5%AE%9A%E7%90%86%E7%9A%84%E8%AF%81%E6%98%8E/">
-				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span></span>
+			<a class="prev-post" href="https://willje.github.io/posts/other/concept/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-acl-rbac-abac/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>权限系统的设计模式</span>
 			</a>
 		</div>
 		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"

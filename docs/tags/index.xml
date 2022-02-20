@@ -7,13 +7,58 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
-    <lastBuildDate>Tue, 23 Nov 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Thu, 13 Jan 2022 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>MySQL</title>
+      <link>https://willje.github.io/tags/mysql/</link>
+      <pubDate>Thu, 13 Jan 2022 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/tags/mysql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Shell</title>
+      <link>https://willje.github.io/tags/shell/</link>
+      <pubDate>Fri, 10 Dec 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/tags/shell/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>Kubernetes</title>
       <link>https://willje.github.io/tags/kubernetes/</link>
       <pubDate>Tue, 23 Nov 2021 21:23:18 +0800</pubDate>
       
       <guid>https://willje.github.io/tags/kubernetes/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>云原生</title>
+      <link>https://willje.github.io/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</link>
+      <pubDate>Tue, 23 Nov 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>dapr</title>
+      <link>https://willje.github.io/tags/dapr/</link>
+      <pubDate>Sat, 13 Nov 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/tags/dapr/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>CNCF</title>
+      <link>https://willje.github.io/tags/cncf/</link>
+      <pubDate>Wed, 10 Nov 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/tags/cncf/</guid>
       <description></description>
     </item>
     
@@ -45,56 +90,11 @@
     </item>
     
     <item>
-      <title>kubelet</title>
-      <link>https://willje.github.io/tags/kubelet/</link>
-      <pubDate>Sun, 29 Aug 2021 21:23:18 +0800</pubDate>
+      <title>FaaS</title>
+      <link>https://willje.github.io/tags/faas/</link>
+      <pubDate>Sun, 10 Oct 2021 20:55:29 +0800</pubDate>
       
-      <guid>https://willje.github.io/tags/kubelet/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>docker</title>
-      <link>https://willje.github.io/tags/docker/</link>
-      <pubDate>Tue, 24 Aug 2021 21:51:51 +0800</pubDate>
-      
-      <guid>https://willje.github.io/tags/docker/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>GitLab</title>
-      <link>https://willje.github.io/tags/gitlab/</link>
-      <pubDate>Tue, 24 Aug 2021 21:51:51 +0800</pubDate>
-      
-      <guid>https://willje.github.io/tags/gitlab/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>go</title>
-      <link>https://willje.github.io/tags/go/</link>
-      <pubDate>Fri, 23 Jul 2021 21:23:18 +0800</pubDate>
-      
-      <guid>https://willje.github.io/tags/go/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>并发</title>
-      <link>https://willje.github.io/tags/%E5%B9%B6%E5%8F%91/</link>
-      <pubDate>Fri, 23 Jul 2021 21:23:18 +0800</pubDate>
-      
-      <guid>https://willje.github.io/tags/%E5%B9%B6%E5%8F%91/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>helm</title>
-      <link>https://willje.github.io/tags/helm/</link>
-      <pubDate>Thu, 01 Jul 2021 16:23:40 +0800</pubDate>
-      
-      <guid>https://willje.github.io/tags/helm/</guid>
+      <guid>https://willje.github.io/tags/faas/</guid>
       <description></description>
     </item>
     

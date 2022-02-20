@@ -7,56 +7,20 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
-<meta itemprop="name" content="">
-<meta itemprop="description" content="无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无需维护传统应用中永远保持在线的系统组件。Serverless 架构的长处是显著减少运维成本、复杂度、以及项目起步时间，劣势则在于更加依赖平台供应商和现阶段仍有待成熟的支持环境。
-什么是 Serverless 就像软件行业中的很多趋势一样，Serverless 的界限并不是特别清晰，尤其是它还涵盖了两个互相有重叠的概念：
- Serverless 最早用于描述那些大部分或者完全依赖于第三方（云端）应用或服务来管理服务器端逻辑和状态的应用，这些应用通常是富客户端应用（单页应用或者移动端 App），建立在云服务生态之上，包括数据库（Parse、Firebase）、账号系统（Auth0、AWS Cognito）等。这些服务最早被称为 “(Mobile) Backend as a Service” ，下文将对此简称为 “BaaS”。 Serverless 还可以指这种情况：应用的一部分服务端逻辑依然由开发者完成，但是和传统架构不同，它运行在一个无状态的计算容器中，由事件驱动、生命周期很短（甚至只有一次调用）、完全由第三方管理（感谢 ThoughtWorks 在他们最近的“技术观察 ”中对此所做的定义）。这种情况称为 Functions as a service / FaaS。AWS Lambda 是目前的热门 FaaS 实现之一，下文将对此简称为 “FaaS”。  一些示例 界面驱动的应用（UI-driven applications） 我们来设想一个传统的三层 C/S 架构，例如一个常见的电子商务应用（比如在线宠物商店），假设它服务端用 Java，客户端用 HTML/JavaScript：
-在这个架构下客户端通常没什么功能，系统中的大部分逻辑——身份验证、页面导航、搜索、交易——都在服务端实现。
-把它改造成 Serverless 架构的话会是这样：
-这是张大幅简化的架构图，但还是有相当多变化之处：
- 我们移除了最初应用中的身份验证逻辑，换用一个第三方的 BaaS 服务。 另一个 BaaS 示例：我们允许客户端直接访问一部分数据库内容，这部分数据完全由第三方托管（如 AWS Dynamo），这里我们会用一些安全配置来管理客户端访问相应数据的权限。 前面两点已经隐含了非常重要的第三点：先前服务器端的部分逻辑已经转移到了客户端，如保持用户 Session、理解应用的 UX 结构（做页面导航）、获取数据并渲染出用户界面等等。客户端实际上已经在逐步演变为单页应用 。 还有一些任务需要保留在服务器上，比如繁重的计算任务或者需要访问大量数据的操作。这里以“搜索”为例，搜索功能可以从持续运行的服务端中拆分出来，以 FaaS 的方式实现，从 API 网关（后文做详细解释）接收请求返回响应。这个服务器端函数可以和客户端一样，从同一个数据库读取产品数据。 我们原始的服务器端是用 Java 写的，而 AWS Lambda（假定我们用的这家 FaaS 平台）也支持 Java，那么原先的搜索代码略作修改就能实现这个搜索函数。 最后我们还可以把“购买”功能改写为另一个 FaaS 函数，出于安全考虑它需要在服务器端，而非客户端实现。它同样经由 API 网关暴露给外部使用。  消息驱动的应用（Message-driven applications） 再举一个后端数据处理服务的例子。假设你在做一个需要快速响应 UI 的用户中心应用，同时你又想捕捉记录所有的用户行为。设想一个在线广告系统，当用户点击了广告你需要立刻跳转到广告目标，同时你还需要记录这次点击以便向广告客户收费（这个例子并非虚构，我的一位前同事最近就在做这项重构）。
-传统的架构会是这样：“广告服务器”同步响应用户的点击，同时发送一条消息给“点击处理应用”，异步地更新数据库（例如从客户的账户里扣款）。
-在 Serverless 架构下会是这样：
-这里两个架构的差异比我们上一个例子要小很多。我们把一个长期保持在内存中待命的任务替换为托管在第三方平台上以事件驱动的 FaaS 函数。注意这个第三方平台提供了消息代理和 FaaS 执行环境，这两个紧密相关的系统。
-解构 “Function as a Service” 我们已经提到多次 FaaS 的概念，现在来挖掘下它究竟是什么含义。先来看看 Amazon 的 Lambda 产品简介 ：
-通过 AWS Lambda，无需配置或管理服务器*(1)**即可运行代码。您只需按消耗的计算时间付费 – 代码未运行时不产生费用。借助 Lambda，您几乎可以为任何类型的应用程序或后端服务**(2)**运行代码，而且全部无需管理。只需上传您的代码，Lambda 会处理运行**(3)**和扩展高可用性**(4)**代码所需的一切工作。您可以将您的代码设置为自动从其他 AWS 服务**(5)**触发，或者直接从任何 Web 或移动应用程序**(6)**调用。*
- 本质上 FaaS 就是无需配置或管理你自己的服务器系统或者服务器应用即可运行后端代码，其中第二项——服务器应用——是个关键因素，使其区别于现今其他一些流行的架构趋势如容器或者 PaaS（Platform as a Service）。 回顾前面点击处理的例子，FaaS 替换掉了点击处理服务器（可能跑在一台物理服务器或者容器中，但绝对是一个独立的应用程序），它不需要服务器，也没有一个应用程序在持续运行。 FaaS 不需要代码基于特定的库或框架，从语言或环境的层面来看 FaaS 就是一个普通的应用程序。例如 AWS Lambda 支持 JavaScript、Python 以及任意 JVM 语言（Java、Clojure、Scala 等），并且你的 FaaS 函数还可以调用任何一起部署的程序，也就是说实际上你可以用任何能编译为 Unix 程序的语言（稍后我们会讲到 Apex）。FaaS 也有一些不容忽视的局限，尤其是牵涉到状态和执行时长问题，这些我们稍后详谈。 再次回顾一下点击处理的例子——代码迁移到 FaaS 唯一需要修改的是 main 方法（启动）的部分，删掉即可，也许还会有一些上层消息处理的代码（实现消息监听界面），不过这很可能只是方法签名上的小改动。所有其他代码（比如那些访问数据库的）都可以原样用在 FaaS 中。 既然我们没有服务器应用要执行，部署过程也和传统的方式大相径庭——把代码上传到 FaaS 平台，平台搞定所有其他事情。具体而言我们要做的就是上传新版的代码（zip 文件或者 jar 包）然后调用一个 API 来激活更新。 横向扩展是完全自动化、弹性十足、由 FaaS 平台供应商管理的。如果你需要并行处理 100 个请求，不用做任何处理系统可以自然而然地支持。FaaS 的“运算容器”会在运行时按需启动执行函数，飞快地完成并结束。 回到我们的点击处理应用，假设某个好日子我们的客户点击广告的数量有平日的十倍之多，我们的点击处理应用能承载得住么？我们写的代码是否支持并行处理？支持的话，一个运行实例能够处理这么多点击量吗？如果环境允许多进程执行我们能自动支持或者手动配置支持吗？以 FaaS 实现你的代码需要一开始就以并行执行为默认前提，但除此之外就没有其他要求了，平台会完成所有的伸缩性需求。 FaaS 中的函数通常都由平台指定的一些事件触发。在 AWS 上有 S3（文件）更新、时间（定时任务）、消息总线（Kinesis ）消息等，你的函数需要指定监听某个事件源。在点击处理器的例子中我们有个假设是已经采用了支持 FaaS 订阅的消息代理，如果没有的话这部分也需要一些代码量。 大部分的 FaaS 平台都支持 HTTP 请求触发函数执行，通常都是以某种 API 网关的形式实现（如 AWS API Gateway ，Webtask ）。我们在宠物商店的例子中就以此来实现搜索和购买功能。  状态 当牵涉到本地（机器或者运行实例）状态时 FaaS 有个不能忽视的限制。简单点说就是你需要接受这么一个预设：函数调用中创建的所有中间状态或环境状态都不会影响之后的任何一次调用。这里的状态包括了内存数据和本地磁盘存储数据。从部署的角度换句话说就是 FaaS 函数都是无状态的（Stateless）。">
-
-<meta itemprop="wordCount" content="375">
-<meta itemprop="keywords" content="" /><meta property="og:title" content="" />
-<meta property="og:description" content="无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无需维护传统应用中永远保持在线的系统组件。Serverless 架构的长处是显著减少运维成本、复杂度、以及项目起步时间，劣势则在于更加依赖平台供应商和现阶段仍有待成熟的支持环境。
-什么是 Serverless 就像软件行业中的很多趋势一样，Serverless 的界限并不是特别清晰，尤其是它还涵盖了两个互相有重叠的概念：
- Serverless 最早用于描述那些大部分或者完全依赖于第三方（云端）应用或服务来管理服务器端逻辑和状态的应用，这些应用通常是富客户端应用（单页应用或者移动端 App），建立在云服务生态之上，包括数据库（Parse、Firebase）、账号系统（Auth0、AWS Cognito）等。这些服务最早被称为 “(Mobile) Backend as a Service” ，下文将对此简称为 “BaaS”。 Serverless 还可以指这种情况：应用的一部分服务端逻辑依然由开发者完成，但是和传统架构不同，它运行在一个无状态的计算容器中，由事件驱动、生命周期很短（甚至只有一次调用）、完全由第三方管理（感谢 ThoughtWorks 在他们最近的“技术观察 ”中对此所做的定义）。这种情况称为 Functions as a service / FaaS。AWS Lambda 是目前的热门 FaaS 实现之一，下文将对此简称为 “FaaS”。  一些示例 界面驱动的应用（UI-driven applications） 我们来设想一个传统的三层 C/S 架构，例如一个常见的电子商务应用（比如在线宠物商店），假设它服务端用 Java，客户端用 HTML/JavaScript：
-在这个架构下客户端通常没什么功能，系统中的大部分逻辑——身份验证、页面导航、搜索、交易——都在服务端实现。
-把它改造成 Serverless 架构的话会是这样：
-这是张大幅简化的架构图，但还是有相当多变化之处：
- 我们移除了最初应用中的身份验证逻辑，换用一个第三方的 BaaS 服务。 另一个 BaaS 示例：我们允许客户端直接访问一部分数据库内容，这部分数据完全由第三方托管（如 AWS Dynamo），这里我们会用一些安全配置来管理客户端访问相应数据的权限。 前面两点已经隐含了非常重要的第三点：先前服务器端的部分逻辑已经转移到了客户端，如保持用户 Session、理解应用的 UX 结构（做页面导航）、获取数据并渲染出用户界面等等。客户端实际上已经在逐步演变为单页应用 。 还有一些任务需要保留在服务器上，比如繁重的计算任务或者需要访问大量数据的操作。这里以“搜索”为例，搜索功能可以从持续运行的服务端中拆分出来，以 FaaS 的方式实现，从 API 网关（后文做详细解释）接收请求返回响应。这个服务器端函数可以和客户端一样，从同一个数据库读取产品数据。 我们原始的服务器端是用 Java 写的，而 AWS Lambda（假定我们用的这家 FaaS 平台）也支持 Java，那么原先的搜索代码略作修改就能实现这个搜索函数。 最后我们还可以把“购买”功能改写为另一个 FaaS 函数，出于安全考虑它需要在服务器端，而非客户端实现。它同样经由 API 网关暴露给外部使用。  消息驱动的应用（Message-driven applications） 再举一个后端数据处理服务的例子。假设你在做一个需要快速响应 UI 的用户中心应用，同时你又想捕捉记录所有的用户行为。设想一个在线广告系统，当用户点击了广告你需要立刻跳转到广告目标，同时你还需要记录这次点击以便向广告客户收费（这个例子并非虚构，我的一位前同事最近就在做这项重构）。
-传统的架构会是这样：“广告服务器”同步响应用户的点击，同时发送一条消息给“点击处理应用”，异步地更新数据库（例如从客户的账户里扣款）。
-在 Serverless 架构下会是这样：
-这里两个架构的差异比我们上一个例子要小很多。我们把一个长期保持在内存中待命的任务替换为托管在第三方平台上以事件驱动的 FaaS 函数。注意这个第三方平台提供了消息代理和 FaaS 执行环境，这两个紧密相关的系统。
-解构 “Function as a Service” 我们已经提到多次 FaaS 的概念，现在来挖掘下它究竟是什么含义。先来看看 Amazon 的 Lambda 产品简介 ：
-通过 AWS Lambda，无需配置或管理服务器*(1)**即可运行代码。您只需按消耗的计算时间付费 – 代码未运行时不产生费用。借助 Lambda，您几乎可以为任何类型的应用程序或后端服务**(2)**运行代码，而且全部无需管理。只需上传您的代码，Lambda 会处理运行**(3)**和扩展高可用性**(4)**代码所需的一切工作。您可以将您的代码设置为自动从其他 AWS 服务**(5)**触发，或者直接从任何 Web 或移动应用程序**(6)**调用。*
- 本质上 FaaS 就是无需配置或管理你自己的服务器系统或者服务器应用即可运行后端代码，其中第二项——服务器应用——是个关键因素，使其区别于现今其他一些流行的架构趋势如容器或者 PaaS（Platform as a Service）。 回顾前面点击处理的例子，FaaS 替换掉了点击处理服务器（可能跑在一台物理服务器或者容器中，但绝对是一个独立的应用程序），它不需要服务器，也没有一个应用程序在持续运行。 FaaS 不需要代码基于特定的库或框架，从语言或环境的层面来看 FaaS 就是一个普通的应用程序。例如 AWS Lambda 支持 JavaScript、Python 以及任意 JVM 语言（Java、Clojure、Scala 等），并且你的 FaaS 函数还可以调用任何一起部署的程序，也就是说实际上你可以用任何能编译为 Unix 程序的语言（稍后我们会讲到 Apex）。FaaS 也有一些不容忽视的局限，尤其是牵涉到状态和执行时长问题，这些我们稍后详谈。 再次回顾一下点击处理的例子——代码迁移到 FaaS 唯一需要修改的是 main 方法（启动）的部分，删掉即可，也许还会有一些上层消息处理的代码（实现消息监听界面），不过这很可能只是方法签名上的小改动。所有其他代码（比如那些访问数据库的）都可以原样用在 FaaS 中。 既然我们没有服务器应用要执行，部署过程也和传统的方式大相径庭——把代码上传到 FaaS 平台，平台搞定所有其他事情。具体而言我们要做的就是上传新版的代码（zip 文件或者 jar 包）然后调用一个 API 来激活更新。 横向扩展是完全自动化、弹性十足、由 FaaS 平台供应商管理的。如果你需要并行处理 100 个请求，不用做任何处理系统可以自然而然地支持。FaaS 的“运算容器”会在运行时按需启动执行函数，飞快地完成并结束。 回到我们的点击处理应用，假设某个好日子我们的客户点击广告的数量有平日的十倍之多，我们的点击处理应用能承载得住么？我们写的代码是否支持并行处理？支持的话，一个运行实例能够处理这么多点击量吗？如果环境允许多进程执行我们能自动支持或者手动配置支持吗？以 FaaS 实现你的代码需要一开始就以并行执行为默认前提，但除此之外就没有其他要求了，平台会完成所有的伸缩性需求。 FaaS 中的函数通常都由平台指定的一些事件触发。在 AWS 上有 S3（文件）更新、时间（定时任务）、消息总线（Kinesis ）消息等，你的函数需要指定监听某个事件源。在点击处理器的例子中我们有个假设是已经采用了支持 FaaS 订阅的消息代理，如果没有的话这部分也需要一些代码量。 大部分的 FaaS 平台都支持 HTTP 请求触发函数执行，通常都是以某种 API 网关的形式实现（如 AWS API Gateway ，Webtask ）。我们在宠物商店的例子中就以此来实现搜索和购买功能。  状态 当牵涉到本地（机器或者运行实例）状态时 FaaS 有个不能忽视的限制。简单点说就是你需要接受这么一个预设：函数调用中创建的所有中间状态或环境状态都不会影响之后的任何一次调用。这里的状态包括了内存数据和本地磁盘存储数据。从部署的角度换句话说就是 FaaS 函数都是无状态的（Stateless）。" />
+<meta itemprop="name" content="Serveless和FaaS">
+<meta itemprop="description" content="无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无"><meta itemprop="datePublished" content="2021-10-10T20:55:29&#43;08:00" />
+<meta itemprop="dateModified" content="2021-10-10T20:55:29&#43;08:00" />
+<meta itemprop="wordCount" content="4659">
+<meta itemprop="keywords" content="Serveless,FaaS," /><meta property="og:title" content="Serveless和FaaS" />
+<meta property="og:description" content="无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/other/concept/serverless%E5%92%8Cfaas/" /><meta property="article:section" content="posts" />
-
-
+<meta property="article:published_time" content="2021-10-10T20:55:29&#43;08:00" />
+<meta property="article:modified_time" content="2021-10-10T20:55:29&#43;08:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无需维护传统应用中永远保持在线的系统组件。Serverless 架构的长处是显著减少运维成本、复杂度、以及项目起步时间，劣势则在于更加依赖平台供应商和现阶段仍有待成熟的支持环境。
-什么是 Serverless 就像软件行业中的很多趋势一样，Serverless 的界限并不是特别清晰，尤其是它还涵盖了两个互相有重叠的概念：
- Serverless 最早用于描述那些大部分或者完全依赖于第三方（云端）应用或服务来管理服务器端逻辑和状态的应用，这些应用通常是富客户端应用（单页应用或者移动端 App），建立在云服务生态之上，包括数据库（Parse、Firebase）、账号系统（Auth0、AWS Cognito）等。这些服务最早被称为 “(Mobile) Backend as a Service” ，下文将对此简称为 “BaaS”。 Serverless 还可以指这种情况：应用的一部分服务端逻辑依然由开发者完成，但是和传统架构不同，它运行在一个无状态的计算容器中，由事件驱动、生命周期很短（甚至只有一次调用）、完全由第三方管理（感谢 ThoughtWorks 在他们最近的“技术观察 ”中对此所做的定义）。这种情况称为 Functions as a service / FaaS。AWS Lambda 是目前的热门 FaaS 实现之一，下文将对此简称为 “FaaS”。  一些示例 界面驱动的应用（UI-driven applications） 我们来设想一个传统的三层 C/S 架构，例如一个常见的电子商务应用（比如在线宠物商店），假设它服务端用 Java，客户端用 HTML/JavaScript：
-在这个架构下客户端通常没什么功能，系统中的大部分逻辑——身份验证、页面导航、搜索、交易——都在服务端实现。
-把它改造成 Serverless 架构的话会是这样：
-这是张大幅简化的架构图，但还是有相当多变化之处：
- 我们移除了最初应用中的身份验证逻辑，换用一个第三方的 BaaS 服务。 另一个 BaaS 示例：我们允许客户端直接访问一部分数据库内容，这部分数据完全由第三方托管（如 AWS Dynamo），这里我们会用一些安全配置来管理客户端访问相应数据的权限。 前面两点已经隐含了非常重要的第三点：先前服务器端的部分逻辑已经转移到了客户端，如保持用户 Session、理解应用的 UX 结构（做页面导航）、获取数据并渲染出用户界面等等。客户端实际上已经在逐步演变为单页应用 。 还有一些任务需要保留在服务器上，比如繁重的计算任务或者需要访问大量数据的操作。这里以“搜索”为例，搜索功能可以从持续运行的服务端中拆分出来，以 FaaS 的方式实现，从 API 网关（后文做详细解释）接收请求返回响应。这个服务器端函数可以和客户端一样，从同一个数据库读取产品数据。 我们原始的服务器端是用 Java 写的，而 AWS Lambda（假定我们用的这家 FaaS 平台）也支持 Java，那么原先的搜索代码略作修改就能实现这个搜索函数。 最后我们还可以把“购买”功能改写为另一个 FaaS 函数，出于安全考虑它需要在服务器端，而非客户端实现。它同样经由 API 网关暴露给外部使用。  消息驱动的应用（Message-driven applications） 再举一个后端数据处理服务的例子。假设你在做一个需要快速响应 UI 的用户中心应用，同时你又想捕捉记录所有的用户行为。设想一个在线广告系统，当用户点击了广告你需要立刻跳转到广告目标，同时你还需要记录这次点击以便向广告客户收费（这个例子并非虚构，我的一位前同事最近就在做这项重构）。
-传统的架构会是这样：“广告服务器”同步响应用户的点击，同时发送一条消息给“点击处理应用”，异步地更新数据库（例如从客户的账户里扣款）。
-在 Serverless 架构下会是这样：
-这里两个架构的差异比我们上一个例子要小很多。我们把一个长期保持在内存中待命的任务替换为托管在第三方平台上以事件驱动的 FaaS 函数。注意这个第三方平台提供了消息代理和 FaaS 执行环境，这两个紧密相关的系统。
-解构 “Function as a Service” 我们已经提到多次 FaaS 的概念，现在来挖掘下它究竟是什么含义。先来看看 Amazon 的 Lambda 产品简介 ：
-通过 AWS Lambda，无需配置或管理服务器*(1)**即可运行代码。您只需按消耗的计算时间付费 – 代码未运行时不产生费用。借助 Lambda，您几乎可以为任何类型的应用程序或后端服务**(2)**运行代码，而且全部无需管理。只需上传您的代码，Lambda 会处理运行**(3)**和扩展高可用性**(4)**代码所需的一切工作。您可以将您的代码设置为自动从其他 AWS 服务**(5)**触发，或者直接从任何 Web 或移动应用程序**(6)**调用。*
- 本质上 FaaS 就是无需配置或管理你自己的服务器系统或者服务器应用即可运行后端代码，其中第二项——服务器应用——是个关键因素，使其区别于现今其他一些流行的架构趋势如容器或者 PaaS（Platform as a Service）。 回顾前面点击处理的例子，FaaS 替换掉了点击处理服务器（可能跑在一台物理服务器或者容器中，但绝对是一个独立的应用程序），它不需要服务器，也没有一个应用程序在持续运行。 FaaS 不需要代码基于特定的库或框架，从语言或环境的层面来看 FaaS 就是一个普通的应用程序。例如 AWS Lambda 支持 JavaScript、Python 以及任意 JVM 语言（Java、Clojure、Scala 等），并且你的 FaaS 函数还可以调用任何一起部署的程序，也就是说实际上你可以用任何能编译为 Unix 程序的语言（稍后我们会讲到 Apex）。FaaS 也有一些不容忽视的局限，尤其是牵涉到状态和执行时长问题，这些我们稍后详谈。 再次回顾一下点击处理的例子——代码迁移到 FaaS 唯一需要修改的是 main 方法（启动）的部分，删掉即可，也许还会有一些上层消息处理的代码（实现消息监听界面），不过这很可能只是方法签名上的小改动。所有其他代码（比如那些访问数据库的）都可以原样用在 FaaS 中。 既然我们没有服务器应用要执行，部署过程也和传统的方式大相径庭——把代码上传到 FaaS 平台，平台搞定所有其他事情。具体而言我们要做的就是上传新版的代码（zip 文件或者 jar 包）然后调用一个 API 来激活更新。 横向扩展是完全自动化、弹性十足、由 FaaS 平台供应商管理的。如果你需要并行处理 100 个请求，不用做任何处理系统可以自然而然地支持。FaaS 的“运算容器”会在运行时按需启动执行函数，飞快地完成并结束。 回到我们的点击处理应用，假设某个好日子我们的客户点击广告的数量有平日的十倍之多，我们的点击处理应用能承载得住么？我们写的代码是否支持并行处理？支持的话，一个运行实例能够处理这么多点击量吗？如果环境允许多进程执行我们能自动支持或者手动配置支持吗？以 FaaS 实现你的代码需要一开始就以并行执行为默认前提，但除此之外就没有其他要求了，平台会完成所有的伸缩性需求。 FaaS 中的函数通常都由平台指定的一些事件触发。在 AWS 上有 S3（文件）更新、时间（定时任务）、消息总线（Kinesis ）消息等，你的函数需要指定监听某个事件源。在点击处理器的例子中我们有个假设是已经采用了支持 FaaS 订阅的消息代理，如果没有的话这部分也需要一些代码量。 大部分的 FaaS 平台都支持 HTTP 请求触发函数执行，通常都是以某种 API 网关的形式实现（如 AWS API Gateway ，Webtask ）。我们在宠物商店的例子中就以此来实现搜索和购买功能。  状态 当牵涉到本地（机器或者运行实例）状态时 FaaS 有个不能忽视的限制。简单点说就是你需要接受这么一个预设：函数调用中创建的所有中间状态或环境状态都不会影响之后的任何一次调用。这里的状态包括了内存数据和本地磁盘存储数据。从部署的角度换句话说就是 FaaS 函数都是无状态的（Stateless）。"/>
+<meta name="twitter:title" content="Serveless和FaaS"/>
+<meta name="twitter:description" content="无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -65,7 +29,7 @@
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
 	<link rel="shortcut icon" href="/favicon.ico">
 
-	<title></title>
+	<title>Serveless和FaaS</title>
 	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
@@ -88,7 +52,7 @@
 				</nav>
 			</div>
 			<div class="hdr-right hdr-icons">
-				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
 			</div>
 		</div>
 	</header>
@@ -103,8 +67,8 @@
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
-				<div class="post-meta"><span>Jan 1, 0001</span></div>
-				<h1></h1>
+				<div class="post-meta"><span>Oct 10, 2021</span></div>
+				<h1>Serveless和FaaS</h1>
 			</header>
 			<div class="content">
 				<p>无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无需维护传统应用中永远保持在线的系统组件。Serverless 架构的长处是显著减少运维成本、复杂度、以及项目起步时间，劣势则在于更加依赖平台供应商和现阶段仍有待成熟的支持环境。</p>
@@ -227,16 +191,39 @@
 
 			<hr class="post-end">
 			<footer class="post-info">
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>375 字</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>0001-01-01 08:00 &#43;0800</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/serveless">Serveless</a></span><span class="tag"><a href="https://willje.github.io/tags/faas">FaaS</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4659 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-10-10 20:55 &#43;0800</p>
 			</footer>
 		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#什么是-serverless">什么是 Serverless</a>
+      <ul>
+        <li><a href="#一些示例">一些示例</a></li>
+        <li><a href="#解构-function-as-a-service">解构 “Function as a Service”</a></li>
+        <li><a href="#状态">状态</a></li>
+        <li><a href="#执行时长">执行时长</a></li>
+        <li><a href="#启动延迟">启动延迟</a></li>
+        <li><a href="#api-网关">API 网关</a></li>
+        <li><a href="#工具链">工具链</a></li>
+        <li><a href="#开源">开源</a></li>
+      </ul>
+    </li>
+    <li><a href="#参考">参考</a></li>
+  </ul>
+</nav>
+		</aside>
 		<div class="post-nav thin">
-			<a class="next-post" href="https://willje.github.io/posts/other/concept/cncf/">
-				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span></span>
+			<a class="next-post" href="https://willje.github.io/posts/linux/centos%E5%AE%89%E8%A3%85nodejs%E5%92%8Cpython/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Centos安装Nodejs和Python</span>
 			</a>
-			<a class="prev-post" href="https://willje.github.io/posts/other/concept/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-acl-rbac-abac/">
-				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span></span>
+			<a class="prev-post" href="https://willje.github.io/posts/algorithm/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>滑动窗口算法思想</span>
 			</a>
 		</div>
 		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"

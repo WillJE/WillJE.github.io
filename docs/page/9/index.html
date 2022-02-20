@@ -65,34 +65,19 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/other/concept/%E6%9D%83%E9%99%90%E7%B3%BB%E7%BB%9F%E7%9A%84%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F-acl-rbac-abac/"></a>
+                <h2><a href="/posts/net/vmware%E8%99%9A%E6%8B%9F%E6%9C%BAcentos7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">vmvare虚拟机centos网络配置</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>权限系统的设计模式 ACL RBAC ABAC  ACL（Access Control List）:访问权限列表 如： user1&ndash;&gt;AC1
-user1&ndash;&gt;AC2
-user2&ndash;&gt;AC1 此时权限汇总成一个列表
-这种设计最常见的应用就是文件系统的权限设计，如微软的NTFS
-对权限控制比较分散，不便于管理，比如无法简单地将一组文件设置统一的权限开放给指定的一群用户
-![img](权限系统的设计模式 ACL RBAC ABAC.assets/1112483-20190718230406812-417601866.png)
-RBAC(Role Base Access Control):基于角色的权限控制 与ACL 对比 RBAC不用给用户单个分配权限，只用指向对应的角色就会有对应的权限，而且分配权限和收回权限都很方便
-如菜单权限的设计：用户与角色关联，角色与菜单关联
-![img](权限系统的设计模式 ACL RBAC ABAC.assets/1112483-20190718230557284-1879183792.png)
-![img](权限系统的设计模式 ACL RBAC ABAC.assets/1112483-20190718230625222-839713434.png)
-ABAC（Attribute Base Access Control） 基于属性的权限控制 不同于常见的将用户通过某种方式关联到权限的方式，ABAC则是通过动态计算一个或一组属性来是否满足某种条件来进行授权判断（可以编写简单的逻辑）。属性通常来说分为四类：用户属性（如用户年龄），环境属性（如当前时间），操作属性（如读取）和对象属性（如一篇文章，又称资源属性），所以理论上能够实现非常灵活的权限控制，几乎能满足所有类型的需求。
-例如规则：“允许所有班主任在上课时间自由进出校门”这条规则，其中，“班主任”是用户的角色属性，“上课时间”是环境属性，“进出”是操作属性，而“校门”就是对象属性了。为了实现便捷的规则设置和规则判断执行，ABAC通常有配置文件（XML、YAML等）或DSL配合规则解析引擎使用。XACML（eXtensible Access Control Markup Language）是ABAC的一个实现，但是该设计过于复杂，我还没有完全理解，故不做介绍。
-总结一下，ABAC有如下特点：
- 集中化管理 可以按需实现不同颗粒度的权限控制 不需要预定义判断逻辑，减轻了权限系统的维护成本，特别是在需求经常变化的系统中 定义权限时，不能直观看出用户和对象间的关系 规则如果稍微复杂一点，或者设计混乱，会给管理者维护和追查带来麻烦 权限判断需要实时执行，规则过多会导致性能问题  既然ABAC这么好，那最流行的为什么还是RBAC呢？
-我认为主要还是因为大部分系统对权限控制并没有过多的需求，而且ABAC的管理相对来说太复杂了。Kubernetes便因为ABAC太难用，在1.8版本里引入了RBAC的方案 。
- ABAC有时也被称为PBAC（Policy-Based Access Control）或CBAC（Claims-Based Access Control）。
- casbin https://github.com/casbin/casbin
-一个支持ACL、RBAC和ABAC的权限管理框架，使用go语言编写</p></div>
+                <div class="p_part"><p>第一步：重置虚拟网络设置 VMWARE-&gt;编辑-&gt;虚拟网络编辑器-&gt; 还原默认设置 NAT设置 记住： 子网掩码和网关IP。 还原后的默认值即可以 设置静态IP vi /etc/sysconfig/network-scripts/ifcfg-ens33 ifcfg-ens33 这个名字，每个人的电脑网卡不一样，可以从ifconfig 查看到。 这里还要设置DNS，直接取物理机的DNS即可；通过 ifconfig /all 重启网络服务 systemctl restart network</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">0001-01-01</span>
-                        
+                                class="date">2018-05-28</span>
+                        <a class="tag"
+                                   href="/tags/linux/">linux</a><a class="tag"
+                                   href="/tags/vmvare/">vmvare</a>
                     </div>
                 </div>
             </div>
@@ -100,21 +85,36 @@ ABAC（Attribute Base Access Control） 基于属性的权限控制 不同于常
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/other/tool/ansible%E5%85%A5%E9%97%A8/"></a>
+                <h2><a href="/posts/java/lru%E7%9A%84java%E5%AE%9E%E7%8E%B0/">LRU的JAVA实现</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>Ansible 什么是Ansible? Ansilbe是一个部署一群远程主机的工具。远程的主机可以是远程虚拟机或物理机， 也可以是本地主机。
-Ansible能做什么？ Ansilbe通过SSH协议实现远程节点和管理节点之间的通信。理论上说，只要管理员通过ssh登录到一台远程主机上能做的操作，Ansible都可以做到。
-包括：
- 拷贝文件 安装软件包 启动服务 …  Ansible的架构 Ansilbe管理员节点和远程主机节点通过ssh协议进行通信。所以Ansible配置的时候只需要保证从Ansible管理节点通过SSH能够连接到被管理的远程的远程节点即可。。但是SSH必须配置为公钥认证登录方式
-连接方式SSH 在管理员节点安装Ansible，编写脚本。在管理节点执行命令或者脚本时，通过SSH连接被管理的主机。 被管理的远程节点不需要进行特殊安装软件。
-Ansible可以同时管理Redhat系的Linux，Debian系的Linux，以及Windows主机。管理节点只在执行脚本时与远程主机连接，没有特别的同步机制，所以断电等异常一般不会影响ansbile。
-Ansible Tower的架构 为什么要有Ansbile Tower Ansilbe Tower一款针对企业用户的收费软件。
-在上一节的Ansible架构中和下一章Ansbile的安装中会讲到，每一台被ansible远程管理的主机，都需要配置基于key的ssh连接。个人用户管理几台虚拟机和远程主机不会有什么问题，但是对于企业级用户，则满足不了业务和安全上的需求。
- 首先，每增加一台主机，都需要手工配置一下ssh连接，企业级的pc主机成百上千，每个管理员都需要在自己的电脑上配置所有的ssh连接，无疑工作量巨大。 还有，在安全方面如果管理员能够拿到ssh key，或者拷贝给别人，对于生产环境来说无疑是最大的安全隐患。  Ansible Tower能做什么 Ansile Tower则是针对企业级用户的，中心化ansible管理节点。它向管理员提供 Web 页面接口，来运行ansible脚本playbook。
- 管理员在ansible tower上使用和分享主机的ssh key，但是不能查看和拷贝key文件。 登录ansible tower的所有管理员可以共享playbook脚本，减少重复工作。 此外ansible还可以收集和展现所有主机的playbook的执行状况，便于统计和分析主机的状态。  说了这么多，看下面这张架构图就清晰了：
-参考资料 Ansible入门 </p></div>
+                <div class="p_part"><p>什么是LRU算法? LRU是Least Recently Used的缩写，即最近最久未使用，是一种操作系统中常用的页面置换算法。 知道了什么是LRU后，我们再来聊下它的使用场景 在工作中，对于Redis我们一定是比较熟悉的，它是一个内存数据库；因为它是内存数据库，并且内存的空间是有限的，如果Redis中数据量很大的话，内存就可能被占满，但是此时如果还有数据存入Redis的话，那该怎</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2018-04-25</span>
+                        <a class="tag"
+                                   href="/tags/lru/">LRU</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/algorithm/leetcode/leetbook/"></a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>https://leetcode-cn.com/leetbook/read/tencent/xxst6e/
+数组与字符串 1. 两数之和  给定一个整数数组 nums 和一个整数目标值 target，请你在该数组中找出 和为目标值 target 的那 两个 整数，并返回它们的数组下标。
+你可以假设每种输入只会对应一个答案。但是，数组中同一个元素在答案里不能重复出现。
+你可以按任意顺序返回答案。
+func twoSum(nums []int, target int) []int { hashTable := map[int]int{} for i, x := range nums { if p, ok := hashTable[target-x]; ok { return []int{p, i} } hashTable[x] = i } return nil } 4. 寻找两个正序数组的中位数  5. 最长回文子串  给你一个字符串 s，找到 s 中最长的回文子串。
+动态规划：
+public class Solution { public String longestPalindrome(String s) { int len = s.length(); if (len &lt; 2) { return s; } int maxLen = 1; int begin = 0; // dp[i][j] 表示 s[i..j] 是否是回文串  boolean[][] dp = new boolean[len][len]; // 初始化：所有长度为 1 的子串都是回文串  for (int i = 0; i &lt; len; i++) { dp[i][i] = true; } char[] charArray = s.toCharArray(); // 递推开始  // 先枚举子串长度  for (int L = 2; L &lt;= len; L++) { // 枚举左边界，左边界的上限设置可以宽松一些  for (int i = 0; i &lt; len; i++) { // 由 L 和 i 可以确定右边界，即 j - i + 1 = L 得  int j = L + i - 1; // 如果右边界越界，就可以退出当前循环  if (j &gt;= len) { break; } if (charArray[i] !</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">

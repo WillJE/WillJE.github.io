@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>CNCF on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/cncf/</link>
+    <description>Recent content in CNCF on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Wed, 10 Nov 2021 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/cncf/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>CNCF云原生</title>
+      <link>https://willje.github.io/posts/other/concept/cncf/</link>
+      <pubDate>Wed, 10 Nov 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/other/concept/cncf/</guid>
+      <description>云原生计算基金会(CNCF)Cloud Native Computing Foundation是Linux基金会旗下的非盈利组织，来推动云原生计算的发展，帮助云原生技术开发人员来构建出色的产品。 CNCF的成立与一个重要项目密切相关，那就是Kubernetes。K8s最早是谷歌的内部容器编排项目Borg，为了推进其发展，谷歌决定将其开源，于是跟Linux基金会在2015年一起创办了CNCF。</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>文件描述符 on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/</link>
+    <description>Recent content in 文件描述符 on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Mon, 19 Jul 2021 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>文件描述符</title>
+      <link>https://willje.github.io/posts/linux/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/</link>
+      <pubDate>Mon, 19 Jul 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/linux/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/</guid>
+      <description>文件描述符是什么 fd 是 File descriptor 的缩写，中文名叫做：文件描述符。文件描述符是一个非负整数，本质上是一个索引值（这句话非常重要）。 什么时候拿到的 fd ？ 当打开一个文件时，内核向进程返回一个文件描述符（ open 系统调用得到 ），后续 read、write 这个文件时，则只需要用这个文件描述符来标识该文件，将其作为参数传入 read、write 。 fd 的值范围是什么？ 在 POSIX 语义中，0，1，2 这三</description>
+    </item>
+    
+  </channel>
+</rss>

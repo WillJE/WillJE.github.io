@@ -1,13 +1,22 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>context on will&#39;s blog</title>
+    <title>Context on will&#39;s blog</title>
     <link>https://willje.github.io/tags/context/</link>
-    <description>Recent content in context on will&#39;s blog</description>
+    <description>Recent content in Context on will&#39;s blog</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en</language>
     <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
-    <lastBuildDate>Sat, 01 May 2021 16:23:40 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/context/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 09 Jun 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/context/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Context使用和原理</title>
+      <link>https://willje.github.io/posts/go/basic/context%E4%BD%BF%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Wed, 09 Jun 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/basic/context%E4%BD%BF%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86/</guid>
+      <description>背景 上下文（Context）是 Go 语言中非常有特色的一个特性， 在 Go 1.7 版本中正式引入新标准库 context。 其主要的作用是在 goroutine 中进行上下文的传递，而在传递信息中又包含了 goroutine 的运行控制、上下文信息传递等功能。 使用 在 Go context 用法中，我们常常将其与 select 关键字结合使用，用于监听其是否结束、取消等。 代码如下： func main() { parentCtx := context.Background() ctx, cancel := context.WithTimeout(parentCtx, 1*time.Millisecond) defer cancel() select { case &amp;lt;-time.After(1 * time.Second): fmt.Println(&amp;#34;overslept&amp;#34;) case &amp;lt;-ctx.Done(): fmt.Println(ctx.Err()) } } 输出结果： context deadline exceeded 如果是</description>
+    </item>
+    
     <item>
       <title>由浅入深聊聊Golang的context</title>
       <link>https://willje.github.io/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/</link>

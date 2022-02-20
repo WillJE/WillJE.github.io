@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Shell on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/shell/</link>
+    <description>Recent content in Shell on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Fri, 10 Dec 2021 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/shell/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Shell学习</title>
+      <link>https://willje.github.io/posts/linux/shell%E5%AD%A6%E4%B9%A0/</link>
+      <pubDate>Fri, 10 Dec 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/linux/shell%E5%AD%A6%E4%B9%A0/</guid>
+      <description>概述 shell是一种解释器，用来 Linux操作系统的核心是kernal（内核）！ 当应用程序在执行时，需要调用计算机硬件的cpu,内存等资源！ 程序将指令发送给内核执行！ 为了防止程序发送一些恶意指令导致损坏内核，在内核和应用程序接口之间，设置一个中间层，称为shell! 我们可以通过 cat /etc/shells 查看系统提供的Shell解析器种类 [damon@hadoop97 ~]$ cat /etc/shells /bin/sh /bin/bash /sbin/nologin /bin/dash /bin/tcsh /bin/csh 这里要说一下的是系统默认</description>
+    </item>
+    
+  </channel>
+</rss>

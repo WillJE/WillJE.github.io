@@ -7,56 +7,20 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
-<meta itemprop="name" content="">
-<meta itemprop="description" content="背景 上下文（Context）是 Go 语言中非常有特色的一个特性， 在 Go 1.7 版本中正式引入新标准库 context。
-其主要的作用是在 goroutine 中进行上下文的传递，而在传递信息中又包含了 goroutine 的运行控制、上下文信息传递等功能。
-使用 在 Go context 用法中，我们常常将其与 select 关键字结合使用，用于监听其是否结束、取消等。
-代码如下：
-func main() { parentCtx := context.Background() ctx, cancel := context.WithTimeout(parentCtx, 1*time.Millisecond) defer cancel() select { case &lt;-time.After(1 * time.Second): fmt.Println(&#34;overslept&#34;) case &lt;-ctx.Done(): fmt.Println(ctx.Err()) } } 输出结果：
-context deadline exceeded 如果是更进一步结合 goroutine 的话，常见的例子是：
-func(ctx context.Context) &lt;-chan int { dst := make(chan int) n := 1 go func() { for { select { case &lt;-ctx.Done(): return case dst &lt;- n: n&#43;&#43; } } }() return dst } 我们平时工程中会起很多的 goroutine，这时候会在 goroutine 内结合 for&#43;select，针对 context 的事件进行处理，达到跨 goroutine 控制的目的。
-Context本质 在 Go 标准库 context 中具有以下派生 context 的标准方法：
- WithCancel：基于父级 context，创建一个可以取消的新 context。 WithDeadline：基于父级 context，创建一个具有截止时间（Deadline）的新 context。 WithTimeout：基于父级 context，创建一个具有超时时间（Timeout）的新 context。 Background：创建一个空的 context，一般常用于作为根的父级 context。 TODO：创建一个空的 context，一般用于未确定时的声明使用。 WithValue：基于某个 context 创建并存储对应的上下文信息。  上面我们看到有不少context 的方法，其基本大同小异。看上去似乎不难，接下来我们看看其底层的基本原理和设计。
-context 相关函数的标准返回如下：
-func WithXXXX(parent Context, xxx xxx) (Context, CancelFunc) 其返回值分别是 Context 和 CancelFunc，接下来我们将进行分析这两者的作用。
-接口 Context接口 context.Context 是 Go 语言在 1.7 版本中引入标准库的接口1 ，该接口定义了四个需要实现的方法，其中包括：
- Deadline — 返回 context.Context 被取消的时间，也就是完成工作的截止日期； Done — 返回一个 Channel，这个 Channel 会在当前工作完成或者上下文被取消后关闭，多次调用 Done 方法会返回同一个 Channel； Err返回context.Context结束的原因，它只会在Done方法对应的 Channel 关闭时返回非空的值；  如果 context.Context 被取消，会返回 Canceled 错误； 如果 context.Context 超时，会返回 DeadlineExceeded 错误；   Value — 从 context.">
-
-<meta itemprop="wordCount" content="1342">
-<meta itemprop="keywords" content="" /><meta property="og:title" content="" />
-<meta property="og:description" content="背景 上下文（Context）是 Go 语言中非常有特色的一个特性， 在 Go 1.7 版本中正式引入新标准库 context。
-其主要的作用是在 goroutine 中进行上下文的传递，而在传递信息中又包含了 goroutine 的运行控制、上下文信息传递等功能。
-使用 在 Go context 用法中，我们常常将其与 select 关键字结合使用，用于监听其是否结束、取消等。
-代码如下：
-func main() { parentCtx := context.Background() ctx, cancel := context.WithTimeout(parentCtx, 1*time.Millisecond) defer cancel() select { case &lt;-time.After(1 * time.Second): fmt.Println(&#34;overslept&#34;) case &lt;-ctx.Done(): fmt.Println(ctx.Err()) } } 输出结果：
-context deadline exceeded 如果是更进一步结合 goroutine 的话，常见的例子是：
-func(ctx context.Context) &lt;-chan int { dst := make(chan int) n := 1 go func() { for { select { case &lt;-ctx.Done(): return case dst &lt;- n: n&#43;&#43; } } }() return dst } 我们平时工程中会起很多的 goroutine，这时候会在 goroutine 内结合 for&#43;select，针对 context 的事件进行处理，达到跨 goroutine 控制的目的。
-Context本质 在 Go 标准库 context 中具有以下派生 context 的标准方法：
- WithCancel：基于父级 context，创建一个可以取消的新 context。 WithDeadline：基于父级 context，创建一个具有截止时间（Deadline）的新 context。 WithTimeout：基于父级 context，创建一个具有超时时间（Timeout）的新 context。 Background：创建一个空的 context，一般常用于作为根的父级 context。 TODO：创建一个空的 context，一般用于未确定时的声明使用。 WithValue：基于某个 context 创建并存储对应的上下文信息。  上面我们看到有不少context 的方法，其基本大同小异。看上去似乎不难，接下来我们看看其底层的基本原理和设计。
-context 相关函数的标准返回如下：
-func WithXXXX(parent Context, xxx xxx) (Context, CancelFunc) 其返回值分别是 Context 和 CancelFunc，接下来我们将进行分析这两者的作用。
-接口 Context接口 context.Context 是 Go 语言在 1.7 版本中引入标准库的接口1 ，该接口定义了四个需要实现的方法，其中包括：
- Deadline — 返回 context.Context 被取消的时间，也就是完成工作的截止日期； Done — 返回一个 Channel，这个 Channel 会在当前工作完成或者上下文被取消后关闭，多次调用 Done 方法会返回同一个 Channel； Err返回context.Context结束的原因，它只会在Done方法对应的 Channel 关闭时返回非空的值；  如果 context.Context 被取消，会返回 Canceled 错误； 如果 context.Context 超时，会返回 DeadlineExceeded 错误；   Value — 从 context." />
+<meta itemprop="name" content="Context使用和原理">
+<meta itemprop="description" content="背景 上下文（Context）是 Go 语言中非常有特色的一个特性， 在 Go 1.7 版本中正式引入新标准库 context。 其主要的作用是在 goroutine 中进行上下文的传递，而在传递信息中又包含了 goroutine 的运行控制、上下文信息传递等功能。 使用 在 Go context 用法中，我们常常将其与 select 关键字结合使用，用于监听其是否结束、取消等。 代码如下： func main() { parentCtx := context.Background() ctx, cancel := context.WithTimeout(parentCtx, 1*time.Millisecond) defer cancel() select { case &lt;-time.After(1 * time.Second): fmt.Println(&#34;overslept&#34;) case &lt;-ctx.Done(): fmt.Println(ctx.Err()) } } 输出结果： context deadline exceeded 如果是"><meta itemprop="datePublished" content="2021-06-09T21:23:18&#43;08:00" />
+<meta itemprop="dateModified" content="2021-06-09T21:23:18&#43;08:00" />
+<meta itemprop="wordCount" content="4543">
+<meta itemprop="keywords" content="Context,go," /><meta property="og:title" content="Context使用和原理" />
+<meta property="og:description" content="背景 上下文（Context）是 Go 语言中非常有特色的一个特性， 在 Go 1.7 版本中正式引入新标准库 context。 其主要的作用是在 goroutine 中进行上下文的传递，而在传递信息中又包含了 goroutine 的运行控制、上下文信息传递等功能。 使用 在 Go context 用法中，我们常常将其与 select 关键字结合使用，用于监听其是否结束、取消等。 代码如下： func main() { parentCtx := context.Background() ctx, cancel := context.WithTimeout(parentCtx, 1*time.Millisecond) defer cancel() select { case &lt;-time.After(1 * time.Second): fmt.Println(&#34;overslept&#34;) case &lt;-ctx.Done(): fmt.Println(ctx.Err()) } } 输出结果： context deadline exceeded 如果是" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/go/basic/context%E4%BD%BF%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86/" /><meta property="article:section" content="posts" />
-
-
+<meta property="article:published_time" content="2021-06-09T21:23:18&#43;08:00" />
+<meta property="article:modified_time" content="2021-06-09T21:23:18&#43;08:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content=""/>
-<meta name="twitter:description" content="背景 上下文（Context）是 Go 语言中非常有特色的一个特性， 在 Go 1.7 版本中正式引入新标准库 context。
-其主要的作用是在 goroutine 中进行上下文的传递，而在传递信息中又包含了 goroutine 的运行控制、上下文信息传递等功能。
-使用 在 Go context 用法中，我们常常将其与 select 关键字结合使用，用于监听其是否结束、取消等。
-代码如下：
-func main() { parentCtx := context.Background() ctx, cancel := context.WithTimeout(parentCtx, 1*time.Millisecond) defer cancel() select { case &lt;-time.After(1 * time.Second): fmt.Println(&#34;overslept&#34;) case &lt;-ctx.Done(): fmt.Println(ctx.Err()) } } 输出结果：
-context deadline exceeded 如果是更进一步结合 goroutine 的话，常见的例子是：
-func(ctx context.Context) &lt;-chan int { dst := make(chan int) n := 1 go func() { for { select { case &lt;-ctx.Done(): return case dst &lt;- n: n&#43;&#43; } } }() return dst } 我们平时工程中会起很多的 goroutine，这时候会在 goroutine 内结合 for&#43;select，针对 context 的事件进行处理，达到跨 goroutine 控制的目的。
-Context本质 在 Go 标准库 context 中具有以下派生 context 的标准方法：
- WithCancel：基于父级 context，创建一个可以取消的新 context。 WithDeadline：基于父级 context，创建一个具有截止时间（Deadline）的新 context。 WithTimeout：基于父级 context，创建一个具有超时时间（Timeout）的新 context。 Background：创建一个空的 context，一般常用于作为根的父级 context。 TODO：创建一个空的 context，一般用于未确定时的声明使用。 WithValue：基于某个 context 创建并存储对应的上下文信息。  上面我们看到有不少context 的方法，其基本大同小异。看上去似乎不难，接下来我们看看其底层的基本原理和设计。
-context 相关函数的标准返回如下：
-func WithXXXX(parent Context, xxx xxx) (Context, CancelFunc) 其返回值分别是 Context 和 CancelFunc，接下来我们将进行分析这两者的作用。
-接口 Context接口 context.Context 是 Go 语言在 1.7 版本中引入标准库的接口1 ，该接口定义了四个需要实现的方法，其中包括：
- Deadline — 返回 context.Context 被取消的时间，也就是完成工作的截止日期； Done — 返回一个 Channel，这个 Channel 会在当前工作完成或者上下文被取消后关闭，多次调用 Done 方法会返回同一个 Channel； Err返回context.Context结束的原因，它只会在Done方法对应的 Channel 关闭时返回非空的值；  如果 context.Context 被取消，会返回 Canceled 错误； 如果 context.Context 超时，会返回 DeadlineExceeded 错误；   Value — 从 context."/>
+<meta name="twitter:title" content="Context使用和原理"/>
+<meta name="twitter:description" content="背景 上下文（Context）是 Go 语言中非常有特色的一个特性， 在 Go 1.7 版本中正式引入新标准库 context。 其主要的作用是在 goroutine 中进行上下文的传递，而在传递信息中又包含了 goroutine 的运行控制、上下文信息传递等功能。 使用 在 Go context 用法中，我们常常将其与 select 关键字结合使用，用于监听其是否结束、取消等。 代码如下： func main() { parentCtx := context.Background() ctx, cancel := context.WithTimeout(parentCtx, 1*time.Millisecond) defer cancel() select { case &lt;-time.After(1 * time.Second): fmt.Println(&#34;overslept&#34;) case &lt;-ctx.Done(): fmt.Println(ctx.Err()) } } 输出结果： context deadline exceeded 如果是"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -65,7 +29,7 @@ func WithXXXX(parent Context, xxx xxx) (Context, CancelFunc) 其返回值分别�
 	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
 	<link rel="shortcut icon" href="/favicon.ico">
 
-	<title></title>
+	<title>Context使用和原理</title>
 	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
@@ -88,7 +52,7 @@ func WithXXXX(parent Context, xxx xxx) (Context, CancelFunc) 其返回值分别�
 				</nav>
 			</div>
 			<div class="hdr-right hdr-icons">
-				<button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
 			</div>
 		</div>
 	</header>
@@ -103,8 +67,8 @@ func WithXXXX(parent Context, xxx xxx) (Context, CancelFunc) 其返回值分别�
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
-				<div class="post-meta"><span>Jan 1, 0001</span></div>
-				<h1></h1>
+				<div class="post-meta"><span>Jun 9, 2021</span></div>
+				<h1>Context使用和原理</h1>
 			</header>
 			<div class="content">
 				<h2 id="背景">背景<a href="#背景" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
@@ -613,18 +577,64 @@ func WithXXXX(parent Context, xxx xxx) (Context, CancelFunc) 其返回值分别�
 	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
 </div>
 
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/">由浅入深聊聊Golang的context</a></li>
+	
+	<li><a href="/posts/go/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">go并发小练习</a></li>
+	
+	<li><a href="/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/">go中的闭包</a></li>
+	
+	<li><a href="/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">深入解析 Go 中 Slice 底层实现</a></li>
+	
+	<li><a href="/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/">从一个yaml文件读取多个文档</a></li>
+	
+	</ul>
+</div>
+
 			<hr class="post-end">
 			<footer class="post-info">
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1342 字</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>0001-01-01 08:00 &#43;0800</p>
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/context">Context</a></span><span class="tag"><a href="https://willje.github.io/tags/go">go</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4543 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-06-09 21:23 &#43;0800</p>
 			</footer>
 		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#背景">背景</a></li>
+    <li><a href="#使用">使用</a></li>
+    <li><a href="#context本质">Context本质</a>
+      <ul>
+        <li><a href="#接口">接口</a></li>
+        <li><a href="#基础结构">基础结构</a></li>
+        <li><a href="#取消信号">取消信号</a></li>
+      </ul>
+    </li>
+    <li><a href="#示例">示例</a>
+      <ul>
+        <li><a href="#监听取消事件">监听取消事件</a></li>
+        <li><a href="#发出取消事件">发出取消事件</a></li>
+        <li><a href="#基于时间的取消">基于时间的取消</a></li>
+        <li><a href="#传递值">传递值</a></li>
+      </ul>
+    </li>
+    <li><a href="#使用场景">使用场景</a></li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ul>
+</nav>
+		</aside>
 		<div class="post-nav thin">
-			<a class="next-post" href="https://willje.github.io/posts/docker/%E5%AE%B9%E5%99%A8%E5%8E%9F%E7%90%86/">
-				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span></span>
+			<a class="next-post" href="https://willje.github.io/posts/other/tool/ansible%E5%85%A5%E9%97%A8/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Ansible入门</span>
 			</a>
-			<a class="prev-post" href="https://willje.github.io/posts/go/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8Fgolang/">
-				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span></span>
+			<a class="prev-post" href="https://willje.github.io/posts/net/tcp%E5%9B%BE%E8%A7%A3/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>TCP图解</span>
 			</a>
 		</div>
 		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"

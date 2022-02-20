@@ -65,18 +65,19 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/git/git%E5%B0%8F%E8%AE%B0/">Git小记</a>
+                <h2><a href="/posts/go/basic/golang%E9%87%8C%E7%9A%84iota/">Golang里的iota</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>分支 查看本地分支 git branch 查看远程分支 git branch -r 查看本地和远程所有分支 git branch -a 创建分支 git branch [name]//该命令创建分支后不会马上切换到新分支 创建分支并切换到该分支 git checkout -b [name] 切换分支 git checkout [name] 如果希望强制切换，即放弃本地修改，则使用命令 git checkout -f newBranch 删除分支 git branch -d [name] //选项只能删除已经参与了合并的分支，对于未有合并的分支是无法删除的。 如果想强制删除一个分支，可以使用-D选项 这只是删</p></div>
+                <div class="p_part"><p>认识 有些概念有名字，并且有时候我们关注这些名字，甚至（特别）是在我们代码中。 const ( CCVisa = &#34;Visa&#34; CCMasterCard = &#34;MasterCard&#34; CCAmericanExpress = &#34;American Express&#34; ) 在其他时候，我们仅仅关注能把一个东西与其他的做区分。有些时候，有些时候一件事没有本质上的意义。比如，我们在一个数据库表中存储产品，我们可能不想以 string 存储他们的分类。我们不关注这个分类是怎样命名的，此外，该名字在市场上一直在变化。 我们仅仅关注它们是怎么彼此区分的</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-10-05</span>
+                                class="date">2021-03-17</span>
                         <a class="tag"
-                                   href="/tags/git/">git</a>
+                                   href="/tags/iota/">iota</a><a class="tag"
+                                   href="/tags/go/">go</a>
                     </div>
                 </div>
             </div>
@@ -84,19 +85,19 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/algorithm/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">一致性哈希算法</a>
+                <h2><a href="/posts/go/basic/golang-template%E4%BD%BF%E7%94%A8%E6%A0%B7%E4%BE%8B/">Golang template 使用样例</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>在了解一致性哈希算法之前，最好先了解一下缓存中的一个应用场景，了解了这个应用场景之后，再来理解一致性哈希算 法，就容易多了，也更能体现出一致性哈希算法的优点，那么，我们先来描述一下这个经典的分布式缓存的应用场景。 场景描述 假设，我们有三台缓存服务器，用于缓存图片，我们为这三台缓存服务器编号为0号、1号、2号，现在，有3万张图片需要 缓存，我们希望这些图片被均匀的缓</p></div>
+                <div class="p_part"><p>Go标准库提供了几个package可以产生输出结果，而text/template 提供了基于模板输出文本内容的功能。html/template 则是产生 安全的HTML格式的输出。 01 text/template样例 Golang text/template 包是一个数据驱动的模版渲染工具。提供条件判断，数组或map遍历；参数赋值，函数或方法调用；自定义函数扩展，模板嵌套及重用等功能。基于该工具，可以轻松实</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-09-29</span>
+                                class="date">2021-03-10</span>
                         <a class="tag"
-                                   href="/tags/%E4%B8%80%E8%87%B4%E6%80%A7/">一致性</a><a class="tag"
-                                   href="/tags/%E5%93%88%E5%B8%8C/">哈希</a>
+                                   href="/tags/template/">template</a><a class="tag"
+                                   href="/tags/go/">go</a>
                     </div>
                 </div>
             </div>
@@ -104,18 +105,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/distributed/kafka%E5%85%A5%E9%97%A8/">kafka入门</a>
+                <h2><a href="/posts/distributed/%E4%BC%A0%E7%BB%9F%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%9F%94%E6%80%A7%E4%BA%8B%E5%8A%A1/">传统事务与柔性事务</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>Kafka是最初由Linkedin公司开发，是一个分布式、支持分区的（partition）、多副本的（replica），基于zookeeper协调的分布式消息系统，它的最大的特性就是可以实时的处理大量数据以满足各种需求场景：比如基于hadoop的批处理系统、低延迟的实时系统、Storm/Spark流式处理引擎，web/nginx日志、访问日志，消息服务等等，</p></div>
+                <div class="p_part"><p>柔性事务之前我们先来回归传统事务 传统事务 第一次接触事务的时候，被人告知事务是原子的，要么都成功要么都失败。再进一步就有ACID这四 个属性，原子性（Atomictiy）、一致性（Consistency）、隔离性（Isolation）、持久性（Durabilit）。 我们首先看下一些书籍中的官方描述： 原子性：事务是一个包含一系列操作的原子操作。事务的原子性确保这些</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-07-29</span>
+                                class="date">2021-03-02</span>
                         <a class="tag"
-                                   href="/tags/kafka/">kafka</a>
+                                   href="/tags/%E4%BA%8B%E5%8A%A1/">事务</a>
                     </div>
                 </div>
             </div>
@@ -123,18 +124,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/k8s/k8s%E5%85%A5%E9%97%A82/">k8s入门2</a>
+                <h2><a href="/posts/linux/%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%B6%E6%8B%B7%E8%B4%9D/">什么是零拷贝</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &#34;pi&#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&#34;perl&#34;,&#34;-Mbignum=bpi&#34;,&#34;-wle&#34;,&#34;print bpi(2000)&#34;]restartPolicy:Never一段时</p></div>
+                <div class="p_part"><p>前言 磁盘可以说是计算机系统最慢的硬件之一，读写速度相差内存 10 倍以上，所以针对优化磁盘的技术非常的多，比如零拷贝、直接 I/O、异步 I/O 等等，这些优化的目的就是为了提高系统的吞吐量，另外操作系统内核中的磁盘高速缓存区，可以有效的减少磁盘的访问次数。 这次，我们就以「文件传输」作为切入点，来分析 I/O 工作方式，以及如何优化传输文件的性能。 为什么要有 DMA 技术? 在没有 DMA 技术前，</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-07-25</span>
+                                class="date">2021-02-25</span>
                         <a class="tag"
-                                   href="/tags/kubernetes/">kubernetes</a>
+                                   href="/tags/linux/">Linux</a>
                     </div>
                 </div>
             </div>
@@ -142,19 +143,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/go/concurrent/sync.once%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0/">sync.once单例模式实现</a>
+                <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F-%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/">分布式系统---幂等性设计</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>并发经典场景 Go 并发编程的场景中，有一个特别经典的场景，就是并发创建对象的时候。一般伪代码如下： if ( /* 如果对象不存在 */) { // 那么就创建对象 } 因为是并发的环境，所以多个 goroutine 短时间内得出的判断都是一样的：都判断得到对象是不存在的，这时候大家的的行为也特别一致，每个 goroutine 磨刀霍霍就是创建。这时候如果不加以控制，那么会导致程序逻辑出问题。 会导致对象重复创建多次，并且可能不断的</p></div>
+                <div class="p_part"><p>WEB资源或API方法的幂等性是指一次和多次请求某一个资源应该具有同样的副作用。 幂等性是系统的接口对外一种承诺(而不是实现), 承诺只要调用接口成功, 外部多次调用对系统的影响是一致的。 幂等性是分布式系统设计中的一个重要概念，对超时处理、系统恢复等具有重要意义。声明为幂等的接口会认为外部调用失败是常态, 并且失败之后必然会有重试。例如，在因网络中断等原因导致请求方</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-07-23</span>
+                                class="date">2021-02-05</span>
                         <a class="tag"
-                                   href="/tags/go/">go</a><a class="tag"
-                                   href="/tags/%E5%B9%B6%E5%8F%91/">并发</a>
+                                   href="/tags/%E5%B9%82%E7%AD%89%E6%80%A7/">幂等性</a>
                     </div>
                 </div>
             </div>
@@ -162,19 +162,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/java/spring/springcloudnacos%E4%BD%BF%E7%94%A8/">SpringCloudNacos使用</a>
+                <h2><a href="/posts/distributed/raft-%E7%AE%97%E6%B3%95/">Raft算法</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>Nacos 是 Spring Cloud Alibaba 核心组件之一，可以用作 Spring Cloud 的注册中心和配置中心。 本文讲述如何在 Spring Cloud 中使用 Nacos 作为配置中心。 安装Nacos 与 Spring Cloud Config 和 Eureka 的使用方式不同，Nacos Server 需要独立部署。Nacos Server 的部署方式包括单机模式和集群模式，集群模式可以解决 Nacos 高可用的问题。 为简单起见，本文采用单机模式 Nacos Server 作为配置中心。单机模式搭建过程比较简单，可以通过下载源代码编译方式安装和二进制可执行</p></div>
+                <div class="p_part"><p>在一个由 Raft 协议组织的集群中有三类角色： Leader（领袖） Follower（群众） Candidate（候选人） 就像一个民主社会，领袖由民众投票选出。刚开始没有领袖，所有集群中的参与者都是群众，那么首先开启一轮大选，在大选期间所有群众都能参与竞选，这时所有群众的角色就变成了候选人，民主投票选出领袖后就开始了这届领袖的任期，然后选举结束，所有除领袖的候选人又变回</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-06-25</span>
+                                class="date">2021-02-02</span>
                         <a class="tag"
-                                   href="/tags/springcloud/">SpringCloud</a><a class="tag"
-                                   href="/tags/nacos/">Nacos</a>
+                                   href="/tags/raft/">Raft</a>
                     </div>
                 </div>
             </div>
@@ -182,18 +181,19 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/java/spring/springcloud%E5%AD%A6%E4%B9%A0/">SpringCloud学习</a>
+                <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9Fcap%E5%AE%9A%E7%90%86%E4%B8%8Ebase%E7%90%86%E8%AE%BA/">分布式系统CAP定理与BASE理论</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>Spring Cloud是一系列框架的有序集合。它利用Spring Boot的开发便利性巧妙地简化了分布式系统基础设施的开发，如服务发现注册、配置中心、消息总线、负载均衡、断路器、数据监控等，都可以用Spring Boot的开发风格做到一键启动和部署。Spring Cloud并没有重复制造轮子，它只是将目前各家公司开发的比较成熟、经得起实际考验的服务框架组合起来，通过Spri</p></div>
+                <div class="p_part"><p>CAP定理 在计算机科学中，CAP定理指出，对于一个分布式系统，不能同时满足一下三点，最多只能同时满足其中两点： 一致性(Consistency)：在分布式系统环境下，数据在多台机器上有多个副本。当对数据执行更新操作时，数据更新操作完成后，所有节点在同一时间的数据完全一致，客户端读取的数据永远是更新后的最新数据。 可用性(Availability) : 服务一直可用，</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-06-25</span>
+                                class="date">2021-01-15</span>
                         <a class="tag"
-                                   href="/tags/springcloud/">SpringCloud</a>
+                                   href="/tags/cap/">CAP</a><a class="tag"
+                                   href="/tags/base/">BASE</a>
                     </div>
                 </div>
             </div>
@@ -201,18 +201,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/linux/io-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/">IO多路复用</a>
+                <h2><a href="/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/">分布式系统中的数据一致性问题</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>阻塞 IO 服务端为了处理客户端的连接和请求的数据，写了如下代码。 listenfd = socket(); // 打开一个网络通信端口 bind(listenfd); // 绑定 listen(listenfd); // 监听 while(1) { connfd = accept(listenfd); // 阻塞建立连接 int n = read(connfd, buf); // 阻塞读数据 doSomeThing(buf); // 利用读到的数据做些什么 close(connfd); // 关闭连接，循环等待下一个连接 } 这段代码会执行得磕磕绊绊，就像这样。 ![图片](IO 多路复用.assets/微信图片_20210529211749.gif) 可以看到，服务端的线程阻塞</p></div>
+                <div class="p_part"><p>数据一致性 数据库系统中的数据一致性 数据一致性问题最初是存在于数据库系统中的一个概念，数据库系统中一致性问题通常指的是关联数据之间的逻辑是否完整和正确，通常数据库系统会通过使用事务来保证数据的一致性和完整性。事务本质上就是一个操作序列的有限集合，若事务中有的操作没有成功完成，则事务中的所有操作都需要被回滚，回到事务执行前的状态。 比如当你在淘宝中购买商品进行付款</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-05-30</span>
+                                class="date">2021-01-05</span>
                         <a class="tag"
-                                   href="/tags/io/">IO</a>
+                                   href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">数据一致性</a>
                     </div>
                 </div>
             </div>
@@ -220,19 +220,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/">golang实现单链表</a>
+                <h2><a href="/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">go并发编程</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>数据结构 // Node represents a node of linked list type Node struct { value int next *Node } // LinkedList represents a linked list type LinkedList struct { head *Node len int } 新增节点 在链表末尾增加节点 // Insert inserts new node at the end of from linked list func (l *LinkedList) Insert(val int) { n := Node{} n.value = val if l.len == 0 { l.head = &amp;n l.len++ return } ptr := l.head for i := 0; i &lt; l.len; i++ { if ptr.next == nil { ptr.next = &amp;n l.len++ return } ptr = ptr.next } } 指定位置增加节点 // InsertAt inserts new node at given position func (l *LinkedList) InsertAt(pos int, value int) { // create a new node newNode := Node{} newNode.value = value // validate the position if pos &lt; 0 { return } if pos == 0 { l.head = &amp;newNode l.len++ return } if pos &gt; l.len { return } n := l.GetAt(pos) newNode.next</p></div>
+                <div class="p_part"><p>并发与并行 并发是指同一个时间段内多个任务同时交叉执行，并且都没有执行结束，而并行是说在单位时间内多个任务同时在执行，并发任务强调在一个时间段内同时执行，而一个时间段有多个单位时间累积而成，所以说并发的多个任务在单位时间内不一定同时在执行。 在单个cpu的时代多个任务同时运行都是并发，这是因为cpu同时只能执行一个任务，单个cpu时代多任务是共享一个cpu的，当</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-05-23</span>
+                                class="date">2020-12-25</span>
                         <a class="tag"
-                                   href="/tags/go/">go</a><a class="tag"
-                                   href="/tags/%E9%93%BE%E8%A1%A8/">链表</a>
+                                   href="/tags/go/">go</a>
                     </div>
                 </div>
             </div>
@@ -240,19 +239,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/mysql/mysql-mvcc%E6%9C%BA%E5%88%B6/">MySQL_MVCC机制</a>
+                <h2><a href="/posts/distributed/cap%E5%AE%9A%E7%90%86%E7%9A%84%E8%AF%81%E6%98%8E/">CAP定理的证明</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>本文中用到的概念解释 数据读取特性 不可重复读 指一个事务范围内两个相同的查询却返回了不同数据 这是由于查询时系统中其他事务修改的提交而引起的 幻读 在两个连续的查找之间一个并发的修改事务修改了查询的数据集，导致这两个查询返回了不同的结果 这是由于查询时系统中其他事务新增或者删除记录引起的 事务隔离级别 Read Commited(提交读) 一个事务从开始到提交前,所作的任何修改对其他</p></div>
+                <div class="p_part"><p>关于CAP这三个特性我们就介绍完了，接下来我们试着证明一下为什么CAP不能同时满足。 为了简化证明的过程，我们假设整个集群里只有两个N1和N2两个节点，如下图： N1和N2当中各自有一个应用程序AB和数据库，当系统满足一致性的时候，我们认为N1和N2数据库中的数据保持一致。在满足可用性的时候，我们认为无论用户访问N1还是N2，都可以获得正确的结果，在满足分区容错</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-04-25</span>
+                                class="date">2020-12-10</span>
                         <a class="tag"
-                                   href="/tags/mysql/">MySQL</a><a class="tag"
-                                   href="/tags/mvcc/">MVCC</a>
+                                   href="/tags/cap/">CAP</a>
                     </div>
                 </div>
             </div>

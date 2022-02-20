@@ -44,5 +44,14 @@
       <description>b站教程：https://www.bilibili.com/video/BV1og4y1q7M4? 【这个教程非常简洁！且深入！基于企业应用场景！推荐！以下笔记都基于该课程】 【配套笔记：https://gitee.com/nasheishei/docker_learning/blob/master/Docker.md】 什么是docker Docker 使用 Google 公司推出的 Go 语言</description>
     </item>
     
+    <item>
+      <title>Docker容器原理</title>
+      <link>https://willje.github.io/posts/docker/%E5%AE%B9%E5%99%A8%E5%8E%9F%E7%90%86/</link>
+      <pubDate>Wed, 18 Nov 2020 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/docker/%E5%AE%B9%E5%99%A8%E5%8E%9F%E7%90%86/</guid>
+      <description>容器 容器其实是一种沙盒技术。顾名思义，沙盒就是能够像一个集装箱一样，把你的应用“装”起来的技术。这样，应用与应用之间，就因为有了边界而不至于相互干扰；而被装进集装箱的应用，也可以被方便地搬来搬去。 那么，这个边界怎么产生的呢？对于Docker项目来说它最核心的原理实际上就是为待创建的用户进程： 启用 Linux Namespace 配置； 设置指定的 Cgroups 参数； 切换进程的根目录（Change Roo</description>
+    </item>
+    
   </channel>
 </rss>

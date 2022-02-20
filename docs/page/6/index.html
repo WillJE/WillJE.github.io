@@ -65,19 +65,18 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/mysql/mysql-innodb%E9%94%81%E6%9C%BA%E5%88%B6/">MySQL InnoDB锁机制</a>
+                <h2><a href="/posts/docker/docker%E5%9F%BA%E7%A1%80%E6%A6%82%E5%BF%B5/">Docker基础概念</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>锁 锁是用于管理不同事务对共享资源的并发访问 表锁和行锁的区别： 在加锁效率、锁定粒度以及冲突概率上，表锁肯定是大于行锁的 但是在并发性能上，表锁远低于行锁。 表锁是锁定了整个表，在加锁期间，无论读写，这个表的数据都是锁定的，相反行锁只是锁定了这个表中的一条数据，其他数据仍然可以操作，这就可很好的提高了数据库的并发性能。 关于表级锁 LOCK TABLES [&lt;tb&gt; &lt;lock_type&gt;],... -- 给指定表加锁，使当前客户端会</p></div>
+                <div class="p_part"><p>b站教程：https://www.bilibili.com/video/BV1og4y1q7M4? 【这个教程非常简洁！且深入！基于企业应用场景！推荐！以下笔记都基于该课程】 【配套笔记：https://gitee.com/nasheishei/docker_learning/blob/master/Docker.md】 什么是docker Docker 使用 Google 公司推出的 Go 语言</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-04-23</span>
+                                class="date">2020-12-05</span>
                         <a class="tag"
-                                   href="/tags/mysql/">MySQL</a><a class="tag"
-                                   href="/tags/%E9%94%81/">锁</a>
+                                   href="/tags/docker/">docker</a>
                     </div>
                 </div>
             </div>
@@ -85,19 +84,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/mysql/mysql%E4%BB%80%E4%B9%88%E6%83%85%E5%86%B5%E4%B8%8B%E4%BC%9A%E9%80%A0%E6%88%90%E7%B4%A2%E5%BC%95%E5%A4%B1%E6%95%88/">MySQL什么情况下会造成索引失效</a>
+                <h2><a href="/posts/distributed/zookeeper%E5%85%A5%E9%97%A8/">Zookeeper入门</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>一、准备工作，准备sql 这里我使用的mysql版本是 8.0.19。 CREATE TABLE `student` ( `id` int(11) NOT NULL AUTO_INCREMENT, `name` varchar(20), `age` int(11), `address` varchar(25), `crtdate` timestamp, PRIMARY KEY (`id`) USING BTREE ); insert into student(name,age,address,crtdate) values(&#39;张三&#39;, 15, &#39;山东青岛&#39;, now()); insert into student(name,age,address,crtdate) values(&#39;李四&#39;, 17, &#39;山东济南&#39;, now()); insert into student(name,age,address,crtdate) values(&#39;王五&#39;, 18, &#39;山东潍坊&#39;, now()); -- 创建复</p></div>
+                <div class="p_part"><p>我们在虚拟机中安装zookeeper，首先要安装linux虚拟机。 安装linux虚拟机 安装vmvare，地址在这里 下载centos镜像，地址在这里 安装，这里要注意网络配置，Centos网络设置 我这里没有设置固定IP，因为使用的是DHCP动态分配IP，不知道明天起来IP会不会变。 补充：IP变了，于是按照下面的方法固定IP； 关键点，配置网络；vmware虚拟机c</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-04-16</span>
+                                class="date">2020-11-28</span>
                         <a class="tag"
-                                   href="/tags/mysql/">MySQL</a><a class="tag"
-                                   href="/tags/%E7%B4%A2%E5%BC%95/">索引</a>
+                                   href="/tags/zookeeper/">zookeeper</a>
                     </div>
                 </div>
             </div>
@@ -105,19 +103,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/mysql/mysql%E4%B8%AD%E7%9A%84%E7%B4%A2%E5%BC%95%E5%92%8Cexplain%E7%9A%84%E7%94%A8%E6%B3%95/">MySQL中的索引和Explain的用法</a>
+                <h2><a href="/posts/%E6%80%9D%E7%BB%B4%E9%A2%98/">思维题</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>写在前面 日常开发中，当数据体量比较大的时候可能就会遇到慢SQL的问题，找出这些SQL并解决，就会用到explain这个命令来查看一个这些SQL语句的执行计划，看下该命令有没有做全表扫描，有没有走索引，这些都可以通过explain命令来查看。 性能下降原因 执行时间长；等待时间长 查询语句写的差（自身问题）； 索引失效（单值索引或复合索引失效）； 关联查询太多join（</p></div>
+                <div class="p_part"><p>64匹马，8赛道，找出最快的4匹最少要几次? 64匹马，8赛道，找出最快的4匹最少要几次? 猴子搬香蕉 猴子搬香蕉 140克盐如何3次分成50克、90克 140克盐如何3次分成50克、90克 140克盐分置 你有两个罐子，容量分别是 5 升和 3 升，还有一池塘的水。在没有测量工具的辅助下，问能否准确的取出 4 升水来？ 考虑1+3；3升装满后导入5升；再装满3升后导入5升，此时3升剩</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-04-11</span>
+                                class="date">2020-11-28</span>
                         <a class="tag"
-                                   href="/tags/mysql/">MySQL</a><a class="tag"
-                                   href="/tags/%E7%B4%A2%E5%BC%95/">索引</a>
+                                   href="/tags/logic/">logic</a>
                     </div>
                 </div>
             </div>
@@ -125,19 +122,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/mysql/mysql%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">MySQL事务隔离级别</a>
+                <h2><a href="/posts/docker/%E5%AE%B9%E5%99%A8%E5%8E%9F%E7%90%86/">Docker容器原理</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>MySQL事务隔离级别 什么是事务？ 数据库操作的最小工作单元，是作为单个逻辑工作单元执行的一系列操作；事务是一组不可再分割的操作集合（工作逻辑单元） 举个栗子： 事务最经典常用的栗子可能就是转账：一个账户少钱了，哪另一个账户肯定要多钱，李永龙说过，亏本的买卖咱可不干，吃亏了不高兴！ 所以，少钱和多钱这两个操作，要么同时成功，要么同时失败！ MySQL中如何开启事务？ 手</p></div>
+                <div class="p_part"><p>容器 容器其实是一种沙盒技术。顾名思义，沙盒就是能够像一个集装箱一样，把你的应用“装”起来的技术。这样，应用与应用之间，就因为有了边界而不至于相互干扰；而被装进集装箱的应用，也可以被方便地搬来搬去。 那么，这个边界怎么产生的呢？对于Docker项目来说它最核心的原理实际上就是为待创建的用户进程： 启用 Linux Namespace 配置； 设置指定的 Cgroups 参数； 切换进程的根目录（Change Roo</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-04-09</span>
+                                class="date">2020-11-18</span>
                         <a class="tag"
-                                   href="/tags/mysql/">MySQL</a><a class="tag"
-                                   href="/tags/%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/">事务隔离级别</a>
+                                   href="/tags/docker/">Docker</a>
                     </div>
                 </div>
             </div>
@@ -145,18 +141,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/mysql/mysql-b-tree%E5%92%8Cb&#43;tree/">MySQL B-Tree和B&#43;tree</a>
+                <h2><a href="/posts/arccitecture/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">负载均衡</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>B+树索引是B+树在数据库中的一种实现，是最常见也是数据库中使用最为频繁的一种索引。 B+树中的B代表平衡（balance），而不是二叉（binary），因为B+树是从最早的平衡二叉树演化而来的。 在讲B+树之前必须先了解二叉查找树、平衡二叉树（AVLTree）和平衡多路查找树（B-Tree），B+树即由这些树逐步优化而来。 二叉查找树 定义 二叉树具有以下性质： 左子</p></div>
+                <div class="p_part"><p>什么是负载均衡 负载均衡是高可用网络基础架构的关键组件，通常用于将工作负载分布到多个服务器来提高网站、应用、数据库或其他服务的性能和可靠性。 传统架构 在这里用户是直连到 web 服务器，如果这个服务器宕机了，那么用户自然也就没办法访问了。 另外，如果同时有很多用户试图访问服务器，超过了其能处理的极限，就会出现加载速度缓慢或根本无法连接的情况。 引入负载均衡 而通过在后端引入一</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-04-02</span>
+                                class="date">2020-10-25</span>
                         <a class="tag"
-                                   href="/tags/mysql/">MySQL</a>
+                                   href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">负载均衡</a>
                     </div>
                 </div>
             </div>
@@ -164,18 +160,19 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/linux/linux%E5%86%85%E6%A0%B8%E7%A9%BA%E9%97%B4%E4%B8%8E%E7%94%A8%E6%88%B7%E7%A9%BA%E9%97%B4/">Linux内核空间与用户空间</a>
+                <h2><a href="/posts/arccitecture/lvs%E7%AE%80%E4%BB%8B/">LVS简介</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>用户空间与内核空间 我们知道现在操作系统都是采用虚拟存储器 ，那么对32位操作系统而言，它的寻址空间（虚拟存储空间）为4G（2的32次 方）。 操心系统的核心是内核，独立于普通的应用程序，可以访问受保护的内存空间，也有访问底层硬件设备的所有权限。 为了保证用户进程不能直接操作内核，保证内核的安全，操心系统将虚拟空间划分为两部分，一部分为内核空间，一部分 为用户空间。针对</p></div>
+                <div class="p_part"><p>LVS自从1998年开始，发展到现在已经是一个比较成熟的技术项目了。可以利用LVS技术实现高可伸缩的、高可用的网络服务，例如WWW服务、Cache服务、DNS服务、FTP服务、MAIL服务、视频/音频点播服务等等，有许多比较著名网站和组织都在使用LVS架设的集群系统，例如：Linux的门户网站 、向RealPlayer提供音频视频服务而闻名的Real公司 、全球</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2019-10-29</span>
+                                class="date">2020-10-20</span>
                         <a class="tag"
-                                   href="/tags/linux/">Linux</a>
+                                   href="/tags/%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1/">负载均衡</a><a class="tag"
+                                   href="/tags/lvs/">LVS</a>
                     </div>
                 </div>
             </div>
@@ -183,19 +180,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/blog/elk%E5%85%A5%E9%97%A8/">ELK入门</a>
+                <h2><a href="/posts/git/git%E5%B0%8F%E8%AE%B0/">Git小记</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>介绍 ELK是Elasticsearch、Logstash、Kibana三大开源框架首字母大写简称(但是后期出现的filebeat(beats中的一种)可以用来 替代logstash的数据收集功能，比较轻量级)。市面上也被成为Elastic Stack。 Logstash是免费且开放的服务器端数据处理管道，能够从多个来源采集数据，转换数据，然后将数据发送到您最喜欢 的</p></div>
+                <div class="p_part"><p>分支 查看本地分支 git branch 查看远程分支 git branch -r 查看本地和远程所有分支 git branch -a 创建分支 git branch [name]//该命令创建分支后不会马上切换到新分支 创建分支并切换到该分支 git checkout -b [name] 切换分支 git checkout [name] 如果希望强制切换，即放弃本地修改，则使用命令 git checkout -f newBranch 删除分支 git branch -d [name] //选项只能删除已经参与了合并的分支，对于未有合并的分支是无法删除的。 如果想强制删除一个分支，可以使用-D选项 这只是删</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2019-10-13</span>
+                                class="date">2020-10-05</span>
                         <a class="tag"
-                                   href="/tags/elk/">ELK</a><a class="tag"
-                                   href="/tags/elasticsearch/">ElasticSearch</a>
+                                   href="/tags/git/">git</a>
                     </div>
                 </div>
             </div>
@@ -203,18 +199,19 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/java/dubbo%E5%85%A5%E9%97%A8/">Dubbo入门</a>
+                <h2><a href="/posts/algorithm/%E4%B8%80%E8%87%B4%E6%80%A7%E5%93%88%E5%B8%8C%E7%AE%97%E6%B3%95/">一致性哈希算法</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>Dubbo核心概念 Dubbo官网: https://dubbo.apache.org/zh/ Dubbo 是一款高性能、轻量级的开源Java RPC框架，它提供了三大核心能力：面向接口的远程方法调用，智能容错和负载均衡，服务自动注册和发现。分布式系统是将一个系统拆分为多个不同的服务。 该图来自Dubbo官网，描述了服务注册中心、服务提供方、服务消费方、服务监控中心之间的调用关系。 服务提供者（Provider）：暴露服务的服务提供</p></div>
+                <div class="p_part"><p>在了解一致性哈希算法之前，最好先了解一下缓存中的一个应用场景，了解了这个应用场景之后，再来理解一致性哈希算 法，就容易多了，也更能体现出一致性哈希算法的优点，那么，我们先来描述一下这个经典的分布式缓存的应用场景。 场景描述 假设，我们有三台缓存服务器，用于缓存图片，我们为这三台缓存服务器编号为0号、1号、2号，现在，有3万张图片需要 缓存，我们希望这些图片被均匀的缓</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2019-10-10</span>
+                                class="date">2020-09-29</span>
                         <a class="tag"
-                                   href="/tags/dubbo/">Dubbo</a>
+                                   href="/tags/%E4%B8%80%E8%87%B4%E6%80%A7/">一致性</a><a class="tag"
+                                   href="/tags/%E5%93%88%E5%B8%8C/">哈希</a>
                     </div>
                 </div>
             </div>
@@ -222,18 +219,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/java/concurrent/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/">Java生产者与消费者</a>
+                <h2><a href="/posts/distributed/kafka%E5%85%A5%E9%97%A8/">kafka入门</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>实现生产者消费者模型，可以使用阻塞队列，或者使用 Object 类里自带的 wait() 和 notify() 或者 notifyAll() 的消息通知机制。 实现 wait()/notify() 接下来我们需要重点看下这个通知机制。 wait() 和 notify() 都是 Java 中的 Object 类自带的方法，可以用来实现线程间的通信。 在上一节 讲的 11 个 APIs 里我也提到了它，我们这里再展开讲一下。 wait() 方法是用来让当前线程等待，直到有别的线程调用 notify() 将它唤醒，或者我们可以设定一个时间让它自动苏醒。 调用该方法之前，线程</p></div>
+                <div class="p_part"><p>Kafka是最初由Linkedin公司开发，是一个分布式、支持分区的（partition）、多副本的（replica），基于zookeeper协调的分布式消息系统，它的最大的特性就是可以实时的处理大量数据以满足各种需求场景：比如基于hadoop的批处理系统、低延迟的实时系统、Storm/Spark流式处理引擎，web/nginx日志、访问日志，消息服务等等，</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2019-08-05</span>
+                                class="date">2020-07-29</span>
                         <a class="tag"
-                                   href="/tags/java/">Java</a>
+                                   href="/tags/kafka/">kafka</a>
                     </div>
                 </div>
             </div>
@@ -241,19 +238,18 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/java/concurrent/java%E5%B9%B6%E5%8F%91%E4%B9%8Bcas%E5%8E%9F%E7%90%86%E5%88%86%E6%9E%90/">Java并发之CAS原理分析</a>
+                <h2><a href="/posts/k8s/k8s%E5%85%A5%E9%97%A82/">k8s入门2</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>CAS（Compare-and-Swap），即比较并替换，是一种实现并发算法时常用到的技术，Java并发包中的很多类都使用了CAS技术。 什么是CAS CAS(compare and swap) 比较并替换，比较和替换是线程并发算法时用到的一种技术 CAS是原子操作，保证并发安全，而不是保证并发同步 CAS是CPU的一个指令 CAS是非阻塞的、轻量级的乐观锁 为什么说CAS是乐观锁 乐观锁，严格来说并不是锁，</p></div>
+                <div class="p_part"><p>Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &#34;pi&#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&#34;perl&#34;,&#34;-Mbignum=bpi&#34;,&#34;-wle&#34;,&#34;print bpi(2000)&#34;]restartPolicy:Never一段时</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2019-06-29</span>
+                                class="date">2020-07-25</span>
                         <a class="tag"
-                                   href="/tags/java/">Java</a><a class="tag"
-                                   href="/tags/cas/">CAS</a>
+                                   href="/tags/kubernetes/">kubernetes</a>
                     </div>
                 </div>
             </div>
