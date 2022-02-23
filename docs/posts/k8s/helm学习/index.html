@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="helm学习">
-<meta itemprop="description" content="helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release"><meta itemprop="datePublished" content="2021-07-01T16:23:40&#43;08:00" />
-<meta itemprop="dateModified" content="2021-07-01T16:23:40&#43;08:00" />
+<meta itemprop="description" content="helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release"><meta itemprop="datePublished" content="2021-10-01T16:23:40&#43;08:00" />
+<meta itemprop="dateModified" content="2021-10-01T16:23:40&#43;08:00" />
 <meta itemprop="wordCount" content="1017">
-<meta itemprop="keywords" content="kubernates,helm," /><meta property="og:title" content="helm学习" />
+<meta itemprop="keywords" content="kubernetes,helm," /><meta property="og:title" content="helm学习" />
 <meta property="og:description" content="helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/k8s/helm%E5%AD%A6%E4%B9%A0/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-07-01T16:23:40&#43;08:00" />
-<meta property="article:modified_time" content="2021-07-01T16:23:40&#43;08:00" />
+<meta property="article:published_time" content="2021-10-01T16:23:40&#43;08:00" />
+<meta property="article:modified_time" content="2021-10-01T16:23:40&#43;08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="helm学习"/>
@@ -67,7 +67,7 @@
 	<main class="site-main section-inner animated fadeIn faster">
 		<article class="thin">
 			<header class="post-header">
-				<div class="post-meta"><span>Jul 1, 2021</span></div>
+				<div class="post-meta"><span>Oct 1, 2021</span></div>
 				<h1>helm学习</h1>
 			</header>
 			<div class="content">
@@ -181,13 +181,30 @@ $ helm install demo-test ./mychart-0.1.0.tgz
 	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
 </div>
 
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/k8s/k8s-%E9%9B%86%E7%BE%A4%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dipnodeippodipclusterip/">kubernetes集群里的三种IP</a></li>
+	
+	<li><a href="/posts/k8s/%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84%E5%A4%9A%E4%BA%91%E5%92%8C%E6%B7%B7%E5%90%88%E4%BA%91/">基于Kubernetes的多云和混合云</a></li>
+	
+	<li><a href="/posts/k8s/dapr%E5%85%A5%E9%97%A8/">dapr入门</a></li>
+	
+	<li><a href="/posts/k8s/kubelet%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">Kubelet实现原理</a></li>
+	
+	<li><a href="/posts/k8s/kubernetes-port%E7%B1%BB%E5%9E%8B/">Kubernetes port类型</a></li>
+	
+	</ul>
+</div>
+
 			<hr class="post-end">
 			<footer class="post-info">
 				<p>
-					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/kubernates">kubernates</a></span><span class="tag"><a href="https://willje.github.io/tags/helm">helm</a></span>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/kubernetes">kubernetes</a></span><span class="tag"><a href="https://willje.github.io/tags/helm">helm</a></span>
 				</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1017 字</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-07-01 16:23 &#43;0800</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-10-01 16:23 &#43;0800</p>
 			</footer>
 		</article>
 		<aside id="toc">
@@ -209,11 +226,11 @@ $ helm install demo-test ./mychart-0.1.0.tgz
 </nav>
 		</aside>
 		<div class="post-nav thin">
-			<a class="next-post" href="https://willje.github.io/posts/mysql/%E4%B8%80%E9%81%93sql%E7%BB%83%E4%B9%A0%E9%A2%98/">
-				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>一道SQL练习题</span>
+			<a class="next-post" href="https://willje.github.io/posts/other/concept/serverless%E5%92%8Cfaas/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Serveless和FaaS</span>
 			</a>
-			<a class="prev-post" href="https://willje.github.io/posts/git/gitignore%E5%A6%82%E4%BD%95%E5%BF%BD%E7%95%A5%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%87%E4%BB%B6/">
-				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>gitignore如何忽略之前已提交的文件</span>
+			<a class="prev-post" href="https://willje.github.io/posts/algorithm/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>滑动窗口算法思想</span>
 			</a>
 		</div>
 		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"

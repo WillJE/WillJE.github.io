@@ -65,6 +65,66 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/">go中的闭包</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>匿名函数 参考博客： https://www.calhoun.io/what-is-a-closure/ https://blog.cloudflare.com/a-go-gotcha-when-closures-and-goroutines-collide/ 在说闭包之前，先说一下匿名函数，匿名函数就是没有名字的函数，可以将它理解为一个变量。看下面的例子： package main import &#34;fmt&#34; var DoStuff func() = func() { // Do stuff } func main() { DoStuff() DoStuff = func() { fmt.Println(&#34;Doing stuff!&#34;) } DoStuff() DoStuff = func() { fmt.Println(&#34;Doing other stuff.&#34;) } DoStuff() } //Doing stuff! //Doing other stuff. 可以在这里查看：https://play.golang.org/p/WPHkRpCzH4f 闭包 闭包是匿名函数与匿名函数所引用环境的组合。匿名函数有动态创建的特</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-05-15</span>
+                        <a class="tag"
+                                   href="/tags/go/">go</a><a class="tag"
+                                   href="/tags/%E9%97%AD%E5%8C%85/">闭包</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/go/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8Fgolang/">golang设计模式</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>前言 设计模式 Golang实现－《研磨设计模式》读书笔记 https://github.com/senghoo/golang-design-pattern 创建型模式 简单工厂模式(Simple Factory) go 语言没有构造函数一说，所以一般会定义NewXXX函数来初始化相关类。 NewXXX 函数返回接口时就是简单工厂模式，也就是说Golang的一般推荐做法就是简单工厂。 在这个simplefactory包中只有API 接口和NewAPI函数为包外可见，封装了实现细节。 package simplefactory import &#34;fmt&#34; //API is interface type API</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-05-02</span>
+                        <a class="tag"
+                                   href="/tags/golang/">golang</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">深入解析 Go 中 Slice 底层实现</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>一. 切片和数组 关于切片和数组怎么选择？接下来好好讨论讨论这个问题。 在 Go 中，与 C 数组变量隐式作为指针使用不同，Go 数组是值类型，赋值和函数传参操作都会复制整个数组数据。 func main() { arrayA := [2]int{100, 200} var arrayB [2]int arrayB = arrayA fmt.Printf(&#34;arrayA : %p , %v\n&#34;, &amp;arrayA, arrayA) fmt.Printf(&#34;arrayB : %p , %v\n&#34;, &amp;arrayB, arrayB) testArray(arrayA) } func testArray(x [2]int) { fmt.Printf(&#34;func Array : %p , %v\n&#34;, &amp;x, x) } 打印结果： arrayA : 0xc4200bebf0 , [100 200] arrayB : 0xc4200bec00 , [100 200] func Array : 0xc4200bec30 , [100 200] 可以看到，三个内存地址都不同，这也就验证了 Go 中数组赋值和函数传</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-05-01</span>
+                        <a class="tag"
+                                   href="/tags/slice/">slice</a><a class="tag"
+                                   href="/tags/array/">array</a><a class="tag"
+                                   href="/tags/go/">go</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/go/basic/%E7%94%B1%E6%B5%85%E5%85%A5%E6%B7%B1%E8%81%8A%E8%81%8Agolang%E7%9A%84context/">由浅入深聊聊Golang的context</a>
                 </h2>
             </div>
@@ -97,25 +157,6 @@
                                 class="date">2021-04-25</span>
                         <a class="tag"
                                    href="/tags/%E5%88%86%E5%B8%83%E5%BC%8F%E4%BA%8B%E5%8A%A1/">分布式事务</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/k8s/k8s%E9%89%B4%E6%9D%83/">k8s鉴权</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>在k8s中，客户端对API Server访问的大体流程如下： 用户简介 在k8s中，用户具有如下基础属性： 用户名：标识用户的字符串 UID：标识用户的数字 组：即用户组，包含若干个用户 额外字段：其他信息 看起来和Linux中的系统用户一模一样。。。不过基本上只需要关心用户名。 用户分类 在Kubernetes中，用户分为两类： 普通用户（normal user）：为Pod外的程</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-04-25</span>
-                        <a class="tag"
-                                   href="/tags/kubernetes/">kubernetes</a>
                     </div>
                 </div>
             </div>
@@ -212,44 +253,6 @@
                     <div class="info"><em class="fas fa-calendar-day"></em><span
                                 class="date">2021-04-04</span>
                         
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/k8s/k8s%E6%A6%82%E8%BF%B0/">k8s概述</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>集群架构与组件 Kubernetes 集群架构以及相关的核心组件如下图所示：一个 Kubernetes 集群一般包含一个 Master 节点和多个 Node 节点，一个节点可以看成是一台物理机或虚拟机。 Master Master 是 K8S 的集群控制节点，每个 K8S 集群里需要有一个 Master 节点来负责整个集群的管理和控制，基本上 K8S 所有的控制命令都是发给它，它来负责具体的执行过程。Master 节点通常会占据一个独立的服务器，因为它太重要了，如果它不可用，那么所有的控制</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-04-01</span>
-                        <a class="tag"
-                                   href="/tags/kubernetes/">kubernetes</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/go/basic/go%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F%E6%98%AF%E5%80%BC%E4%BC%A0%E9%80%92/">Go函数的参数传递方式是值传递</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>什么是传值（值传递） 传值的意思是：函数传递的总是原来这个东西的一个副本，一副拷贝。比如我们传递一个int类型的参数，传递的其实是这个参数的一个副本；传递一个指针类型的参数，其实传递的是这个该指针的一份拷贝，而不是这个指针指向的值。 对于int这类基础类型我们可以很好的理解，它们就是一个拷贝，但是指针呢？我们觉得可以通过它修改原来的值，怎么会是一个拷贝呢？下面我</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-03-20</span>
-                        <a class="tag"
-                                   href="/tags/go/">go</a>
                     </div>
                 </div>
             </div>

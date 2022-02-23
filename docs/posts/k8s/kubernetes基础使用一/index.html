@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="kubernetes基础使用（一）">
+<meta itemprop="description" content="创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下"><meta itemprop="datePublished" content="2021-05-23T21:23:18&#43;08:00" />
+<meta itemprop="dateModified" content="2021-05-23T21:23:18&#43;08:00" />
+<meta itemprop="wordCount" content="6189">
+<meta itemprop="keywords" content="kubernetes," /><meta property="og:title" content="kubernetes基础使用（一）" />
+<meta property="og:description" content="创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%B8%80/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2021-05-23T21:23:18&#43;08:00" />
+<meta property="article:modified_time" content="2021-05-23T21:23:18&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="kubernetes基础使用（一）"/>
+<meta name="twitter:description" content="创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>kubernetes基础使用（一）</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>May 23, 2021</span></div>
+				<h1>kubernetes基础使用（一）</h1>
+			</header>
+			<div class="content">
+				<h1 id="创建namespace">创建namespace<a href="#创建namespace" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。</p>
+<h2 id="namespaces">Namespaces<a href="#namespaces" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>通过 <code>kubectl create -f</code>，我们可以轻松地创建一个 namespace：
+ns.yaml文件如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Namespace</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">will</span><span class="w">
+</span></code></pre></div><pre><code>$ kubectl create -f resources/ns.yaml
+namespace &quot;tutorial&quot; created
+</code></pre><p>然后通过 <code>kubectl get ns</code>，可以看到刚才创建的 namespace</p>
+<pre><code>$ kubectl get ns
+NAME              STATUS   AGE
+default           Active   27h
+kube-node-lease   Active   27h
+kube-public       Active   27h
+kube-system       Active   27h
+tutorial          Active   7s
+</code></pre><h1 id="创建-deployment">创建 deployment<a href="#创建-deployment" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>k8s deployment 用来部署应用。一个常见的 deployment 配置包括几个部分，详细可以参考官网有关介绍 <a href="https://kubernetes.io/zh/docs/concepts/workloads/controllers/deployment/" target="_blank" rel="noopener">Deployments</a>
+。</p>
+<ul>
+<li>spec.selector：用于定义 deployment 如何查找要管理的 pod，例如，使用在 pod 模板中定义的标签，如 app:nginx</li>
+<li>spec.replicas：用于定义需要启动多少个副本</li>
+<li>spec.template：用于定义 pod 的属性，例如，容器名称，容器镜像，labels 字段，等</li>
+</ul>
+<p>完整的 <code>nginx-dep.yml</code> 文件如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx-deployment</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">nginx:alpine</span><span class="w">
+</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></code></pre></div><p>这里的image镜像可以选择任意网络连接的镜像仓库地址；</p>
+<p>为了创建 deployment，执行命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">kubectl apply -f nginx-dep.yml
+</code></pre></div><p>查看 deployment 状态：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">kubectl get deploy -o wide
+</code></pre></div><p>可以看到，刚创建的 <code>nginx-deployment</code> 的 3 个副本均处于 <code>READY</code> 状态：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">NAME               READY   UP-TO-DATE   AVAILABLE   AGE   CONTAINERS   IMAGES         SELECTOR
+nginx-deployment   3/3     <span class="m">3</span>            <span class="m">3</span>           48s   nginx        nginx:alpine   <span class="nv">app</span><span class="o">=</span>nginx
+</code></pre></div><p>为了进一步验证 nginx 已成功启动，进入 pod 中容器（有关如果进入 k8s 容器的命令介绍，可以参考 <a href="https://kubernetes.io/docs/tasks/debug-application-cluster/get-shell-running-container/" target="_blank" rel="noopener">链接</a>
+）：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">kubectl <span class="nb">exec</span> -it nginx -- /bin/sh
+</code></pre></div><p>进入容器后，执行命令：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">curl localhost
+</code></pre></div><p>可以正常打印出 nginx 启动成功的欢迎页面 html。</p>
+<p>退出可以使用</p>
+<pre><code>exit
+</code></pre><h2 id="获取pod-ip">获取pod IP<a href="#获取pod-ip" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<pre><code>kubectl describe pod podname
+</code></pre><p>通过describe命令获取pod详细信息，其中包含pod的IP；</p>
+<p>但是这个IP会因为pod的启停而变化，所以我们需要使用Service。</p>
+<h1 id="kubernetes-service">Kubernetes Service<a href="#kubernetes-service" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>kubernetes service 有以下几个作用：</p>
+<ul>
+<li>提供固定的 IP。由于 Pod 可以随时启停，Pod IP 可能随时都会变化，例如上面 nginx pod 重启之后 IP 可能不再是 172.17.0.11。Service 为 Pods 提供的固定 IP，其他服务可以通过 Service IP 找到提供服务的 Pods。</li>
+<li>提供负载均衡。Service 由多个 Pods 组成，kubernetes 对组成 Service 的 Pods 提供的负载均衡方案，例如随机访问、基于 Client IP 的 session affinity。</li>
+<li>服务发现。集群中其他服务可以通过 Service 名字访问后端服务（DNS），也可以通过环境变量访问。</li>
+</ul>
+<p>下图是 kubernetes Pods, Service 的典型关系。下图有两个 Deployment: A 和 B。其中 Deployment A 创建了一个 Pods（黄色），Deployment B 创建了三个 Pod（绿色）。我们可以创建两个 Service: A 和 B。 Service A 管理由 Deployment A 创建的 Pods，Service B 管理 Deployment B 创建的 Pods。可以看到， Service A 和 Service B 都有自己独立的 IP。无论他们所管理的容器如何变化， Service 的 IP 都不会变化。</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/deployment_service.png"
+    alt="&lt;em&gt;Image source: kubernetes guide&lt;/em&gt;"  />
+</p>
+</p>
+<h2 id="create-service">Create service<a href="#create-service" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>与其他资源相同，我们可以通过 <code>kubectl create -f</code> 加文件名创建 Service。但类似 Deployment，kubernetes 提供了快捷命令让我们能快速创建 Service。</p>
+<pre><code>$ kubectl expose deployment nginx --port 80 -n tutorial
+service &quot;nginx&quot; exposed
+</code></pre><p>通过这个命令把创建的service的对应yaml文件保存到指定文件中</p>
+<pre><code>kubectl get service nginx -n will -o yaml &gt; service.yaml
+</code></pre><div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">creationTimestamp</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2021-07-07T08:27:58Z&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">managedFields</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w">    </span><span class="nt">fieldsType</span><span class="p">:</span><span class="w"> </span><span class="l">FieldsV1</span><span class="w">
+</span><span class="w">    </span><span class="nt">fieldsV1</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">f:metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">f:labels</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">.</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">          </span><span class="nt">f:app</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">      </span><span class="nt">f:spec</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">f:ports</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">.</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">          </span><span class="l">k:{&#34;port&#34;:80,&#34;protocol&#34;:&#34;TCP&#34;}:</span><span class="w">
+</span><span class="w">            </span><span class="nt">.</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">            </span><span class="nt">f:port</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">            </span><span class="nt">f:protocol</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">            </span><span class="nt">f:targetPort</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">        </span><span class="nt">f:selector</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">.</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">          </span><span class="nt">f:app</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">        </span><span class="nt">f:sessionAffinity</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">        </span><span class="nt">f:type</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">    </span><span class="nt">manager</span><span class="p">:</span><span class="w"> </span><span class="l">kubectl-expose</span><span class="w">
+</span><span class="w">    </span><span class="nt">operation</span><span class="p">:</span><span class="w"> </span><span class="l">Update</span><span class="w">
+</span><span class="w">    </span><span class="nt">time</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2021-07-07T08:27:58Z&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">will</span><span class="w">
+</span><span class="w">  </span><span class="nt">resourceVersion</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;22295691&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">selfLink</span><span class="p">:</span><span class="w"> </span><span class="l">/api/v1/namespaces/will/services/nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">uid</span><span class="p">:</span><span class="w"> </span><span class="l">8cfd1ec9-a212-4b14-b81f-da862629ab27</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">clusterIP</span><span class="p">:</span><span class="w"> </span><span class="m">10.68.76.7</span><span class="w">
+</span><span class="w">  </span><span class="nt">clusterIPs</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="m">10.68.76.7</span><span class="w">
+</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">sessionAffinity</span><span class="p">:</span><span class="w"> </span><span class="l">None</span><span class="w">
+</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">ClusterIP</span><span class="w">
+</span><span class="w"></span><span class="nt">status</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">loadBalancer</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span><span class="w">
+</span></code></pre></div><p>还可以通过创建yaml文件的方式生成。但不用像上面那个那么完整。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx-service</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">    </span><span class="nt">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">30080</span><span class="w">
+</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">NodePort</span><span class="w">
+</span></code></pre></div><p>注意这里的type，这个type有四种类型：ClusterIP(默认)、NodePort，LoadBalancer、ExternalName，具体可以看这两篇文章：<a href="https://blog.haohtml.com/archives/19945" target="_blank" rel="noopener">k8s中的Service与Ingress</a>
+。<a href="https://www.qikqiak.com/post/visually-explained-k8s-service/" target="_blank" rel="noopener">图解 Kubernetes Service</a>
+</p>
+<ul>
+<li>ClusterIP顾名思义就是Service管理的（通过selector或label）pod集群对外访问。当你依次访问ClusterIP的话，会发现每次响应内容不一样，说明后端请求了不同的 pod 。原因是因为 Service 提供的是 <code>Round Robin </code>方式的负载均衡。这个IP地址 <code>10.0.1.175</code> 是当前集群的IP，俗称为 <code>VIP</code>，是 Kubernetes 自动为 Service 分配的。对于这种方式称为 <code>ClusterIP 模式的 Service</code>。</li>
+</ul>
+<h2 id="get-service">Get service<a href="#get-service" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>通过 <code>kubectl get service</code> 命令可以查看 service 的详细信息：</p>
+<pre><code>$ kubectl get svc nginx -n will
+NAME    TYPE        CLUSTER-IP   EXTERNAL-IP   PORT(S)   AGE   SELECTOR
+nginx   ClusterIP   10.68.76.7   &lt;none&gt;        80/TCP    68s   app=nginx
+</code></pre><p>可以看到，Service 具有一个固定的 IP 10.68.76.7。同样，通过 describe 可以看到更多详细的信息：</p>
+<pre><code>$ kubectl describe svc nginx -n will
+Name:              nginx
+Namespace:         will
+Labels:            app=nginx
+Annotations:       &lt;none&gt;
+Selector:          app=nginx
+Type:              ClusterIP
+IP Families:       &lt;none&gt;
+IP:                10.68.76.7
+IPs:               10.68.76.7
+Port:              &lt;unset&gt;  80/TCP
+TargetPort:        80/TCP
+Endpoints:         172.20.3.171:80
+Session Affinity:  None
+Events:            &lt;none&gt;
+</code></pre><p>其中，Endpoint 表明 Service 所选中的 PodIP:PodPort。我们可以查看 Pod 信息来验证：</p>
+<pre><code>$ kubectl get pods -o wide -n will
+NAME                     READY   STATUS    RESTARTS   AGE   IP            NODE       NOMINATED NODE   READINESS GATES
+nginx-646b46d648-hbwg2   1/1     Running   0          14m   172.17.0.11   minikube   &lt;none&gt;           &lt;none&gt;
+</code></pre><h2 id="query-service">Query service<a href="#query-service" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>创建 Service 后，我们可以在主机上直接访问该 Service。下面两条命令实际上访问的都是同一个后端。第一个命令通过 Service IP 访问，第二个命令通过 Pod IP 访问。</p>
+<p>通过 Service IP 访问：</p>
+<pre><code>$ minikube ssh
+$ curl 10.96.6.136
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+...
+&lt;/html&gt;
+</code></pre><p>通过 Pod IP 访问：</p>
+<pre><code>$ minikube ssh
+$ curl 172.17.0.11
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+...
+&lt;/html&gt;
+</code></pre><p>上面的命令创建了一个名为 nginx 的 Service，并使用 80 作为服务端口。这里，我们的 nginx 容器监听的是容器的 80 端口，该端口是 Pod IP 所监听的端口；我们可以在 Service 上使用不同的端口。例如，若我们想暴露的服务端口是 8080 端口，需要使用 port 和 targetPort 选项。</p>
+<p>首先，删除已经创建的 Service：</p>
+<pre><code>$ kubectl delete svc nginx -n tutorial
+service &quot;nginx&quot; deleted
+</code></pre><p>之后，创建 Service：</p>
+<pre><code>$ kubectl expose deployment nginx --port 8080 --target-port 80 -n tutorial
+service &quot;nginx&quot; exposed
+</code></pre><p>尝试用 8080 端口访问服务</p>
+<pre><code>$ kubectl get svc nginx -n tutorial
+NAME    TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)    AGE
+nginx   ClusterIP   10.98.125.20   &lt;none&gt;        8080/TCP   6s
+
+$ minikube ssh
+$ curl 10.98.125.20:8080
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+...
+&lt;/html&gt;
+</code></pre><p>上面是在minikube中访问，这是访问k8s集群的方式，首先进入容器，然后通过serviceIP的方式访问服务</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210707164532565.png"
+    alt="image-20210707164532565"  />
+</p>
+</p>
+<h2 id="nodeport-service">NodePort service<a href="#nodeport-service" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>上述创建的 Service 只能被集群内部的节点和 Pod 访问，并不能被外部访问。我们可以通过两种方式暴露服务：<code>NodePort</code> 和 <code>LoadBalancer</code>。<code>NodePort</code> 通过在每个节点打开一个端口对外提供服务，<code>LoadBalancer</code> 通过创建一个外部负载均衡器（例如公有云负载均衡器）来对外提供服务。这里我们尝试使用 <code>NodePort</code>。</p>
+<p>首先，删除已有的 Service：</p>
+<pre><code>$ kubectl delete svc nginx -n will
+service &quot;nginx&quot; deleted
+</code></pre><p>通过 NodePort 暴露服务，注意这里使用了 <code>--type NodePort</code>：</p>
+<pre><code>$ kubectl expose deployment nginx --port 80 --type NodePort -n will
+service &quot;nginx&quot; exposed
+</code></pre><p>查看 Service 的细节：</p>
+<pre><code>[root@openshift-m1-cst ~]# kubectl get svc nginx -n will
+NAME    TYPE       CLUSTER-IP    EXTERNAL-IP   PORT(S)        AGE
+nginx   NodePort   10.68.92.85   &lt;none&gt;        80:30594/TCP   51s
+
+[root@openshift-m1-cst ~]# kubectl describe svc nginx -n will
+Name:                     nginx
+Namespace:                will
+Labels:                   app=nginx
+Annotations:              &lt;none&gt;
+Selector:                 app=nginx
+Type:                     NodePort
+IP Families:              &lt;none&gt;
+IP:                       10.68.92.85
+IPs:                      10.68.92.85
+Port:                     &lt;unset&gt;  80/TCP
+TargetPort:               80/TCP
+NodePort:                 &lt;unset&gt;  30594/TCP
+Endpoints:                172.20.3.171:80
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   &lt;none&gt;
+</code></pre><p>从以上输出可以看到，nginx 服务打开了节点的 30594端口（每个节点），我们可以通过 <code>NodeIP:NodePort</code> 访问服务。</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210708104459138.png"
+    alt="image-20210708104459138"  />
+</p>
+</p>
+<pre><code>$ curl $(minikube ip):32542
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+...
+&lt;/html&gt;
+</code></pre><blockquote>
+<p>PS：NodeIP可以通过<code>describe node nginx-7b7b957b6b-hh5v9 -n will</code>获得；</p>
+</blockquote>
+<h2 id="readings">Readings<a href="#readings" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/concepts/services-networking/service/" target="_blank" rel="noopener">kubernetes service</a>
+. Please read as much as you can, we&rsquo;ll come back to service again.</li>
+<li><a href="https://kubernetes.io/docs/tasks/access-application-cluster/connecting-frontend-backend/" target="_blank" rel="noopener">run application with service</a>
+.</li>
+<li><a href="https://speakerdeck.com/thockin/kubernetes-a-very-brief-explanation-of-ports" target="_blank" rel="noopener">ports in kubernetes</a>
+</li>
+</ul>
+<h1 id="kubernetes-ingress">Kubernetes Ingress<a href="#kubernetes-ingress" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>上面我们提到有一个叫作 <code>LoadBalancer</code> 类型的 <code>Service</code>，它会为你在 Cloud Provider（比如：Google Cloud 或者 OpenStack）里创建一个与该 Service 对应的负载均衡服务。但是，相信你也应该能感受到，由于每个 Service 都要有一个负载均衡服务，所以这个做法实际上既浪费成本又高。作为用户，我其实更希望看到 Kubernetes 为我内置一个全局的负载均衡器。然后，通过我访问的 URL，把请求转发给不同的后端 Service。这种全局的、为了代理不同后端 Service 而设置的负载均衡服务，就是 Kubernetes 里的 <code>Ingress</code> 服务。</p>
+<p>Ingress 的功能其实很容易理解：所谓 Ingress 就是 Service 的“Service”，这就是它们两者的关系。</p>
+<pre><code> 	internet
+        |
+   [ Ingress ]
+   --|-----|--
+   [ Services ]
+</code></pre><p>通过使用 Kubernetes 的 Ingress 来创建一个统一的负载均衡器，从而实现当用户访问不同的域名时，访问后端不同的服务。</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/d2b5ca33bd970f64a6301fa75ae2eb22-8.png"
+    alt="img"  />
+</p>
+</p>
+<p>假如我现在有这样一个站点：<code>https://cafe.example.com</code>。其中 <code>https://cafe.example.com/coffee</code>，对应的是“咖啡点餐系统”。而 <code>https://cafe.example.com/tea</code>，对应的则是“茶水点餐系统”。这两个系统，分别由名叫 <code>coffee</code> 和 <code>tea</code> 这样两个 Deployment 来提供服务，可以看到这是一种经典的扇出（fanout）行为。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">extensions/v1beta1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Ingress</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cafe-ingress</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">tls</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">hosts</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="l">cafe.example.com</span><span class="w">
+</span><span class="w">    </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l">cafe-secret</span><span class="w">
+</span><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">cafe.example.com</span><span class="w">
+</span><span class="w">    </span><span class="nt">http</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/tea</span><span class="w">
+</span><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l">tea-svc</span><span class="w">
+</span><span class="w">          </span><span class="nt">servicePort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/coffee</span><span class="w">
+</span><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l">coffee-svc</span><span class="w">
+</span><span class="w">          </span><span class="nt">servicePort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></code></pre></div><p>最值得我们关注的，是 <code>rules</code> 字段。在 Kubernetes 里，这个字段叫作：<code>IngressRule</code>。
+IngressRule 的 Key，就叫做：<code>host</code>。它必须是一个标准的域名格式（Fully Qualified Domain Name）的字符串，而不能是 IP 地址。</p>
+<p><strong>Ingress 规则</strong><a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress/#ingress-rules" target="_blank" rel="noopener"> </a>
+</p>
+<p>每个 HTTP 规则都包含以下信息：</p>
+<ul>
+<li><code>host</code>。可选项。如果未指定 <code>host</code>，则该规则适用于通过指定 IP 地址的所有入站 HTTP 通信。 如果提供了 <code>host</code>，则 <code>rules</code> 适用于该 <code>host</code>。</li>
+<li><code>paths</code> 路径列表 paths（例如，<code>/testpath</code>）,每个路径都有一个由 <code>serviceName</code> 和 <code>servicePort</code> 定义的关联后端。 在负载均衡器将流量定向到引用的服务之前，主机和路径都必须匹配传入请求的内容。</li>
+<li><code>backend</code>（后端）是 <a href="https://kubernetes.io/zh/docs/concepts/services-networking/service/" target="_blank" rel="noopener">Service 文档</a>
+中所述的服务和端口名称的组合。 与规则的 <code>host</code> 和 <code>path</code> 匹配的对 Ingress 的 HTTP（和 HTTPS ）请求将发送到指定对应的 <code>backend</code>。</li>
+</ul>
+<p>通常在 Ingress 控制器中会配置 <code>defaultBackend</code>（默认后端），以服务于任何不符合规约中 <code>path</code> 的请求。</p>
+<p>所以在我们的例子里，我定义了两个 path，它们分别对应 <code>coffee</code> 和 <code>tea</code> 这两个 Deployment 的 Service（即 <code>coffee-svc</code> 和 <code>tea-svc</code>）。</p>
+<p>通过上面的介绍，不难看到所谓 Ingress 对象，其实就是 Kubernetes 项目对“<code>反向代理</code>”的一种抽象。</p>
+<p>一个 <code>Ingress</code> 对象的主要内容，实际上就是一个“反向代理”服务（比如：Nginx）的配置文件的描述。而这个代理服务对应的转发规则，就是 <code>IngressRule</code>。</p>
+<p>这就是为什么在每条 IngressRule 里，需要有一个 host 字段来作为这条 IngressRule 的入口，然后还需要有一系列 path 字段来声明具体的转发策略。这其实跟 Nginx、HAproxy 等项目的配置文件的写法是一致的。</p>
+<p>在实际使用中，我们一般选择一种<code> Ingress Controller</code>, 将其部署在k8s集群中，这样它就会根据我们定义的 Ingress 对象来提供对应的代理功能。</p>
+<p>业界常用的各种反向代理项目，比如 Nginx、HAProxy、Envoy、Traefik 等，都已经为 Kubernetes 专门维护了对应的 <code>Ingress Controller</code>。</p>
+<p>Nginx Ingress Controller 的示例请参考 <a href="https://time.geekbang.org/column/article/69214">https://time.geekbang.org/column/article/69214</a></p>
+<p>推荐参考官方推荐脚本：https://github.com/resouer/kubernetes-ingress/tree/master/examples/complete-example</p>
+<p>至此通过一张图来总结一下K8S的网络结构：</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210709091700683.png"
+    alt="image-20210709091700683"  />
+</p>
+</p>
+<p>K8S内部的请求处理：</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210709092001687.png"
+    alt="image-20210709092001687"  />
+</p>
+</p>
+<p>K8S的外部请求处理</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210709092028497.png"
+    alt="image-20210709092028497"  />
+</p>
+</p>
+<h1 id="kubernetes-labelselector">Kubernetes Label&amp;Selector<a href="#kubernetes-labelselector" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>Service 通过 selector &amp; label 来选取它所管理的 Pod，同样 Deployment 也是通过 selector &amp; label 选取它所管理的 Pod。</p>
+<h1 id="kubernetes-deployment-operations">Kubernetes Deployment Operations<a href="#kubernetes-deployment-operations" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<h2 id="scale-up-using-kubectl">Scale up using kubectl<a href="#scale-up-using-kubectl" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>接下来我们将学习 kubernetes Deployment 的另外两个操作：水平扩展应用和更新应用。下图中，Deployment A 有一个 Pod 在运行，Service A 管理该 Pod。</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/deployment_initial.png"
+    alt="deployment_initial"  />
+</p>
+</p>
+<p>通过调整 Deployment 的副本数量，我们可以将 Pod 的数量调整到 4 个。与此同时，Service 会感知到同样 label 的 Pod 被扩容到了 4 个，会将流量导到所有 Pod（而不是只有最开始的 Pod）。</p>
+<p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/deployment_service-1625650180585.png"
+    alt="deployment_service"  />
+</p>
+</p>
+<p>接下来，我们可以通过 <code>kubectl scale</code> 子命令将 Pod 数量扩容到四个：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl get deployments -n will</span>
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   1/1     <span class="m">1</span>            <span class="m">1</span>           23h
+<span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl scale deployment nginx --replicas=4 -n will</span>
+deployment.apps/nginx scaled
+<span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl get deployments -n will</span>
+NAME    READY   UP-TO-DATE   AVAILABLE   AGE
+nginx   4/4     <span class="m">4</span>            <span class="m">4</span>           23h
+<span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl get pods -n will -o wide</span>
+NAME                     READY   STATUS    RESTARTS   AGE   IP             NODE             NOMINATED NODE   READINESS GATES
+nginx-7b7b957b6b-fnbdt   1/1     Running   <span class="m">0</span>          54s   172.20.4.92    172.18.100.162   &lt;none&gt;           &lt;none&gt;
+nginx-7b7b957b6b-hh5v9   1/1     Running   <span class="m">0</span>          23h   172.20.3.171   172.18.100.163   &lt;none&gt;           &lt;none&gt;
+nginx-7b7b957b6b-trclf   1/1     Running   <span class="m">0</span>          54s   172.20.3.172   172.18.100.163   &lt;none&gt;           &lt;none&gt;
+nginx-7b7b957b6b-v6q2n   1/1     Running   <span class="m">0</span>          54s   172.20.4.91    172.18.100.162   &lt;none&gt;           &lt;none&gt;
+</code></pre></div><p><p class="md__image">
+  <img src="../k8s%e5%85%a5%e9%97%a8.assets/image-20210708104332937.png"
+    alt="image-20210708104332937"  />
+</p>
+</p>
+<p>可以看到目前有四个 Pods，其中 <code>AGE</code> 较小的是新生成的。</p>
+<h2 id="view-service">View service<a href="#view-service" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>之前提到，Service 会感知到 Pods 的变化，在所有的 Pods 中负载均衡，我们可以通过 kubectl 查看。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl describe service nginx -n will</span>
+Name:                     nginx
+Namespace:                will
+Labels:                   <span class="nv">app</span><span class="o">=</span>nginx
+Annotations:              &lt;none&gt;
+Selector:                 <span class="nv">app</span><span class="o">=</span>nginx
+Type:                     NodePort
+IP Families:              &lt;none&gt;
+IP:                       10.68.92.85
+IPs:                      10.68.92.85
+Port:                     &lt;unset&gt;  80/TCP
+TargetPort:               80/TCP
+NodePort:                 &lt;unset&gt;  30594/TCP
+Endpoints:                172.20.3.171:80,172.20.3.172:80,172.20.4.91:80 + <span class="m">1</span> more...
+Session Affinity:         None
+External Traffic Policy:  Cluster
+Events:                   &lt;none&gt;
+</code></pre></div><h2 id="scale-down-using-kubectl">Scale down using kubectl<a href="#scale-down-using-kubectl" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>我们也可以通过同样的命令缩容（kubectl scale）。Deployment 不会区分是扩容命令或是缩容命令，它只关心将实例的数量调整到指定的数量。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl scale deployments nginx --replicas=3 -n will</span>
+deployment.apps/nginx scaled
+<span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl get pods -n will</span>
+NAME                     READY   STATUS    RESTARTS   AGE
+nginx-7b7b957b6b-fnbdt   1/1     Running   <span class="m">0</span>          5m16s
+nginx-7b7b957b6b-hh5v9   1/1     Running   <span class="m">0</span>          23h
+nginx-7b7b957b6b-trclf   1/1     Running   <span class="m">0</span>          5m16s
+</code></pre></div><h2 id="update-deployment">Update deployment<a href="#update-deployment" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>接下来，我们将了解 kubernetes 如何进行应用更新。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl <span class="nb">set</span> image deployments nginx <span class="nv">nginx</span><span class="o">=</span>cargo.caicloud.io/caicloud/nginx:1.9.3 -n tutorial
+deployment.extensions/nginx image updated
+</code></pre></div><p>分析一下上述命令，<code>kubectl set image</code> 将 Deployment 中的 nginx 镜像版本改为 1.9.3；运行该命令之后，发现 kubernetes 删掉了一个现有的 Pod，然后重新启动了两个新的 Pod（我们可以从一串数字中看出，&ldquo;86d4667764&rdquo; 是新 Pod 的 Hash 值，&ldquo;d6b94d6f6&rdquo; 是老 Pod 的 Hash 值）。等待一段时间后再次查询 Pods，发现所有新的 Pods 已经上线。整个过程中，我们都可以尝试去访问 nginx 服务，注意其版本的变化。</p>
+<h1 id="kubernetes-events">Kubernetes Events<a href="#kubernetes-events" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>Kubernetes events 显示了 kubernetes 集群中所有的事件。不同于其他资源，kubernetes events 并不是由用户创建的资源，而是由 kubernetes 系统组件创建，用以提示用户集群发生的各种事件。我们可以通过 kubectl get 命令来查询集群的事件。默认情况下，event 会有 TTL，超过 TTL 之后 kubernetes 会将事件删掉。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>root@openshift-m1-cst ~<span class="o">]</span><span class="c1"># kubectl get events -n will</span>
+LAST SEEN   TYPE     REASON              OBJECT                        MESSAGE
+8m57s       Normal   Scheduled           pod/nginx-7b7b957b6b-fnbdt    Successfully assigned will/nginx-7b7b957b6b-fnbdt to 172.18.100.162
+8m57s       Normal   Pulling             pod/nginx-7b7b957b6b-fnbdt    Pulling image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span>
+8m49s       Normal   Pulled              pod/nginx-7b7b957b6b-fnbdt    Successfully pulled image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span> in 7.582820587s
+8m49s       Normal   Created             pod/nginx-7b7b957b6b-fnbdt    Created container nginx
+8m49s       Normal   Started             pod/nginx-7b7b957b6b-fnbdt    Started container nginx
+8m57s       Normal   Scheduled           pod/nginx-7b7b957b6b-trclf    Successfully assigned will/nginx-7b7b957b6b-trclf to 172.18.100.163
+8m57s       Normal   Pulling             pod/nginx-7b7b957b6b-trclf    Pulling image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span>
+8m57s       Normal   Pulled              pod/nginx-7b7b957b6b-trclf    Successfully pulled image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span> in 62.433594ms
+8m57s       Normal   Created             pod/nginx-7b7b957b6b-trclf    Created container nginx
+8m57s       Normal   Started             pod/nginx-7b7b957b6b-trclf    Started container nginx
+8m57s       Normal   Scheduled           pod/nginx-7b7b957b6b-v6q2n    Successfully assigned will/nginx-7b7b957b6b-v6q2n to 172.18.100.162
+8m57s       Normal   Pulling             pod/nginx-7b7b957b6b-v6q2n    Pulling image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span>
+8m49s       Normal   Pulled              pod/nginx-7b7b957b6b-v6q2n    Successfully pulled image <span class="s2">&#34;harbor.apusic.com/cloud/nginx&#34;</span> in 7.643466668s
+8m49s       Normal   Created             pod/nginx-7b7b957b6b-v6q2n    Created container nginx
+8m49s       Normal   Started             pod/nginx-7b7b957b6b-v6q2n    Started container nginx
+4m10s       Normal   Killing             pod/nginx-7b7b957b6b-v6q2n    Stopping container nginx
+8m57s       Normal   SuccessfulCreate    replicaset/nginx-7b7b957b6b   Created pod: nginx-7b7b957b6b-v6q2n
+8m57s       Normal   SuccessfulCreate    replicaset/nginx-7b7b957b6b   Created pod: nginx-7b7b957b6b-fnbdt
+8m57s       Normal   SuccessfulCreate    replicaset/nginx-7b7b957b6b   Created pod: nginx-7b7b957b6b-trclf
+4m10s       Normal   SuccessfulDelete    replicaset/nginx-7b7b957b6b   Deleted pod: nginx-7b7b957b6b-v6q2n
+8m57s       Normal   ScalingReplicaSet   deployment/nginx              Scaled up replica <span class="nb">set</span> nginx-7b7b957b6b to <span class="m">4</span>
+4m10s       Normal   ScalingReplicaSet   deployment/nginx              Scaled down replica <span class="nb">set</span> nginx-7b7b957b6b to <span class="m">3</span>
+</code></pre></div><p>Event 与资源是相联系的，因此单独查询 Event 并不是非常有用，我们可以通过获取资源的详细信息来查看 Event 信息。例如， <code>kubectl describe pod &lt;pod name&gt;</code> 会返回 Pod 的 event 信息。</p>
+<h1 id="kubernetes-pod-lifecycle">Kubernetes Pod Lifecycle<a href="#kubernetes-pod-lifecycle" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>od 生命周期主要包括：</p>
+<ul>
+<li>Pod Phase</li>
+<li>Pod Condition</li>
+<li>Restart Policy</li>
+<li>Container probes</li>
+</ul>
+<p>用户可以通过 <code>kubectl describe pods</code> 查看以上所有信息。Pod Phase 和 Pod Condition 比较简单，我们可以实时看到 kubernetes 的反馈。这里我们主要实践 Restart Policy 和 Container probes。</p>
+<h2 id="restart-policy">Restart policy<a href="#restart-policy" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Restart Policy 指定当 Pod 内容器出错或执行完毕后，是否重启。</p>
+<h2 id="container-probes">Container probes<a href="#container-probes" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Container probes 分为两种：LivenessProbe 和 ReadinessProbe。Liveness 检查应用是否依然健康无错，若有错，则 kubernetes 会根据 policy 重启或仅更新状态。ReadinessCheck 检查应用是否可以对外提供服务，若应用 Readiness 检查不通过，则 kubernetes 会将 Pod 从服务池中剔除。两者的使用方法都相同，这里我们来看看 Container probes。</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">apiVersion: v1
+kind: Pod
+metadata:
+  namespace: tutorial
+  name: nginx
+  labels:
+    app: nginx
+spec:
+  containers:
+    - name: nginx
+      image: cargo.caicloud.io/caicloud/nginx:1.9.7
+      resources:
+        requests:
+          cpu: <span class="s2">&#34;0.1&#34;</span>
+          memory: <span class="s2">&#34;100Mi&#34;</span>
+        limits:
+          cpu: <span class="s2">&#34;0.1&#34;</span>
+          memory: <span class="s2">&#34;100Mi&#34;</span>
+      livenessProbe:
+        httpGet:
+          path: /
+          port: <span class="m">80</span>
+        initialDelaySeconds: <span class="m">5</span>
+        periodSeconds: <span class="m">5</span>
+</code></pre></div><p>可以看到里面定义了 livenessProbe。当我们运行创建该 Pod 的时候，kubernetes 就开始为我们监控该 Pod 的 liveness 信息。</p>
+<h1 id="kubernetes-configmap--secret">Kubernetes ConfigMap &amp; Secret<a href="#kubernetes-configmap--secret" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<p>ConfigMap 是 kubernetes 用来管理配置信息的资源类型。我们通过单独创建 ConfigMap，再将 ConfigMap 挂载到 Pod 内的方式分离配置和应用。我们通过一个实验来学习如何正确使用 ConfigMap。</p>
+<p>创建 ConfigMap 可以通过 yaml 文件，也可以从文件直接创建。通过 yaml 文件的方式与创建其他资源类似。</p>
+<p>有两个文件game.properties</p>
+<pre><code class="language-properties" data-lang="properties">enemies=aliens
+lives=3
+enemies.cheat=true
+enemies.cheat.level=noGoodRotten
+secret.code.passphrase=UUDDLRLRBABAS
+secret.code.allowed=true
+secret.code.lives=30
+</code></pre><p>ui.properties</p>
+<pre><code class="language-properties" data-lang="properties">color.good=purple
+color.bad=yellow
+allow.textmode=true
+how.nice.to.look=fairlyNice
+</code></pre><p>我们通过 kubectl 命令创建：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create configmap game-config --from-file<span class="o">=</span>resources/game.properties --from-file<span class="o">=</span>resources/ui.properties -n will
+configmap/game-config created
+</code></pre></div><p>创建之后，通过 kubectl get configmap 来查看创建的 ConfigMap：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get configmap game-config -o wide -n will
+NAME          DATA      AGE
+game-config   <span class="m">2</span>         2m
+$ kubectl describe configmap game-config -n will
+Name:         game-config
+Namespace:    tutorial
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
+
+<span class="nv">Data</span>
+<span class="o">====</span>
+game.properties:
+----
+<span class="nv">enemies</span><span class="o">=</span>aliens
+<span class="nv">lives</span><span class="o">=</span><span class="m">3</span>
+enemies.cheat<span class="o">=</span><span class="nb">true</span>
+enemies.cheat.level<span class="o">=</span>noGoodRotten
+secret.code.passphrase<span class="o">=</span>UUDDLRLRBABAS
+secret.code.allowed<span class="o">=</span><span class="nb">true</span>
+secret.code.lives<span class="o">=</span><span class="m">30</span>
+ui.properties:
+----
+color.good<span class="o">=</span>purple
+color.bad<span class="o">=</span>yellow
+allow.textmode<span class="o">=</span><span class="nb">true</span>
+how.nice.to.look<span class="o">=</span>fairlyNice
+Events:  &lt;none&gt;
+</code></pre></div><p>查看详情：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get configmap game-config -o yaml -n will
+apiVersion: v1
+data:
+  game.properties: <span class="p">|</span>-
+    <span class="nv">enemies</span><span class="o">=</span>aliens
+    <span class="nv">lives</span><span class="o">=</span><span class="m">3</span>
+    enemies.cheat<span class="o">=</span><span class="nb">true</span>
+    enemies.cheat.level<span class="o">=</span>noGoodRotten
+    secret.code.passphrase<span class="o">=</span>UUDDLRLRBABAS
+    secret.code.allowed<span class="o">=</span><span class="nb">true</span>
+    secret.code.lives<span class="o">=</span><span class="m">30</span>
+  ui.properties: <span class="p">|</span>-
+    color.good<span class="o">=</span>purple
+    color.bad<span class="o">=</span>yellow
+    allow.textmode<span class="o">=</span><span class="nb">true</span>
+    how.nice.to.look<span class="o">=</span>fairlyNice
+kind: ConfigMap
+metadata:
+  creationTimestamp: <span class="s2">&#34;2019-06-28T08:49:20Z&#34;</span>
+  name: game-config
+  namespace: tutorial
+  resourceVersion: <span class="s2">&#34;31335&#34;</span>
+  selfLink: /api/v1/namespaces/tutorial/configmaps/game-config
+  uid: 134781b7-5565-4037-b0b2-be42767255a0
+</code></pre></div><p>创建 ConfigMap 之后，我们可以创建 Pod 来使用该 ConfigMap：</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tutorial</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pod-configmap</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Never</span><span class="w">
+</span><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">test-container</span><span class="w">
+</span><span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/busybox:1.26</span><span class="w">
+</span><span class="w">      </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;/bin/sh&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">      </span><span class="nt">args</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;-c&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;cat /etc/config/game.properties &amp;&amp; cat /etc/config/ui.properties&#34;</span><span class="p">]</span><span class="w">
+</span><span class="w">      </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">config-volume</span><span class="w">
+</span><span class="w">        </span><span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/etc/config</span><span class="w">
+</span><span class="w">      </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0.1&#34;</span><span class="w">
+</span><span class="w">          </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;100Mi&#34;</span><span class="w">
+</span><span class="w">        </span><span class="nt">limits</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;0.1&#34;</span><span class="w">
+</span><span class="w">          </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;100Mi&#34;</span><span class="w">
+</span><span class="w">  </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">config-volume</span><span class="w">
+</span><span class="w">      </span><span class="nt">configMap</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">game-config</span><span class="w">
+</span></code></pre></div><p>查看：</p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get pods -n will
+NAME                     READY     STATUS             RESTARTS   AGE
+pod-configmap            0/1       Completed          <span class="m">0</span>          2m
+
+$ kubectl logs pod-configmap -n will
+<span class="nv">enemies</span><span class="o">=</span>aliens
+<span class="nv">lives</span><span class="o">=</span><span class="m">3</span>
+enemies.cheat<span class="o">=</span><span class="nb">true</span>
+enemies.cheat.level<span class="o">=</span>noGoodRotten
+secret.code.passphrase<span class="o">=</span>UUDDLRLRBABAS
+secret.code.allowed<span class="o">=</span><span class="nb">true</span>
+secret.code.lives<span class="o">=</span>30color.good<span class="o">=</span>purple
+color.bad<span class="o">=</span>yellow
+allow.textmode<span class="o">=</span><span class="nb">true</span>
+how.nice.to.look<span class="o">=</span>fairlyNice
+</code></pre></div><p>这里我们看到了通过挂载文件的方式使用 configmap，kubernetes 同时也支持通过环境变量的方式使用 configmap。此外，Secret 的使用方式与 Configmap 类似，但内容会被加密。</p>
+<h2 id="readings-1">Readings<a href="#readings-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<ul>
+<li><a href="https://kubernetes.io/docs/tasks/configure-pod-container/configure-pod-configmap/" target="_blank" rel="noopener">kubernetes configmap</a>
+</li>
+<li><a href="https://kubernetes.io/docs/tasks/inject-data-application/distribute-credentials-secure/" target="_blank" rel="noopener">distribute secret</a>
+</li>
+</ul>
+<h1 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<ul>
+<li><a href="https://github.com/caicloud/kube-ladder" target="_blank" rel="noopener">kube-ladder</a>
+</li>
+<li><a href="https://jhooq.com/get-yaml-for-deployed-kubernetes-resources/" target="_blank" rel="noopener">kubectl export yaml OR How to generate YAML for deployed kubernetes resources</a>
+</li>
+<li><a href="k8s%e5%85%a5%e9%97%a8">k8s 部署 nginx 入门</a>
+</li>
+</ul>
+
+			</div><div class="content">
+	<br>
+	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/k8s/k8s-%E9%9B%86%E7%BE%A4%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dipnodeippodipclusterip/">kubernetes集群里的三种IP</a></li>
+	
+	<li><a href="/posts/k8s/%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84%E5%A4%9A%E4%BA%91%E5%92%8C%E6%B7%B7%E5%90%88%E4%BA%91/">基于Kubernetes的多云和混合云</a></li>
+	
+	<li><a href="/posts/k8s/dapr%E5%85%A5%E9%97%A8/">dapr入门</a></li>
+	
+	<li><a href="/posts/k8s/helm%E5%AD%A6%E4%B9%A0/">helm学习</a></li>
+	
+	<li><a href="/posts/k8s/kubelet%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/">Kubelet实现原理</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/kubernetes">kubernetes</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>6189 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-05-23 21:23 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#namespaces">Namespaces</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#获取pod-ip">获取pod IP</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#create-service">Create service</a></li>
+    <li><a href="#get-service">Get service</a></li>
+    <li><a href="#query-service">Query service</a></li>
+    <li><a href="#nodeport-service">NodePort service</a></li>
+    <li><a href="#readings">Readings</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#scale-up-using-kubectl">Scale up using kubectl</a></li>
+    <li><a href="#view-service">View service</a></li>
+    <li><a href="#scale-down-using-kubectl">Scale down using kubectl</a></li>
+    <li><a href="#update-deployment">Update deployment</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#restart-policy">Restart policy</a></li>
+    <li><a href="#container-probes">Container probes</a></li>
+  </ul>
+
+  <ul>
+    <li><a href="#readings-1">Readings</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%BA%8C/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>kubernetes基础使用（二）</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/algorithm/lru%E7%AE%97%E6%B3%95/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>LRU算法</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

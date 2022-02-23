@@ -9,12 +9,39 @@
     <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
     <lastBuildDate>Tue, 23 Nov 2021 21:23:18 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/kubernetes/index.xml" rel="self" type="application/rss+xml" />
     <item>
-      <title>Kubernetes 集群里的三种IP</title>
+      <title>kubernetes集群里的三种IP</title>
       <link>https://willje.github.io/posts/k8s/k8s-%E9%9B%86%E7%BE%A4%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dipnodeippodipclusterip/</link>
       <pubDate>Tue, 23 Nov 2021 21:23:18 +0800</pubDate>
       
       <guid>https://willje.github.io/posts/k8s/k8s-%E9%9B%86%E7%BE%A4%E9%87%8C%E7%9A%84%E4%B8%89%E7%A7%8Dipnodeippodipclusterip/</guid>
       <description>Kubernetes集群里有三种IP地址，分别如下： Node IP：Node节点的IP地址，即物理网卡的IP地址。 Pod IP：Pod的IP地址，即docker容器的IP地址，此为虚拟IP地址。 Cluster IP：Service的IP地址，此为虚拟IP地址。 Node IP 可以是物理机的IP（也可能是虚拟机IP）。每个Service都会在Node节点上开通一个端口，外部可以通过NodeIP:No</description>
+    </item>
+    
+    <item>
+      <title>基于Kubernetes的多云和混合云</title>
+      <link>https://willje.github.io/posts/k8s/%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84%E5%A4%9A%E4%BA%91%E5%92%8C%E6%B7%B7%E5%90%88%E4%BA%91/</link>
+      <pubDate>Tue, 23 Nov 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/%E5%9F%BA%E4%BA%8Ekubernetes%E7%9A%84%E5%A4%9A%E4%BA%91%E5%92%8C%E6%B7%B7%E5%90%88%E4%BA%91/</guid>
+      <description>https://www.bilibili.com/video/av285507760/ 云原生与传统应用程序的区别 拥抱错误，容错转移，资源调配 水平缩放、可用冗余； 云原生应用的需求 快速、稳定重新发布应用 脚本-》虚拟机-》容器化 动态、灵活的网络 配置脚本-》软件定义网路-》服务网格 OpenApplicationModel https://oam.dev Dapr https://dapr.io/ The Distributed Application Runtime Dapr介绍| Dapr学习笔记 - 敖小剑 工作方式 Dapr向每个计算单元注入了一个Sidecar容器/进程。Sidecar与事件触发器进行交互，并通过标准HT</description>
+    </item>
+    
+    <item>
+      <title>dapr入门</title>
+      <link>https://willje.github.io/posts/k8s/dapr%E5%85%A5%E9%97%A8/</link>
+      <pubDate>Sat, 13 Nov 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/dapr%E5%85%A5%E9%97%A8/</guid>
+      <description>Dapr是什么？ Dapr 是 Distributed Application Runtime （分布式应用运行时）的缩写。 工作方式 Dapr向每个计算单元注入了一个Sidecar容器/进程。Sidecar与事件触发器进行交互，并通过标准HTTP或gRPC协议与计算单元进行通信。这使Dapr能够支持所有现有和将来的编程语言，而无需您导入框架或库。 Dapr通过标准的HTTP verbs 或gRPC interface 提供内置的状态管理，可靠消息传递（至少一次传</description>
+    </item>
+    
+    <item>
+      <title>helm学习</title>
+      <link>https://willje.github.io/posts/k8s/helm%E5%AD%A6%E4%B9%A0/</link>
+      <pubDate>Fri, 01 Oct 2021 16:23:40 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/helm%E5%AD%A6%E4%B9%A0/</guid>
+      <description>helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release</description>
     </item>
     
     <item>
@@ -36,48 +63,39 @@
     </item>
     
     <item>
-      <title>k8s入门</title>
-      <link>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/</link>
-      <pubDate>Fri, 23 Jul 2021 21:23:18 +0800</pubDate>
+      <title>Kubernetes网络模型</title>
+      <link>https://willje.github.io/posts/k8s/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</link>
+      <pubDate>Wed, 18 Aug 2021 21:23:18 +0800</pubDate>
       
-      <guid>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A8/</guid>
-      <description>创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下</description>
+      <guid>https://willje.github.io/posts/k8s/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</guid>
+      <description>关于 Pod 如何接入网络这件事情，Kubernetes 做出了明确的选择。具体来说，Kubernetes 要求所有的网络插件实现必须满足如下要求： 所有的 Pod 可以与任何其他 Pod 直接通信，无需使用 NAT 映射（network address translation） 所有节点可以与所有 Pod 直接通信，无需使用 NAT 映射 Pod 内部获取到的 IP 地址与其他 Pod 或节点与其通信时的 IP 地址是同一个 在这些限制条件下，需要解决如下</description>
     </item>
     
     <item>
-      <title>k8s鉴权</title>
-      <link>https://willje.github.io/posts/k8s/k8s%E9%89%B4%E6%9D%83/</link>
-      <pubDate>Sun, 25 Apr 2021 21:23:18 +0800</pubDate>
+      <title>kubernetes鉴权</title>
+      <link>https://willje.github.io/posts/k8s/kubernetes%E9%89%B4%E6%9D%83/</link>
+      <pubDate>Fri, 25 Jun 2021 21:23:18 +0800</pubDate>
       
-      <guid>https://willje.github.io/posts/k8s/k8s%E9%89%B4%E6%9D%83/</guid>
+      <guid>https://willje.github.io/posts/k8s/kubernetes%E9%89%B4%E6%9D%83/</guid>
       <description>在k8s中，客户端对API Server访问的大体流程如下： 用户简介 在k8s中，用户具有如下基础属性： 用户名：标识用户的字符串 UID：标识用户的数字 组：即用户组，包含若干个用户 额外字段：其他信息 看起来和Linux中的系统用户一模一样。。。不过基本上只需要关心用户名。 用户分类 在Kubernetes中，用户分为两类： 普通用户（normal user）：为Pod外的程</description>
     </item>
     
     <item>
-      <title>Win10使用wsl部署k8s环境</title>
-      <link>https://willje.github.io/posts/docker/win10%E4%BD%BF%E7%94%A8wsl%E9%83%A8%E7%BD%B2k8s%E7%8E%AF%E5%A2%83/</link>
-      <pubDate>Sat, 24 Apr 2021 21:57:01 +0800</pubDate>
+      <title>kubernetes基础使用（二）</title>
+      <link>https://willje.github.io/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%BA%8C/</link>
+      <pubDate>Tue, 25 May 2021 21:23:18 +0800</pubDate>
       
-      <guid>https://willje.github.io/posts/docker/win10%E4%BD%BF%E7%94%A8wsl%E9%83%A8%E7%BD%B2k8s%E7%8E%AF%E5%A2%83/</guid>
-      <description>前提 安装docker和go环境 配置wsl2 这个可以看之前的文章win10安装docker 安装kubectl 安装kubectl有几种方法，具体可以看install-kubectl-windows/ 直接使用curl curl -LO https://dl.k8s.io/release/v1.21.0/bin/windows/amd64/kubectl.exe 如果提示curl命令不存在，可以先安装一下curl，不过这里建议直接用github的curl（如果你安装了github的话），目录在github</description>
-    </item>
-    
-    <item>
-      <title>k8s概述</title>
-      <link>https://willje.github.io/posts/k8s/k8s%E6%A6%82%E8%BF%B0/</link>
-      <pubDate>Thu, 01 Apr 2021 16:23:40 +0800</pubDate>
-      
-      <guid>https://willje.github.io/posts/k8s/k8s%E6%A6%82%E8%BF%B0/</guid>
-      <description>集群架构与组件 Kubernetes 集群架构以及相关的核心组件如下图所示：一个 Kubernetes 集群一般包含一个 Master 节点和多个 Node 节点，一个节点可以看成是一台物理机或虚拟机。 Master Master 是 K8S 的集群控制节点，每个 K8S 集群里需要有一个 Master 节点来负责整个集群的管理和控制，基本上 K8S 所有的控制命令都是发给它，它来负责具体的执行过程。Master 节点通常会占据一个独立的服务器，因为它太重要了，如果它不可用，那么所有的控制</description>
-    </item>
-    
-    <item>
-      <title>k8s入门2</title>
-      <link>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A82/</link>
-      <pubDate>Sat, 25 Jul 2020 21:23:18 +0800</pubDate>
-      
-      <guid>https://willje.github.io/posts/k8s/k8s%E5%85%A5%E9%97%A82/</guid>
+      <guid>https://willje.github.io/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%BA%8C/</guid>
       <description>Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &amp;#34;pi&amp;#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&amp;#34;perl&amp;#34;,&amp;#34;-Mbignum=bpi&amp;#34;,&amp;#34;-wle&amp;#34;,&amp;#34;print bpi(2000)&amp;#34;]restartPolicy:Never一段时</description>
+    </item>
+    
+    <item>
+      <title>kubernetes基础使用（一）</title>
+      <link>https://willje.github.io/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%B8%80/</link>
+      <pubDate>Sun, 23 May 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%B8%80/</guid>
+      <description>创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下</description>
     </item>
     
   </channel>

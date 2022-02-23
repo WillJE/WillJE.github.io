@@ -65,6 +65,25 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/git/gitignore%E5%A6%82%E4%BD%95%E5%BF%BD%E7%95%A5%E4%B9%8B%E5%89%8D%E5%B7%B2%E6%8F%90%E4%BA%A4%E7%9A%84%E6%96%87%E4%BB%B6/">gitignore如何忽略之前已提交的文件</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>做开发时，有些编译生成的代码我们希望不提交到 git 上，这时候就要使用 .gitignore 对文件/文件夹进行忽略，但有时候会碰到个棘手的问题，就是之前已经正常提交到 git 上的文件，即使在 .gitignore 进行了忽略，但代码仓库里依旧还是存在。 其实通过几行简单的命令就可以轻松解决这个问题 首先删除本地缓存 $ git rm -r --cached . 新建/修改 .gitignore 文件 将需要忽略的文件/文件夹路径写到 .gitignore 里 commit 本次变更 $ git commit -m &#34;本次提交说</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-06-15</span>
+                        <a class="tag"
+                                   href="/tags/git/">git</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/other/tool/ansible%E5%85%A5%E9%97%A8/">Ansible入门</a>
                 </h2>
             </div>
@@ -161,6 +180,44 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%BA%8C/">kubernetes基础使用（二）</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &#34;pi&#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&#34;perl&#34;,&#34;-Mbignum=bpi&#34;,&#34;-wle&#34;,&#34;print bpi(2000)&#34;]restartPolicy:Never一段时</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-05-25</span>
+                        <a class="tag"
+                                   href="/tags/kubernetes/">kubernetes</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%B8%80/">kubernetes基础使用（一）</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-05-23</span>
+                        <a class="tag"
+                                   href="/tags/kubernetes/">kubernetes</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/algorithm/lru%E7%AE%97%E6%B3%95/">LRU算法</a>
                 </h2>
             </div>
@@ -193,66 +250,6 @@
                                 class="date">2021-05-20</span>
                         <a class="tag"
                                    href="/tags/%E7%BD%91%E7%BB%9C/">网络</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/go/basic/go%E4%B8%AD%E7%9A%84%E9%97%AD%E5%8C%85/">go中的闭包</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>匿名函数 参考博客： https://www.calhoun.io/what-is-a-closure/ https://blog.cloudflare.com/a-go-gotcha-when-closures-and-goroutines-collide/ 在说闭包之前，先说一下匿名函数，匿名函数就是没有名字的函数，可以将它理解为一个变量。看下面的例子： package main import &#34;fmt&#34; var DoStuff func() = func() { // Do stuff } func main() { DoStuff() DoStuff = func() { fmt.Println(&#34;Doing stuff!&#34;) } DoStuff() DoStuff = func() { fmt.Println(&#34;Doing other stuff.&#34;) } DoStuff() } //Doing stuff! //Doing other stuff. 可以在这里查看：https://play.golang.org/p/WPHkRpCzH4f 闭包 闭包是匿名函数与匿名函数所引用环境的组合。匿名函数有动态创建的特</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-15</span>
-                        <a class="tag"
-                                   href="/tags/go/">go</a><a class="tag"
-                                   href="/tags/%E9%97%AD%E5%8C%85/">闭包</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/go/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8Fgolang/">golang设计模式</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>前言 设计模式 Golang实现－《研磨设计模式》读书笔记 https://github.com/senghoo/golang-design-pattern 创建型模式 简单工厂模式(Simple Factory) go 语言没有构造函数一说，所以一般会定义NewXXX函数来初始化相关类。 NewXXX 函数返回接口时就是简单工厂模式，也就是说Golang的一般推荐做法就是简单工厂。 在这个simplefactory包中只有API 接口和NewAPI函数为包外可见，封装了实现细节。 package simplefactory import &#34;fmt&#34; //API is interface type API</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-02</span>
-                        <a class="tag"
-                                   href="/tags/golang/">golang</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/go/basic/%E6%B7%B1%E5%85%A5%E8%A7%A3%E6%9E%90-go-%E4%B8%AD-slice-%E5%BA%95%E5%B1%82%E5%AE%9E%E7%8E%B0/">深入解析 Go 中 Slice 底层实现</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>一. 切片和数组 关于切片和数组怎么选择？接下来好好讨论讨论这个问题。 在 Go 中，与 C 数组变量隐式作为指针使用不同，Go 数组是值类型，赋值和函数传参操作都会复制整个数组数据。 func main() { arrayA := [2]int{100, 200} var arrayB [2]int arrayB = arrayA fmt.Printf(&#34;arrayA : %p , %v\n&#34;, &amp;arrayA, arrayA) fmt.Printf(&#34;arrayB : %p , %v\n&#34;, &amp;arrayB, arrayB) testArray(arrayA) } func testArray(x [2]int) { fmt.Printf(&#34;func Array : %p , %v\n&#34;, &amp;x, x) } 打印结果： arrayA : 0xc4200bebf0 , [100 200] arrayB : 0xc4200bec00 , [100 200] func Array : 0xc4200bec30 , [100 200] 可以看到，三个内存地址都不同，这也就验证了 Go 中数组赋值和函数传</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-01</span>
-                        <a class="tag"
-                                   href="/tags/slice/">slice</a><a class="tag"
-                                   href="/tags/array/">array</a><a class="tag"
-                                   href="/tags/go/">go</a>
                     </div>
                 </div>
             </div>

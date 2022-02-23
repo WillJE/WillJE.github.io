@@ -65,6 +65,44 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/k8s/kubernetes%E6%A6%82%E8%BF%B0/">kubernetes概述</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>集群架构与组件 Kubernetes 集群架构以及相关的核心组件如下图所示：一个 Kubernetes 集群一般包含一个 Master 节点和多个 Node 节点，一个节点可以看成是一台物理机或虚拟机。 Master Master 是 K8S 的集群控制节点，每个 K8S 集群里需要有一个 Master 节点来负责整个集群的管理和控制，基本上 K8S 所有的控制命令都是发给它，它来负责具体的执行过程。Master 节点通常会占据一个独立的服务器，因为它太重要了，如果它不可用，那么所有的控制</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-04-01</span>
+                        <a class="tag"
+                                   href="/tags/kubernetes/">kubernetes</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/go/basic/go%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%82%E6%95%B0%E4%BC%A0%E9%80%92%E6%96%B9%E5%BC%8F%E6%98%AF%E5%80%BC%E4%BC%A0%E9%80%92/">Go函数的参数传递方式是值传递</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>什么是传值（值传递） 传值的意思是：函数传递的总是原来这个东西的一个副本，一副拷贝。比如我们传递一个int类型的参数，传递的其实是这个参数的一个副本；传递一个指针类型的参数，其实传递的是这个该指针的一份拷贝，而不是这个指针指向的值。 对于int这类基础类型我们可以很好的理解，它们就是一个拷贝，但是指针呢？我们觉得可以通过它修改原来的值，怎么会是一个拷贝呢？下面我</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-03-20</span>
+                        <a class="tag"
+                                   href="/tags/go/">go</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/go/basic/golang%E9%87%8C%E7%9A%84iota/">Golang里的iota</a>
                 </h2>
             </div>
@@ -213,44 +251,6 @@
                                 class="date">2021-01-05</span>
                         <a class="tag"
                                    href="/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/">数据一致性</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">go并发编程</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>并发与并行 并发是指同一个时间段内多个任务同时交叉执行，并且都没有执行结束，而并行是说在单位时间内多个任务同时在执行，并发任务强调在一个时间段内同时执行，而一个时间段有多个单位时间累积而成，所以说并发的多个任务在单位时间内不一定同时在执行。 在单个cpu的时代多个任务同时运行都是并发，这是因为cpu同时只能执行一个任务，单个cpu时代多任务是共享一个cpu的，当</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-12-25</span>
-                        <a class="tag"
-                                   href="/tags/go/">go</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/distributed/cap%E5%AE%9A%E7%90%86%E7%9A%84%E8%AF%81%E6%98%8E/">CAP定理的证明</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>关于CAP这三个特性我们就介绍完了，接下来我们试着证明一下为什么CAP不能同时满足。 为了简化证明的过程，我们假设整个集群里只有两个N1和N2两个节点，如下图： N1和N2当中各自有一个应用程序AB和数据库，当系统满足一致性的时候，我们认为N1和N2数据库中的数据保持一致。在满足可用性的时候，我们认为无论用户访问N1还是N2，都可以获得正确的结果，在满足分区容错</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2020-12-10</span>
-                        <a class="tag"
-                                   href="/tags/cap/">CAP</a>
                     </div>
                 </div>
             </div>
