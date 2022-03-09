@@ -36,6 +36,15 @@
     </item>
     
     <item>
+      <title>域名解析cname和A记录</title>
+      <link>https://willje.github.io/posts/net/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90cname%E5%92%8Ca%E8%AE%B0%E5%BD%95/</link>
+      <pubDate>Tue, 25 Sep 2018 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/net/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90cname%E5%92%8Ca%E8%AE%B0%E5%BD%95/</guid>
+      <description>什么是域名解析 域名解析就是国际域名或者国内域名以及中文域名等域名申请后做的到IP地址的转换过程。IP地址是网路上标识您站点的数字地址，为了简单好记，采用域名来代替ip地址标识站点地址。域名的解析工作由DNS服务器完成。 什么是A记录 A (Address) 记录是用来指定主机名（或域名）对应的IP地址记录。用户可以将该域名下的网站服务器指向到自己的web server上。同时也可以设</description>
+    </item>
+    
+    <item>
       <title>转发与重定向</title>
       <link>https://willje.github.io/posts/net/%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91/</link>
       <pubDate>Thu, 20 Sep 2018 20:55:29 +0800</pubDate>

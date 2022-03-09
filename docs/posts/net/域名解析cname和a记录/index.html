@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="域名解析cname和A记录">
+<meta itemprop="description" content="什么是域名解析 域名解析就是国际域名或者国内域名以及中文域名等域名申请后做的到IP地址的转换过程。IP地址是网路上标识您站点的数字地址，为了简单好记，采用域名来代替ip地址标识站点地址。域名的解析工作由DNS服务器完成。 什么是A记录 A (Address) 记录是用来指定主机名（或域名）对应的IP地址记录。用户可以将该域名下的网站服务器指向到自己的web server上。同时也可以设"><meta itemprop="datePublished" content="2018-09-25T20:55:29&#43;08:00" />
+<meta itemprop="dateModified" content="2018-09-25T20:55:29&#43;08:00" />
+<meta itemprop="wordCount" content="1705">
+<meta itemprop="keywords" content="网络," /><meta property="og:title" content="域名解析cname和A记录" />
+<meta property="og:description" content="什么是域名解析 域名解析就是国际域名或者国内域名以及中文域名等域名申请后做的到IP地址的转换过程。IP地址是网路上标识您站点的数字地址，为了简单好记，采用域名来代替ip地址标识站点地址。域名的解析工作由DNS服务器完成。 什么是A记录 A (Address) 记录是用来指定主机名（或域名）对应的IP地址记录。用户可以将该域名下的网站服务器指向到自己的web server上。同时也可以设" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/net/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90cname%E5%92%8Ca%E8%AE%B0%E5%BD%95/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2018-09-25T20:55:29&#43;08:00" />
+<meta property="article:modified_time" content="2018-09-25T20:55:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="域名解析cname和A记录"/>
+<meta name="twitter:description" content="什么是域名解析 域名解析就是国际域名或者国内域名以及中文域名等域名申请后做的到IP地址的转换过程。IP地址是网路上标识您站点的数字地址，为了简单好记，采用域名来代替ip地址标识站点地址。域名的解析工作由DNS服务器完成。 什么是A记录 A (Address) 记录是用来指定主机名（或域名）对应的IP地址记录。用户可以将该域名下的网站服务器指向到自己的web server上。同时也可以设"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>域名解析cname和A记录</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Sep 25, 2018</span></div>
+				<h1>域名解析cname和A记录</h1>
+			</header>
+			<div class="content">
+				<h2 id="什么是域名解析">什么是域名解析<a href="#什么是域名解析" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>域名解析就是国际域名或者国内域名以及中文域名等域名申请后做的到IP地址的转换过程。IP地址是网路上标识您站点的数字地址，为了简单好记，采用域名来代替ip地址标识站点地址。域名的解析工作由DNS服务器完成。</p>
+<p><p class="md__image">
+  <img src="../%e5%9f%9f%e5%90%8d%e8%a7%a3%e6%9e%90cname%e5%92%8cA%e8%ae%b0%e5%bd%95.assets/1021265-20161221130055761-1012464060.png"
+    alt="img"  />
+</p>
+</p>
+<h2 id="什么是a记录">什么是A记录<a href="#什么是a记录" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>A (Address) 记录是用来指定主机名（或域名）对应的IP地址记录。用户可以将该域名下的网站服务器指向到自己的web server上。同时也可以设置您域名的二级域名。</p>
+<p><p class="md__image">
+  <img src="../%e5%9f%9f%e5%90%8d%e8%a7%a3%e6%9e%90cname%e5%92%8cA%e8%ae%b0%e5%bd%95.assets/1021265-20161221130355745-46638593.png"
+    alt="img"  />
+</p>
+</p>
+<h2 id="什么是-cname">什么是 CNAME<a href="#什么是-cname" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>**即：别名记录。**这种记录允许您将多个名字映射到另外一个域名。通常用于同时提供WWW和MAIL服务的计算机。例如，有一台计算机名为“host.mydomain.com”（A记录）。它同时提供WWW和MAIL服务，为了便于用户访问服务。可以为该计算机设置两个别名（CNAME）：WWW和MAIL。这两个别名的全称就http://www.mydomain.com/和“mail.mydomain.com”。实际上他们都指向“<a href="http://host.mydomain.com/" target="_blank" rel="noopener">host.mydomain.com</a>
+”。</p>
+<hr>
+<h2 id="cname和-a记录区别">CNAME和 A记录区别<a href="#cname和-a记录区别" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h4 id="a记录是解析域名到ipcname是解析域名到另外一个域名">A记录是解析域名到IP，Cname是解析域名到另外一个域名。<a href="#a记录是解析域名到ipcname是解析域名到另外一个域名" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>A记录就是把一个域名解析到一个IP地址（Address，特制数字IP地址），而CNAME记录就是把域名解析到另外一个域名。其功能是差不多，CNAME将几个主机名指向一个别名，其实跟指向IP地址是一样的，因为这个别名也要做一个A记录的。但是使用CNAME记录可以很方便地变更IP地址。如果一台服务器有100个网站，他们都做了别名，该台服务器变更IP时，只需要变更别名的A记录就可以了。</p>
+<p>一台服务器可以布置多个网站，也可以有多个域名</p>
+<p>如：域名A—–&gt;A记录—–&gt;真正的服务器（IP）</p>
+<p>域名B（也叫A别名）</p>
+<p>域名C（也叫A别名）</p>
+<p>如果B，C此时也是通过A记录的形式到真正的服务器，那么哪一天真正的服务器修改了，A,B，C都得修改。</p>
+<p>而如果把B，C都解析到A，那么如果修改的话，只需要修改A即可。</p>
+<p>如何做呢？把B，C通过Cname解析到A即可。</p>
+<hr>
+<h2 id="为什么要有cname">为什么要有CNAME<a href="#为什么要有cname" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<h4 id="1-降低多域名多服务器多业务的运维成本">1. 降低多域名、多服务器、多业务的运维成本<a href="#1-降低多域名多服务器多业务的运维成本" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>通过将域名CNAME到新的地址后，降低权威DNS配置的复杂性，将变化频繁的配置（比如说A记录、MX记录）、功能业务（智能多线、CDN分发）等切割分离，出现故障后排查简单明了，是谁的问题就是谁的问题，而且权威DNS更新后在全球同步是需要时间的，所以在调整上越少越好，目前行业竞争激烈，保证好的用户体验以及网站的高可用性非常重要。</p>
+<h4 id="2-多个域名多种业务解析到同一个主机同时不影响搜索引擎收录">2. 多个域名、多种业务解析到同一个主机，同时不影响搜索引擎收录。<a href="#2-多个域名多种业务解析到同一个主机同时不影响搜索引擎收录" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>有多个域名（www、mail、news）服务要对应同一个公网服务器，服务器对外的域名是host.aaaabb.aaaa.aaaa.com.cn（可能公网IP后面对应着服务器集群，而且公网IP有可能会变化），这是一个典型的应用场景，通过将这些域名的CNAME指向host.aaaabb.aaaa.aaaa.com.cn就可以实现这个需求，而且不必去关心CNMAE后服务器的结构和变化，对于业主的维护来说非常简单，同时不影响到搜索引擎对你原域名的收录。</p>
+<h4 id="3-解决多线以及cdn分发加速问题">3. 解决多线以及CDN分发加速问题。<a href="#3-解决多线以及cdn分发加速问题" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>对于多线问题，通过CNAME后，可以在CNAME上做智能DNS，电信的用户走电信的链路、联通的用户走联通的链路，提升用户体验，节约链路成本，对于CDN的分发加速，大多数是通过CNAME加个GSLB（全球负载均衡）来实现，把你的域名CNAME到CDN厂家给你的域名上，剩余的事情就不用操心了，当然也可以自建CDN，自己搭一个GSLB做调度分发。</p>
+<h4 id="4-解决高并发下性能负载问题">4. 解决高并发下性能负载问题。<a href="#4-解决高并发下性能负载问题" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>其实业务分离、CDN分发已经无形解决了一部分负载问题，大的网站并发是很厉害的，为了在解析环节不出问题，就需要买付费DNS，造成成本增高，并且不方便维护，这时你可以CNAME到某一个域名，设置CNAME后域名的NS为自己搭建的DNS，还有种方式可以直接配置forword，这样可以把智能解析的业务压力放在你自己的DNS上，应用场景是灵活千变万化的，万变不离其宗。</p>
+<h2 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p><a href="https://www.cnblogs.com/tinywan/p/6207336.html" target="_blank" rel="noopener">网络基础知识之————A记录和CNAME记录的区别</a>
+</p>
+<p><a href="https://driverzhang.github.io/post/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90cname%E5%92%8Ca%E8%AE%B0%E5%BD%95/" target="_blank" rel="noopener">域名解析cname和A记录</a>
+</p>
+
+			</div><div class="content">
+	<br>
+	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/net/%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91/">转发与重定向</a></li>
+	
+	<li><a href="/posts/net/tcp%E5%9B%BE%E8%A7%A3/">TCP图解</a></li>
+	
+	<li><a href="/posts/net/%E7%BD%91%E7%BB%9C%E6%98%AF%E6%80%8E%E4%B9%88%E8%BF%9E%E6%8E%A5%E7%9A%84/">网络是怎么连接的</a></li>
+	
+	<li><a href="/posts/net/%E8%AF%A6%E8%A7%A3%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/">详解计算机网络模型</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/%E7%BD%91%E7%BB%9C">网络</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>1705 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2018-09-25 20:55 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#什么是域名解析">什么是域名解析</a></li>
+    <li><a href="#什么是a记录">什么是A记录</a></li>
+    <li><a href="#什么是-cname">什么是 CNAME</a></li>
+    <li><a href="#cname和-a记录区别">CNAME和 A记录区别</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#为什么要有cname">为什么要有CNAME</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#参考资料">参考资料</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/blog/bitmap%E4%BD%BF%E7%94%A8/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>bitmap使用</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/net/%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>转发与重定向</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

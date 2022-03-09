@@ -80,5 +80,14 @@
       <description>B+树索引是B+树在数据库中的一种实现，是最常见也是数据库中使用最为频繁的一种索引。 B+树中的B代表平衡（balance），而不是二叉（binary），因为B+树是从最早的平衡二叉树演化而来的。 在讲B+树之前必须先了解二叉查找树、平衡二叉树（AVLTree）和平衡多路查找树（B-Tree），B+树即由这些树逐步优化而来。 二叉查找树 定义 二叉树具有以下性质： 左子</description>
     </item>
     
+    <item>
+      <title>数据库连接池的一些理解</title>
+      <link>https://willje.github.io/posts/mysql/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0/</link>
+      <pubDate>Fri, 09 Aug 2019 19:46:38 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/mysql/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0/</guid>
+      <description>数据库连接池的作用 对于复杂业务场景下的应用，会需要频繁访问数据库资源。在这种场景下，频繁的建立、关闭数据库连接会对系统的性能照成极大的影响。为了解决这个性能瓶颈，可以考虑实现对数据库资源–连接的复用。对于数据库这类共享资源，有一个经典的设计模式：资源池。将资源池的设计理念引入数据库连接管理层面，就得到了数据库连接池。数据库连接池的目的是为了提供一套高效的连接</description>
+    </item>
+    
   </channel>
 </rss>

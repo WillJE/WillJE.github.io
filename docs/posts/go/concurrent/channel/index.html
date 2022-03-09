@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="theme-color" content="#fcfcfc">
+	<meta name="msapplication-TileColor" content="#fcfcfc">
+<meta itemprop="name" content="channel">
+<meta itemprop="description" content="Go语言提倡使用通信的方法代替共享内存，当一个资源需要在 goroutine 之间共享时，通道在 goroutine 之间架起了一个管道，并提供了确保同步交换数据的机制。声明通道时，需要指定将要被共享的数据的类型。可以通过通道共享内置类型、命名类型、结构类型和引用类型的值或者指针。 这里通信的方法就是使用通道（channel），如下图所示。 创建通道 通道是引用类型，需要使用 make 进行创建，格式如下： 通道实"><meta itemprop="datePublished" content="2020-12-25T20:55:29&#43;08:00" />
+<meta itemprop="dateModified" content="2020-12-25T20:55:29&#43;08:00" />
+<meta itemprop="wordCount" content="3965">
+<meta itemprop="keywords" content="go,channel," /><meta property="og:title" content="channel" />
+<meta property="og:description" content="Go语言提倡使用通信的方法代替共享内存，当一个资源需要在 goroutine 之间共享时，通道在 goroutine 之间架起了一个管道，并提供了确保同步交换数据的机制。声明通道时，需要指定将要被共享的数据的类型。可以通过通道共享内置类型、命名类型、结构类型和引用类型的值或者指针。 这里通信的方法就是使用通道（channel），如下图所示。 创建通道 通道是引用类型，需要使用 make 进行创建，格式如下： 通道实" />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="https://willje.github.io/posts/go/concurrent/channel/" /><meta property="article:section" content="posts" />
+<meta property="article:published_time" content="2020-12-25T20:55:29&#43;08:00" />
+<meta property="article:modified_time" content="2020-12-25T20:55:29&#43;08:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="channel"/>
+<meta name="twitter:description" content="Go语言提倡使用通信的方法代替共享内存，当一个资源需要在 goroutine 之间共享时，通道在 goroutine 之间架起了一个管道，并提供了确保同步交换数据的机制。声明通道时，需要指定将要被共享的数据的类型。可以通过通道共享内置类型、命名类型、结构类型和引用类型的值或者指针。 这里通信的方法就是使用通道（channel），如下图所示。 创建通道 通道是引用类型，需要使用 make 进行创建，格式如下： 通道实"/>
+
+	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+	<link rel="manifest" href="/site.webmanifest">
+	<link rel="mask-icon" href="/safari-pinned-tab.svg" color="">
+	<link rel="shortcut icon" href="/favicon.ico">
+
+	<title>channel</title>
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
+</head>
+
+<body id="page">
+	
+	<header id="site-header" class="animated slideInUp">
+		<div class="hdr-wrapper section-inner">
+			<div class="hdr-left">
+				<div class="site-branding">
+					<a href="https://willje.github.io">will&#39;s blog</a>
+				</div>
+				<nav class="site-nav hide-in-mobile">
+					
+  <a href="https://willje.github.io/">首页</a>
+  <a href="https://willje.github.io/posts/">归档</a>
+
+				</nav>
+			</div>
+			<div class="hdr-right hdr-icons">
+				<button id="toc-btn" class="hdr-btn desktop-only-ib" title="目录"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-list"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3" y2="6"></line><line x1="3" y1="12" x2="3" y2="12"></line><line x1="3" y1="18" x2="3" y2="18"></line></svg></button><button id="menu-btn" class="hdr-btn" title="菜单"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-menu"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg></button>
+			</div>
+		</div>
+	</header>
+	<div id="mobile-menu" class="animated fast">
+		<ul>
+			<li><a href="https://willje.github.io/">首页</a></li>
+			<li><a href="https://willje.github.io/posts/">归档</a></li>
+		</ul>
+	</div>
+
+
+	<main class="site-main section-inner animated fadeIn faster">
+		<article class="thin">
+			<header class="post-header">
+				<div class="post-meta"><span>Dec 25, 2020</span></div>
+				<h1>channel</h1>
+			</header>
+			<div class="content">
+				<p>Go语言提倡使用通信的方法代替共享内存，当一个资源需要在 goroutine 之间共享时，通道在 goroutine 之间架起了一个管道，并提供了确保同步交换数据的机制。声明通道时，需要指定将要被共享的数据的类型。可以通过通道共享内置类型、命名类型、结构类型和引用类型的值或者指针。</p>
+<p>这里通信的方法就是使用通道（channel），如下图所示。</p>
+<p><p class="md__image">
+  <img src="../channel.assets/1-1PQG035203K.jpg"
+    alt="img"  />
+</p>
+</p>
+<h2 id="创建通道">创建通道<a href="#创建通道" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>通道是引用类型，需要使用 make 进行创建，格式如下：</p>
+<p>通道实例 := make(chan 数据类型)</p>
+<ul>
+<li>数据类型：通道内传输的元素类型。</li>
+<li>通道实例：通过make创建的通道句柄。
+请看下面的例子：</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">ch1</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>                 <span class="c1">// 创建一个整型类型的通道
+</span><span class="c1"></span><span class="nx">ch2</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">interface</span><span class="p">{})</span>         <span class="c1">// 创建一个空接口类型的通道, 可以存放任意格式
+</span></code></pre></div><p>上面创建的都是无缓冲的channel，有缓冲的channel创建只需在创建时指定缓冲大小即可，就像这样</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">ch1</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div><h2 id="使用通道发送数据">使用通道发送数据<a href="#使用通道发送数据" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>通道创建后，就可以使用通道进行发送和接收操作。</p>
+<h4 id="1-通道发送数据的格式">1) 通道发送数据的格式<a href="#1-通道发送数据的格式" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>通道的发送使用特殊的操作符<code>&lt;-</code>，将数据通过通道发送的格式为：</p>
+<p>通道变量 &lt;- 值</p>
+<ul>
+<li>通道变量：通过make创建好的通道实例。</li>
+<li>值：可以是变量、常量、表达式或者函数返回值等。值的类型必须与ch通道的元素类型一致。</li>
+</ul>
+<h4 id="2-通过通道发送数据的例子">2) 通过通道发送数据的例子<a href="#2-通过通道发送数据的例子" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>使用 make 创建一个通道后，就可以使用<code>&lt;-</code>向通道发送数据，代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 创建一个空接口通道
+</span><span class="c1"></span><span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">interface</span><span class="p">{})</span>
+<span class="c1">// 将0放入通道中
+</span><span class="c1"></span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">0</span>
+<span class="c1">// 将hello字符串放入通道中
+</span><span class="c1"></span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="s">&#34;hello&#34;</span>
+</code></pre></div><h4 id="3-发送将持续阻塞直到数据被接收">3) 发送将持续阻塞直到数据被接收<a href="#3-发送将持续阻塞直到数据被接收" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>把数据往通道中发送时，如果接收方一直都没有接收，那么发送操作将持续阻塞。Go 程序运行时能智能地发现一些永远无法发送成功的语句并做出提示，代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>    
+    <span class="c1">// 创建一个整型通道    
+</span><span class="c1"></span>    <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>    
+    <span class="c1">// 尝试将0通过通道发送    
+</span><span class="c1"></span>    <span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">0</span>
+<span class="p">}</span>
+</code></pre></div><p>运行代码，报错：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">fatal error: all goroutines are asleep - deadlock!
+</code></pre></div><p>报错的意思是：运行时发现所有的 goroutine（包括main）都处于等待 goroutine。也就是说所有 goroutine 中的 channel 并没有形成发送和接收对应的代码。</p>
+<h2 id="使用通道接收数据">使用通道接收数据<a href="#使用通道接收数据" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>通道接收同样使用<code>&lt;-</code>操作符，通道接收有如下特性：
+① 通道的收发操作在不同的两个 goroutine 间进行。</p>
+<p>由于通道的数据在没有接收方处理时，数据发送方会持续阻塞，因此通道的接收必定在另外一个 goroutine 中进行。</p>
+<p>② 接收将持续阻塞直到发送方发送数据。</p>
+<p>如果接收方接收时，通道中没有发送方发送数据，接收方也会发生阻塞，直到发送方发送数据为止。</p>
+<p>③ 每次接收一个元素。
+通道一次只能接收一个数据元素。</p>
+<p>通道的数据接收一共有以下 4 种写法。</p>
+<h4 id="1-阻塞接收数据">1) 阻塞接收数据<a href="#1-阻塞接收数据" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>阻塞模式接收数据时，将接收变量作为<code>&lt;-</code>操作符的左值，格式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">data</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">ch</span>
+</code></pre></div><p>执行该语句时将会阻塞，直到接收到数据并赋值给 data 变量。</p>
+<h4 id="2-非阻塞接收数据">2) 非阻塞接收数据<a href="#2-非阻塞接收数据" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>使用非阻塞方式从通道接收数据时，语句不会发生阻塞，格式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">data</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">ch</span>
+</code></pre></div><ul>
+<li>
+<p>data：表示接收到的数据。未接收到数据时，data 为通道类型的零值。</p>
+</li>
+<li>
+<p>ok：表示是否接收到数据。</p>
+</li>
+</ul>
+<p>非阻塞的通道接收方法可能造成高的 CPU 占用，因此使用非常少。如果需要实现接收超时检测，可以配合 select 和计时器 channel 进行，可以参见后面的内容。</p>
+<h4 id="3-接收任意数据忽略接收的数据">3) 接收任意数据，忽略接收的数据<a href="#3-接收任意数据忽略接收的数据" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>阻塞接收数据后，忽略从通道返回的数据，格式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="o">&lt;-</span><span class="nx">ch</span>
+</code></pre></div><p>执行该语句时将会发生阻塞，直到接收到数据，但接收到的数据会被忽略。这个方式实际上只是通过通道在 goroutine 间阻塞收发实现并发同步。</p>
+<p>使用通道做并发同步的写法，可以参考下面的例子：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s">&#34;fmt&#34;</span>
+<span class="p">)</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// 构建一个通道
+</span><span class="c1"></span>    <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+    <span class="c1">// 开启一个并发匿名函数
+</span><span class="c1"></span>    <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;start goroutine&#34;</span><span class="p">)</span>
+        <span class="c1">// 通过通道通知main的goroutine
+</span><span class="c1"></span>        <span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">0</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;exit goroutine&#34;</span><span class="p">)</span>
+    <span class="p">}()</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;wait goroutine&#34;</span><span class="p">)</span>
+    <span class="c1">// 等待匿名goroutine
+</span><span class="c1"></span>    <span class="o">&lt;-</span><span class="nx">ch</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;all done&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>执行代码，输出如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="nb">wait</span> goroutine
+start goroutine
+<span class="nb">exit</span> goroutine
+all <span class="k">done</span>
+</code></pre></div><p>代码说明如下：</p>
+<ul>
+<li>第 10 行，构建一个同步用的通道。</li>
+<li>第 13 行，开启一个匿名函数的并发。</li>
+<li>第 18 行，匿名 goroutine 即将结束时，通过通道通知 main 的 goroutine，这一句会一直阻塞直到 main 的 goroutine 接收为止。</li>
+<li>第 27 行，开启 goroutine 后，马上通过通道等待匿名 goroutine 结束。</li>
+</ul>
+<h4 id="4-循环接收">4) 循环接收<a href="#4-循环接收" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<p>通道的数据接收可以借用 for range 语句进行多个元素的接收操作，格式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="k">for</span> <span class="nx">data</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">ch</span> <span class="p">{}</span>
+</code></pre></div><p>通道 ch 是可以进行遍历的，遍历的结果就是接收到的数据。数据类型就是通道的数据类型。通过 for 遍历获得的变量只有一个，即上面例子中的 data。</p>
+<p>遍历通道数据的例子请参考下面的代码。</p>
+<p>使用 for 从通道中接收数据：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s">&#34;fmt&#34;</span>
+    <span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// 构建一个通道
+</span><span class="c1"></span>    <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+    <span class="c1">// 开启一个并发匿名函数
+</span><span class="c1"></span>    <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// 从3循环到0
+</span><span class="c1"></span>        <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">3</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span> <span class="p">{</span>
+            <span class="c1">// 发送3到0之间的数值
+</span><span class="c1"></span>            <span class="nx">ch</span> <span class="o">&lt;-</span> <span class="nx">i</span>
+            <span class="c1">// 每次发送完时等待
+</span><span class="c1"></span>            <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}()</span>
+
+    <span class="c1">// 遍历接收通道数据
+</span><span class="c1"></span>    <span class="k">for</span> <span class="nx">data</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">ch</span> <span class="p">{</span>
+        <span class="c1">// 打印通道数据
+</span><span class="c1"></span>        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+        <span class="c1">// 当遇到数据0时, 退出接收循环
+</span><span class="c1"></span>        <span class="k">if</span> <span class="nx">data</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+           <span class="k">break</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>执行代码，输出如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="mi">3</span>
+<span class="mi">2</span>
+<span class="mi">1</span>
+<span class="mi">0</span>
+</code></pre></div><h2 id="单向通道">单向通道<a href="#单向通道" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>Go语言的类型系统提供了单方向的 channel 类型，顾名思义，单向 channel 就是只能用于写入或者只能用于读取数据。当然 channel 本身必然是同时支持读写的，否则根本没法用。</p>
+<p>假如一个 channel 真的只能读取数据，那么它肯定只会是空的，因为你没机会往里面写数据。同理，如果一个 channel 只允许写入数据，即使写进去了，也没有丝毫意义，因为没有办法读取到里面的数据。</p>
+<p>所谓的单向 channel 概念，其实只是对 channel 的一种使用限制。</p>
+<h3 id="单向通道的声明格式">单向通道的声明格式<a href="#单向通道的声明格式" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<p>我们在将一个 channel 变量传递到一个函数时，可以通过将其指定为单向 channel 变量，从而限制该函数中可以对此 channel 的操作，比如只能往这个 channel 中写入数据，或者只能从这个 channel 读取数据。</p>
+<p>单向 channel 变量的声明非常简单，只能写入数据的通道类型为<code>chan&lt;-</code>，只能读取数据的通道类型为<code>&lt;-chan</code>，格式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">intChan</span> <span class="kd">chan</span><span class="o">&lt;-</span> <span class="kt">int</span>   <span class="c1">// 只能写入数据的通道
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">strChan</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kt">string</span>   <span class="c1">// 只能读取数据的通道
+</span></code></pre></div><p>当然，使用 make 创建通道时，也可以创建一个只写入或只读取的通道：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="o">&lt;-</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">chReadOnly</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kt">int</span> <span class="p">=</span> <span class="nx">ch</span>
+<span class="o">&lt;-</span><span class="nx">chReadOnly</span>
+</code></pre></div><p>上面代码编译正常，运行也是正确的。但是，一个不能写入数据只能读取的通道是毫无意义的。</p>
+<h2 id="基于select的多路复用">基于select的多路复用<a href="#基于select的多路复用" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<p>下面的程序会进行火箭发射的倒计时。time.Tick函数返回一个channel，程序会周期性地像一个节拍器一样向这个channel发送事件。每一个事件的值是一个时间戳，不过更有意思的是其传送方式。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+        <span class="s">&#34;fmt&#34;</span>
+        <span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">launch</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;发射!&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;准备发射火箭...&#34;</span><span class="p">)</span>
+        <span class="c1">//time.Tick会返回一个channel,系统会定时向这个channel发信号
+</span><span class="c1"></span>        <span class="nx">tick</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Tick</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nx">countdown</span> <span class="o">:=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">countdown</span> <span class="p">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">countdown</span><span class="o">--</span> <span class="p">{</span>
+                <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">countdown</span><span class="p">)</span>
+                <span class="c1">//从tick channel中取数据,没阻塞1s 返回一次
+</span><span class="c1"></span>                <span class="o">&lt;-</span><span class="nx">tick</span>
+        <span class="p">}</span>
+        <span class="nf">launch</span><span class="p">()</span>
+
+<span class="p">}</span>
+</code></pre></div><p>执行结果</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">准备发射火箭</span><span class="o">...</span>
+<span class="mi">10</span>
+<span class="mi">9</span>
+<span class="mi">8</span>
+<span class="mi">7</span>
+<span class="mi">6</span>
+<span class="mi">5</span>
+<span class="mi">4</span>
+<span class="mi">3</span>
+<span class="mi">2</span>
+<span class="mi">1</span>
+<span class="nx">发射</span><span class="p">!</span>
+</code></pre></div><p>现在我们让这个程序支持在倒计时中，用户按下回车键时直接中断发射流程。首先，我们启动一个goroutine，这个goroutine会尝试从标准输入中读入一个单独的byte并且，如果成功了，会向名为abort的channel发送一个值。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">abort</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
+<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c1">// read a single byte
+</span><span class="c1"></span>    <span class="nx">abort</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
+<span class="p">}()</span>
+</code></pre></div><p>现在每一次计数循环的迭代都需要等待两个channel中的其中一个返回事件了.</p>
+<p>我们无法做到从每一个channel中接收信息，如果我们这么做的话，如果第一个channel中没有事件发过来那么程序就会立刻被阻塞，这样我们就无法收到第二个channel中发过来的事件。这时候我们需要多路复用(multiplex)这些操作了，为了能够多路复用，我们使用了select语句。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="k">select</span> <span class="p">{</span>
+<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">ch1</span><span class="p">:</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="k">case</span> <span class="nx">x</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">ch2</span><span class="p">:</span>
+    <span class="c1">// ...use x...
+</span><span class="c1"></span><span class="k">case</span> <span class="nx">ch3</span> <span class="o">&lt;-</span> <span class="nx">y</span><span class="p">:</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="k">default</span><span class="p">:</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>上面是select语句的一般形式。和switch语句稍微有点相似，也会有几个case和最后的default选择分支。每一个case代表一个通信操作（在某个channel上进行发送或者接收），并且会包含一些语句组成的一个语句块。一个接收表达式可能只包含接收表达式自身（译注：不把接收到的值赋值给变量什么的），就像上面的第一个case，或者包含在一个简短的变量声明中，像第二个case里一样；第二种形式让你能够引用接收到的值。</p>
+<p>select会等待case中有能够执行的case时去执行。当条件满足时，select才会去通信并执行case之后的语句；这时候其它通信是不会执行的。</p>
+<p>一个没有任何case的select语句写作select{}，会永远地等待下去。</p>
+<p>如果多个case同时就绪时，select会随机地选择一个执行，这样来保证每一个channel都有平等的被select的机会。</p>
+<p>增加前一个例子的buffer大小会使其输出变得不确定，因为当buffer既不为满也不为空时，select语句的执行情况就像是抛硬币的行为一样是随机的。</p>
+<p>下面让我们的发射程序打印倒计时。这里的select语句会使每次循环迭代等待一秒来执行退出操作。</p>
+<p>修改代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+        <span class="s">&#34;fmt&#34;</span>
+        <span class="s">&#34;os&#34;</span>
+        <span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">launch</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;发射!&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//创建abort channel
+</span><span class="c1"></span>        <span class="nx">abort</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
+        <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="nx">abort</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
+        <span class="p">}()</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;准备发射火箭...&#34;</span><span class="p">)</span>
+        <span class="c1">//time.Tick会返回一个channel,系统会定时向这个channel发信号
+</span><span class="c1"></span>        <span class="nx">tick</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Tick</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nx">countdown</span> <span class="o">:=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">countdown</span> <span class="p">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">countdown</span><span class="o">--</span> <span class="p">{</span>
+                <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">countdown</span><span class="p">)</span>
+                <span class="k">select</span> <span class="p">{</span>
+                <span class="k">case</span> <span class="o">&lt;-</span><span class="nx">tick</span><span class="p">:</span>
+                        <span class="c1">//从tick channel中取数据,阻塞1s 返回一次
+</span><span class="c1"></span>                        <span class="c1">//...
+</span><span class="c1"></span>                <span class="k">case</span> <span class="o">&lt;-</span><span class="nx">abort</span><span class="p">:</span>
+                        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;发射终止...&#34;</span><span class="p">)</span>
+                        <span class="k">return</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nf">launch</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><p>有时候我们希望能够从channel中发送或者接收值，并避免因为发送或者接收导致的阻塞，尤其是当channel没有准备好写或者读时。select语句就可以实现这样的功能。select会有一个default来设置当其它的操作都不能够马上被处理时程序需要执行哪些逻辑。</p>
+<p>下面的select语句会在abort channel中有值时，从其中接收值；无值时什么都不做。这是一个非阻塞的接收操作；反复地做这样的操作叫做“轮询channel”。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="k">select</span> <span class="p">{</span>
+<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">abort</span><span class="p">:</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Launch aborted!\n&#34;</span><span class="p">)</span>
+    <span class="k">return</span>
+<span class="k">default</span><span class="p">:</span>
+    <span class="c1">// do nothing
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>channel的零值是nil。也许会让你觉得比较奇怪，nil的channel有时候也是有一些用处的。因为对一个nil的channel发送和接收操作会永远阻塞，在select语句中操作nil的channel永远都不会被select到。</p>
+
+			</div><div class="content">
+	<br>
+	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
+</div>
+
+<div class="related-posts thin">
+	<h2>相关推荐</h2>
+	<ul>
+	
+	<li><a href="/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">go并发编程</a></li>
+	
+	<li><a href="/posts/go/concurrent/sync.once%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E5%AE%9E%E7%8E%B0/">sync.once单例模式实现</a></li>
+	
+	<li><a href="/posts/go/basic/golang%E5%AE%9E%E7%8E%B0%E5%8D%95%E9%93%BE%E8%A1%A8/">golang实现单链表</a></li>
+	
+	<li><a href="/posts/go/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">go并发小练习</a></li>
+	
+	<li><a href="/posts/go/basic/context%E4%BD%BF%E7%94%A8%E5%92%8C%E5%8E%9F%E7%90%86/">Context使用和原理</a></li>
+	
+	</ul>
+</div>
+
+			<hr class="post-end">
+			<footer class="post-info">
+				<p>
+					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/go">go</a></span><span class="tag"><a href="https://willje.github.io/tags/channel">channel</a></span>
+				</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3965 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2020-12-25 20:55 &#43;0800</p>
+			</footer>
+		</article>
+		<aside id="toc">
+			<div class="toc-title">目录</div>
+			<nav id="TableOfContents">
+  <ul>
+    <li><a href="#创建通道">创建通道</a></li>
+    <li><a href="#使用通道发送数据">使用通道发送数据</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#使用通道接收数据">使用通道接收数据</a>
+      <ul>
+        <li></li>
+      </ul>
+    </li>
+    <li><a href="#单向通道">单向通道</a>
+      <ul>
+        <li><a href="#单向通道的声明格式">单向通道的声明格式</a></li>
+      </ul>
+    </li>
+    <li><a href="#基于select的多路复用">基于select的多路复用</a></li>
+  </ul>
+</nav>
+		</aside>
+		<div class="post-nav thin">
+			<a class="next-post" href="https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>分布式系统中的数据一致性问题</span>
+			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>go并发编程</span>
+			</a>
+		</div>
+		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
+	repo="polaris1119/polarisxu"
+	issue-term="pathname"
+	theme="github-light"
+	crossorigin="anonymous"
+	async>
+</script>
+</div>
+	</main>
+
+	<footer id="site-footer" class="section-inner thin animated fadeIn faster">
+		<p>&copy; 2019 - 2022 <a href="https://willje.github.io">will</a></p>
+		<p>
+			Made with <a href="https://gohugo.io/" target="_blank" rel="noopener">Hugo</a> &#183; Theme <a href="https://github.com/Track3/hermit" target="_blank" rel="noopener">Hermit</a> &#183; <a href="https://willje.github.io/posts/index.xml" target="_blank" title="rss"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-rss"><path d="M4 11a9 9 0 0 1 9 9"></path><path d="M4 4a16 16 0 0 1 16 16"></path><circle cx="5" cy="19" r="1"></circle></svg></a>
+		</p>
+	</footer>
+
+
+
+	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?224c227cd9239761ec770bc8c1fb134c";
+  var s = document.getElementsByTagName("script")[0];
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+</body>
+
+</html>

@@ -27,6 +27,15 @@
     </item>
     
     <item>
+      <title>Namespace和Cgroup</title>
+      <link>https://willje.github.io/posts/docker/namespace%E5%92%8Ccgroup/</link>
+      <pubDate>Mon, 23 Aug 2021 21:51:51 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/docker/namespace%E5%92%8Ccgroup/</guid>
+      <description>容器其实就是一种特殊的进程 为什么使用容器？ 容器虚拟化可以更高效地构建应用，也更容易管理维护。 左图是虚拟机的工作原理，右图是Docker，所示： 容器的核心技术是Cgroup和Namespace，在此基础上还有一些其他工具共同构成容器技术。 容器是宿主机上的进程： 容器技术通过 Namespace 实现资源隔离 通过Cgroup实现资源控制 通过rootfs实现文件系统隔离 容器引擎自身的特</description>
+    </item>
+    
+    <item>
       <title>Win10安装docker</title>
       <link>https://willje.github.io/posts/docker/win10%E5%AE%89%E8%A3%85docker/</link>
       <pubDate>Tue, 20 Apr 2021 21:51:51 +0800</pubDate>

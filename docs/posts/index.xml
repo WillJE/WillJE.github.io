@@ -3338,6 +3338,172 @@ alpine4: 172.19.0.3/16 alpine3: 172.19.0.2/16
 		</item>
 		
 		<item>
+			<title>Namespace和Cgroup</title>
+			<link>https://willje.github.io/posts/docker/namespace%E5%92%8Ccgroup/</link>
+			<pubDate>Mon, 23 Aug 2021 21:51:51 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/docker/namespace%E5%92%8Ccgroup/</guid>
+			<description>容器其实就是一种特殊的进程 为什么使用容器？ 容器虚拟化可以更高效地构建应用，也更容易管理维护。 左图是虚拟机的工作原理，右图是Docker，所示： 容器的核心技术是Cgroup和Namespace，在此基础上还有一些其他工具共同构成容器技术。 容器是宿主机上的进程： 容器技术通过 Namespace 实现资源隔离 通过Cgroup实现资源控制 通过rootfs实现文件系统隔离 容器引擎自身的特</description>
+			<content type="html"><![CDATA[<h2 id="容器其实就是一种特殊的进程">容器其实就是一种特殊的进程</h2>
+<p>为什么使用容器？</p>
+<blockquote>
+<p>容器虚拟化可以更高效地构建应用，也更容易管理维护。</p>
+</blockquote>
+<p>左图是虚拟机的工作原理，右图是<code>Docker</code>，所示：</p>
+<p><p class="md__image">
+  <img src="../Namespace%e5%92%8cCgroup.assets/5cdd65fb18e34f4c90cbd51ef6cf49cctplv-k3u1fbpfcp-watermark.awebp"
+    alt="2020-04-2207:46.png"  />
+</p>
+</p>
+<p>容器的核心技术是<strong>Cgroup</strong>和<strong>Namespace</strong>，在此基础上还有一些其他工具共同构成容器技术。</p>
+<p><strong>容器是宿主机上的进程</strong>：</p>
+<ol>
+<li>容器技术通过 <code>Namespace</code> 实现资源隔离</li>
+<li>通过<code>Cgroup</code>实现资源控制</li>
+<li>通过<code>rootfs</code>实现文件系统隔离</li>
+<li>容器引擎自身的特性来管理容器的生命周期</li>
+</ol>
+<blockquote>
+<p>补充： <code>Docker</code>早期其实就相当与<code>LXC</code>的管理引擎，<code>LXC</code>是<code>Cgroup</code>的管理工具，<code>Cgroup</code>是<code>Namespace</code>的用户空间管理接口。 <code>Namespace</code>是Linux内核在<code>task_struct</code>中对进程管理的基础机制。</p>
+</blockquote>
+<h2 id="namespace-资源隔离"><code>Namespace</code> 资源隔离</h2>
+<p>开发<code>Namespace</code>的主要目的之一：<strong>实现轻量级的虚拟化服务</strong></p>
+<blockquote>
+<p>资源隔离，就会想到<code>chroot</code>命令，通过它可以实现文件系统隔离。</p>
+</blockquote>
+<p>如图：</p>
+<p><p class="md__image">
+  <img src="../Namespace%e5%92%8cCgroup.assets/88ab0b21eee44166b9bbc4a5116357aftplv-k3u1fbpfcp-watermark.awebp"
+    alt="namespace.png"  />
+</p>
+</p>
+<h3 id="namespace-隔离"><code>Namespace</code> 隔离</h3>
+<p>容器需要6种基本隔离：</p>
+<p>如图：</p>
+<p><p class="md__image">
+  <img src="../Namespace%e5%92%8cCgroup.assets/910db22d95c649ce9cb424ac5ebc3607tplv-k3u1fbpfcp-watermark.awebp"
+    alt="2020-04-2307:18.png"  />
+</p>
+</p>
+<ol>
+<li><code>IPC</code>进程间通信，通过共享内存的方式实现。如果两个进程能直接通过<code>IPC</code>互访，那就不是隔离了，原始的<code>Linux ENV</code>中不同的进程都是可以直接通过<code>IPC</code>通信</li>
+<li>进程树和文件系统树，进程两种形式存在，一种是用户空间的<code>INIT</code>，一种是从属于某一进程。子进程由父进程创建、终止和回收。<code>INIT</code>结束之前，需要终止本用户空间所有的进程（PID映射）。</li>
+<li>用过用户来运行某一个进程（User）。每一个用户空间都需要自己的<code>root</code>，伪装一个<code>root</code>用户[不能处理别的用户空间的内容，比如删除文件]，对应在宿主机上只是一个普通的用户。</li>
+<li><code>Mount</code>，文件挂载系统，<code>cd /usr/bin/</code> 和 宿主机对比。发现是独立的文件系统</li>
+<li><code>UTS-hostname</code></li>
+<li><code>Network</code>：<code>netstat -an | grep 22</code></li>
+</ol>
+<h3 id="namespace-操作"><code>Namespace</code> 操作</h3>
+<p>对<code>Namespace</code>的操作，主要是通过 <code>clone</code>、<code>setns</code>、<code>unshare</code> 这三个系统调用来完成。</p>
+<blockquote>
+<ol>
+<li><code>clone</code> 可以用来创建新的 <code>Namespace</code></li>
+<li><code>unshare</code> 调用的进程会被放进新的 <code>Namespace</code></li>
+<li><code>setns</code> 将进程放到已有的 <code>Namespace</code></li>
+</ol>
+</blockquote>
+<p>查询当前进程的 <code>Namespace</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">donald@donald-pro:~$ ls -l /proc/<span class="nv">$$</span>/ns
+total <span class="m">0</span>
+lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 cgroup -&gt; <span class="s1">&#39;cgroup:[4026531835]&#39;</span>
+lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 ipc -&gt; <span class="s1">&#39;ipc:[4026531839]&#39;</span>
+lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 mnt -&gt; <span class="s1">&#39;mnt:[4026531840]&#39;</span>
+lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 net -&gt; <span class="s1">&#39;net:[4026532009]&#39;</span>
+lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 pid -&gt; <span class="s1">&#39;pid:[4026531836]&#39;</span>
+lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 pid_for_children -&gt; <span class="s1">&#39;pid:[4026531836]&#39;</span>
+lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 user -&gt; <span class="s1">&#39;user:[4026531837]&#39;</span>
+lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 uts -&gt; <span class="s1">&#39;uts:[4026531838]&#39;</span>
+donald@donald-pro:~$ 
+</code></pre></div><h2 id="cgroup资源控制"><code>Cgroup</code>资源控制</h2>
+<p><code>Cgroup</code> 是 <code>Linux</code> 内核提供的一种可以限制、记录、隔离进程组（<code>process groups</code>）所使用的物理资源（如：CPU、内存、IO等等）的机制</p>
+<p><code>Cgroup</code>有一套进程分组框架，不同资源由不同的子系统控制。 一个子系统就是一个资源控制器，比如 <code>CPU</code>子系统就是控制 <code>CPU</code>时间分配的一个控制器。</p>
+<blockquote>
+<p>通过 Linux 的命名空间为新创建的进程隔离了文件系统、网络与宿主机器之间的进程互相隔离，但是命名空间并不能够为我们提供物理资源上的隔离，比如 <code>CPU</code> 或者 内存，如果在同一台机器上运行了多个彼此以及宿主机器一无所知的 [容器]，这些容器却共同占用了宿主机的物理资源。</p>
+</blockquote>
+<p><p class="md__image">
+  <img src="../Namespace%e5%92%8cCgroup.assets/b0e13984ed734d139ff265322d464290tplv-k3u1fbpfcp-watermark.awebp"
+    alt="cgroups.png"  />
+</p>
+</p>
+<blockquote>
+<p>在<code>Linux</code>上安装了<code>Docker</code>，你就会发现所有子系统的目录下都有一个名为 <code>docker</code>的目录。</p>
+<p><code>cpu.cfs_quota_us</code>文件中的内容能够对<code>CPU</code>的使用作出限制。</p>
+</blockquote>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">donald@donald-pro:/sys/fs/cgroup$ ll
+total <span class="m">0</span>
+drwxr-xr-x <span class="m">15</span> root root <span class="m">380</span> Apr <span class="m">22</span> 18:05 ./
+drwxr-xr-x  <span class="m">9</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 ../
+dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 blkio/
+lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">11</span> Apr <span class="m">22</span> 18:05 cpu -&gt; cpu,cpuacct/
+lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">11</span> Apr <span class="m">22</span> 18:05 cpuacct -&gt; cpu,cpuacct/
+dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 cpu,cpuacct/
+dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 cpuset/
+dr-xr-xr-x  <span class="m">5</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 devices/
+dr-xr-xr-x  <span class="m">3</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 freezer/
+dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 hugetlb/
+dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 memory/
+lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">16</span> Apr <span class="m">22</span> 18:05 net_cls -&gt; net_cls,net_prio/
+dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 net_cls,net_prio/
+lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">16</span> Apr <span class="m">22</span> 18:05 net_prio -&gt; net_cls,net_prio/
+dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 perf_event/
+dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 pids/
+dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 rdma/
+dr-xr-xr-x  <span class="m">5</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 systemd/
+dr-xr-xr-x  <span class="m">5</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 unified/
+
+donald@donald-pro:/sys/fs/cgroup/cpu/docker$ ll
+total <span class="m">0</span>
+drwxr-xr-x <span class="m">3</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 ./
+dr-xr-xr-x <span class="m">5</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 ../
+drwxr-xr-x <span class="m">2</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 c988e6a0567ccc350b18e3e2eb96cfe0dbff4edd202ab4132012916b019c2904/
+-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cgroup.clone_children
+-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cgroup.procs
+-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.stat
+-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage
+-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_all
+-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_percpu
+-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_percpu_sys
+-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_percpu_user
+-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_sys
+-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_user
+-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.cfs_period_us
+-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.cfs_quota_us
+-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.shares
+-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.stat
+-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 notify_on_release
+-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 tasks
+
+donald@donald-pro:/sys/fs/cgroup/cpu/docker/c988e6a0567ccc350b18e3e2eb96cfe0dbff4edd202ab4132012916b019c2904$ sudo docker ps
+CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                    NAMES
+c988e6a0567c        mobz/elasticsearch-head:5   <span class="s2">&#34;/bin/sh -c &#39;grunt s…&#34;</span>   <span class="m">5</span> months ago        Up <span class="m">3</span> minutes        0.0.0.0:9100-&gt;9100/tcp   loving_albattani
+
+<span class="c1"># 配额，-1 表示不限额</span>
+donald@donald-pro:/sys/fs/cgroup/cpu/docker/c988e6a0567ccc350b18e3e2eb96cfe0dbff4edd202ab4132012916b019c2904$ cat cpu.cfs_quota_us 
+-1
+</code></pre></div><h2 id="容器的创建过程">容器的创建过程</h2>
+<h3 id="1系统调用clone创建新进程拥有自己的namespace">（1）系统调用<code>clone</code>创建新进程，拥有自己的<code>Namespace</code></h3>
+<p>该进程拥有自己的：<code>pid</code>、<code>mount</code>、<code>user</code>、<code>net</code>、<code>ipc</code>、<code>uts namespace</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">root@docker:~# <span class="nv">pid</span> <span class="o">=</span> clone<span class="o">(</span>fun, stack, flags, clone_arg<span class="o">)</span><span class="p">;</span>
+</code></pre></div><h3 id="2将pid写入cgroup子系统就受到-cgroup-子系统的控制">（2）将<code>pid</code>写入<code>cgroup</code>子系统，就受到 <code>cgroup</code> 子系统的控制</h3>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/cpu/tasks
+root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/cpuset/tasks
+root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/bikio/tasks
+root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/memory/tasks
+root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/devices/tasks
+root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/feezer/tasks
+</code></pre></div><h3 id="3通过-pivot_root-系统调用">（3）通过 <code>pivot_root</code> 系统调用</h3>
+<p>通过 <code>pivot_root</code> 系统调用，使进程进入一个新的 <code>rootfs</code>，之后通过 <code>exec</code>系统调用在新的<code>Namespace</code>、<code>Cgroup</code>、<code>rootfs</code> 中执行 <code>/bin/bash</code></p>
+<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">fun<span class="o">()</span> <span class="o">{</span>
+  pivot_root<span class="o">(</span><span class="s2">&#34;path_of_rootfs/&#34;</span>, path<span class="o">)</span><span class="p">;</span>
+  exec<span class="o">(</span><span class="s2">&#34;/bin/bash&#34;</span><span class="o">)</span><span class="p">;</span>
+<span class="o">}</span>
+</code></pre></div><h2 id="参考资料">参考资料</h2>
+<p><a href="https://segmentfault.com/a/1190000040980305" target="_blank" rel="noopener">一篇搞懂容器技术的基石： cgroup </a>
+</p>
+]]></content>
+		</item>
+		
+		<item>
 			<title>Kubernetes port类型</title>
 			<link>https://willje.github.io/posts/k8s/kubernetes-port%E7%B1%BB%E5%9E%8B/</link>
 			<pubDate>Mon, 23 Aug 2021 21:23:18 +0800</pubDate>
@@ -3405,6 +3571,190 @@ alpine4: 172.19.0.3/16 alpine3: 172.19.0.2/16
 </span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
 </span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx-pod</span><span class="w">
 </span></code></pre></div>]]></content>
+		</item>
+		
+		<item>
+			<title>Kubernetes中的Service与Ingress</title>
+			<link>https://willje.github.io/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/</link>
+			<pubDate>Wed, 18 Aug 2021 21:23:18 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/</guid>
+			<description>Service 必须了解的一点是 Service 的访问信息在 Kubernetes 集群内是有效的，集群之外是无效的。 Service可以看作是一组提供相同服务的Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。对于Service 的工作原理请参考：https://time.geekbang.org/column/article/68636 当需要从集群外部访问k8s里的服务的时候，</description>
+			<content type="html"><![CDATA[<h1 id="service">Service</h1>
+<p>必须了解的一点是 Service 的访问信息在 Kubernetes 集群内是有效的，集群之外是无效的。</p>
+<p>Service可以看作是一组提供相同服务的Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。对于Service 的工作原理请参考：https://time.geekbang.org/column/article/68636</p>
+<p>当需要从集群外部访问k8s里的服务的时候，方式有四种：<code>ClusterIP</code>（默认）、<code>NodePort</code>、<code>LoadBalancer</code>、<code>ExternalName</code> 。</p>
+<p><strong>下面我们介绍一下这几种方式的区别</strong></p>
+<h2 id="一clusterip"><strong>一、ClusterIP</strong></h2>
+<p>该方式是指通过集群的内部 IP 暴露服务，但此服务只能够在集群内部可以访问，这种方式也是默认的 ServiceType。</p>
+<p>我们先看一下最简单的Service定义</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">9376</span><span class="w">
+</span></code></pre></div><p>这里我使用了 <code>selector</code> 字段来声明这个 Service 只携带了 <code>app=hostnames</code> 标签的 Pod。并且这个 Service 的 <code>80</code> 端口，代理的是 Pod 的 <code>9376</code> 端口。</p>
+<p>我们定义一个 Deployment</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
+</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">k8s.gcr.io/serve_hostname</span><span class="w">
+</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">        </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">9376</span><span class="w">
+</span><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></code></pre></div><p>这里我们使用的 webservice 镜像为 <code>k8s.gcr.io/serve_hostname</code>，其主要提供输出当前服务器的 <code>hostname</code> 的功能，这里声明的<code>Pod</code>份数是 <code>3</code> 份，此时如果我们依次访问 <code>curl 10.0.1.175:80</code> 的话，会发现每次响应内容不一样，说明后端请求了不同的 pod 。这是因为 Service 提供的负载均衡方式是 <code>Round Robin</code>。</p>
+<p>这里的 <code>10.0.1.175</code> 是当前集群的IP，俗称为 <code>VIP</code>，是 Kubernetes 自动为 Service 分配的。对于这种方式称为 <code>ClusterIP 模式的 Service</code>。</p>
+<h2 id="二nodeport"><strong>二、NodePort</strong></h2>
+<p>通过每个 Node 上的 IP 和静态端口（NodePort）暴露服务。NodePort 服务会路由到 ClusterIP 服务，这个 ClusterIP 服务会自动创建。通过请求 <code>NodeIP:Port</code>，可以从集群的外部访问一个 NodePort 服务。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-nginx</span><span class="w">
+</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">my-nginx</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">NodePort</span><span class="w">
+</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">8080</span><span class="w">
+</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">443</span><span class="w">
+</span><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">https</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">my-nginx</span><span class="w">
+</span></code></pre></div><p><strong>Service描述文件</strong>
+<code>spec.type</code> 声明Service的type
+<code>spec.selector</code> 这个Service将要使用哪些Label，本例中指所有具有 <code>run: my-nginx</code> 标签的Pod。
+<code>spec.ports.nodePort</code> 表示此Service将会监听8080端口，并将所有监听到的请求转发给其管理的Pod。
+<code>spec.ports.targetPort</code> 表示此Service监听到的8080端口的请求都会被转发给其管理的Pod的80端口。此字段可以省略，省略后其值会被设置为<code>spec.ports.port</code>的值。</p>
+<p>如果你未指定 <code>spec.ports.nodePort</code> 的话，则系统会随机选择一个范围为 <code>30000-32767</code> 的端口号使用。</p>
+<p>这时要访问这个Service的话，只需要通过访问</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">&lt;任何一台宿主机器的IP&gt;:8080
+</code></pre></div><p>这样可以访问到某一个被代理Pod的80端口。后端的Pod并不是一定在当前Node上，有可能你访问的Node1:8080，而后端对应的Pod是在Node2上。</p>
+<p>可以看到这种方式很好理解，类似于平时我们使用docker部署容器应用后，将容器服务端口暴露出来宿主端口就可以了。</p>
+<h2 id="三loadbalancer"><strong>三、LoadBalancer</strong></h2>
+<p>使用云提供商的负载均衡器向外部暴露服务。 外部负载均衡器可以将流量路由到自动创建的 <code>NodePort</code> 服务和 <code>ClusterIP</code> 服务上（<a href="https://kubernetes.io/zh/docs/concepts/services-networking/service/#publishing-services-service-types" target="_blank" rel="noopener">官方解释</a>
+）。</p>
+<p>该模式需要底层云平台（例如GCE、亚马孙AWS）支持。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">example-service</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8765</span><span class="w">
+</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">9376</span><span class="w">
+</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">example</span><span class="w">
+</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
+</span></code></pre></div><p>创建这个服务后，系统会自动创建一个外部负载均衡器，其端口为8765, 并且把被代理的地址添加到公有云的负载均衡当中。</p>
+<h2 id="四externalname"><strong>四、ExternalName</strong></h2>
+<p>创建一个dns别名指到service name上，主要是防止service name发生变化，要配合dns插件使用。</p>
+<p>通过返回 CNAME 和它的值，可以将服务映射到 <code>externalName</code> 字段的内容（例如 <code>foo.bar.example.com</code>）。
+没有任何类型代理被创建，这只有 Kubernetes 1.7 或更高版本的 kube-dns 才支持。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span><span class="w"> </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span><span class="w"> </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">   </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-service</span><span class="w">
+</span><span class="w"> </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">   </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">ExternalName</span><span class="w">
+</span><span class="w">   </span><span class="nt">externalName</span><span class="p">:</span><span class="w"> </span><span class="l">my.database.example.com</span><span class="w">
+</span></code></pre></div><p>指定了一个 <code>externalName=my.database.example.com</code> 的字段。而且你应该会注意到，这个 YAML 文件里不需要指定 selector。
+这时候，当你通过 Service 的 DNS 名字访问它的时候，比如访问：<code>my-service.default.svc.cluster.local</code>。
+那么，Kubernetes 为你返回的就是 <code>my.database.example.com</code>。所以说，<code>ExternalName</code> 类型的 Service，其实是在<code> kube-dns</code> 里为你添加了一条 CNAME 记录。
+这时访问 <code>my-service.default.svc.cluster.local</code> 就和访问 <code>my.database.example.com</code> 这个域名是一个效果了。</p>
+<h1 id="ingress">Ingress</h1>
+<p>上面我们提到有一个叫作 <code>LoadBalancer</code> 类型的 <code>Service</code>，它会为你在 Cloud Provider（比如：Google Cloud 或者 OpenStack）里创建一个与该 Service 对应的负载均衡服务。但是，相信你也应该能感受到，由于每个 Service 都要有一个负载均衡服务，所以这个做法实际上既浪费成本又高。作为用户，我其实更希望看到 Kubernetes 为我内置一个全局的负载均衡器。然后，通过我访问的 URL，把请求转发给不同的后端 Service。这种全局的、为了代理不同后端 Service 而设置的负载均衡服务，就是 Kubernetes 里的 <code>Ingress</code> 服务。</p>
+<p>Ingress 的功能其实很容易理解：所谓 Ingress 就是 Service 的“Service”，这就是它们两者的关系。</p>
+<pre><code>    internet
+        |
+   [ Ingress ]
+   --|-----|--
+   [ Services ]
+</code></pre><p>通过使用 Kubernetes 的 Ingress 来创建一个统一的负载均衡器，从而实现当用户访问不同的域名时，访问后端不同的服务。</p>
+<p><p class="md__image">
+  <img src="../kubernetes%e4%b8%ad%e7%9a%84Service%e4%b8%8eIngress.assets/d2b5ca33bd970f64a6301fa75ae2eb22-8.png"
+    alt="img"  />
+</p>
+</p>
+<p>可以将 <code>Ingress</code> 配置为服务提供外部可访问的 URL、负载均衡流量、终止 SSL/TLS，以及提供基于名称的虚拟主机等能力。 <a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress-controllers" target="_blank" rel="noopener">Ingress 控制器</a>
+ 通常负责通过<code>负载均衡器</code>来实现 Ingress，尽管它也可以配置边缘路由器或其他前端来帮助处理流量。</p>
+<p>你必须具有 <a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress-controllers" target="_blank" rel="noopener"><code>Ingress 控制器</code></a>
+ 才能满足 <code>Ingress</code> 的要求。 仅创建 Ingress 资源本身没有任何效果。你可能需要部署 Ingress 控制器，例如 <a href="https://kubernetes.github.io/ingress-nginx/deploy/" target="_blank" rel="noopener"><code>ingress-nginx</code></a>
+。 你可以从许多 <a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress-controllers" target="_blank" rel="noopener">Ingress 控制器</a>
+ 中进行选择。</p>
+<p>假如我现在有这样一个站点：<code>https://cafe.example.com</code>。其中 <code>https://cafe.example.com/coffee</code>，对应的是“咖啡点餐系统”。而 <code>https://cafe.example.com/tea</code>，对应的则是“茶水点餐系统”。这两个系统，分别由名叫 <code>coffee</code> 和 <code>tea</code> 这样两个 Deployment 来提供服务，可以看到这是一种经典的扇出（fanout）行为。</p>
+<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">extensions/v1beta1</span><span class="w">
+</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Ingress</span><span class="w">
+</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cafe-ingress</span><span class="w">
+</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span><span class="nt">tls</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">hosts</span><span class="p">:</span><span class="w">
+</span><span class="w">    </span>- <span class="l">cafe.example.com</span><span class="w">
+</span><span class="w">    </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l">cafe-secret</span><span class="w">
+</span><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span><span class="w">  </span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">cafe.example.com</span><span class="w">
+</span><span class="w">    </span><span class="nt">http</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/tea</span><span class="w">
+</span><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l">tea-svc</span><span class="w">
+</span><span class="w">          </span><span class="nt">servicePort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span><span class="w">      </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/coffee</span><span class="w">
+</span><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span><span class="w">          </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l">coffee-svc</span><span class="w">
+</span><span class="w">          </span><span class="nt">servicePort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></code></pre></div><p>最值得我们关注的，是 <code>rules</code> 字段。在 Kubernetes 里，这个字段叫作：<code>IngressRule</code>。
+IngressRule 的 Key，就叫做：<code>host</code>。它必须是一个标准的域名格式（Fully Qualified Domain Name）的字符串，而不能是 IP 地址。</p>
+<p><strong>Ingress 规则</strong><a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress/#ingress-rules" target="_blank" rel="noopener"> </a>
+</p>
+<p>每个 HTTP 规则都包含以下信息：</p>
+<ul>
+<li><code>host</code>。可选项。如果未指定 <code>host</code>，则该规则适用于通过指定 IP 地址的所有入站 HTTP 通信。 如果提供了 <code>host</code>，则 <code>rules</code> 适用于该 <code>host</code>。</li>
+<li><code>paths</code> 路径列表 paths（例如，<code>/testpath</code>）,每个路径都有一个由 <code>serviceName</code> 和 <code>servicePort</code> 定义的关联后端。 在负载均衡器将流量定向到引用的服务之前，主机和路径都必须匹配传入请求的内容。</li>
+<li><code>backend</code>（后端）是 <a href="https://kubernetes.io/zh/docs/concepts/services-networking/service/" target="_blank" rel="noopener">Service 文档</a>
+中所述的服务和端口名称的组合。 与规则的 <code>host</code> 和 <code>path</code> 匹配的对 Ingress 的 HTTP（和 HTTPS ）请求将发送到指定对应的 <code>backend</code>。</li>
+</ul>
+<p>通常在 Ingress 控制器中会配置 <code>defaultBackend</code>（默认后端），以服务于任何不符合规约中 <code>path</code> 的请求。</p>
+<p>所以在我们的例子里，我定义了两个 path，它们分别对应 <code>coffee</code> 和 <code>tea</code> 这两个 Deployment 的 Service（即 <code>coffee-svc</code> 和 <code>tea-svc</code>）。</p>
+<p>通过上面的介绍，不难看到所谓 Ingress 对象，其实就是 Kubernetes 项目对“<code>反向代理</code>”的一种抽象。</p>
+<p>一个 <code>Ingress</code> 对象的主要内容，实际上就是一个“反向代理”服务（比如：Nginx）的配置文件的描述。而这个代理服务对应的转发规则，就是 <code>IngressRule</code>。</p>
+<p>这就是为什么在每条 IngressRule 里，需要有一个 host 字段来作为这条 IngressRule 的入口，然后还需要有一系列 path 字段来声明具体的转发策略。这其实跟 Nginx、HAproxy 等项目的配置文件的写法是一致的。</p>
+<p>在实际使用中，我们一般选择一种<code> Ingress Controller</code>, 将其部署在k8s集群中，这样它就会根据我们定义的 Ingress 对象来提供对应的代理功能。</p>
+<p>业界常用的各种反向代理项目，比如 Nginx、HAProxy、Envoy、Traefik 等，都已经为 Kubernetes 专门维护了对应的 <code>Ingress Controller</code>。</p>
+<p>Nginx Ingress Controller 的示例请参考 <a href="https://time.geekbang.org/column/article/69214">https://time.geekbang.org/column/article/69214</a></p>
+<p>推荐参考官方推荐脚本：https://github.com/resouer/kubernetes-ingress/tree/master/examples/complete-example</p>
+<p>由于k8s的api 一直在不停的变化，如果您按上方配置运行出错的话，建议参考官方文档进行调整</p>
+<h1 id="参考资料">参考资料</h1>
+<ul>
+<li><a href="https://kubernetes.io/zh/docs/concepts/services-networking/service/">https://kubernetes.io/zh/docs/concepts/services-networking/service/</a></li>
+<li><a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress/">https://kubernetes.io/zh/docs/concepts/services-networking/ingress/</a></li>
+<li><a href="https://kubernetes.io/docs/reference/kubernetes-api/service-resources/">https://kubernetes.io/docs/reference/kubernetes-api/service-resources/</a></li>
+</ul>
+]]></content>
 		</item>
 		
 		<item>
@@ -7052,7 +7402,85 @@ how.nice.to.look<span class="o">=</span>fairlyNice
 <blockquote>
 <p>删除了链表，对应的哈希表也需要做删除操作，怎么找到需要删除的value？需要通过key</p>
 </blockquote>
-<h2 id="lru在redis中的应用">LRU在Redis中的应用</h2>
+<h3 id="golang实现">golang实现</h3>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">type</span> <span class="nx">Node</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">Key</span> <span class="kt">int</span>
+    <span class="nx">Value</span> <span class="kt">int</span>
+    <span class="nx">pre</span> <span class="o">*</span><span class="nx">Node</span>
+    <span class="nx">next</span> <span class="o">*</span><span class="nx">Node</span>
+<span class="p">}</span>
+
+<span class="kd">type</span> <span class="nx">LRUCache</span> <span class="kd">struct</span> <span class="p">{</span>
+    <span class="nx">limit</span> <span class="kt">int</span>
+    <span class="nx">HashMap</span> <span class="kd">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="o">*</span><span class="nx">Node</span>
+    <span class="nx">head</span> <span class="o">*</span><span class="nx">Node</span>
+    <span class="nx">end</span> <span class="o">*</span><span class="nx">Node</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">Constructor</span><span class="p">(</span><span class="nx">capacity</span> <span class="kt">int</span><span class="p">)</span> <span class="nx">LRUCache</span><span class="p">{</span>
+    <span class="nx">lruCache</span> <span class="o">:=</span> <span class="nx">LRUCache</span><span class="p">{</span><span class="nx">limit</span><span class="p">:</span><span class="nx">capacity</span><span class="p">}</span>
+    <span class="nx">lruCache</span><span class="p">.</span><span class="nx">HashMap</span> <span class="p">=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="o">*</span><span class="nx">Node</span><span class="p">,</span> <span class="nx">capacity</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nx">lruCache</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LRUCache</span><span class="p">)</span> <span class="nf">Get</span><span class="p">(</span><span class="nx">key</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">v</span><span class="p">,</span><span class="nx">ok</span><span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">HashMap</span><span class="p">[</span><span class="nx">key</span><span class="p">];</span><span class="nx">ok</span> <span class="p">{</span>
+        <span class="nx">l</span><span class="p">.</span><span class="nf">refreshNode</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nx">v</span><span class="p">.</span><span class="nx">Value</span>
+    <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LRUCache</span><span class="p">)</span> <span class="nf">Put</span><span class="p">(</span><span class="nx">key</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">value</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="nx">v</span><span class="p">,</span><span class="nx">ok</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">HashMap</span><span class="p">[</span><span class="nx">key</span><span class="p">];!</span><span class="nx">ok</span><span class="p">{</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">l</span><span class="p">.</span><span class="nx">HashMap</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">limit</span><span class="p">{</span>
+            <span class="nx">oldKey</span> <span class="o">:=</span> <span class="nx">l</span><span class="p">.</span><span class="nf">removeNode</span><span class="p">(</span><span class="nx">l</span><span class="p">.</span><span class="nx">head</span><span class="p">)</span>
+            <span class="nb">delete</span><span class="p">(</span><span class="nx">l</span><span class="p">.</span><span class="nx">HashMap</span><span class="p">,</span> <span class="nx">oldKey</span><span class="p">)</span>
+        <span class="p">}</span>
+        <span class="nx">node</span> <span class="o">:=</span> <span class="nx">Node</span><span class="p">{</span><span class="nx">Key</span><span class="p">:</span><span class="nx">key</span><span class="p">,</span> <span class="nx">Value</span><span class="p">:</span><span class="nx">value</span><span class="p">}</span>
+        <span class="nx">l</span><span class="p">.</span><span class="nf">addNode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">node</span><span class="p">)</span>
+        <span class="nx">l</span><span class="p">.</span><span class="nx">HashMap</span><span class="p">[</span><span class="nx">key</span><span class="p">]</span> <span class="p">=</span> <span class="o">&amp;</span><span class="nx">node</span>
+    <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
+        <span class="nx">v</span><span class="p">.</span><span class="nx">Value</span> <span class="p">=</span> <span class="nx">value</span>
+        <span class="nx">l</span><span class="p">.</span><span class="nf">refreshNode</span><span class="p">(</span><span class="nx">v</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LRUCache</span><span class="p">)</span> <span class="nf">refreshNode</span><span class="p">(</span><span class="nx">node</span> <span class="o">*</span><span class="nx">Node</span><span class="p">){</span>
+    <span class="k">if</span> <span class="nx">node</span> <span class="o">==</span> <span class="nx">l</span><span class="p">.</span><span class="nx">end</span> <span class="p">{</span>
+        <span class="k">return</span>
+    <span class="p">}</span>
+    <span class="nx">l</span><span class="p">.</span><span class="nf">removeNode</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span>
+    <span class="nx">l</span><span class="p">.</span><span class="nf">addNode</span><span class="p">(</span><span class="nx">node</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LRUCache</span><span class="p">)</span> <span class="nf">removeNode</span><span class="p">(</span><span class="nx">node</span> <span class="o">*</span><span class="nx">Node</span><span class="p">)</span> <span class="kt">int</span><span class="p">{</span>
+    <span class="k">if</span> <span class="nx">node</span> <span class="o">==</span> <span class="nx">l</span><span class="p">.</span><span class="nx">end</span>  <span class="p">{</span>
+        <span class="nx">l</span><span class="p">.</span><span class="nx">end</span> <span class="p">=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">end</span><span class="p">.</span><span class="nx">pre</span>
+        <span class="nx">l</span><span class="p">.</span><span class="nx">end</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="kc">nil</span>
+    <span class="p">}</span><span class="k">else</span> <span class="k">if</span> <span class="nx">node</span> <span class="o">==</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">{</span>
+        <span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span><span class="p">.</span><span class="nx">next</span>
+        <span class="nx">l</span><span class="p">.</span><span class="nx">head</span><span class="p">.</span><span class="nx">pre</span> <span class="p">=</span> <span class="kc">nil</span>
+    <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
+        <span class="nx">node</span><span class="p">.</span><span class="nx">pre</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">next</span>
+        <span class="nx">node</span><span class="p">.</span><span class="nx">next</span><span class="p">.</span><span class="nx">pre</span> <span class="p">=</span> <span class="nx">node</span><span class="p">.</span><span class="nx">pre</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nx">node</span><span class="p">.</span><span class="nx">Key</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="p">(</span><span class="nx">l</span> <span class="o">*</span><span class="nx">LRUCache</span><span class="p">)</span> <span class="nf">addNode</span><span class="p">(</span><span class="nx">node</span> <span class="o">*</span><span class="nx">Node</span><span class="p">){</span>
+    <span class="k">if</span> <span class="nx">l</span><span class="p">.</span><span class="nx">end</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">l</span><span class="p">.</span><span class="nx">end</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="nx">node</span>
+        <span class="nx">node</span><span class="p">.</span><span class="nx">pre</span> <span class="p">=</span> <span class="nx">l</span><span class="p">.</span><span class="nx">end</span>
+        <span class="nx">node</span><span class="p">.</span><span class="nx">next</span> <span class="p">=</span> <span class="kc">nil</span>
+    <span class="p">}</span>
+    <span class="nx">l</span><span class="p">.</span><span class="nx">end</span> <span class="p">=</span> <span class="nx">node</span>
+    <span class="k">if</span> <span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+        <span class="nx">l</span><span class="p">.</span><span class="nx">head</span> <span class="p">=</span> <span class="nx">node</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><h2 id="lru在redis中的应用">LRU在Redis中的应用</h2>
 <p>既然是内存淘汰算法，那么我们常用的 Redis 里面必然也有对应的实现。</p>
 <p>Redis 的内存淘汰策略有如下几种：</p>
 <ul>
@@ -10363,6 +10791,24 @@ Then each of the goroutines runs and calls Done when finished. At the same time,
     alt="img"  />
 </p>
 </p>
+<h2 id="kubernetes的内置资源">kubernetes的内置资源</h2>
+<ul>
+<li>Pod: k8s最小的调度单位，可以将一组密切关联的容器组成一个逻辑单元，在这个单元里容器之间可以更好的共享资源。共享的资源包括：
+<ul>
+<li>共享存储，称为卷(Volumes)，即图上紫色圆柱</li>
+<li>网络，每个 Pod（容器组）在集群中有个唯一的 IP，pod（容器组）中的 container（容器）共享该IP地址</li>
+<li>container（容器）的基本信息，例如容器的镜像版本，对外暴露的端口等</li>
+</ul>
+</li>
+<li>Deployment:主要用于无状态应用，用来部署多个副本的Pod，并且在Pod出现异常时帮助应用及时恢复正常。</li>
+<li>Statefulset:主要用于有状态应用，可以控制Pod的启动顺序，为Pod绑定不同的存储等。</li>
+<li>Job/CronJob:用于一次性和周期性的任务。</li>
+<li>Daemonset:通常用来部署后台 常驻任务，会在每台Worker节点启动。</li>
+<li>Service:应用的访问入口，通过selector选择具有指定label的Pod，为其提供服务发现和负载均衡的功能，每个Service都可以通过CoreDNS获取到其对应的IP。</li>
+<li>Ingress:提供K8S集群外部访问应用。</li>
+<li>Configmap、Secret:描述应用的配置和密钥等数据</li>
+<li>PV、PVC、HostPath、EmptyDir:描述应用的各类存储</li>
+</ul>
 <h2 id="参考">参考</h2>
 <p><a href="https://www.cnblogs.com/chiangchou/p/k8s-1.html" target="_blank" rel="noopener">Kubernetes 深入学习（一） —— 入门和集群安装部署</a>
 </p>
@@ -11672,6 +12118,291 @@ scatter-gather: on
 </code></pre></div><p>意即<strong>世上只有一种一致性算法，那就是Paxos</strong>，所有其他一致性算法都是Paxos算法的不完整版。</p>
 <p>Paxos算法太难于理解，<a href="https://willje.github.io/posts/distributed/raft-%E7%AE%97%E6%B3%95/" target="_blank" rel="noopener">Raft算法</a>
 更易理解也有具体实现。</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>channel</title>
+			<link>https://willje.github.io/posts/go/concurrent/channel/</link>
+			<pubDate>Fri, 25 Dec 2020 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/go/concurrent/channel/</guid>
+			<description>Go语言提倡使用通信的方法代替共享内存，当一个资源需要在 goroutine 之间共享时，通道在 goroutine 之间架起了一个管道，并提供了确保同步交换数据的机制。声明通道时，需要指定将要被共享的数据的类型。可以通过通道共享内置类型、命名类型、结构类型和引用类型的值或者指针。 这里通信的方法就是使用通道（channel），如下图所示。 创建通道 通道是引用类型，需要使用 make 进行创建，格式如下： 通道实</description>
+			<content type="html"><![CDATA[<p>Go语言提倡使用通信的方法代替共享内存，当一个资源需要在 goroutine 之间共享时，通道在 goroutine 之间架起了一个管道，并提供了确保同步交换数据的机制。声明通道时，需要指定将要被共享的数据的类型。可以通过通道共享内置类型、命名类型、结构类型和引用类型的值或者指针。</p>
+<p>这里通信的方法就是使用通道（channel），如下图所示。</p>
+<p><p class="md__image">
+  <img src="../channel.assets/1-1PQG035203K.jpg"
+    alt="img"  />
+</p>
+</p>
+<h2 id="创建通道">创建通道</h2>
+<p>通道是引用类型，需要使用 make 进行创建，格式如下：</p>
+<p>通道实例 := make(chan 数据类型)</p>
+<ul>
+<li>数据类型：通道内传输的元素类型。</li>
+<li>通道实例：通过make创建的通道句柄。
+请看下面的例子：</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">ch1</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>                 <span class="c1">// 创建一个整型类型的通道
+</span><span class="c1"></span><span class="nx">ch2</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">interface</span><span class="p">{})</span>         <span class="c1">// 创建一个空接口类型的通道, 可以存放任意格式
+</span></code></pre></div><p>上面创建的都是无缓冲的channel，有缓冲的channel创建只需在创建时指定缓冲大小即可，就像这样</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">ch1</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+</code></pre></div><h2 id="使用通道发送数据">使用通道发送数据</h2>
+<p>通道创建后，就可以使用通道进行发送和接收操作。</p>
+<h4 id="1-通道发送数据的格式">1) 通道发送数据的格式</h4>
+<p>通道的发送使用特殊的操作符<code>&lt;-</code>，将数据通过通道发送的格式为：</p>
+<p>通道变量 &lt;- 值</p>
+<ul>
+<li>通道变量：通过make创建好的通道实例。</li>
+<li>值：可以是变量、常量、表达式或者函数返回值等。值的类型必须与ch通道的元素类型一致。</li>
+</ul>
+<h4 id="2-通过通道发送数据的例子">2) 通过通道发送数据的例子</h4>
+<p>使用 make 创建一个通道后，就可以使用<code>&lt;-</code>向通道发送数据，代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// 创建一个空接口通道
+</span><span class="c1"></span><span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">interface</span><span class="p">{})</span>
+<span class="c1">// 将0放入通道中
+</span><span class="c1"></span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">0</span>
+<span class="c1">// 将hello字符串放入通道中
+</span><span class="c1"></span><span class="nx">ch</span> <span class="o">&lt;-</span> <span class="s">&#34;hello&#34;</span>
+</code></pre></div><h4 id="3-发送将持续阻塞直到数据被接收">3) 发送将持续阻塞直到数据被接收</h4>
+<p>把数据往通道中发送时，如果接收方一直都没有接收，那么发送操作将持续阻塞。Go 程序运行时能智能地发现一些永远无法发送成功的语句并做出提示，代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>    
+    <span class="c1">// 创建一个整型通道    
+</span><span class="c1"></span>    <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>    
+    <span class="c1">// 尝试将0通过通道发送    
+</span><span class="c1"></span>    <span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">0</span>
+<span class="p">}</span>
+</code></pre></div><p>运行代码，报错：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">fatal error: all goroutines are asleep - deadlock!
+</code></pre></div><p>报错的意思是：运行时发现所有的 goroutine（包括main）都处于等待 goroutine。也就是说所有 goroutine 中的 channel 并没有形成发送和接收对应的代码。</p>
+<h2 id="使用通道接收数据">使用通道接收数据</h2>
+<p>通道接收同样使用<code>&lt;-</code>操作符，通道接收有如下特性：
+① 通道的收发操作在不同的两个 goroutine 间进行。</p>
+<p>由于通道的数据在没有接收方处理时，数据发送方会持续阻塞，因此通道的接收必定在另外一个 goroutine 中进行。</p>
+<p>② 接收将持续阻塞直到发送方发送数据。</p>
+<p>如果接收方接收时，通道中没有发送方发送数据，接收方也会发生阻塞，直到发送方发送数据为止。</p>
+<p>③ 每次接收一个元素。
+通道一次只能接收一个数据元素。</p>
+<p>通道的数据接收一共有以下 4 种写法。</p>
+<h4 id="1-阻塞接收数据">1) 阻塞接收数据</h4>
+<p>阻塞模式接收数据时，将接收变量作为<code>&lt;-</code>操作符的左值，格式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">data</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">ch</span>
+</code></pre></div><p>执行该语句时将会阻塞，直到接收到数据并赋值给 data 变量。</p>
+<h4 id="2-非阻塞接收数据">2) 非阻塞接收数据</h4>
+<p>使用非阻塞方式从通道接收数据时，语句不会发生阻塞，格式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">data</span><span class="p">,</span> <span class="nx">ok</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">ch</span>
+</code></pre></div><ul>
+<li>
+<p>data：表示接收到的数据。未接收到数据时，data 为通道类型的零值。</p>
+</li>
+<li>
+<p>ok：表示是否接收到数据。</p>
+</li>
+</ul>
+<p>非阻塞的通道接收方法可能造成高的 CPU 占用，因此使用非常少。如果需要实现接收超时检测，可以配合 select 和计时器 channel 进行，可以参见后面的内容。</p>
+<h4 id="3-接收任意数据忽略接收的数据">3) 接收任意数据，忽略接收的数据</h4>
+<p>阻塞接收数据后，忽略从通道返回的数据，格式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="o">&lt;-</span><span class="nx">ch</span>
+</code></pre></div><p>执行该语句时将会发生阻塞，直到接收到数据，但接收到的数据会被忽略。这个方式实际上只是通过通道在 goroutine 间阻塞收发实现并发同步。</p>
+<p>使用通道做并发同步的写法，可以参考下面的例子：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s">&#34;fmt&#34;</span>
+<span class="p">)</span>
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// 构建一个通道
+</span><span class="c1"></span>    <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+    <span class="c1">// 开启一个并发匿名函数
+</span><span class="c1"></span>    <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;start goroutine&#34;</span><span class="p">)</span>
+        <span class="c1">// 通过通道通知main的goroutine
+</span><span class="c1"></span>        <span class="nx">ch</span> <span class="o">&lt;-</span> <span class="mi">0</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;exit goroutine&#34;</span><span class="p">)</span>
+    <span class="p">}()</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;wait goroutine&#34;</span><span class="p">)</span>
+    <span class="c1">// 等待匿名goroutine
+</span><span class="c1"></span>    <span class="o">&lt;-</span><span class="nx">ch</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;all done&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div><p>执行代码，输出如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="nb">wait</span> goroutine
+start goroutine
+<span class="nb">exit</span> goroutine
+all <span class="k">done</span>
+</code></pre></div><p>代码说明如下：</p>
+<ul>
+<li>第 10 行，构建一个同步用的通道。</li>
+<li>第 13 行，开启一个匿名函数的并发。</li>
+<li>第 18 行，匿名 goroutine 即将结束时，通过通道通知 main 的 goroutine，这一句会一直阻塞直到 main 的 goroutine 接收为止。</li>
+<li>第 27 行，开启 goroutine 后，马上通过通道等待匿名 goroutine 结束。</li>
+</ul>
+<h4 id="4-循环接收">4) 循环接收</h4>
+<p>通道的数据接收可以借用 for range 语句进行多个元素的接收操作，格式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="k">for</span> <span class="nx">data</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">ch</span> <span class="p">{}</span>
+</code></pre></div><p>通道 ch 是可以进行遍历的，遍历的结果就是接收到的数据。数据类型就是通道的数据类型。通过 for 遍历获得的变量只有一个，即上面例子中的 data。</p>
+<p>遍历通道数据的例子请参考下面的代码。</p>
+<p>使用 for 从通道中接收数据：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+    <span class="s">&#34;fmt&#34;</span>
+    <span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// 构建一个通道
+</span><span class="c1"></span>    <span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+    <span class="c1">// 开启一个并发匿名函数
+</span><span class="c1"></span>    <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">// 从3循环到0
+</span><span class="c1"></span>        <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">3</span><span class="p">;</span> <span class="nx">i</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span><span class="o">--</span> <span class="p">{</span>
+            <span class="c1">// 发送3到0之间的数值
+</span><span class="c1"></span>            <span class="nx">ch</span> <span class="o">&lt;-</span> <span class="nx">i</span>
+            <span class="c1">// 每次发送完时等待
+</span><span class="c1"></span>            <span class="nx">time</span><span class="p">.</span><span class="nf">Sleep</span><span class="p">(</span><span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+        <span class="p">}</span>
+    <span class="p">}()</span>
+
+    <span class="c1">// 遍历接收通道数据
+</span><span class="c1"></span>    <span class="k">for</span> <span class="nx">data</span> <span class="o">:=</span> <span class="k">range</span> <span class="nx">ch</span> <span class="p">{</span>
+        <span class="c1">// 打印通道数据
+</span><span class="c1"></span>        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+        <span class="c1">// 当遇到数据0时, 退出接收循环
+</span><span class="c1"></span>        <span class="k">if</span> <span class="nx">data</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+           <span class="k">break</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div><p>执行代码，输出如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="mi">3</span>
+<span class="mi">2</span>
+<span class="mi">1</span>
+<span class="mi">0</span>
+</code></pre></div><h2 id="单向通道">单向通道</h2>
+<p>Go语言的类型系统提供了单方向的 channel 类型，顾名思义，单向 channel 就是只能用于写入或者只能用于读取数据。当然 channel 本身必然是同时支持读写的，否则根本没法用。</p>
+<p>假如一个 channel 真的只能读取数据，那么它肯定只会是空的，因为你没机会往里面写数据。同理，如果一个 channel 只允许写入数据，即使写进去了，也没有丝毫意义，因为没有办法读取到里面的数据。</p>
+<p>所谓的单向 channel 概念，其实只是对 channel 的一种使用限制。</p>
+<h3 id="单向通道的声明格式">单向通道的声明格式</h3>
+<p>我们在将一个 channel 变量传递到一个函数时，可以通过将其指定为单向 channel 变量，从而限制该函数中可以对此 channel 的操作，比如只能往这个 channel 中写入数据，或者只能从这个 channel 读取数据。</p>
+<p>单向 channel 变量的声明非常简单，只能写入数据的通道类型为<code>chan&lt;-</code>，只能读取数据的通道类型为<code>&lt;-chan</code>，格式如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">var</span> <span class="nx">intChan</span> <span class="kd">chan</span><span class="o">&lt;-</span> <span class="kt">int</span>   <span class="c1">// 只能写入数据的通道
+</span><span class="c1"></span><span class="kd">var</span> <span class="nx">strChan</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kt">string</span>   <span class="c1">// 只能读取数据的通道
+</span></code></pre></div><p>当然，使用 make 创建通道时，也可以创建一个只写入或只读取的通道：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">ch</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="o">&lt;-</span><span class="kd">chan</span> <span class="kt">int</span><span class="p">)</span>
+<span class="kd">var</span> <span class="nx">chReadOnly</span> <span class="o">&lt;-</span><span class="kd">chan</span> <span class="kt">int</span> <span class="p">=</span> <span class="nx">ch</span>
+<span class="o">&lt;-</span><span class="nx">chReadOnly</span>
+</code></pre></div><p>上面代码编译正常，运行也是正确的。但是，一个不能写入数据只能读取的通道是毫无意义的。</p>
+<h2 id="基于select的多路复用">基于select的多路复用</h2>
+<p>下面的程序会进行火箭发射的倒计时。time.Tick函数返回一个channel，程序会周期性地像一个节拍器一样向这个channel发送事件。每一个事件的值是一个时间戳，不过更有意思的是其传送方式。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+        <span class="s">&#34;fmt&#34;</span>
+        <span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">launch</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;发射!&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;准备发射火箭...&#34;</span><span class="p">)</span>
+        <span class="c1">//time.Tick会返回一个channel,系统会定时向这个channel发信号
+</span><span class="c1"></span>        <span class="nx">tick</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Tick</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nx">countdown</span> <span class="o">:=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">countdown</span> <span class="p">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">countdown</span><span class="o">--</span> <span class="p">{</span>
+                <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">countdown</span><span class="p">)</span>
+                <span class="c1">//从tick channel中取数据,没阻塞1s 返回一次
+</span><span class="c1"></span>                <span class="o">&lt;-</span><span class="nx">tick</span>
+        <span class="p">}</span>
+        <span class="nf">launch</span><span class="p">()</span>
+
+<span class="p">}</span>
+</code></pre></div><p>执行结果</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">准备发射火箭</span><span class="o">...</span>
+<span class="mi">10</span>
+<span class="mi">9</span>
+<span class="mi">8</span>
+<span class="mi">7</span>
+<span class="mi">6</span>
+<span class="mi">5</span>
+<span class="mi">4</span>
+<span class="mi">3</span>
+<span class="mi">2</span>
+<span class="mi">1</span>
+<span class="nx">发射</span><span class="p">!</span>
+</code></pre></div><p>现在我们让这个程序支持在倒计时中，用户按下回车键时直接中断发射流程。首先，我们启动一个goroutine，这个goroutine会尝试从标准输入中读入一个单独的byte并且，如果成功了，会向名为abort的channel发送一个值。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">abort</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
+<span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+    <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span> <span class="c1">// read a single byte
+</span><span class="c1"></span>    <span class="nx">abort</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
+<span class="p">}()</span>
+</code></pre></div><p>现在每一次计数循环的迭代都需要等待两个channel中的其中一个返回事件了.</p>
+<p>我们无法做到从每一个channel中接收信息，如果我们这么做的话，如果第一个channel中没有事件发过来那么程序就会立刻被阻塞，这样我们就无法收到第二个channel中发过来的事件。这时候我们需要多路复用(multiplex)这些操作了，为了能够多路复用，我们使用了select语句。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="k">select</span> <span class="p">{</span>
+<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">ch1</span><span class="p">:</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="k">case</span> <span class="nx">x</span> <span class="o">:=</span> <span class="o">&lt;-</span><span class="nx">ch2</span><span class="p">:</span>
+    <span class="c1">// ...use x...
+</span><span class="c1"></span><span class="k">case</span> <span class="nx">ch3</span> <span class="o">&lt;-</span> <span class="nx">y</span><span class="p">:</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="k">default</span><span class="p">:</span>
+    <span class="c1">// ...
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>上面是select语句的一般形式。和switch语句稍微有点相似，也会有几个case和最后的default选择分支。每一个case代表一个通信操作（在某个channel上进行发送或者接收），并且会包含一些语句组成的一个语句块。一个接收表达式可能只包含接收表达式自身（译注：不把接收到的值赋值给变量什么的），就像上面的第一个case，或者包含在一个简短的变量声明中，像第二个case里一样；第二种形式让你能够引用接收到的值。</p>
+<p>select会等待case中有能够执行的case时去执行。当条件满足时，select才会去通信并执行case之后的语句；这时候其它通信是不会执行的。</p>
+<p>一个没有任何case的select语句写作select{}，会永远地等待下去。</p>
+<p>如果多个case同时就绪时，select会随机地选择一个执行，这样来保证每一个channel都有平等的被select的机会。</p>
+<p>增加前一个例子的buffer大小会使其输出变得不确定，因为当buffer既不为满也不为空时，select语句的执行情况就像是抛硬币的行为一样是随机的。</p>
+<p>下面让我们的发射程序打印倒计时。这里的select语句会使每次循环迭代等待一秒来执行退出操作。</p>
+<p>修改代码如下：</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
+
+<span class="kn">import</span> <span class="p">(</span>
+        <span class="s">&#34;fmt&#34;</span>
+        <span class="s">&#34;os&#34;</span>
+        <span class="s">&#34;time&#34;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span> <span class="nf">launch</span><span class="p">()</span> <span class="p">{</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;发射!&#34;</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//创建abort channel
+</span><span class="c1"></span>        <span class="nx">abort</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">(</span><span class="kd">chan</span> <span class="kd">struct</span><span class="p">{})</span>
+        <span class="k">go</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span>
+                <span class="nx">os</span><span class="p">.</span><span class="nx">Stdin</span><span class="p">.</span><span class="nf">Read</span><span class="p">(</span><span class="nb">make</span><span class="p">([]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+                <span class="nx">abort</span> <span class="o">&lt;-</span> <span class="kd">struct</span><span class="p">{}{}</span>
+        <span class="p">}()</span>
+        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;准备发射火箭...&#34;</span><span class="p">)</span>
+        <span class="c1">//time.Tick会返回一个channel,系统会定时向这个channel发信号
+</span><span class="c1"></span>        <span class="nx">tick</span> <span class="o">:=</span> <span class="nx">time</span><span class="p">.</span><span class="nf">Tick</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="nx">time</span><span class="p">.</span><span class="nx">Second</span><span class="p">)</span>
+        <span class="k">for</span> <span class="nx">countdown</span> <span class="o">:=</span> <span class="mi">10</span><span class="p">;</span> <span class="nx">countdown</span> <span class="p">&gt;</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">countdown</span><span class="o">--</span> <span class="p">{</span>
+                <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">countdown</span><span class="p">)</span>
+                <span class="k">select</span> <span class="p">{</span>
+                <span class="k">case</span> <span class="o">&lt;-</span><span class="nx">tick</span><span class="p">:</span>
+                        <span class="c1">//从tick channel中取数据,阻塞1s 返回一次
+</span><span class="c1"></span>                        <span class="c1">//...
+</span><span class="c1"></span>                <span class="k">case</span> <span class="o">&lt;-</span><span class="nx">abort</span><span class="p">:</span>
+                        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="s">&#34;发射终止...&#34;</span><span class="p">)</span>
+                        <span class="k">return</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="nf">launch</span><span class="p">()</span>
+<span class="p">}</span>
+</code></pre></div><p>有时候我们希望能够从channel中发送或者接收值，并避免因为发送或者接收导致的阻塞，尤其是当channel没有准备好写或者读时。select语句就可以实现这样的功能。select会有一个default来设置当其它的操作都不能够马上被处理时程序需要执行哪些逻辑。</p>
+<p>下面的select语句会在abort channel中有值时，从其中接收值；无值时什么都不做。这是一个非阻塞的接收操作；反复地做这样的操作叫做“轮询channel”。</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="k">select</span> <span class="p">{</span>
+<span class="k">case</span> <span class="o">&lt;-</span><span class="nx">abort</span><span class="p">:</span>
+    <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;Launch aborted!\n&#34;</span><span class="p">)</span>
+    <span class="k">return</span>
+<span class="k">default</span><span class="p">:</span>
+    <span class="c1">// do nothing
+</span><span class="c1"></span><span class="p">}</span>
+</code></pre></div><p>channel的零值是nil。也许会让你觉得比较奇怪，nil的channel有时候也是有一些用处的。因为对一个nil的channel发送和接收操作会永远阻塞，在select语句中操作nil的channel永远都不会被select到。</p>
 ]]></content>
 		</item>
 		
@@ -16706,6 +17437,41 @@ $ cat my.dic
 		</item>
 		
 		<item>
+			<title>数据库连接池的一些理解</title>
+			<link>https://willje.github.io/posts/mysql/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0/</link>
+			<pubDate>Fri, 09 Aug 2019 19:46:38 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/mysql/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0/</guid>
+			<description>数据库连接池的作用 对于复杂业务场景下的应用，会需要频繁访问数据库资源。在这种场景下，频繁的建立、关闭数据库连接会对系统的性能照成极大的影响。为了解决这个性能瓶颈，可以考虑实现对数据库资源–连接的复用。对于数据库这类共享资源，有一个经典的设计模式：资源池。将资源池的设计理念引入数据库连接管理层面，就得到了数据库连接池。数据库连接池的目的是为了提供一套高效的连接</description>
+			<content type="html"><![CDATA[<h3 id="数据库连接池的作用">数据库连接池的作用</h3>
+<p>对于复杂业务场景下的应用，会需要频繁访问数据库资源。在这种场景下，频繁的建立、关闭数据库连接会对系统的性能照成极大的影响。为了解决这个性能瓶颈，可以考虑实现对数据库资源–连接的复用。对于数据库这类共享资源，有一个经典的设计模式：资源池。将资源池的设计理念引入数据库连接管理层面，就得到了数据库连接池。数据库连接池的目的是为了提供一套高效的连接分配、使用策略，最终目标是实现连接的高效、安全的复用。其基本原理是在内部对象池中维护一定数量的数据库连接，并对外暴露数据库连接获取和返回方法。</p>
+<h3 id="数据库连接池的工作原理">数据库连接池的工作原理</h3>
+<p>首先要说明一个问题，频繁建立、关闭数据库连接为什么会消耗更多的系统资源。原因在于，数据库连接建立时，会经历<a href="https://willje.github.io/posts/net/tcp%E5%9B%BE%E8%A7%A3/" target="_blank" rel="noopener">TCP的三握四挥</a>
+，还有数据库的认证，最后才是真正的sql执行过程。其中TCP连接和数据库认证是业务上不需要关心的，在此基础上，才可以考虑连接的复用。</p>
+<p>数据库连接池的功能主要有三个部分：</p>
+<ul>
+<li>连接池的建立；在系统初始化时，依照系统配置来创建连接池，并在池中建立几个连接对象，以便使用时获取。连接池中的连接不允许随意建立和关闭，避免系统开销。</li>
+<li>连接的使用和管理；当客户请求数据库连接时，首先查看连接池中是否有空闲连接，如果存在空闲连接，则将连接分配给客户使用；如果没有空闲连接，则查看当前所开的连接数是否已经达到最大连接数，如果没达到就重新创建一个连接给请求的客户；如果达到就按设定的最大等待时间进行等待，如果超出最大等待时间，则抛出异常给客户。当客户释放数据库连接时，先判断该连接的引用次数是否超过了规定值，如果超过就从连接池中删除该连接，否则保留为其他客户服务。</li>
+<li>连接池的关闭；当系统或者应用关闭时，关闭连接池，释放所有连接。</li>
+</ul>
+<h4 id="连接池主要参数">连接池主要参数</h4>
+<ul>
+<li>最小连接数：是连接池一直保持的数据库连接，所以如果应用程序对数据库连接的使用量不大，将会有大量的数据库连接资源被浪费；</li>
+<li>最大连接数：是连接池能申请的最大连接数，如果数据库连接请求超过次数，后面的数据库连接请求将被加入到等待队列中，这会影响以后的数据库操作；</li>
+<li>最大空闲时间；</li>
+<li>获取连接超时时间；</li>
+<li>超时重试连接次数。</li>
+</ul>
+<h3 id="使用连接池需要注意的问题">使用连接池需要注意的问题</h3>
+<ul>
+<li>并发问题，使用synchronized关键字；</li>
+<li>事务处理，采用单个连接使用独占事务的模式等策略；</li>
+<li>连接池管理，如连接的分配与释放，配置与维护等；</li>
+</ul>
+]]></content>
+		</item>
+		
+		<item>
 			<title>Java生产者与消费者</title>
 			<link>https://willje.github.io/posts/java/concurrent/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/</link>
 			<pubDate>Mon, 05 Aug 2019 20:55:29 +0800</pubDate>
@@ -17276,6 +18042,59 @@ git add * <span class="o">&amp;&amp;</span> git commit -m <span class="s1">&#39;
 <p><a href="https://juejin.cn/post/6844903769201704973#comment" target="_blank" rel="noopener">漫画：什么是Bitmap算法？</a>
 </p>
 <p><a href="https://zhuanlan.zhihu.com/p/45637038" target="_blank" rel="noopener">【算法与数据结构专场】BitMap算法基本操作代码实现</a>
+</p>
+]]></content>
+		</item>
+		
+		<item>
+			<title>域名解析cname和A记录</title>
+			<link>https://willje.github.io/posts/net/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90cname%E5%92%8Ca%E8%AE%B0%E5%BD%95/</link>
+			<pubDate>Tue, 25 Sep 2018 20:55:29 +0800</pubDate>
+			
+			<guid>https://willje.github.io/posts/net/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90cname%E5%92%8Ca%E8%AE%B0%E5%BD%95/</guid>
+			<description>什么是域名解析 域名解析就是国际域名或者国内域名以及中文域名等域名申请后做的到IP地址的转换过程。IP地址是网路上标识您站点的数字地址，为了简单好记，采用域名来代替ip地址标识站点地址。域名的解析工作由DNS服务器完成。 什么是A记录 A (Address) 记录是用来指定主机名（或域名）对应的IP地址记录。用户可以将该域名下的网站服务器指向到自己的web server上。同时也可以设</description>
+			<content type="html"><![CDATA[<h2 id="什么是域名解析">什么是域名解析</h2>
+<p>域名解析就是国际域名或者国内域名以及中文域名等域名申请后做的到IP地址的转换过程。IP地址是网路上标识您站点的数字地址，为了简单好记，采用域名来代替ip地址标识站点地址。域名的解析工作由DNS服务器完成。</p>
+<p><p class="md__image">
+  <img src="../%e5%9f%9f%e5%90%8d%e8%a7%a3%e6%9e%90cname%e5%92%8cA%e8%ae%b0%e5%bd%95.assets/1021265-20161221130055761-1012464060.png"
+    alt="img"  />
+</p>
+</p>
+<h2 id="什么是a记录">什么是A记录</h2>
+<p>A (Address) 记录是用来指定主机名（或域名）对应的IP地址记录。用户可以将该域名下的网站服务器指向到自己的web server上。同时也可以设置您域名的二级域名。</p>
+<p><p class="md__image">
+  <img src="../%e5%9f%9f%e5%90%8d%e8%a7%a3%e6%9e%90cname%e5%92%8cA%e8%ae%b0%e5%bd%95.assets/1021265-20161221130355745-46638593.png"
+    alt="img"  />
+</p>
+</p>
+<h2 id="什么是-cname">什么是 CNAME</h2>
+<p>**即：别名记录。**这种记录允许您将多个名字映射到另外一个域名。通常用于同时提供WWW和MAIL服务的计算机。例如，有一台计算机名为“host.mydomain.com”（A记录）。它同时提供WWW和MAIL服务，为了便于用户访问服务。可以为该计算机设置两个别名（CNAME）：WWW和MAIL。这两个别名的全称就http://www.mydomain.com/和“mail.mydomain.com”。实际上他们都指向“<a href="http://host.mydomain.com/" target="_blank" rel="noopener">host.mydomain.com</a>
+”。</p>
+<hr>
+<h2 id="cname和-a记录区别">CNAME和 A记录区别</h2>
+<h4 id="a记录是解析域名到ipcname是解析域名到另外一个域名">A记录是解析域名到IP，Cname是解析域名到另外一个域名。</h4>
+<p>A记录就是把一个域名解析到一个IP地址（Address，特制数字IP地址），而CNAME记录就是把域名解析到另外一个域名。其功能是差不多，CNAME将几个主机名指向一个别名，其实跟指向IP地址是一样的，因为这个别名也要做一个A记录的。但是使用CNAME记录可以很方便地变更IP地址。如果一台服务器有100个网站，他们都做了别名，该台服务器变更IP时，只需要变更别名的A记录就可以了。</p>
+<p>一台服务器可以布置多个网站，也可以有多个域名</p>
+<p>如：域名A—–&gt;A记录—–&gt;真正的服务器（IP）</p>
+<p>域名B（也叫A别名）</p>
+<p>域名C（也叫A别名）</p>
+<p>如果B，C此时也是通过A记录的形式到真正的服务器，那么哪一天真正的服务器修改了，A,B，C都得修改。</p>
+<p>而如果把B，C都解析到A，那么如果修改的话，只需要修改A即可。</p>
+<p>如何做呢？把B，C通过Cname解析到A即可。</p>
+<hr>
+<h2 id="为什么要有cname">为什么要有CNAME</h2>
+<h4 id="1-降低多域名多服务器多业务的运维成本">1. 降低多域名、多服务器、多业务的运维成本</h4>
+<p>通过将域名CNAME到新的地址后，降低权威DNS配置的复杂性，将变化频繁的配置（比如说A记录、MX记录）、功能业务（智能多线、CDN分发）等切割分离，出现故障后排查简单明了，是谁的问题就是谁的问题，而且权威DNS更新后在全球同步是需要时间的，所以在调整上越少越好，目前行业竞争激烈，保证好的用户体验以及网站的高可用性非常重要。</p>
+<h4 id="2-多个域名多种业务解析到同一个主机同时不影响搜索引擎收录">2. 多个域名、多种业务解析到同一个主机，同时不影响搜索引擎收录。</h4>
+<p>有多个域名（www、mail、news）服务要对应同一个公网服务器，服务器对外的域名是host.aaaabb.aaaa.aaaa.com.cn（可能公网IP后面对应着服务器集群，而且公网IP有可能会变化），这是一个典型的应用场景，通过将这些域名的CNAME指向host.aaaabb.aaaa.aaaa.com.cn就可以实现这个需求，而且不必去关心CNMAE后服务器的结构和变化，对于业主的维护来说非常简单，同时不影响到搜索引擎对你原域名的收录。</p>
+<h4 id="3-解决多线以及cdn分发加速问题">3. 解决多线以及CDN分发加速问题。</h4>
+<p>对于多线问题，通过CNAME后，可以在CNAME上做智能DNS，电信的用户走电信的链路、联通的用户走联通的链路，提升用户体验，节约链路成本，对于CDN的分发加速，大多数是通过CNAME加个GSLB（全球负载均衡）来实现，把你的域名CNAME到CDN厂家给你的域名上，剩余的事情就不用操心了，当然也可以自建CDN，自己搭一个GSLB做调度分发。</p>
+<h4 id="4-解决高并发下性能负载问题">4. 解决高并发下性能负载问题。</h4>
+<p>其实业务分离、CDN分发已经无形解决了一部分负载问题，大的网站并发是很厉害的，为了在解析环节不出问题，就需要买付费DNS，造成成本增高，并且不方便维护，这时你可以CNAME到某一个域名，设置CNAME后域名的NS为自己搭建的DNS，还有种方式可以直接配置forword，这样可以把智能解析的业务压力放在你自己的DNS上，应用场景是灵活千变万化的，万变不离其宗。</p>
+<h2 id="参考资料">参考资料</h2>
+<p><a href="https://www.cnblogs.com/tinywan/p/6207336.html" target="_blank" rel="noopener">网络基础知识之————A记录和CNAME记录的区别</a>
+</p>
+<p><a href="https://driverzhang.github.io/post/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90cname%E5%92%8Ca%E8%AE%B0%E5%BD%95/" target="_blank" rel="noopener">域名解析cname和A记录</a>
 </p>
 ]]></content>
 		</item>

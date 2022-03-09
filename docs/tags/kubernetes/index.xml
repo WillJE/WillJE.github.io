@@ -63,6 +63,15 @@
     </item>
     
     <item>
+      <title>Kubernetes中的Service与Ingress</title>
+      <link>https://willje.github.io/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/</link>
+      <pubDate>Wed, 18 Aug 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/</guid>
+      <description>Service 必须了解的一点是 Service 的访问信息在 Kubernetes 集群内是有效的，集群之外是无效的。 Service可以看作是一组提供相同服务的Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。对于Service 的工作原理请参考：https://time.geekbang.org/column/article/68636 当需要从集群外部访问k8s里的服务的时候，</description>
+    </item>
+    
+    <item>
       <title>Kubernetes网络模型</title>
       <link>https://willje.github.io/posts/k8s/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</link>
       <pubDate>Wed, 18 Aug 2021 21:23:18 +0800</pubDate>
@@ -87,15 +96,6 @@
       
       <guid>https://willje.github.io/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%BA%8C/</guid>
       <description>Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &amp;#34;pi&amp;#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&amp;#34;perl&amp;#34;,&amp;#34;-Mbignum=bpi&amp;#34;,&amp;#34;-wle&amp;#34;,&amp;#34;print bpi(2000)&amp;#34;]restartPolicy:Never一段时</description>
-    </item>
-    
-    <item>
-      <title>kubernetes基础使用（一）</title>
-      <link>https://willje.github.io/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%B8%80/</link>
-      <pubDate>Sun, 23 May 2021 21:23:18 +0800</pubDate>
-      
-      <guid>https://willje.github.io/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%B8%80/</guid>
-      <description>创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下</description>
     </item>
     
   </channel>

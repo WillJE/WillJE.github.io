@@ -143,6 +143,25 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/docker/namespace%E5%92%8Ccgroup/">Namespace和Cgroup</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>容器其实就是一种特殊的进程 为什么使用容器？ 容器虚拟化可以更高效地构建应用，也更容易管理维护。 左图是虚拟机的工作原理，右图是Docker，所示： 容器的核心技术是Cgroup和Namespace，在此基础上还有一些其他工具共同构成容器技术。 容器是宿主机上的进程： 容器技术通过 Namespace 实现资源隔离 通过Cgroup实现资源控制 通过rootfs实现文件系统隔离 容器引擎自身的特</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-08-23</span>
+                        <a class="tag"
+                                   href="/tags/docker/">docker</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/k8s/kubernetes-port%E7%B1%BB%E5%9E%8B/">Kubernetes port类型</a>
                 </h2>
             </div>
@@ -153,6 +172,25 @@
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
                                 class="date">2021-08-23</span>
+                        <a class="tag"
+                                   href="/tags/kubernetes/">kubernetes</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
+                <h2><a href="/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/">Kubernetes中的Service与Ingress</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>Service 必须了解的一点是 Service 的访问信息在 Kubernetes 集群内是有效的，集群之外是无效的。 Service可以看作是一组提供相同服务的Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。对于Service 的工作原理请参考：https://time.geekbang.org/column/article/68636 当需要从集群外部访问k8s里的服务的时候，</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-08-18</span>
                         <a class="tag"
                                    href="/tags/kubernetes/">kubernetes</a>
                     </div>
@@ -213,44 +251,6 @@
                                 class="date">2021-07-19</span>
                         <a class="tag"
                                    href="/tags/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/">文件描述符</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/mysql/%E4%B8%80%E9%81%93sql%E7%BB%83%E4%B9%A0%E9%A2%98/">一道SQL练习题</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>表结构 有三张表：students学生表,courses课程表,scores成绩表，三个表的结构如下： students: courses: scores: 1. 输出成绩表，按照 姓名,课程名,成绩 的格式输出 第一个题目很简单，要求输出学生姓名，课程名，以及每位同学的成绩，因此只需要把成绩表和学生表，课程表链接，分别获取学生名，课程名即可。 select s.name,c.name,sc.score from scores sc left join students s on sc.sid = s.id left join course c on sc.cid = c.id; 2. 输出每科的第一名，按照 课程名,学</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-07-10</span>
-                        <a class="tag"
-                                   href="/tags/mysql/">MySQL</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/k8s/kubernetes%E9%89%B4%E6%9D%83/">kubernetes鉴权</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>在k8s中，客户端对API Server访问的大体流程如下： 用户简介 在k8s中，用户具有如下基础属性： 用户名：标识用户的字符串 UID：标识用户的数字 组：即用户组，包含若干个用户 额外字段：其他信息 看起来和Linux中的系统用户一模一样。。。不过基本上只需要关心用户名。 用户分类 在Kubernetes中，用户分为两类： 普通用户（normal user）：为Pod外的程</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-06-25</span>
-                        <a class="tag"
-                                   href="/tags/kubernetes/">kubernetes</a>
                     </div>
                 </div>
             </div>

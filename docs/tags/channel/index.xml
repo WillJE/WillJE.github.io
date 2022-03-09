@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>channel on will&#39;s blog</title>
+    <link>https://willje.github.io/tags/channel/</link>
+    <description>Recent content in channel on will&#39;s blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en</language>
+    <copyright>本文采用知识共享署名-非商业性使用-相同方式共享 4.0 国际许可协议进行许可，转载请注明 will 和出处链接。</copyright>
+    <lastBuildDate>Fri, 25 Dec 2020 20:55:29 +0800</lastBuildDate><atom:link href="https://willje.github.io/tags/channel/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>channel</title>
+      <link>https://willje.github.io/posts/go/concurrent/channel/</link>
+      <pubDate>Fri, 25 Dec 2020 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/go/concurrent/channel/</guid>
+      <description>Go语言提倡使用通信的方法代替共享内存，当一个资源需要在 goroutine 之间共享时，通道在 goroutine 之间架起了一个管道，并提供了确保同步交换数据的机制。声明通道时，需要指定将要被共享的数据的类型。可以通过通道共享内置类型、命名类型、结构类型和引用类型的值或者指针。 这里通信的方法就是使用通道（channel），如下图所示。 创建通道 通道是引用类型，需要使用 make 进行创建，格式如下： 通道实</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -104,8 +104,14 @@
     <loc>https://willje.github.io/posts/docker/docker%E7%BD%91%E7%BB%9C/</loc>
     <lastmod>2021-08-23T21:51:51+08:00</lastmod>
   </url><url>
+    <loc>https://willje.github.io/posts/docker/namespace%E5%92%8Ccgroup/</loc>
+    <lastmod>2021-08-23T21:51:51+08:00</lastmod>
+  </url><url>
     <loc>https://willje.github.io/posts/k8s/kubernetes-port%E7%B1%BB%E5%9E%8B/</loc>
     <lastmod>2021-08-23T21:23:18+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/</loc>
+    <lastmod>2021-08-18T21:23:18+08:00</lastmod>
   </url><url>
     <loc>https://willje.github.io/posts/k8s/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</loc>
     <lastmod>2021-08-18T21:23:18+08:00</lastmod>
@@ -296,6 +302,12 @@
     <loc>https://willje.github.io/tags/%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7/</loc>
     <lastmod>2021-01-05T20:55:29+08:00</lastmod>
   </url><url>
+    <loc>https://willje.github.io/tags/channel/</loc>
+    <lastmod>2020-12-25T20:55:29+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/posts/go/concurrent/channel/</loc>
+    <lastmod>2020-12-25T20:55:29+08:00</lastmod>
+  </url><url>
     <loc>https://willje.github.io/posts/go/concurrent/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</loc>
     <lastmod>2020-12-25T20:55:29+08:00</lastmod>
   </url><url>
@@ -434,6 +446,9 @@
     <loc>https://willje.github.io/posts/java/dubbo%E5%85%A5%E9%97%A8/</loc>
     <lastmod>2019-10-10T20:55:29+08:00</lastmod>
   </url><url>
+    <loc>https://willje.github.io/posts/mysql/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5%E6%B1%A0/</loc>
+    <lastmod>2019-08-09T19:46:38+08:00</lastmod>
+  </url><url>
     <loc>https://willje.github.io/tags/java/</loc>
     <lastmod>2019-08-05T20:55:29+08:00</lastmod>
   </url><url>
@@ -463,6 +478,9 @@
   </url><url>
     <loc>https://willje.github.io/posts/blog/bitmap%E4%BD%BF%E7%94%A8/</loc>
     <lastmod>2018-12-05T20:55:29+08:00</lastmod>
+  </url><url>
+    <loc>https://willje.github.io/posts/net/%E5%9F%9F%E5%90%8D%E8%A7%A3%E6%9E%90cname%E5%92%8Ca%E8%AE%B0%E5%BD%95/</loc>
+    <lastmod>2018-09-25T20:55:29+08:00</lastmod>
   </url><url>
     <loc>https://willje.github.io/posts/net/%E8%BD%AC%E5%8F%91%E4%B8%8E%E9%87%8D%E5%AE%9A%E5%90%91/</loc>
     <lastmod>2018-09-20T20:55:29+08:00</lastmod>
