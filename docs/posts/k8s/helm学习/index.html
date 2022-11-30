@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="helm学习">
-<meta itemprop="description" content="helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release"><meta itemprop="datePublished" content="2021-10-01T16:23:40&#43;08:00" />
-<meta itemprop="dateModified" content="2021-10-01T16:23:40&#43;08:00" />
+<meta itemprop="description" content="helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release"><meta itemprop="datePublished" content="2021-10-01T16:23:40+08:00" />
+<meta itemprop="dateModified" content="2021-10-01T16:23:40+08:00" />
 <meta itemprop="wordCount" content="1017">
 <meta itemprop="keywords" content="kubernetes,helm," /><meta property="og:title" content="helm学习" />
 <meta property="og:description" content="helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/k8s/helm%E5%AD%A6%E4%B9%A0/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-10-01T16:23:40&#43;08:00" />
-<meta property="article:modified_time" content="2021-10-01T16:23:40&#43;08:00" />
+<meta property="article:published_time" content="2021-10-01T16:23:40+08:00" />
+<meta property="article:modified_time" content="2021-10-01T16:23:40+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="helm学习"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>helm学习</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -93,46 +93,46 @@
 <p><a href="https://helm.sh/zh/docs/topics/charts/" target="_blank" rel="noopener">官网的例子</a>
 </p>
 <p>创建一个mychart的chart</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm create mychart   <span class="c1">#创建一个helm项目</span>
-</code></pre></div><p>修改values.yaml下的信息。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ helm create mychart   <span class="c1">#创建一个helm项目</span>
+</span></span></code></pre></div><p>修改values.yaml下的信息。</p>
 <p>完成后，检查依赖和模板是否正确</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm lint mychart/     <span class="c1">#检查依赖和模版配置是否正确</span>
-<span class="o">==</span>&gt; Linting mychart/
-<span class="o">[</span>INFO<span class="o">]</span> Chart.yaml: icon is recommended
-
-<span class="m">1</span> chart<span class="o">(</span>s<span class="o">)</span> linted, <span class="m">0</span> chart<span class="o">(</span>s<span class="o">)</span> failed
-</code></pre></div><p>将应用打包</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm package mychart
-Successfully packaged chart and saved it to: /root/mychart-0.1.0.tgz
-</code></pre></div><h2 id="chart安装部署">chart安装部署<a href="#chart安装部署" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># 在部署前使用 --dry-run 参数验证 Chart 的配置，并不执行安装</span>
-$ helm install demo-test  --dry-run --debug myrepo/mychart
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="c1"># 方式一</span>
-$ helm install demo-test ./mychart
-
-<span class="c1"># 可根据不同的配置来install，默认是values.yaml</span>
-$ helm install demo-test ./mychart -f ./mychart/values-prod.yaml
-
-<span class="c1"># 方式二</span>
-$ helm install demo-test ./mychart-0.1.0.tgz
-</code></pre></div><p>完成后查看</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm list
-</code></pre></div><p>删除release</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">helm uninstall demo-test
-</code></pre></div><h2 id="char上传到repo">char上传到repo<a href="#char上传到repo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ helm lint mychart/     <span class="c1">#检查依赖和模版配置是否正确</span>
+</span></span><span class="line"><span class="cl"><span class="o">==</span>&gt; Linting mychart/
+</span></span><span class="line"><span class="cl"><span class="o">[</span>INFO<span class="o">]</span> Chart.yaml: icon is recommended
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="m">1</span> chart<span class="o">(</span>s<span class="o">)</span> linted, <span class="m">0</span> chart<span class="o">(</span>s<span class="o">)</span> failed
+</span></span></code></pre></div><p>将应用打包</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ helm package mychart
+</span></span><span class="line"><span class="cl">Successfully packaged chart and saved it to: /root/mychart-0.1.0.tgz
+</span></span></code></pre></div><h2 id="chart安装部署">chart安装部署<a href="#chart安装部署" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># 在部署前使用 --dry-run 参数验证 Chart 的配置，并不执行安装</span>
+</span></span><span class="line"><span class="cl">$ helm install demo-test  --dry-run --debug myrepo/mychart
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="c1"># 方式一</span>
+</span></span><span class="line"><span class="cl">$ helm install demo-test ./mychart
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 可根据不同的配置来install，默认是values.yaml</span>
+</span></span><span class="line"><span class="cl">$ helm install demo-test ./mychart -f ./mychart/values-prod.yaml
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 方式二</span>
+</span></span><span class="line"><span class="cl">$ helm install demo-test ./mychart-0.1.0.tgz
+</span></span></code></pre></div><p>完成后查看</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ helm list
+</span></span></code></pre></div><p>删除release</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">helm uninstall demo-test
+</span></span></code></pre></div><h2 id="char上传到repo">char上传到repo<a href="#char上传到repo" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>将应用发布到Repository，这个仓库可以是harbor仓库，先看下helm关联的仓库</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm repo list
-</code></pre></div><p>如果需要增加仓库</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm repo add reponame repourl
-</code></pre></div><p>再执行更新</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm repo update	
-</code></pre></div><p>此时再查看仓库列表<code>helm repo list</code>就能看到添加的仓库了。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ helm repo list
+</span></span></code></pre></div><p>如果需要增加仓库</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ helm repo add reponame repourl
+</span></span></code></pre></div><p>再执行更新</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ helm repo update	
+</span></span></code></pre></div><p>此时再查看仓库列表<code>helm repo list</code>就能看到添加的仓库了。</p>
 <p>推送到harbo之前需要关心一下认证的问题，具体看<a href="https://helm.sh/zh/docs/topics/chart_repository/" target="_blank" rel="noopener">官网chart repo</a>
 </p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm push mychart/ chartrepo -u username -p password
-</code></pre></div><p>推送成功之后可以查找下推送的chart</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm search repo will-chart
-</code></pre></div><h2 id="chart更新">chart更新<a href="#chart更新" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ helm push mychart/ chartrepo -u username -p password
+</span></span></code></pre></div><p>推送成功之后可以查找下推送的chart</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ helm search repo will-chart
+</span></span></code></pre></div><h2 id="chart更新">chart更新<a href="#chart更新" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>修改 mychart/Chart.yaml 文件</p>
 <p><p class="md__image">
   <img src="../helm%e5%ad%a6%e4%b9%a0.assets/105584-20200728153858707-1189210447-16426656582032.png"
@@ -146,10 +146,10 @@ $ helm install demo-test ./mychart-0.1.0.tgz
 </p>
 </p>
 <p>然后上传chart</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">helm push mychart/ myrepo -u <span class="nb">test</span> -p Test1234
-</code></pre></div><p>查询一下</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">helm search repo mychart -l
-</code></pre></div><p>此时可以看到两个版本的mychart</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">helm push mychart/ myrepo -u <span class="nb">test</span> -p Test1234
+</span></span></code></pre></div><p>查询一下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">helm search repo mychart -l
+</span></span></code></pre></div><p>此时可以看到两个版本的mychart</p>
 <h2 id="chart回退">chart回退<a href="#chart回退" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>如果更新后的程序由于某些原因运行有问题，需要回退到旧版本的应用。可以使用 <code>helm history</code> 命令查看一个 Release 的所有变更记录</p>
 <p><p class="md__image">
@@ -165,10 +165,10 @@ $ helm install demo-test ./mychart-0.1.0.tgz
 </p>
 <h1 id="其他常用命令">其他常用命令<a href="#其他常用命令" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <p>helm list -a查看全部的release，tag “-a”是查看全部的release，包括已部署、部署失败、正在删除、已删除release等。</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm list -a
-</code></pre></div><p>helm delete命令删除一个chart：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ helm delete mysql
-</code></pre></div><h1 id="参考">参考<a href="#参考" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ helm list -a
+</span></span></code></pre></div><p>helm delete命令删除一个chart：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ helm delete mysql
+</span></span></code></pre></div><h1 id="参考">参考<a href="#参考" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <ul>
 <li><a href="https://helm.sh/zh/docs/howto/charts_tips_and_tricks/" target="_blank" rel="noopener">helm中文官方文档</a>
 </li>
@@ -252,7 +252,7 @@ $ helm install demo-test ./mychart-0.1.0.tgz
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

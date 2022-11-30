@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="MySQL窗口函数">
-<meta itemprop="description" content="模拟问题描述 给定一组中学生的历次语文月考成绩表（每名学生含有 4 次成绩），需要实现以下 3 个需求： 对每名学生的 4 次成绩表分别进行排序，排序后每人的成绩排名 1-2-3-4 求每名学生历次月考成绩的变化幅度，即本月较上个月的成绩差值 求每名学生历次月考成绩中近 3 次平均分 数据表样例如下： 窗口函数介绍 在分析上述需求之前，首先对窗口函数进行介绍。何为窗口函数呢？既然窗口函数这个名字源于数"><meta itemprop="datePublished" content="2022-01-13T21:23:18&#43;08:00" />
-<meta itemprop="dateModified" content="2022-01-13T21:23:18&#43;08:00" />
+<meta itemprop="description" content="模拟问题描述 给定一组中学生的历次语文月考成绩表（每名学生含有 4 次成绩），需要实现以下 3 个需求： 对每名学生的 4 次成绩表分别进行排序，排序后每人的成绩排名 1-2-3-4 求每名学生历次月考成绩的变化幅度，即本月较上个月的成绩差值 求每名学生历次月考成绩中近 3 次平均分 数据表样例如下： 窗口函数介绍 在分析上述需求之前，首先对窗口函数进行介绍。何为窗口函数呢？既然窗口函数这个名字源于数"><meta itemprop="datePublished" content="2022-01-13T21:23:18+08:00" />
+<meta itemprop="dateModified" content="2022-01-13T21:23:18+08:00" />
 <meta itemprop="wordCount" content="1906">
 <meta itemprop="keywords" content="MySQL," /><meta property="og:title" content="MySQL窗口函数" />
 <meta property="og:description" content="模拟问题描述 给定一组中学生的历次语文月考成绩表（每名学生含有 4 次成绩），需要实现以下 3 个需求： 对每名学生的 4 次成绩表分别进行排序，排序后每人的成绩排名 1-2-3-4 求每名学生历次月考成绩的变化幅度，即本月较上个月的成绩差值 求每名学生历次月考成绩中近 3 次平均分 数据表样例如下： 窗口函数介绍 在分析上述需求之前，首先对窗口函数进行介绍。何为窗口函数呢？既然窗口函数这个名字源于数" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/mysql/mysql%E7%AA%97%E5%8F%A3%E5%87%BD%E6%95%B0/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2022-01-13T21:23:18&#43;08:00" />
-<meta property="article:modified_time" content="2022-01-13T21:23:18&#43;08:00" />
+<meta property="article:published_time" content="2022-01-13T21:23:18+08:00" />
+<meta property="article:modified_time" content="2022-01-13T21:23:18+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="MySQL窗口函数"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>MySQL窗口函数</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -126,8 +126,8 @@
 <h3 id="求解每名同学历次成绩的排名">求解每名同学历次成绩的排名<a href="#求解每名同学历次成绩的排名" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>由于是区分每名同学进行排序，所以需要依据 uid 字段进行 partition；进一步地，按照成绩进行排序，所以 order by 字段即为 score；最后，由于是要进行排名，所以配套函数选择 row_number 即可。</p>
 <p>查询语句及查询结果如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="o">*</span><span class="p">,</span> <span class="n">row_number</span><span class="p">()</span> <span class="n">over</span><span class="p">(</span><span class="n">partition</span> <span class="k">by</span> <span class="n">uid</span> <span class="k">order</span> <span class="k">by</span> <span class="n">score</span> <span class="k">desc</span><span class="p">)</span> <span class="k">as</span> <span class="o">`</span><span class="n">rank</span><span class="o">`</span> <span class="k">from</span> <span class="n">score</span>
-</code></pre></div><p><a href="https://cdn.error.work/imgur/tYRf4dF.png" target="_blank" rel="noopener"><p class="md__image">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">row_number</span><span class="p">()</span><span class="w"> </span><span class="n">over</span><span class="p">(</span><span class="n">partition</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">uid</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="k">desc</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="o">`</span><span class="n">rank</span><span class="o">`</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">score</span><span class="w">
+</span></span></span></code></pre></div><p><a href="https://cdn.error.work/imgur/tYRf4dF.png" target="_blank" rel="noopener"><p class="md__image">
   <img src="../MySQL%e7%aa%97%e5%8f%a3%e5%87%bd%e6%95%b0.assets/tYRf4dF.png"
     alt="图片alt"  />
 </p>
@@ -145,8 +145,8 @@
 <h3 id="求解每名同学历次月考成绩的差值即本月成绩-上月成绩">求解每名同学历次月考成绩的差值，即本月成绩-上月成绩<a href="#求解每名同学历次月考成绩的差值即本月成绩-上月成绩" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>首先，仍然是依据 uid 字段进行 partition；而后由于是要计算本月成绩与上月成绩的差值，所以此次的排序依据应该是 date；进一步地，由于要计算差值，所以需要对每次月考成绩计算其前一行的成绩（在按照 uid 进行切分并按照 date 排序后，上月成绩即为当前行的前一条记录），所以配套函数即为 lag。</p>
 <p>给出具体实现 SQL 语句及查询结果如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="o">*</span><span class="p">,</span> <span class="n">score</span> <span class="o">-</span> <span class="n">lag</span><span class="p">(</span><span class="n">score</span><span class="p">)</span> <span class="n">over</span><span class="p">(</span><span class="n">partition</span> <span class="k">by</span> <span class="n">uid</span> <span class="k">order</span> <span class="k">by</span> <span class="nb">date</span><span class="p">)</span> <span class="k">as</span> <span class="n">score_diff</span> <span class="k">from</span> <span class="n">score</span>
-</code></pre></div><p><a href="https://cdn.error.work/imgur/wDWLQgI.png" target="_blank" rel="noopener"><p class="md__image">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">score</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">lag</span><span class="p">(</span><span class="n">score</span><span class="p">)</span><span class="w"> </span><span class="n">over</span><span class="p">(</span><span class="n">partition</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="n">uid</span><span class="w"> </span><span class="k">order</span><span class="w"> </span><span class="k">by</span><span class="w"> </span><span class="nb">date</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">score_diff</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">score</span><span class="w">
+</span></span></span></code></pre></div><p><a href="https://cdn.error.work/imgur/wDWLQgI.png" target="_blank" rel="noopener"><p class="md__image">
   <img src="../MySQL%e7%aa%97%e5%8f%a3%e5%87%bd%e6%95%b0.assets/wDWLQgI.png"
     alt="图片alt"  />
 </p>
@@ -155,7 +155,7 @@
 <h3 id="求解每名学生近-3-次月考成绩的平均分">求解每名学生近 3 次月考成绩的平均分。<a href="#求解每名学生近-3-次月考成绩的平均分" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>在前两个需求的基础上，易见，仍然是依据 uid 进行 partition、依据 date 进行排序，并选用 avg 聚合函数作为配套窗口函数。进一步地，由于此处限定计算近 3 次成绩的平均分，所以除了 partition 和 order by 两个关键字外，还需增加 rows between 的限定。</p>
 <p>具体 SQL 语句和查询结果如下：</p>
-<pre><code>SELECT *, avg(score) over(partition by uid order by date rows between 2 preceding and current row) as avg_score3 from score
+<pre tabindex="0"><code>SELECT *, avg(score) over(partition by uid order by date rows between 2 preceding and current row) as avg_score3 from score
 </code></pre><p><a href="https://cdn.error.work/imgur/N8vM5rR.png" target="_blank" rel="noopener"><p class="md__image">
   <img src="../MySQL%e7%aa%97%e5%8f%a3%e5%87%bd%e6%95%b0.assets/N8vM5rR.png"
     alt="图片alt"  />
@@ -248,7 +248,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

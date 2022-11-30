@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="MySQL InnoDB锁机制">
-<meta itemprop="description" content="锁 锁是用于管理不同事务对共享资源的并发访问 表锁和行锁的区别： 在加锁效率、锁定粒度以及冲突概率上，表锁肯定是大于行锁的 但是在并发性能上，表锁远低于行锁。 表锁是锁定了整个表，在加锁期间，无论读写，这个表的数据都是锁定的，相反行锁只是锁定了这个表中的一条数据，其他数据仍然可以操作，这就可很好的提高了数据库的并发性能。 关于表级锁 LOCK TABLES [&lt;tb&gt; &lt;lock_type&gt;],... -- 给指定表加锁，使当前客户端会"><meta itemprop="datePublished" content="2020-04-23T21:23:18&#43;08:00" />
-<meta itemprop="dateModified" content="2020-04-23T21:23:18&#43;08:00" />
+<meta itemprop="description" content="锁 锁是用于管理不同事务对共享资源的并发访问 表锁和行锁的区别： 在加锁效率、锁定粒度以及冲突概率上，表锁肯定是大于行锁的 但是在并发性能上，表锁远低于行锁。 表锁是锁定了整个表，在加锁期间，无论读写，这个表的数据都是锁定的，相反行锁只是锁定了这个表中的一条数据，其他数据仍然可以操作，这就可很好的提高了数据库的并发性能。 关于表级锁 LOCK TABLES [&lt;tb&gt; &lt;lock_type&gt;],... -- 给指定表加锁，使当前客户端会"><meta itemprop="datePublished" content="2020-04-23T21:23:18+08:00" />
+<meta itemprop="dateModified" content="2020-04-23T21:23:18+08:00" />
 <meta itemprop="wordCount" content="2879">
 <meta itemprop="keywords" content="MySQL,锁," /><meta property="og:title" content="MySQL InnoDB锁机制" />
 <meta property="og:description" content="锁 锁是用于管理不同事务对共享资源的并发访问 表锁和行锁的区别： 在加锁效率、锁定粒度以及冲突概率上，表锁肯定是大于行锁的 但是在并发性能上，表锁远低于行锁。 表锁是锁定了整个表，在加锁期间，无论读写，这个表的数据都是锁定的，相反行锁只是锁定了这个表中的一条数据，其他数据仍然可以操作，这就可很好的提高了数据库的并发性能。 关于表级锁 LOCK TABLES [&lt;tb&gt; &lt;lock_type&gt;],... -- 给指定表加锁，使当前客户端会" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/mysql/mysql-innodb%E9%94%81%E6%9C%BA%E5%88%B6/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-04-23T21:23:18&#43;08:00" />
-<meta property="article:modified_time" content="2020-04-23T21:23:18&#43;08:00" />
+<meta property="article:published_time" content="2020-04-23T21:23:18+08:00" />
+<meta property="article:modified_time" content="2020-04-23T21:23:18+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="MySQL InnoDB锁机制"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>MySQL InnoDB锁机制</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -80,15 +80,15 @@
 <p>但是在并发性能上，表锁远低于行锁。</p>
 <p>表锁是锁定了整个表，在加锁期间，无论读写，这个表的数据都是锁定的，相反行锁只是锁定了这个表中的一条数据，其他数据仍然可以操作，这就可很好的提高了数据库的并发性能。</p>
 <h3 id="关于表级锁">关于表级锁<a href="#关于表级锁" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">LOCK</span> <span class="n">TABLES</span> <span class="p">[</span><span class="o">&lt;</span><span class="n">tb</span><span class="o">&gt;</span> <span class="o">&lt;</span><span class="n">lock_type</span><span class="o">&gt;</span><span class="p">],...</span>    <span class="c1">-- 给指定表加锁，使当前客户端会话获得表锁，例如 LOCK TABLES tb1 WRITE, tb2 READ;
-</span><span class="c1"></span><span class="n">UNLOCK</span> <span class="n">TABLES</span>                         <span class="c1">-- 释放当前会话的所有表锁
-</span><span class="c1"></span>
-<span class="n">FLUSH</span> <span class="n">TABLES</span>                          <span class="c1">-- 强制关闭所有被打开的表，并将写缓存中的数据写入磁盘
-</span><span class="c1"></span>            <span class="n">tb</span><span class="p">,...</span>                    <span class="c1">-- 只处理指定的表
-</span><span class="c1"></span>            <span class="k">WITH</span> <span class="k">READ</span> <span class="k">LOCK</span>            <span class="c1">-- flush 之后加上全局只读锁。这是全局锁，因此不需要获得 lock tables 的表锁
-</span><span class="c1"></span>
-<span class="k">SHOW</span> <span class="n">STATUS</span> <span class="k">LIKE</span> <span class="s1">&#39;Table_locks%&#39;</span><span class="p">;</span>      <span class="c1">-- 统计获得表锁的耗时
-</span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">LOCK</span><span class="w"> </span><span class="n">TABLES</span><span class="w"> </span><span class="p">[</span><span class="o">&lt;</span><span class="n">tb</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&lt;</span><span class="n">lock_type</span><span class="o">&gt;</span><span class="p">],...</span><span class="w">    </span><span class="c1">-- 给指定表加锁，使当前客户端会话获得表锁，例如 LOCK TABLES tb1 WRITE, tb2 READ;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">UNLOCK</span><span class="w"> </span><span class="n">TABLES</span><span class="w">                         </span><span class="c1">-- 释放当前会话的所有表锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="n">FLUSH</span><span class="w"> </span><span class="n">TABLES</span><span class="w">                          </span><span class="c1">-- 强制关闭所有被打开的表，并将写缓存中的数据写入磁盘
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">            </span><span class="n">tb</span><span class="p">,...</span><span class="w">                    </span><span class="c1">-- 只处理指定的表
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">            </span><span class="k">WITH</span><span class="w"> </span><span class="k">READ</span><span class="w"> </span><span class="k">LOCK</span><span class="w">            </span><span class="c1">-- flush 之后加上全局只读锁。这是全局锁，因此不需要获得 lock tables 的表锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SHOW</span><span class="w"> </span><span class="n">STATUS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;Table_locks%&#39;</span><span class="p">;</span><span class="w">      </span><span class="c1">-- 统计获得表锁的耗时
+</span></span></span></code></pre></div><ul>
 <li>客户端执行<code>LOCK TABLES </code>或 <code>START TRANSACTION</code>时，都会隐式地释放已获得的表锁。
 <ul>
 <li>客户端断开会话时，服务器会释放其获得的表锁。</li>
@@ -96,13 +96,13 @@
 </li>
 </ul>
 <h3 id="关于行级锁">关于行级锁<a href="#关于行级锁" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="p">...</span> <span class="k">WHERE</span> <span class="p">...</span> <span class="k">LOCK</span> <span class="k">IN</span> <span class="k">SHARE</span> <span class="k">MODE</span>      <span class="c1">-- 给查询到的所有数据行加行级共享锁
-</span><span class="c1"></span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="p">...</span> <span class="k">WHERE</span> <span class="p">...</span> <span class="k">FOR</span> <span class="k">UPDATE</span>              <span class="c1">-- 加行级排它锁
-</span><span class="c1"></span>
-<span class="k">SHOW</span> <span class="n">STATUS</span> <span class="k">LIKE</span> <span class="s1">&#39;InnoDB_row_lock%&#39;</span><span class="p">;</span>                <span class="c1">-- 统计获得行锁的耗时
-</span><span class="c1"></span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">performance_schema</span><span class="p">.</span><span class="n">data_locks</span><span class="p">;</span>        <span class="c1">-- 显示所有获取行锁的请求，包括已经获得的、等待获得的
-</span><span class="c1"></span><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">performance_schema</span><span class="p">.</span><span class="n">data_lock_waits</span><span class="p">;</span>   <span class="c1">-- 显示 data_lock_waits 中的哪些请求在被哪些请求阻塞
-</span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="k">LOCK</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="k">SHARE</span><span class="w"> </span><span class="k">MODE</span><span class="w">      </span><span class="c1">-- 给查询到的所有数据行加行级共享锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="p">...</span><span class="w"> </span><span class="k">FOR</span><span class="w"> </span><span class="k">UPDATE</span><span class="w">              </span><span class="c1">-- 加行级排它锁
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SHOW</span><span class="w"> </span><span class="n">STATUS</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;InnoDB_row_lock%&#39;</span><span class="p">;</span><span class="w">                </span><span class="c1">-- 统计获得行锁的耗时
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">performance_schema</span><span class="p">.</span><span class="n">data_locks</span><span class="p">;</span><span class="w">        </span><span class="c1">-- 显示所有获取行锁的请求，包括已经获得的、等待获得的
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">performance_schema</span><span class="p">.</span><span class="n">data_lock_waits</span><span class="p">;</span><span class="w">   </span><span class="c1">-- 显示 data_lock_waits 中的哪些请求在被哪些请求阻塞
+</span></span></span></code></pre></div><ul>
 <li>
 <p>InnoDB 的行锁是通过给索引中的索引键加锁来实现的。</p>
 <ul>
@@ -135,17 +135,17 @@
 </li>
 <li>
 <p>InnoDB 提供的行锁属于悲观锁，用户可以自己编程实现乐观锁。如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">select</span> <span class="n">name</span> <span class="k">from</span> <span class="n">tb1</span> <span class="k">where</span> <span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>                    <span class="c1">-- 先查询下修改之前的值，这里假设此时 name 的值为 &#39;one&#39;
-</span><span class="c1"></span><span class="k">update</span> <span class="n">tb1</span> <span class="k">set</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;two&#39;</span> <span class="k">where</span> <span class="n">id</span><span class="o">=</span><span class="mi">1</span> <span class="k">and</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;one&#39;</span><span class="p">;</span>  <span class="c1">-- 执行之后，根据返回值判断是否修改成功
-</span></code></pre></div><ul>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="n">name</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">tb1</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">                    </span><span class="c1">-- 先查询下修改之前的值，这里假设此时 name 的值为 &#39;one&#39;
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">update</span><span class="w"> </span><span class="n">tb1</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;two&#39;</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="mi">1</span><span class="w"> </span><span class="k">and</span><span class="w"> </span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;one&#39;</span><span class="p">;</span><span class="w">  </span><span class="c1">-- 执行之后，根据返回值判断是否修改成功
+</span></span></span></code></pre></div><ul>
 <li>可以根据 timestap 等字段来判断数据是否被修改。</li>
 </ul>
 </li>
 <li>
 <p>相关配置：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh"><span class="nv">innodb_lock_wait_timeout</span> <span class="o">=</span> <span class="m">50</span>     <span class="c1"># 事务请求获取 row lock 时，等待的超时时间，默认为 50s 。超时则报错：Lock wait timeout exceeded</span>
-<span class="nv">innodb_rollback_on_timeout</span> <span class="o">=</span> OFF  <span class="c1"># innodb_lock_wait_timeout 时，是否回滚整个事务。默认为 OFF ，只回滚最后一条语句，可能破坏事务原子性</span>
-</code></pre></div></li>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl"><span class="nv">innodb_lock_wait_timeout</span> <span class="o">=</span> <span class="m">50</span>     <span class="c1"># 事务请求获取 row lock 时，等待的超时时间，默认为 50s 。超时则报错：Lock wait timeout exceeded</span>
+</span></span><span class="line"><span class="cl"><span class="nv">innodb_rollback_on_timeout</span> <span class="o">=</span> OFF  <span class="c1"># innodb_lock_wait_timeout 时，是否回滚整个事务。默认为 OFF ，只回滚最后一条语句，可能破坏事务原子性</span>
+</span></span></code></pre></div></li>
 </ul>
 <h3 id="mysql_innodb-锁类型">MySQL_Innodb 锁类型<a href="#mysql_innodb-锁类型" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <ul>
@@ -161,10 +161,10 @@
 <p>又称之为 读 锁，简称 s 锁，顾名思义，共享锁就是多个事务对于同一数据可以共享一把锁，都能访问到数据库，但是只能读不能修改；</p>
 </blockquote>
 <p>加锁方式：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">users</span> <span class="k">where</span> <span class="n">id</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">lock</span> <span class="k">in</span> <span class="k">share</span> <span class="k">mode</span><span class="p">;</span>
-</code></pre></div><p>释放方式：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">users</span> <span class="k">where</span> <span class="n">id</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">lock</span> <span class="k">in</span> <span class="k">share</span> <span class="k">mode</span><span class="p">;</span>
-</code></pre></div><p>举例：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">lock</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">share</span><span class="w"> </span><span class="k">mode</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>释放方式：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">lock</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="k">share</span><span class="w"> </span><span class="k">mode</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>举例：</p>
 <p>当手动为select语句加上共享锁之后，在右边的会话中我们对该条数据执行update 操作 ，会发现一直卡住，这就是说，加了共享锁的数据，只能被其他事物读取，但是不能被修改</p>
 <p><p class="md__image">
   <img src="../MySQL_InnoDB%e9%94%81%e6%9c%ba%e5%88%b6.assets/image-20210509211728231.png"
@@ -188,12 +188,12 @@
 <p>又称为写锁，简称 X 锁，排它锁不能与其他锁并存，如一个事务获取了一个数据行的排它锁，其他事务就不能再获取改行的锁（包括共享锁和排它锁），只有当前获取了排它锁的事务可以对数据进行读取和修改（此时其他事务要读取数据可从快照获取）</p>
 </blockquote>
 <p>加锁方式：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">delete</span> <span class="k">update</span>  <span class="k">insert</span> <span class="err">默认加排他锁</span>
-
-<span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">users</span> <span class="k">where</span> <span class="n">id</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">for</span> <span class="k">update</span><span class="p">;</span>
-</code></pre></div><p>释放方式：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">rollback</span><span class="o">/</span><span class="k">commit</span><span class="p">;</span>
-</code></pre></div><p>举例：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">delete</span><span class="w"> </span><span class="k">update</span><span class="w">  </span><span class="k">insert</span><span class="w"> </span><span class="err">默认加排他锁</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">users</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">for</span><span class="w"> </span><span class="k">update</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>释放方式：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">rollback</span><span class="o">/</span><span class="k">commit</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>举例：</p>
 <p>获取共享锁 获取排他锁 都会锁住</p>
 <p><p class="md__image">
   <img src="../MySQL_InnoDB%e9%94%81%e6%9c%ba%e5%88%b6.assets/image-20210509211857655.png"
@@ -233,9 +233,9 @@
 <h4 id="自增锁-auto--inc-locks">自增锁 （AUTO -INC Locks）<a href="#自增锁-auto--inc-locks" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <p>针对自增列自增长的一个特殊的表级别锁</p>
 <p>可以使用如下语句查看 ：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">-- 默认取值1 代表连续 事务未提交则id永久丢失
-</span><span class="c1"></span><span class="k">SHOW</span> <span class="n">VARIABLES</span> <span class="k">LIKE</span> <span class="s1">&#39;innodb_autoinc_lock_mode&#39;</span><span class="p">;</span>
-</code></pre></div><p>实际演示效果如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 默认取值1 代表连续 事务未提交则id永久丢失
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">SHOW</span><span class="w"> </span><span class="n">VARIABLES</span><span class="w"> </span><span class="k">LIKE</span><span class="w"> </span><span class="s1">&#39;innodb_autoinc_lock_mode&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>实际演示效果如下：</p>
 <p><p class="md__image">
   <img src="../MySQL_InnoDB%e9%94%81%e6%9c%ba%e5%88%b6.assets/image-20210509211943783.png"
     alt="image-20210509211943783"  />
@@ -389,7 +389,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="Namespace和Cgroup">
-<meta itemprop="description" content="容器其实就是一种特殊的进程 为什么使用容器？ 容器虚拟化可以更高效地构建应用，也更容易管理维护。 左图是虚拟机的工作原理，右图是Docker，所示： 容器的核心技术是Cgroup和Namespace，在此基础上还有一些其他工具共同构成容器技术。 容器是宿主机上的进程： 容器技术通过 Namespace 实现资源隔离 通过Cgroup实现资源控制 通过rootfs实现文件系统隔离 容器引擎自身的特"><meta itemprop="datePublished" content="2021-08-23T21:51:51&#43;08:00" />
-<meta itemprop="dateModified" content="2021-08-23T21:51:51&#43;08:00" />
+<meta itemprop="description" content="容器其实就是一种特殊的进程 为什么使用容器？ 容器虚拟化可以更高效地构建应用，也更容易管理维护。 左图是虚拟机的工作原理，右图是Docker，所示： 容器的核心技术是Cgroup和Namespace，在此基础上还有一些其他工具共同构成容器技术。 容器是宿主机上的进程： 容器技术通过 Namespace 实现资源隔离 通过Cgroup实现资源控制 通过rootfs实现文件系统隔离 容器引擎自身的特"><meta itemprop="datePublished" content="2021-08-23T21:51:51+08:00" />
+<meta itemprop="dateModified" content="2021-08-23T21:51:51+08:00" />
 <meta itemprop="wordCount" content="1871">
 <meta itemprop="keywords" content="docker," /><meta property="og:title" content="Namespace和Cgroup" />
 <meta property="og:description" content="容器其实就是一种特殊的进程 为什么使用容器？ 容器虚拟化可以更高效地构建应用，也更容易管理维护。 左图是虚拟机的工作原理，右图是Docker，所示： 容器的核心技术是Cgroup和Namespace，在此基础上还有一些其他工具共同构成容器技术。 容器是宿主机上的进程： 容器技术通过 Namespace 实现资源隔离 通过Cgroup实现资源控制 通过rootfs实现文件系统隔离 容器引擎自身的特" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/docker/namespace%E5%92%8Ccgroup/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-08-23T21:51:51&#43;08:00" />
-<meta property="article:modified_time" content="2021-08-23T21:51:51&#43;08:00" />
+<meta property="article:published_time" content="2021-08-23T21:51:51+08:00" />
+<meta property="article:modified_time" content="2021-08-23T21:51:51+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Namespace和Cgroup"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Namespace和Cgroup</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -130,18 +130,18 @@
 </ol>
 </blockquote>
 <p>查询当前进程的 <code>Namespace</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">donald@donald-pro:~$ ls -l /proc/<span class="nv">$$</span>/ns
-total <span class="m">0</span>
-lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 cgroup -&gt; <span class="s1">&#39;cgroup:[4026531835]&#39;</span>
-lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 ipc -&gt; <span class="s1">&#39;ipc:[4026531839]&#39;</span>
-lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 mnt -&gt; <span class="s1">&#39;mnt:[4026531840]&#39;</span>
-lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 net -&gt; <span class="s1">&#39;net:[4026532009]&#39;</span>
-lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 pid -&gt; <span class="s1">&#39;pid:[4026531836]&#39;</span>
-lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 pid_for_children -&gt; <span class="s1">&#39;pid:[4026531836]&#39;</span>
-lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 user -&gt; <span class="s1">&#39;user:[4026531837]&#39;</span>
-lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 uts -&gt; <span class="s1">&#39;uts:[4026531838]&#39;</span>
-donald@donald-pro:~$ 
-</code></pre></div><h2 id="cgroup资源控制"><code>Cgroup</code>资源控制<a href="#cgroup资源控制" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">donald@donald-pro:~$ ls -l /proc/<span class="nv">$$</span>/ns
+</span></span><span class="line"><span class="cl">total <span class="m">0</span>
+</span></span><span class="line"><span class="cl">lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 cgroup -&gt; <span class="s1">&#39;cgroup:[4026531835]&#39;</span>
+</span></span><span class="line"><span class="cl">lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 ipc -&gt; <span class="s1">&#39;ipc:[4026531839]&#39;</span>
+</span></span><span class="line"><span class="cl">lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 mnt -&gt; <span class="s1">&#39;mnt:[4026531840]&#39;</span>
+</span></span><span class="line"><span class="cl">lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 net -&gt; <span class="s1">&#39;net:[4026532009]&#39;</span>
+</span></span><span class="line"><span class="cl">lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 pid -&gt; <span class="s1">&#39;pid:[4026531836]&#39;</span>
+</span></span><span class="line"><span class="cl">lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 pid_for_children -&gt; <span class="s1">&#39;pid:[4026531836]&#39;</span>
+</span></span><span class="line"><span class="cl">lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 user -&gt; <span class="s1">&#39;user:[4026531837]&#39;</span>
+</span></span><span class="line"><span class="cl">lrwxrwxrwx <span class="m">1</span> donald donald <span class="m">0</span> Apr <span class="m">22</span> 00:00 uts -&gt; <span class="s1">&#39;uts:[4026531838]&#39;</span>
+</span></span><span class="line"><span class="cl">donald@donald-pro:~$ 
+</span></span></code></pre></div><h2 id="cgroup资源控制"><code>Cgroup</code>资源控制<a href="#cgroup资源控制" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p><code>Cgroup</code> 是 <code>Linux</code> 内核提供的一种可以限制、记录、隔离进程组（<code>process groups</code>）所使用的物理资源（如：CPU、内存、IO等等）的机制</p>
 <p><code>Cgroup</code>有一套进程分组框架，不同资源由不同的子系统控制。 一个子系统就是一个资源控制器，比如 <code>CPU</code>子系统就是控制 <code>CPU</code>时间分配的一个控制器。</p>
 <blockquote>
@@ -156,75 +156,75 @@ donald@donald-pro:~$
 <p>在<code>Linux</code>上安装了<code>Docker</code>，你就会发现所有子系统的目录下都有一个名为 <code>docker</code>的目录。</p>
 <p><code>cpu.cfs_quota_us</code>文件中的内容能够对<code>CPU</code>的使用作出限制。</p>
 </blockquote>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">donald@donald-pro:/sys/fs/cgroup$ ll
-total <span class="m">0</span>
-drwxr-xr-x <span class="m">15</span> root root <span class="m">380</span> Apr <span class="m">22</span> 18:05 ./
-drwxr-xr-x  <span class="m">9</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 ../
-dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 blkio/
-lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">11</span> Apr <span class="m">22</span> 18:05 cpu -&gt; cpu,cpuacct/
-lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">11</span> Apr <span class="m">22</span> 18:05 cpuacct -&gt; cpu,cpuacct/
-dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 cpu,cpuacct/
-dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 cpuset/
-dr-xr-xr-x  <span class="m">5</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 devices/
-dr-xr-xr-x  <span class="m">3</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 freezer/
-dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 hugetlb/
-dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 memory/
-lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">16</span> Apr <span class="m">22</span> 18:05 net_cls -&gt; net_cls,net_prio/
-dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 net_cls,net_prio/
-lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">16</span> Apr <span class="m">22</span> 18:05 net_prio -&gt; net_cls,net_prio/
-dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 perf_event/
-dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 pids/
-dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 rdma/
-dr-xr-xr-x  <span class="m">5</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 systemd/
-dr-xr-xr-x  <span class="m">5</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 unified/
-
-donald@donald-pro:/sys/fs/cgroup/cpu/docker$ ll
-total <span class="m">0</span>
-drwxr-xr-x <span class="m">3</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 ./
-dr-xr-xr-x <span class="m">5</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 ../
-drwxr-xr-x <span class="m">2</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 c988e6a0567ccc350b18e3e2eb96cfe0dbff4edd202ab4132012916b019c2904/
--rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cgroup.clone_children
--rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cgroup.procs
--r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.stat
--rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage
--r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_all
--r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_percpu
--r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_percpu_sys
--r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_percpu_user
--r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_sys
--r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_user
--rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.cfs_period_us
--rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.cfs_quota_us
--rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.shares
--r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.stat
--rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 notify_on_release
--rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 tasks
-
-donald@donald-pro:/sys/fs/cgroup/cpu/docker/c988e6a0567ccc350b18e3e2eb96cfe0dbff4edd202ab4132012916b019c2904$ sudo docker ps
-CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                    NAMES
-c988e6a0567c        mobz/elasticsearch-head:5   <span class="s2">&#34;/bin/sh -c &#39;grunt s…&#34;</span>   <span class="m">5</span> months ago        Up <span class="m">3</span> minutes        0.0.0.0:9100-&gt;9100/tcp   loving_albattani
-
-<span class="c1"># 配额，-1 表示不限额</span>
-donald@donald-pro:/sys/fs/cgroup/cpu/docker/c988e6a0567ccc350b18e3e2eb96cfe0dbff4edd202ab4132012916b019c2904$ cat cpu.cfs_quota_us 
--1
-</code></pre></div><h2 id="容器的创建过程">容器的创建过程<a href="#容器的创建过程" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">donald@donald-pro:/sys/fs/cgroup$ ll
+</span></span><span class="line"><span class="cl">total <span class="m">0</span>
+</span></span><span class="line"><span class="cl">drwxr-xr-x <span class="m">15</span> root root <span class="m">380</span> Apr <span class="m">22</span> 18:05 ./
+</span></span><span class="line"><span class="cl">drwxr-xr-x  <span class="m">9</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 ../
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 blkio/
+</span></span><span class="line"><span class="cl">lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">11</span> Apr <span class="m">22</span> 18:05 cpu -&gt; cpu,cpuacct/
+</span></span><span class="line"><span class="cl">lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">11</span> Apr <span class="m">22</span> 18:05 cpuacct -&gt; cpu,cpuacct/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 cpu,cpuacct/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 cpuset/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">5</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 devices/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">3</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 freezer/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 hugetlb/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 memory/
+</span></span><span class="line"><span class="cl">lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">16</span> Apr <span class="m">22</span> 18:05 net_cls -&gt; net_cls,net_prio/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 net_cls,net_prio/
+</span></span><span class="line"><span class="cl">lrwxrwxrwx  <span class="m">1</span> root root  <span class="m">16</span> Apr <span class="m">22</span> 18:05 net_prio -&gt; net_cls,net_prio/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 perf_event/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">4</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 pids/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">2</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 rdma/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">5</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 systemd/
+</span></span><span class="line"><span class="cl">dr-xr-xr-x  <span class="m">5</span> root root   <span class="m">0</span> Apr <span class="m">22</span> 18:05 unified/
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">donald@donald-pro:/sys/fs/cgroup/cpu/docker$ ll
+</span></span><span class="line"><span class="cl">total <span class="m">0</span>
+</span></span><span class="line"><span class="cl">drwxr-xr-x <span class="m">3</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 ./
+</span></span><span class="line"><span class="cl">dr-xr-xr-x <span class="m">5</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 ../
+</span></span><span class="line"><span class="cl">drwxr-xr-x <span class="m">2</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 c988e6a0567ccc350b18e3e2eb96cfe0dbff4edd202ab4132012916b019c2904/
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cgroup.clone_children
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cgroup.procs
+</span></span><span class="line"><span class="cl">-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.stat
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage
+</span></span><span class="line"><span class="cl">-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_all
+</span></span><span class="line"><span class="cl">-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_percpu
+</span></span><span class="line"><span class="cl">-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_percpu_sys
+</span></span><span class="line"><span class="cl">-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_percpu_user
+</span></span><span class="line"><span class="cl">-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_sys
+</span></span><span class="line"><span class="cl">-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpuacct.usage_user
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.cfs_period_us
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.cfs_quota_us
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.shares
+</span></span><span class="line"><span class="cl">-r--r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 cpu.stat
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 notify_on_release
+</span></span><span class="line"><span class="cl">-rw-r--r-- <span class="m">1</span> root root <span class="m">0</span> Apr <span class="m">25</span> 14:28 tasks
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">donald@donald-pro:/sys/fs/cgroup/cpu/docker/c988e6a0567ccc350b18e3e2eb96cfe0dbff4edd202ab4132012916b019c2904$ sudo docker ps
+</span></span><span class="line"><span class="cl">CONTAINER ID        IMAGE                       COMMAND                  CREATED             STATUS              PORTS                    NAMES
+</span></span><span class="line"><span class="cl">c988e6a0567c        mobz/elasticsearch-head:5   <span class="s2">&#34;/bin/sh -c &#39;grunt s…&#34;</span>   <span class="m">5</span> months ago        Up <span class="m">3</span> minutes        0.0.0.0:9100-&gt;9100/tcp   loving_albattani
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 配额，-1 表示不限额</span>
+</span></span><span class="line"><span class="cl">donald@donald-pro:/sys/fs/cgroup/cpu/docker/c988e6a0567ccc350b18e3e2eb96cfe0dbff4edd202ab4132012916b019c2904$ cat cpu.cfs_quota_us 
+</span></span><span class="line"><span class="cl">-1
+</span></span></code></pre></div><h2 id="容器的创建过程">容器的创建过程<a href="#容器的创建过程" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <h3 id="1系统调用clone创建新进程拥有自己的namespace">（1）系统调用<code>clone</code>创建新进程，拥有自己的<code>Namespace</code><a href="#1系统调用clone创建新进程拥有自己的namespace" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>该进程拥有自己的：<code>pid</code>、<code>mount</code>、<code>user</code>、<code>net</code>、<code>ipc</code>、<code>uts namespace</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">root@docker:~# <span class="nv">pid</span> <span class="o">=</span> clone<span class="o">(</span>fun, stack, flags, clone_arg<span class="o">)</span><span class="p">;</span>
-</code></pre></div><h3 id="2将pid写入cgroup子系统就受到-cgroup-子系统的控制">（2）将<code>pid</code>写入<code>cgroup</code>子系统，就受到 <code>cgroup</code> 子系统的控制<a href="#2将pid写入cgroup子系统就受到-cgroup-子系统的控制" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/cpu/tasks
-root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/cpuset/tasks
-root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/bikio/tasks
-root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/memory/tasks
-root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/devices/tasks
-root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/feezer/tasks
-</code></pre></div><h3 id="3通过-pivot_root-系统调用">（3）通过 <code>pivot_root</code> 系统调用<a href="#3通过-pivot_root-系统调用" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@docker:~# <span class="nv">pid</span> <span class="o">=</span> clone<span class="o">(</span>fun, stack, flags, clone_arg<span class="o">)</span><span class="p">;</span>
+</span></span></code></pre></div><h3 id="2将pid写入cgroup子系统就受到-cgroup-子系统的控制">（2）将<code>pid</code>写入<code>cgroup</code>子系统，就受到 <code>cgroup</code> 子系统的控制<a href="#2将pid写入cgroup子系统就受到-cgroup-子系统的控制" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/cpu/tasks
+</span></span><span class="line"><span class="cl">root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/cpuset/tasks
+</span></span><span class="line"><span class="cl">root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/bikio/tasks
+</span></span><span class="line"><span class="cl">root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/memory/tasks
+</span></span><span class="line"><span class="cl">root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/devices/tasks
+</span></span><span class="line"><span class="cl">root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/feezer/tasks
+</span></span></code></pre></div><h3 id="3通过-pivot_root-系统调用">（3）通过 <code>pivot_root</code> 系统调用<a href="#3通过-pivot_root-系统调用" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>通过 <code>pivot_root</code> 系统调用，使进程进入一个新的 <code>rootfs</code>，之后通过 <code>exec</code>系统调用在新的<code>Namespace</code>、<code>Cgroup</code>、<code>rootfs</code> 中执行 <code>/bin/bash</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">fun<span class="o">()</span> <span class="o">{</span>
-  pivot_root<span class="o">(</span><span class="s2">&#34;path_of_rootfs/&#34;</span>, path<span class="o">)</span><span class="p">;</span>
-  exec<span class="o">(</span><span class="s2">&#34;/bin/bash&#34;</span><span class="o">)</span><span class="p">;</span>
-<span class="o">}</span>
-</code></pre></div><h2 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">fun<span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  pivot_root<span class="o">(</span><span class="s2">&#34;path_of_rootfs/&#34;</span>, path<span class="o">)</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl">  exec<span class="o">(</span><span class="s2">&#34;/bin/bash&#34;</span><span class="o">)</span><span class="p">;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h2 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p><a href="https://segmentfault.com/a/1190000040980305" target="_blank" rel="noopener">一篇搞懂容器技术的基石： cgroup </a>
 </p>
 
@@ -309,7 +309,7 @@ root@docker:~# echo<span class="nv">$pid</span> &gt; /sys/fs/cgroup/feezer/tasks
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

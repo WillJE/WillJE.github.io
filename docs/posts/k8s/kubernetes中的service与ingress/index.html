@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="Kubernetes中的Service与Ingress">
-<meta itemprop="description" content="Service 必须了解的一点是 Service 的访问信息在 Kubernetes 集群内是有效的，集群之外是无效的。 Service可以看作是一组提供相同服务的Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。对于Service 的工作原理请参考：https://time.geekbang.org/column/article/68636 当需要从集群外部访问k8s里的服务的时候，"><meta itemprop="datePublished" content="2021-08-18T21:23:18&#43;08:00" />
-<meta itemprop="dateModified" content="2021-08-18T21:23:18&#43;08:00" />
-<meta itemprop="wordCount" content="3522">
+<meta itemprop="description" content="Service 必须了解的一点是 Service 的访问信息在 Kubernetes 集群内是有效的，集群之外是无效的。 Service可以看作是一组提供相同服务的Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。对于Service 的工作原理请参考：https://time.geekbang.org/column/article/68636 当需要从集群外部访问k8s里的服务的时候，"><meta itemprop="datePublished" content="2021-08-18T21:23:18+08:00" />
+<meta itemprop="dateModified" content="2021-08-18T21:23:18+08:00" />
+<meta itemprop="wordCount" content="3310">
 <meta itemprop="keywords" content="kubernetes," /><meta property="og:title" content="Kubernetes中的Service与Ingress" />
 <meta property="og:description" content="Service 必须了解的一点是 Service 的访问信息在 Kubernetes 集群内是有效的，集群之外是无效的。 Service可以看作是一组提供相同服务的Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。对于Service 的工作原理请参考：https://time.geekbang.org/column/article/68636 当需要从集群外部访问k8s里的服务的时候，" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-08-18T21:23:18&#43;08:00" />
-<meta property="article:modified_time" content="2021-08-18T21:23:18&#43;08:00" />
+<meta property="article:published_time" content="2021-08-18T21:23:18+08:00" />
+<meta property="article:modified_time" content="2021-08-18T21:23:18+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Kubernetes中的Service与Ingress"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Kubernetes中的Service与Ingress</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -79,107 +79,107 @@
 <h2 id="一clusterip"><strong>一、ClusterIP</strong><a href="#一clusterip" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>该方式是指通过集群的内部 IP 暴露服务，但此服务只能够在集群内部可以访问，这种方式也是默认的 ServiceType。</p>
 <p>我们先看一下最简单的Service定义</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
-</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
-</span><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
-</span><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">9376</span><span class="w">
-</span></code></pre></div><p>这里我使用了 <code>selector</code> 字段来声明这个 Service 只携带了 <code>app=hostnames</code> 标签的 Pod。并且这个 Service 的 <code>80</code> 端口，代理的是 Pod 的 <code>9376</code> 端口。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">default</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">9376</span><span class="w">
+</span></span></span></code></pre></div><p>这里我使用了 <code>selector</code> 字段来声明这个 Service 只携带了 <code>app=hostnames</code> 标签的 Pod。并且这个 Service 的 <code>80</code> 端口，代理的是 Pod 的 <code>9376</code> 端口。</p>
 <p>我们定义一个 Deployment</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
-</span><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
-</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
-</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
-</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">k8s.gcr.io/serve_hostname</span><span class="w">
-</span><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">9376</span><span class="w">
-</span><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
-</span></code></pre></div><p>这里我们使用的 webservice 镜像为 <code>k8s.gcr.io/serve_hostname</code>，其主要提供输出当前服务器的 <code>hostname</code> 的功能，这里声明的<code>Pod</code>份数是 <code>3</code> 份，此时如果我们依次访问 <code>curl 10.0.1.175:80</code> 的话，会发现每次响应内容不一样，说明后端请求了不同的 pod 。这是因为 Service 提供的负载均衡方式是 <code>Round Robin</code>。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">apps/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Deployment</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="m">3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hostnames</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">k8s.gcr.io/serve_hostname</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span>- <span class="nt">containerPort</span><span class="p">:</span><span class="w"> </span><span class="m">9376</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span></code></pre></div><p>这里我们使用的 webservice 镜像为 <code>k8s.gcr.io/serve_hostname</code>，其主要提供输出当前服务器的 <code>hostname</code> 的功能，这里声明的<code>Pod</code>份数是 <code>3</code> 份，此时如果我们依次访问 <code>curl 10.0.1.175:80</code> 的话，会发现每次响应内容不一样，说明后端请求了不同的 pod 。这是因为 Service 提供的负载均衡方式是 <code>Round Robin</code>。</p>
 <p>这里的 <code>10.0.1.175</code> 是当前集群的IP，俗称为 <code>VIP</code>，是 Kubernetes 自动为 Service 分配的。对于这种方式称为 <code>ClusterIP 模式的 Service</code>。</p>
 <h2 id="二nodeport"><strong>二、NodePort</strong><a href="#二nodeport" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>通过每个 Node 上的 IP 和静态端口（NodePort）暴露服务。NodePort 服务会路由到 ClusterIP 服务，这个 ClusterIP 服务会自动创建。通过请求 <code>NodeIP:Port</code>，可以从集群的外部访问一个 NodePort 服务。</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-nginx</span><span class="w">
-</span><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">my-nginx</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">NodePort</span><span class="w">
-</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">8080</span><span class="w">
-</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
-</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">443</span><span class="w">
-</span><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
-</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">https</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">my-nginx</span><span class="w">
-</span></code></pre></div><p><strong>Service描述文件</strong>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-nginx</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">labels</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">my-nginx</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">NodePort</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">8080</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">http</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">nodePort</span><span class="p">:</span><span class="w"> </span><span class="m">443</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l">TCP</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">https</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="l">my-nginx</span><span class="w">
+</span></span></span></code></pre></div><p><strong>Service描述文件</strong>
 <code>spec.type</code> 声明Service的type
 <code>spec.selector</code> 这个Service将要使用哪些Label，本例中指所有具有 <code>run: my-nginx</code> 标签的Pod。
 <code>spec.ports.nodePort</code> 表示此Service将会监听8080端口，并将所有监听到的请求转发给其管理的Pod。
 <code>spec.ports.targetPort</code> 表示此Service监听到的8080端口的请求都会被转发给其管理的Pod的80端口。此字段可以省略，省略后其值会被设置为<code>spec.ports.port</code>的值。</p>
 <p>如果你未指定 <code>spec.ports.nodePort</code> 的话，则系统会随机选择一个范围为 <code>30000-32767</code> 的端口号使用。</p>
 <p>这时要访问这个Service的话，只需要通过访问</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">&lt;任何一台宿主机器的IP&gt;:8080
-</code></pre></div><p>这样可以访问到某一个被代理Pod的80端口。后端的Pod并不是一定在当前Node上，有可能你访问的Node1:8080，而后端对应的Pod是在Node2上。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">&lt;任何一台宿主机器的IP&gt;:8080
+</span></span></code></pre></div><p>这样可以访问到某一个被代理Pod的80端口。后端的Pod并不是一定在当前Node上，有可能你访问的Node1:8080，而后端对应的Pod是在Node2上。</p>
 <p>可以看到这种方式很好理解，类似于平时我们使用docker部署容器应用后，将容器服务端口暴露出来宿主端口就可以了。</p>
 <h2 id="三loadbalancer"><strong>三、LoadBalancer</strong><a href="#三loadbalancer" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>使用云提供商的负载均衡器向外部暴露服务。 外部负载均衡器可以将流量路由到自动创建的 <code>NodePort</code> 服务和 <code>ClusterIP</code> 服务上（<a href="https://kubernetes.io/zh/docs/concepts/services-networking/service/#publishing-services-service-types" target="_blank" rel="noopener">官方解释</a>
 ）。</p>
 <p>该模式需要底层云平台（例如GCE、亚马孙AWS）支持。</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">example-service</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8765</span><span class="w">
-</span><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">9376</span><span class="w">
-</span><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">example</span><span class="w">
-</span><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
-</span></code></pre></div><p>创建这个服务后，系统会自动创建一个外部负载均衡器，其端口为8765, 并且把被代理的地址添加到公有云的负载均衡当中。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">example-service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">ports</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="m">8765</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="m">9376</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">selector</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l">example</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">LoadBalancer</span><span class="w">
+</span></span></span></code></pre></div><p>创建这个服务后，系统会自动创建一个外部负载均衡器，其端口为8765, 并且把被代理的地址添加到公有云的负载均衡当中。</p>
 <h2 id="四externalname"><strong>四、ExternalName</strong><a href="#四externalname" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>创建一个dns别名指到service name上，主要是防止service name发生变化，要配合dns插件使用。</p>
 <p>通过返回 CNAME 和它的值，可以将服务映射到 <code>externalName</code> 字段的内容（例如 <code>foo.bar.example.com</code>）。
 没有任何类型代理被创建，这只有 Kubernetes 1.7 或更高版本的 kube-dns 才支持。</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
-</span><span class="w"> </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"> </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">   </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-service</span><span class="w">
-</span><span class="w"> </span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">   </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">ExternalName</span><span class="w">
-</span><span class="w">   </span><span class="nt">externalName</span><span class="p">:</span><span class="w"> </span><span class="l">my.database.example.com</span><span class="w">
-</span></code></pre></div><p>指定了一个 <code>externalName=my.database.example.com</code> 的字段。而且你应该会注意到，这个 YAML 文件里不需要指定 selector。
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">my-service</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"> </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l">ExternalName</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">   </span><span class="nt">externalName</span><span class="p">:</span><span class="w"> </span><span class="l">my.database.example.com</span><span class="w">
+</span></span></span></code></pre></div><p>指定了一个 <code>externalName=my.database.example.com</code> 的字段。而且你应该会注意到，这个 YAML 文件里不需要指定 selector。
 这时候，当你通过 Service 的 DNS 名字访问它的时候，比如访问：<code>my-service.default.svc.cluster.local</code>。
 那么，Kubernetes 为你返回的就是 <code>my.database.example.com</code>。所以说，<code>ExternalName</code> 类型的 Service，其实是在<code> kube-dns</code> 里为你添加了一条 CNAME 记录。
 这时访问 <code>my-service.default.svc.cluster.local</code> 就和访问 <code>my.database.example.com</code> 这个域名是一个效果了。</p>
 <h1 id="ingress">Ingress<a href="#ingress" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <p>上面我们提到有一个叫作 <code>LoadBalancer</code> 类型的 <code>Service</code>，它会为你在 Cloud Provider（比如：Google Cloud 或者 OpenStack）里创建一个与该 Service 对应的负载均衡服务。但是，相信你也应该能感受到，由于每个 Service 都要有一个负载均衡服务，所以这个做法实际上既浪费成本又高。作为用户，我其实更希望看到 Kubernetes 为我内置一个全局的负载均衡器。然后，通过我访问的 URL，把请求转发给不同的后端 Service。这种全局的、为了代理不同后端 Service 而设置的负载均衡服务，就是 Kubernetes 里的 <code>Ingress</code> 服务。</p>
 <p>Ingress 的功能其实很容易理解：所谓 Ingress 就是 Service 的“Service”，这就是它们两者的关系。</p>
-<pre><code>    internet
+<pre tabindex="0"><code>    internet
         |
    [ Ingress ]
    --|-----|--
@@ -197,28 +197,28 @@
 。 你可以从许多 <a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress-controllers" target="_blank" rel="noopener">Ingress 控制器</a>
  中进行选择。</p>
 <p>假如我现在有这样一个站点：<code>https://cafe.example.com</code>。其中 <code>https://cafe.example.com/coffee</code>，对应的是“咖啡点餐系统”。而 <code>https://cafe.example.com/tea</code>，对应的则是“茶水点餐系统”。这两个系统，分别由名叫 <code>coffee</code> 和 <code>tea</code> 这样两个 Deployment 来提供服务，可以看到这是一种经典的扇出（fanout）行为。</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">extensions/v1beta1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Ingress</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cafe-ingress</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">tls</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">hosts</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="l">cafe.example.com</span><span class="w">
-</span><span class="w">    </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l">cafe-secret</span><span class="w">
-</span><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">cafe.example.com</span><span class="w">
-</span><span class="w">    </span><span class="nt">http</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/tea</span><span class="w">
-</span><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l">tea-svc</span><span class="w">
-</span><span class="w">          </span><span class="nt">servicePort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/coffee</span><span class="w">
-</span><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l">coffee-svc</span><span class="w">
-</span><span class="w">          </span><span class="nt">servicePort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
-</span></code></pre></div><p>最值得我们关注的，是 <code>rules</code> 字段。在 Kubernetes 里，这个字段叫作：<code>IngressRule</code>。
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">extensions/v1beta1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cafe-ingress</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">tls</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">hosts</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">cafe.example.com</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">secretName</span><span class="p">:</span><span class="w"> </span><span class="l">cafe-secret</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">rules</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l">cafe.example.com</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">http</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">paths</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/tea</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l">tea-svc</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">servicePort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/coffee</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">backend</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">serviceName</span><span class="p">:</span><span class="w"> </span><span class="l">coffee-svc</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">servicePort</span><span class="p">:</span><span class="w"> </span><span class="m">80</span><span class="w">
+</span></span></span></code></pre></div><p>最值得我们关注的，是 <code>rules</code> 字段。在 Kubernetes 里，这个字段叫作：<code>IngressRule</code>。
 IngressRule 的 Key，就叫做：<code>host</code>。它必须是一个标准的域名格式（Fully Qualified Domain Name）的字符串，而不能是 IP 地址。</p>
 <p><strong>Ingress 规则</strong><a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress/#ingress-rules" target="_blank" rel="noopener"> </a>
 </p>
@@ -236,14 +236,18 @@ IngressRule 的 Key，就叫做：<code>host</code>。它必须是一个标准�
 <p>这就是为什么在每条 IngressRule 里，需要有一个 host 字段来作为这条 IngressRule 的入口，然后还需要有一系列 path 字段来声明具体的转发策略。这其实跟 Nginx、HAproxy 等项目的配置文件的写法是一致的。</p>
 <p>在实际使用中，我们一般选择一种<code> Ingress Controller</code>, 将其部署在k8s集群中，这样它就会根据我们定义的 Ingress 对象来提供对应的代理功能。</p>
 <p>业界常用的各种反向代理项目，比如 Nginx、HAProxy、Envoy、Traefik 等，都已经为 Kubernetes 专门维护了对应的 <code>Ingress Controller</code>。</p>
-<p>Nginx Ingress Controller 的示例请参考 <a href="https://time.geekbang.org/column/article/69214">https://time.geekbang.org/column/article/69214</a></p>
+<p>Nginx Ingress Controller 的示例请参考 <a href="https://time.geekbang.org/column/article/69214" target="_blank" rel="noopener">https://time.geekbang.org/column/article/69214</a>
+</p>
 <p>推荐参考官方推荐脚本：https://github.com/resouer/kubernetes-ingress/tree/master/examples/complete-example</p>
 <p>由于k8s的api 一直在不停的变化，如果您按上方配置运行出错的话，建议参考官方文档进行调整</p>
 <h1 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <ul>
-<li><a href="https://kubernetes.io/zh/docs/concepts/services-networking/service/">https://kubernetes.io/zh/docs/concepts/services-networking/service/</a></li>
-<li><a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress/">https://kubernetes.io/zh/docs/concepts/services-networking/ingress/</a></li>
-<li><a href="https://kubernetes.io/docs/reference/kubernetes-api/service-resources/">https://kubernetes.io/docs/reference/kubernetes-api/service-resources/</a></li>
+<li><a href="https://kubernetes.io/zh/docs/concepts/services-networking/service/" target="_blank" rel="noopener">https://kubernetes.io/zh/docs/concepts/services-networking/service/</a>
+</li>
+<li><a href="https://kubernetes.io/zh/docs/concepts/services-networking/ingress/" target="_blank" rel="noopener">https://kubernetes.io/zh/docs/concepts/services-networking/ingress/</a>
+</li>
+<li><a href="https://kubernetes.io/docs/reference/kubernetes-api/service-resources/" target="_blank" rel="noopener">https://kubernetes.io/docs/reference/kubernetes-api/service-resources/</a>
+</li>
 </ul>
 
 			</div><div class="content">
@@ -273,7 +277,7 @@ IngressRule 的 Key，就叫做：<code>host</code>。它必须是一个标准�
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/kubernetes">kubernetes</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3522 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>3310 字</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-08-18 21:23 &#43;0800</p>
 			</footer>
 		</article>
@@ -289,11 +293,11 @@ IngressRule 的 Key，就叫做：<code>host</code>。它必须是一个标准�
 </nav>
 		</aside>
 		<div class="post-nav thin">
-			<a class="next-post" href="https://willje.github.io/posts/k8s/kubernetes-port%E7%B1%BB%E5%9E%8B/">
-				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Kubernetes port类型</span>
+			<a class="next-post" href="https://willje.github.io/posts/k8s/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/">
+				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>Kubernetes网络模型</span>
 			</a>
-			<a class="prev-post" href="https://willje.github.io/posts/k8s/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/">
-				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>Kubernetes网络模型</span>
+			<a class="prev-post" href="https://willje.github.io/posts/go/go%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>go并发小练习</span>
 			</a>
 		</div>
 		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
@@ -315,7 +319,7 @@ IngressRule 的 Key，就叫做：<code>host</code>。它必须是一个标准�
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

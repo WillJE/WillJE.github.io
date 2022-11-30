@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="MySQL B-Tree和B&#43;tree">
-<meta itemprop="description" content="B&#43;树索引是B&#43;树在数据库中的一种实现，是最常见也是数据库中使用最为频繁的一种索引。 B&#43;树中的B代表平衡（balance），而不是二叉（binary），因为B&#43;树是从最早的平衡二叉树演化而来的。 在讲B&#43;树之前必须先了解二叉查找树、平衡二叉树（AVLTree）和平衡多路查找树（B-Tree），B&#43;树即由这些树逐步优化而来。 二叉查找树 定义 二叉树具有以下性质： 左子"><meta itemprop="datePublished" content="2020-04-02T20:55:29&#43;08:00" />
-<meta itemprop="dateModified" content="2020-04-02T20:55:29&#43;08:00" />
+<meta itemprop="description" content="B&#43;树索引是B&#43;树在数据库中的一种实现，是最常见也是数据库中使用最为频繁的一种索引。 B&#43;树中的B代表平衡（balance），而不是二叉（binary），因为B&#43;树是从最早的平衡二叉树演化而来的。 在讲B&#43;树之前必须先了解二叉查找树、平衡二叉树（AVLTree）和平衡多路查找树（B-Tree），B&#43;树即由这些树逐步优化而来。 二叉查找树 定义 二叉树具有以下性质： 左子"><meta itemprop="datePublished" content="2020-04-02T20:55:29+08:00" />
+<meta itemprop="dateModified" content="2020-04-02T20:55:29+08:00" />
 <meta itemprop="wordCount" content="3892">
 <meta itemprop="keywords" content="MySQL," /><meta property="og:title" content="MySQL B-Tree和B&#43;tree" />
 <meta property="og:description" content="B&#43;树索引是B&#43;树在数据库中的一种实现，是最常见也是数据库中使用最为频繁的一种索引。 B&#43;树中的B代表平衡（balance），而不是二叉（binary），因为B&#43;树是从最早的平衡二叉树演化而来的。 在讲B&#43;树之前必须先了解二叉查找树、平衡二叉树（AVLTree）和平衡多路查找树（B-Tree），B&#43;树即由这些树逐步优化而来。 二叉查找树 定义 二叉树具有以下性质： 左子" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/mysql/mysql-b-tree%E5%92%8Cb&#43;tree/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-04-02T20:55:29&#43;08:00" />
-<meta property="article:modified_time" content="2020-04-02T20:55:29&#43;08:00" />
+<meta property="article:published_time" content="2020-04-02T20:55:29+08:00" />
+<meta property="article:modified_time" content="2020-04-02T20:55:29+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="MySQL B-Tree和B&#43;tree"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>MySQL B-Tree和B&#43;tree</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -176,8 +176,8 @@
 <p>系统从磁盘读取数据到内存时是以磁盘块（block）为基本单位的，位于同一个磁盘块中的数据会被一次性读取出来，而不是需要什么取什么。</p>
 </blockquote>
 <p>InnoDB存储引擎中有页（Page）的概念，页是其磁盘管理的最小单位。InnoDB存储引擎中默认每个页的大小为16KB，可通过参数<code>innodb_page_size</code>将页的大小设置为4K、8K、16K，在MySQL中可通过如下命令查看页的大小：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="n">mysql</span><span class="o">&gt;</span> <span class="k">show</span> <span class="n">variables</span> <span class="k">like</span> <span class="s1">&#39;innodb_page_size&#39;</span><span class="p">;</span>
-</code></pre></div><p><p class="md__image">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="n">mysql</span><span class="o">&gt;</span><span class="w"> </span><span class="k">show</span><span class="w"> </span><span class="n">variables</span><span class="w"> </span><span class="k">like</span><span class="w"> </span><span class="s1">&#39;innodb_page_size&#39;</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p><p class="md__image">
   <img src="../MySQL_B-tree%e5%92%8cB&#43;tree.assets/image-20210509204332907-1620564214940.png"
     alt="image-20210509204332907"  />
 </p>
@@ -315,7 +315,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

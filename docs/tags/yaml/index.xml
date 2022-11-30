@@ -14,7 +14,7 @@
       <pubDate>Sat, 17 Apr 2021 16:25:38 +0800</pubDate>
       
       <guid>https://willje.github.io/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/</guid>
-      <description>简单需求 最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构： name:&amp;#34;doc first&amp;#34;---name:&amp;#34;second&amp;#34;---name:&amp;#34;skip 3, now 4&amp;#34;---通过gopkg.in/yaml.v3``Deocder可以帮我们解析出来，默认使用&amp;quot;&amp;mdash;&amp;ldquo;来区分不同的文档。 package main import &amp;#34;fmt&amp;#34; import &amp;#34;gopkg.in/yaml.v3&amp;#34; import &amp;#34;os&amp;#34; import &amp;#34;errors&amp;#34; import &amp;#34;io&amp;#34; type Spec struct { Name string `yaml:&amp;#34;name&amp;#34;` } func main() { f, err := os.Open(&amp;#34;spec.yaml&amp;#34;) if err != nil { panic(err) } d := yaml.NewDecoder(f) for { // create new spec here spec := new(Spec) // pass a reference to spec reference err := d.Decode(&amp;amp;spec) //</description>
+      <description>简单需求 最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构： name: &amp;#34;doc first&amp;#34; --- name: &amp;#34;second&amp;#34; --- name: &amp;#34;skip 3, now 4&amp;#34; --- 通过gopkg.in/yaml.v3``Deocder可以帮我们解析出来，默认使用&amp;quot;&amp;mdash;&amp;ldquo;来区分不同的文档。 package main import &amp;#34;fmt&amp;#34; import &amp;#34;gopkg.in/yaml.v3&amp;#34; import &amp;#34;os&amp;#34; import &amp;#34;errors&amp;#34; import &amp;#34;io&amp;#34; type Spec struct { Name string `yaml:&amp;#34;name&amp;#34;` } func main() { f, err := os.Open(&amp;#34;spec.yaml&amp;#34;) if err != nil { panic(err) } d := yaml.NewDecoder(f) for { // create new spec here spec := new(Spec) // pass a reference to spec reference err := d.Decode(&amp;amp;spec) //</description>
     </item>
     
   </channel>

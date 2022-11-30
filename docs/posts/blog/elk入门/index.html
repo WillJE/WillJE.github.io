@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="ELK入门">
-<meta itemprop="description" content="介绍 ELK是Elasticsearch、Logstash、Kibana三大开源框架首字母大写简称(但是后期出现的filebeat(beats中的一种)可以用来 替代logstash的数据收集功能，比较轻量级)。市面上也被成为Elastic Stack。 Logstash是免费且开放的服务器端数据处理管道，能够从多个来源采集数据，转换数据，然后将数据发送到您最喜欢 的"><meta itemprop="datePublished" content="2019-10-13T20:55:29&#43;08:00" />
-<meta itemprop="dateModified" content="2019-10-13T20:55:29&#43;08:00" />
+<meta itemprop="description" content="介绍 ELK是Elasticsearch、Logstash、Kibana三大开源框架首字母大写简称(但是后期出现的filebeat(beats中的一种)可以用来 替代logstash的数据收集功能，比较轻量级)。市面上也被成为Elastic Stack。 Logstash是免费且开放的服务器端数据处理管道，能够从多个来源采集数据，转换数据，然后将数据发送到您最喜欢 的"><meta itemprop="datePublished" content="2019-10-13T20:55:29+08:00" />
+<meta itemprop="dateModified" content="2019-10-13T20:55:29+08:00" />
 <meta itemprop="wordCount" content="4511">
 <meta itemprop="keywords" content="ELK,ElasticSearch," /><meta property="og:title" content="ELK入门" />
 <meta property="og:description" content="介绍 ELK是Elasticsearch、Logstash、Kibana三大开源框架首字母大写简称(但是后期出现的filebeat(beats中的一种)可以用来 替代logstash的数据收集功能，比较轻量级)。市面上也被成为Elastic Stack。 Logstash是免费且开放的服务器端数据处理管道，能够从多个来源采集数据，转换数据，然后将数据发送到您最喜欢 的" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/blog/elk%E5%85%A5%E9%97%A8/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2019-10-13T20:55:29&#43;08:00" />
-<meta property="article:modified_time" content="2019-10-13T20:55:29&#43;08:00" />
+<meta property="article:published_time" content="2019-10-13T20:55:29+08:00" />
+<meta property="article:modified_time" content="2019-10-13T20:55:29+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="ELK入门"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>ELK入门</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -144,37 +144,37 @@
 <p>在es的工作过程中，关于集群状态，索引设置的各种信息都会被收集起来，并在网关中被持久化。</p>
 <h4 id="基础操作">基础操作<a href="#基础操作" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <p>查看节点健康状态</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">GET /_cat/health?format<span class="o">=</span>json
-</code></pre></div><p>查看<code>_cat</code>命令：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">=</span>^.^<span class="o">=</span>
-/_cat/allocation
-/_cat/shards
-/_cat/shards/<span class="o">{</span>index<span class="o">}</span>
-/_cat/master
-/_cat/nodes
-/_cat/tasks
-/_cat/indices
-/_cat/indices/<span class="o">{</span>index<span class="o">}</span>
-/_cat/segments
-/_cat/segments/<span class="o">{</span>index<span class="o">}</span>
-/_cat/count
-/_cat/count/<span class="o">{</span>index<span class="o">}</span>
-/_cat/recovery
-/_cat/recovery/<span class="o">{</span>index<span class="o">}</span>
-/_cat/health
-/_cat/pending_tasks
-/_cat/aliases
-/_cat/aliases/<span class="o">{</span>alias<span class="o">}</span>
-/_cat/thread_pool
-/_cat/thread_pool/<span class="o">{</span>thread_pools<span class="o">}</span>
-/_cat/plugins
-/_cat/fielddata
-/_cat/fielddata/<span class="o">{</span>fields<span class="o">}</span>
-/_cat/nodeattrs
-/_cat/repositories
-/_cat/snapshots/<span class="o">{</span>repository<span class="o">}</span>
-/_cat/templates
-</code></pre></div><p>我们可以使用curl或者kibana提供的Dev Tools进行API测试。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">GET /_cat/health?format<span class="o">=</span>json
+</span></span></code></pre></div><p>查看<code>_cat</code>命令：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">=</span>^.^<span class="o">=</span>
+</span></span><span class="line"><span class="cl">/_cat/allocation
+</span></span><span class="line"><span class="cl">/_cat/shards
+</span></span><span class="line"><span class="cl">/_cat/shards/<span class="o">{</span>index<span class="o">}</span>
+</span></span><span class="line"><span class="cl">/_cat/master
+</span></span><span class="line"><span class="cl">/_cat/nodes
+</span></span><span class="line"><span class="cl">/_cat/tasks
+</span></span><span class="line"><span class="cl">/_cat/indices
+</span></span><span class="line"><span class="cl">/_cat/indices/<span class="o">{</span>index<span class="o">}</span>
+</span></span><span class="line"><span class="cl">/_cat/segments
+</span></span><span class="line"><span class="cl">/_cat/segments/<span class="o">{</span>index<span class="o">}</span>
+</span></span><span class="line"><span class="cl">/_cat/count
+</span></span><span class="line"><span class="cl">/_cat/count/<span class="o">{</span>index<span class="o">}</span>
+</span></span><span class="line"><span class="cl">/_cat/recovery
+</span></span><span class="line"><span class="cl">/_cat/recovery/<span class="o">{</span>index<span class="o">}</span>
+</span></span><span class="line"><span class="cl">/_cat/health
+</span></span><span class="line"><span class="cl">/_cat/pending_tasks
+</span></span><span class="line"><span class="cl">/_cat/aliases
+</span></span><span class="line"><span class="cl">/_cat/aliases/<span class="o">{</span>alias<span class="o">}</span>
+</span></span><span class="line"><span class="cl">/_cat/thread_pool
+</span></span><span class="line"><span class="cl">/_cat/thread_pool/<span class="o">{</span>thread_pools<span class="o">}</span>
+</span></span><span class="line"><span class="cl">/_cat/plugins
+</span></span><span class="line"><span class="cl">/_cat/fielddata
+</span></span><span class="line"><span class="cl">/_cat/fielddata/<span class="o">{</span>fields<span class="o">}</span>
+</span></span><span class="line"><span class="cl">/_cat/nodeattrs
+</span></span><span class="line"><span class="cl">/_cat/repositories
+</span></span><span class="line"><span class="cl">/_cat/snapshots/<span class="o">{</span>repository<span class="o">}</span>
+</span></span><span class="line"><span class="cl">/_cat/templates
+</span></span></code></pre></div><p>我们可以使用curl或者kibana提供的Dev Tools进行API测试。</p>
 <p>ES是使用REST风格的API。</p>
 <p><strong>简单的增删改查</strong></p>
 <p>创建索引</p>
@@ -187,52 +187,52 @@
 </p>
 </p>
 <p>查看所有索引</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">GET /_cat/indices?format<span class="o">=</span>json
-</code></pre></div><p>删除索引</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">DELETE /customer
-</code></pre></div><p>按ID新增数据，type为_doc：type后期版本会删除，默认就是 _doc</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">PUT /customer/_doc/1
-<span class="o">{</span>
-  <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;John Doe&#34;</span>
-<span class="o">}</span>
-PUT /customer/_doc/2
-<span class="o">{</span>
-  <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;yujc&#34;</span>,
-  <span class="s2">&#34;age&#34;</span>:22
-<span class="o">}</span>
-</code></pre></div><blockquote>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">GET /_cat/indices?format<span class="o">=</span>json
+</span></span></code></pre></div><p>删除索引</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">DELETE /customer
+</span></span></code></pre></div><p>按ID新增数据，type为_doc：type后期版本会删除，默认就是 _doc</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">PUT /customer/_doc/1
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;John Doe&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span><span class="line"><span class="cl">PUT /customer/_doc/2
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;yujc&#34;</span>,
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;age&#34;</span>:22
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><blockquote>
 <p>如果索引index不存在，直接新增数据也会同时创建index。</p>
 </blockquote>
 <p>同时，该操作也能修改数据：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">PUT /customer/_doc/2
-<span class="o">{</span>
-  <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;yujc2&#34;</span>
-<span class="o">}</span>
-</code></pre></div><p><code>name</code>字段会被修改，而且<code>_version</code>会被修改为2。<strong>该操作实际是覆盖数据</strong>：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">GET /customer/_doc/2
-</code></pre></div><p>结果：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">{</span>
-  <span class="s2">&#34;_index&#34;</span>: <span class="s2">&#34;customer&#34;</span>,
-  <span class="s2">&#34;_type&#34;</span>: <span class="s2">&#34;_doc&#34;</span>,
-  <span class="s2">&#34;_id&#34;</span>: <span class="s2">&#34;2&#34;</span>,
-  <span class="s2">&#34;_version&#34;</span>: 2,
-  <span class="s2">&#34;found&#34;</span>: true,
-  <span class="s2">&#34;_source&#34;</span>: <span class="o">{</span>
-    <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;yujc2&#34;</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div><h4 id="复杂查询">复杂查询<a href="#复杂查询" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">PUT /customer/_doc/2
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;yujc2&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p><code>name</code>字段会被修改，而且<code>_version</code>会被修改为2。<strong>该操作实际是覆盖数据</strong>：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">GET /customer/_doc/2
+</span></span></code></pre></div><p>结果：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;_index&#34;</span>: <span class="s2">&#34;customer&#34;</span>,
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;_type&#34;</span>: <span class="s2">&#34;_doc&#34;</span>,
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;_id&#34;</span>: <span class="s2">&#34;2&#34;</span>,
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;_version&#34;</span>: 2,
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;found&#34;</span>: true,
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;_source&#34;</span>: <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;name&#34;</span>: <span class="s2">&#34;yujc2&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h4 id="复杂查询">复杂查询<a href="#复杂查询" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <p>使用query带上条件，_source指定需要查询的字段即mapping；</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">GET /customer/_doc/_search
-<span class="o">{</span>
-  <span class="s2">&#34;query&#34;</span>:<span class="o">{</span>
-    <span class="s2">&#34;match&#34;</span>:<span class="o">{</span>
-      <span class="s2">&#34;name&#34;</span>:<span class="s2">&#34;JAMES HARDEN&#34;</span>
-    <span class="o">}</span>
-  <span class="o">}</span>,
-  <span class="s2">&#34;_source&#34;</span>:<span class="o">[</span><span class="s2">&#34;name&#34;</span><span class="o">]</span>
-<span class="o">}</span>
-</code></pre></div><p>使用sort指定mapping按升序或降序排序；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">GET /customer/_doc/_search
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;query&#34;</span>:<span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="s2">&#34;match&#34;</span>:<span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;name&#34;</span>:<span class="s2">&#34;JAMES HARDEN&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>,
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;_source&#34;</span>:<span class="o">[</span><span class="s2">&#34;name&#34;</span><span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>使用sort指定mapping按升序或降序排序；</p>
 <p>使用highlight高亮，还可以使用pre_tags自定义高亮样式；</p>
 <h4 id="ik分词器">ik分词器<a href="#ik分词器" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <p>Elasticsearch默认也能对中文进行分词。</p>
@@ -268,90 +268,90 @@ PUT /customer/_doc/2
 </p>
 <p>自定义分词词典</p>
 <p>我们也可以定义自己的词典供IK使用。比如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">curl -XGET <span class="s2">&#34;http://localhost:9200/_analyze&#34;</span> -H <span class="s1">&#39;Content-Type: application/json&#39;</span> -d<span class="s1">&#39;{&#34;analyzer&#34;: &#34;ik_smart&#34;,&#34;text&#34;: &#34;去朝阳公园&#34;}&#39;</span>
-</code></pre></div><p>结果：</p>
-<div class="highlight"><pre class="chroma"><code class="language-json" data-lang="json"><span class="p">{</span>
-  <span class="nt">&#34;tokens&#34;</span><span class="p">:</span> <span class="p">[</span>
-    <span class="p">{</span>
-      <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;去&#34;</span><span class="p">,</span>
-      <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-      <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_CHAR&#34;</span><span class="p">,</span>
-      <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">0</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;朝阳&#34;</span><span class="p">,</span>
-      <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_WORD&#34;</span><span class="p">,</span>
-      <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">1</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-      <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;公园&#34;</span><span class="p">,</span>
-      <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
-      <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
-      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_WORD&#34;</span><span class="p">,</span>
-      <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">2</span>
-    <span class="p">}</span>
-  <span class="p">]</span>
-<span class="p">}</span>
-</code></pre></div><p>我们希望<code>朝阳公园</code>作为一个整体，这时候可以把该词加入到自己的词典里。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">curl -XGET <span class="s2">&#34;http://localhost:9200/_analyze&#34;</span> -H <span class="s1">&#39;Content-Type: application/json&#39;</span> -d<span class="s1">&#39;{&#34;analyzer&#34;: &#34;ik_smart&#34;,&#34;text&#34;: &#34;去朝阳公园&#34;}&#39;</span>
+</span></span></code></pre></div><p>结果：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-json" data-lang="json"><span class="line"><span class="cl"><span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nt">&#34;tokens&#34;</span><span class="p">:</span> <span class="p">[</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;去&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_CHAR&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;朝阳&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_WORD&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="p">},</span>
+</span></span><span class="line"><span class="cl">    <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;token&#34;</span><span class="p">:</span> <span class="s2">&#34;公园&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;start_offset&#34;</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;end_offset&#34;</span><span class="p">:</span> <span class="mi">5</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;type&#34;</span><span class="p">:</span> <span class="s2">&#34;CN_WORD&#34;</span><span class="p">,</span>
+</span></span><span class="line"><span class="cl">      <span class="nt">&#34;position&#34;</span><span class="p">:</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">]</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>我们希望<code>朝阳公园</code>作为一个整体，这时候可以把该词加入到自己的词典里。</p>
 <p>新建自己的词典只需要简单几步就可以完成：
 1、在<code>elasticsearch-6.2.4/config/analysis-ik/</code>目录增加一个<code>my.dic</code>:</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ touch my.dic
-$ <span class="nb">echo</span> 朝阳公园 &gt; my.dic
-
-$ cat my.dic
-朝阳公园
-</code></pre></div><p><code>.dic</code>为词典文件，其实就是简单的文本文件，词语与词语直接需要换行。注意是UTF8编码。我们看一下自带的分词文件：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ head -n <span class="m">5</span> main.dic
-一一列举
-一一对应
-一一道来
-一丁
-一丁不识
-</code></pre></div><p>2、然后修改<code>elasticsearch-6.2.4/config/analysis-ik/IKAnalyzer.cfg.xml</code>文件：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">&lt;?xml <span class="nv">version</span><span class="o">=</span><span class="s2">&#34;1.0&#34;</span> <span class="nv">encoding</span><span class="o">=</span><span class="s2">&#34;UTF-8&#34;</span>?&gt;
-&lt;!DOCTYPE properties SYSTEM <span class="s2">&#34;http://java.sun.com/dtd/properties.dtd&#34;</span>&gt;
-&lt;properties&gt;
-    &lt;comment&gt;IK Analyzer 扩展配置&lt;/comment&gt;
-    &lt;!--用户可以在这里配置自己的扩展字典 --&gt;
-    &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;ext_dict&#34;</span>&gt;my.dic&lt;/entry&gt;
-     &lt;!--用户可以在这里配置自己的扩展停止词字典--&gt;
-    &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;ext_stopwords&#34;</span>&gt;&lt;/entry&gt;
-    &lt;!--用户可以在这里配置远程扩展字典 --&gt;
-    &lt;!-- &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;remote_ext_dict&#34;</span>&gt;words_location&lt;/entry&gt; --&gt;
-    &lt;!--用户可以在这里配置远程扩展停止词字典--&gt;
-    &lt;!-- &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;remote_ext_stopwords&#34;</span>&gt;words_location&lt;/entry&gt; --&gt;
-&lt;/properties&gt;
-</code></pre></div><p>增加了<code>my.dic</code>，然后重启ES。我们再看一下效果：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">GET /_analyze
-<span class="o">{</span>
-  <span class="s2">&#34;analyzer&#34;</span>: <span class="s2">&#34;ik_smart&#34;</span>,
-  <span class="s2">&#34;text&#34;</span>: <span class="s2">&#34;去朝阳公园&#34;</span>
-<span class="o">}</span>
-</code></pre></div><p>结果：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">{</span>
-  <span class="s2">&#34;tokens&#34;</span>: <span class="o">[</span>
-    <span class="o">{</span>
-      <span class="s2">&#34;token&#34;</span>: <span class="s2">&#34;去&#34;</span>,
-      <span class="s2">&#34;start_offset&#34;</span>: 0,
-      <span class="s2">&#34;end_offset&#34;</span>: 1,
-      <span class="s2">&#34;type&#34;</span>: <span class="s2">&#34;CN_CHAR&#34;</span>,
-      <span class="s2">&#34;position&#34;</span>: <span class="m">0</span>
-    <span class="o">}</span>,
-    <span class="o">{</span>
-      <span class="s2">&#34;token&#34;</span>: <span class="s2">&#34;朝阳公园&#34;</span>,
-      <span class="s2">&#34;start_offset&#34;</span>: 1,
-      <span class="s2">&#34;end_offset&#34;</span>: 5,
-      <span class="s2">&#34;type&#34;</span>: <span class="s2">&#34;CN_WORD&#34;</span>,
-      <span class="s2">&#34;position&#34;</span>: <span class="m">1</span>
-    <span class="o">}</span>
-  <span class="o">]</span>
-<span class="o">}</span>
-</code></pre></div><p>说明自定义词典生效了。如果有多个词典，使用英文分号隔开：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">&lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;ext_dict&#34;</span>&gt;my.dic<span class="p">;</span>custom/single_word_low_freq.dic&lt;/entry&gt;
-</code></pre></div><h2 id="集成springboot">集成SpringBoot<a href="#集成springboot" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ touch my.dic
+</span></span><span class="line"><span class="cl">$ <span class="nb">echo</span> 朝阳公园 &gt; my.dic
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ cat my.dic
+</span></span><span class="line"><span class="cl">朝阳公园
+</span></span></code></pre></div><p><code>.dic</code>为词典文件，其实就是简单的文本文件，词语与词语直接需要换行。注意是UTF8编码。我们看一下自带的分词文件：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ head -n <span class="m">5</span> main.dic
+</span></span><span class="line"><span class="cl">一一列举
+</span></span><span class="line"><span class="cl">一一对应
+</span></span><span class="line"><span class="cl">一一道来
+</span></span><span class="line"><span class="cl">一丁
+</span></span><span class="line"><span class="cl">一丁不识
+</span></span></code></pre></div><p>2、然后修改<code>elasticsearch-6.2.4/config/analysis-ik/IKAnalyzer.cfg.xml</code>文件：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">&lt;?xml <span class="nv">version</span><span class="o">=</span><span class="s2">&#34;1.0&#34;</span> <span class="nv">encoding</span><span class="o">=</span><span class="s2">&#34;UTF-8&#34;</span>?&gt;
+</span></span><span class="line"><span class="cl">&lt;!DOCTYPE properties SYSTEM <span class="s2">&#34;http://java.sun.com/dtd/properties.dtd&#34;</span>&gt;
+</span></span><span class="line"><span class="cl">&lt;properties&gt;
+</span></span><span class="line"><span class="cl">    &lt;comment&gt;IK Analyzer 扩展配置&lt;/comment&gt;
+</span></span><span class="line"><span class="cl">    &lt;!--用户可以在这里配置自己的扩展字典 --&gt;
+</span></span><span class="line"><span class="cl">    &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;ext_dict&#34;</span>&gt;my.dic&lt;/entry&gt;
+</span></span><span class="line"><span class="cl">     &lt;!--用户可以在这里配置自己的扩展停止词字典--&gt;
+</span></span><span class="line"><span class="cl">    &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;ext_stopwords&#34;</span>&gt;&lt;/entry&gt;
+</span></span><span class="line"><span class="cl">    &lt;!--用户可以在这里配置远程扩展字典 --&gt;
+</span></span><span class="line"><span class="cl">    &lt;!-- &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;remote_ext_dict&#34;</span>&gt;words_location&lt;/entry&gt; --&gt;
+</span></span><span class="line"><span class="cl">    &lt;!--用户可以在这里配置远程扩展停止词字典--&gt;
+</span></span><span class="line"><span class="cl">    &lt;!-- &lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;remote_ext_stopwords&#34;</span>&gt;words_location&lt;/entry&gt; --&gt;
+</span></span><span class="line"><span class="cl">&lt;/properties&gt;
+</span></span></code></pre></div><p>增加了<code>my.dic</code>，然后重启ES。我们再看一下效果：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">GET /_analyze
+</span></span><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;analyzer&#34;</span>: <span class="s2">&#34;ik_smart&#34;</span>,
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;text&#34;</span>: <span class="s2">&#34;去朝阳公园&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>结果：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="s2">&#34;tokens&#34;</span>: <span class="o">[</span>
+</span></span><span class="line"><span class="cl">    <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;token&#34;</span>: <span class="s2">&#34;去&#34;</span>,
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;start_offset&#34;</span>: 0,
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;end_offset&#34;</span>: 1,
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;type&#34;</span>: <span class="s2">&#34;CN_CHAR&#34;</span>,
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;position&#34;</span>: <span class="m">0</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>,
+</span></span><span class="line"><span class="cl">    <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;token&#34;</span>: <span class="s2">&#34;朝阳公园&#34;</span>,
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;start_offset&#34;</span>: 1,
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;end_offset&#34;</span>: 5,
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;type&#34;</span>: <span class="s2">&#34;CN_WORD&#34;</span>,
+</span></span><span class="line"><span class="cl">      <span class="s2">&#34;position&#34;</span>: <span class="m">1</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>说明自定义词典生效了。如果有多个词典，使用英文分号隔开：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">&lt;entry <span class="nv">key</span><span class="o">=</span><span class="s2">&#34;ext_dict&#34;</span>&gt;my.dic<span class="p">;</span>custom/single_word_low_freq.dic&lt;/entry&gt;
+</span></span></code></pre></div><h2 id="集成springboot">集成SpringBoot<a href="#集成springboot" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>各种客户端集成可以看<a href="https://www.elastic.co/guide/en/elasticsearch/client/index.html" target="_blank" rel="noopener">官网</a>
 </p>
 <h2 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
@@ -426,7 +426,7 @@ $ cat my.dic
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

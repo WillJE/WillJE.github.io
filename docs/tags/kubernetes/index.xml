@@ -59,16 +59,7 @@
       <pubDate>Mon, 23 Aug 2021 21:23:18 +0800</pubDate>
       
       <guid>https://willje.github.io/posts/k8s/kubernetes-port%E7%B1%BB%E5%9E%8B/</guid>
-      <description>k8s有几种port类型，分别是TargetPort，ContainerPort，NodePort，Port，那么该怎么区别她们呢，各自的使用场景又是什么呢，接下来这篇文章给你分析一下。 ContainerPort ContainerPort表示你使用的镜像需要开放的端口。例如，mysql 服务需要暴露 3306 端口，redis 暴露 6379 端口 apiVersion:v1kind:ReplicationControllermetadata:name:redis-masterlabels:name:redis-masterspec:replicas:1selector:name:redis-mastertemplate:metadata:labels:name:redis-masterspec:containers:- name:masterimage:kubeguide/redis-masterports:- containerPort:6379# 此处定义暴露的端口NodePort 一旦你的pod创建</description>
-    </item>
-    
-    <item>
-      <title>Kubernetes中的Service与Ingress</title>
-      <link>https://willje.github.io/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/</link>
-      <pubDate>Wed, 18 Aug 2021 21:23:18 +0800</pubDate>
-      
-      <guid>https://willje.github.io/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/</guid>
-      <description>Service 必须了解的一点是 Service 的访问信息在 Kubernetes 集群内是有效的，集群之外是无效的。 Service可以看作是一组提供相同服务的Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。对于Service 的工作原理请参考：https://time.geekbang.org/column/article/68636 当需要从集群外部访问k8s里的服务的时候，</description>
+      <description>k8s有几种port类型，分别是TargetPort，ContainerPort，NodePort，Port，那么该怎么区别她们呢，各自的使用场景又是什么呢，接下来这篇文章给你分析一下。 ContainerPort ContainerPort表示你使用的镜像需要开放的端口。例如，mysql 服务需要暴露 3306 端口，redis 暴露 6379 端口 apiVersion: v1 kind: ReplicationController metadata: name: redis-master labels: name: redis-master spec: replicas: 1 selector: name: redis-master template: metadata: labels: name: redis-master spec: containers: - name: master image: kubeguide/redis-master ports:</description>
     </item>
     
     <item>
@@ -78,6 +69,15 @@
       
       <guid>https://willje.github.io/posts/k8s/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/</guid>
       <description>关于 Pod 如何接入网络这件事情，Kubernetes 做出了明确的选择。具体来说，Kubernetes 要求所有的网络插件实现必须满足如下要求： 所有的 Pod 可以与任何其他 Pod 直接通信，无需使用 NAT 映射（network address translation） 所有节点可以与所有 Pod 直接通信，无需使用 NAT 映射 Pod 内部获取到的 IP 地址与其他 Pod 或节点与其通信时的 IP 地址是同一个 在这些限制条件下，需要解决如下</description>
+    </item>
+    
+    <item>
+      <title>Kubernetes中的Service与Ingress</title>
+      <link>https://willje.github.io/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/</link>
+      <pubDate>Wed, 18 Aug 2021 21:23:18 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/</guid>
+      <description>Service 必须了解的一点是 Service 的访问信息在 Kubernetes 集群内是有效的，集群之外是无效的。 Service可以看作是一组提供相同服务的Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。对于Service 的工作原理请参考：https://time.geekbang.org/column/article/68636 当需要从集群外部访问k8s里的服务的时候，</description>
     </item>
     
     <item>
@@ -95,7 +95,7 @@
       <pubDate>Tue, 25 May 2021 21:23:18 +0800</pubDate>
       
       <guid>https://willje.github.io/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%BA%8C/</guid>
-      <description>Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &amp;#34;pi&amp;#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&amp;#34;perl&amp;#34;,&amp;#34;-Mbignum=bpi&amp;#34;,&amp;#34;-wle&amp;#34;,&amp;#34;print bpi(2000)&amp;#34;]restartPolicy:Never一段时</description>
+      <description>Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &amp;#34;pi&amp;#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion: batch/v1 kind: Job metadata: name: pi spec: completions: 5 template: metadata: name: pi spec: containers: - name: pi image: cargo.caicloud.io/caicloud/perl:latest command: [&amp;#34;perl&amp;#34;, &amp;#34;-Mbignum=bpi&amp;#34;, &amp;#34;-wle&amp;#34;, &amp;#34;print bpi(2000)&amp;#34;] restartPolicy: Never 一段时间之后，Pod</description>
     </item>
     
   </channel>

@@ -8,19 +8,19 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="kubernetes基础使用（二）">
-<meta itemprop="description" content="Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &#34;pi&#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&#34;perl&#34;,&#34;-Mbignum=bpi&#34;,&#34;-wle&#34;,&#34;print bpi(2000)&#34;]restartPolicy:Never一段时"><meta itemprop="datePublished" content="2021-05-25T21:23:18&#43;08:00" />
-<meta itemprop="dateModified" content="2021-05-25T21:23:18&#43;08:00" />
-<meta itemprop="wordCount" content="4339">
+<meta itemprop="description" content="Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &#34;pi&#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion: batch/v1 kind: Job metadata: name: pi spec: completions: 5 template: metadata: name: pi spec: containers: - name: pi image: cargo.caicloud.io/caicloud/perl:latest command: [&#34;perl&#34;, &#34;-Mbignum=bpi&#34;, &#34;-wle&#34;, &#34;print bpi(2000)&#34;] restartPolicy: Never 一段时间之后，Pod"><meta itemprop="datePublished" content="2021-05-25T21:23:18+08:00" />
+<meta itemprop="dateModified" content="2021-05-25T21:23:18+08:00" />
+<meta itemprop="wordCount" content="4381">
 <meta itemprop="keywords" content="kubernetes," /><meta property="og:title" content="kubernetes基础使用（二）" />
-<meta property="og:description" content="Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &#34;pi&#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&#34;perl&#34;,&#34;-Mbignum=bpi&#34;,&#34;-wle&#34;,&#34;print bpi(2000)&#34;]restartPolicy:Never一段时" />
+<meta property="og:description" content="Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &#34;pi&#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion: batch/v1 kind: Job metadata: name: pi spec: completions: 5 template: metadata: name: pi spec: containers: - name: pi image: cargo.caicloud.io/caicloud/perl:latest command: [&#34;perl&#34;, &#34;-Mbignum=bpi&#34;, &#34;-wle&#34;, &#34;print bpi(2000)&#34;] restartPolicy: Never 一段时间之后，Pod" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%BA%8C/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-05-25T21:23:18&#43;08:00" />
-<meta property="article:modified_time" content="2021-05-25T21:23:18&#43;08:00" />
+<meta property="article:published_time" content="2021-05-25T21:23:18+08:00" />
+<meta property="article:modified_time" content="2021-05-25T21:23:18+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="kubernetes基础使用（二）"/>
-<meta name="twitter:description" content="Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &#34;pi&#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion:batch/v1kind:Jobmetadata:name:pispec:completions:5template:metadata:name:pispec:containers:- name:piimage:cargo.caicloud.io/caicloud/perl:latestcommand:[&#34;perl&#34;,&#34;-Mbignum=bpi&#34;,&#34;-wle&#34;,&#34;print bpi(2000)&#34;]restartPolicy:Never一段时"/>
+<meta name="twitter:description" content="Kubernetes Job Using Job Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。 下面，我们通过创建一个 Pod 来感受一下 Job 的使用： $ kubectl create -f resources/job.yaml job &#34;pi&#34; created $ kubectl get job NAME COMPLETIONS DURATION AGE pi 1/5 29s 29s $ kubectl get pods -l job-name=pi NAME READY STATUS RESTARTS AGE pi-76h5p 1/1 Running 0 12s pi-fhww6 0/1 Completed 0 36s 这是job.yaml apiVersion: batch/v1 kind: Job metadata: name: pi spec: completions: 5 template: metadata: name: pi spec: containers: - name: pi image: cargo.caicloud.io/caicloud/perl:latest command: [&#34;perl&#34;, &#34;-Mbignum=bpi&#34;, &#34;-wle&#34;, &#34;print bpi(2000)&#34;] restartPolicy: Never 一段时间之后，Pod"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>kubernetes基础使用（二）</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -75,53 +75,53 @@
 <h2 id="using-job">Using Job<a href="#using-job" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Kubernetes Job 通过创建 Pod 来批量执行一次性任务；不同于单独跑一个 Bare Pod，由 Job 运行起来的 Pod 在机器故障等问题下会重新调度 Pod，因此更加健壮。</p>
 <p>下面，我们通过创建一个 Pod 来感受一下 Job 的使用：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/job.yaml
-job <span class="s2">&#34;pi&#34;</span> created
-
-$ kubectl get job
-NAME   COMPLETIONS   DURATION   AGE
-pi     1/5           29s        29s
-
-$ kubectl get pods -l job-name<span class="o">=</span>pi
-NAME       READY   STATUS      RESTARTS   AGE
-pi-76h5p   1/1     Running     <span class="m">0</span>          12s
-pi-fhww6   0/1     Completed   <span class="m">0</span>          36s
-</code></pre></div><p>这是job.yaml</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">batch/v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Job</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pi</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">completions</span><span class="p">:</span><span class="w"> </span><span class="m">5</span><span class="w">
-</span><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pi</span><span class="w">
-</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pi</span><span class="w">
-</span><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/perl:latest</span><span class="w">
-</span><span class="w">        </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;perl&#34;</span><span class="p">,</span><span class="w">  </span><span class="s2">&#34;-Mbignum=bpi&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;-wle&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;print bpi(2000)&#34;</span><span class="p">]</span><span class="w">
-</span><span class="w">      </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Never</span><span class="w">
-</span></code></pre></div><p>一段时间之后，Pod 全部运行结束，我们可以通过 <code>kubectl get pods</code> 查看：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get pods -l job-name<span class="o">=</span>pi
-NAME       READY   STATUS      RESTARTS   AGE
-pi-6lgqw   0/1     Completed   <span class="m">0</span>          45s
-pi-76h5p   0/1     Completed   <span class="m">0</span>          68s
-pi-fhww6   0/1     Completed   <span class="m">0</span>          92s
-pi-mf96j   0/1     Completed   <span class="m">0</span>          2m17s
-pi-w9v4l   0/1     Completed   <span class="m">0</span>          115s
-
-$ kubectl get job
-NAME   COMPLETIONS   DURATION   AGE
-pi     5/5           117s       3m8s
-</code></pre></div><p>观察上述 Pod 的 AGE 列，可以发现 Job 内的 Pod 都是依次运行的（总共 5 个 Pod）。Job 支持并发运行等多种控制，我们在后续任务中实现。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl create -f resources/job.yaml
+</span></span><span class="line"><span class="cl">job <span class="s2">&#34;pi&#34;</span> created
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get job
+</span></span><span class="line"><span class="cl">NAME   COMPLETIONS   DURATION   AGE
+</span></span><span class="line"><span class="cl">pi     1/5           29s        29s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get pods -l job-name<span class="o">=</span>pi
+</span></span><span class="line"><span class="cl">NAME       READY   STATUS      RESTARTS   AGE
+</span></span><span class="line"><span class="cl">pi-76h5p   1/1     Running     <span class="m">0</span>          12s
+</span></span><span class="line"><span class="cl">pi-fhww6   0/1     Completed   <span class="m">0</span>          36s
+</span></span></code></pre></div><p>这是job.yaml</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">batch/v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Job</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">completions</span><span class="p">:</span><span class="w"> </span><span class="m">5</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/perl:latest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&#34;perl&#34;</span><span class="p">,</span><span class="w">  </span><span class="s2">&#34;-Mbignum=bpi&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;-wle&#34;</span><span class="p">,</span><span class="w"> </span><span class="s2">&#34;print bpi(2000)&#34;</span><span class="p">]</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Never</span><span class="w">
+</span></span></span></code></pre></div><p>一段时间之后，Pod 全部运行结束，我们可以通过 <code>kubectl get pods</code> 查看：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl get pods -l job-name<span class="o">=</span>pi
+</span></span><span class="line"><span class="cl">NAME       READY   STATUS      RESTARTS   AGE
+</span></span><span class="line"><span class="cl">pi-6lgqw   0/1     Completed   <span class="m">0</span>          45s
+</span></span><span class="line"><span class="cl">pi-76h5p   0/1     Completed   <span class="m">0</span>          68s
+</span></span><span class="line"><span class="cl">pi-fhww6   0/1     Completed   <span class="m">0</span>          92s
+</span></span><span class="line"><span class="cl">pi-mf96j   0/1     Completed   <span class="m">0</span>          2m17s
+</span></span><span class="line"><span class="cl">pi-w9v4l   0/1     Completed   <span class="m">0</span>          115s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get job
+</span></span><span class="line"><span class="cl">NAME   COMPLETIONS   DURATION   AGE
+</span></span><span class="line"><span class="cl">pi     5/5           117s       3m8s
+</span></span></code></pre></div><p>观察上述 Pod 的 AGE 列，可以发现 Job 内的 Pod 都是依次运行的（总共 5 个 Pod）。Job 支持并发运行等多种控制，我们在后续任务中实现。</p>
 <p>Job 运行完之后，删除 Job 会将所有运行结束的 Pods 也同时删掉。</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl delete job pi
-job <span class="s2">&#34;pi&#34;</span> deleted
-
-$ kubectl get pods -l job-name<span class="o">=</span>pi
-No resources found.
-</code></pre></div><h2 id="readings">Readings<a href="#readings" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl delete job pi
+</span></span><span class="line"><span class="cl">job <span class="s2">&#34;pi&#34;</span> deleted
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get pods -l job-name<span class="o">=</span>pi
+</span></span><span class="line"><span class="cl">No resources found.
+</span></span></code></pre></div><h2 id="readings">Readings<a href="#readings" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/jobs-run-to-completion/" target="_blank" rel="noopener">kubernetes job</a>
 </li>
@@ -129,39 +129,39 @@ No resources found.
 <h1 id="kubernetes-cronjob">Kubernetes CronJob<a href="#kubernetes-cronjob" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <h2 id="using-cronjob">Using CronJob<a href="#using-cronjob" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>Kubernetes CronJob 即定时任务，就类似于 Linux 的 crontab，在指定的时间周期运行指定的作业。</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">batch/v1beta1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">CronJob</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;*/1 * * * *&#34;</span><span class="w"> </span><span class="c"># At every minute.</span><span class="w">
-</span><span class="w">  </span><span class="nt">jobTemplate</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">template</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">          </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello</span><span class="w">
-</span><span class="w">            </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/busybox:latest</span><span class="w">
-</span><span class="w">            </span><span class="nt">args</span><span class="p">:</span><span class="w">
-</span><span class="w">            </span>- <span class="l">/bin/sh</span><span class="w">
-</span><span class="w">            </span>- -<span class="l">c</span><span class="w">
-</span><span class="w">            </span>- <span class="l">date; echo Hello from the Kubernetes cluster</span><span class="w">
-</span><span class="w">          </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">OnFailure</span><span class="w">
-</span></code></pre></div><p>这里我们通过 kubectl create 创建一个 CronJob：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/cronjob.yaml
-cronjob.batch/hello created
-</code></pre></div><p>查看 CronJob：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get cronjob
-NAME    SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
-hello   */1 * * * *   False     <span class="m">0</span>        57s             69m
-$ kubectl get <span class="nb">jobs</span>
-NAME               COMPLETIONS   DURATION   AGE
-hello-1566286260   1/1           11s        46s
-</code></pre></div><p>删除 CronJob：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 删除 CronJob 会删除它创建的所有 job 和 pod，并停止正在创建的 job</span>
-$ kubectl delete cronjob hello
-cronjob.batch <span class="s2">&#34;hello&#34;</span> deleted
-</code></pre></div><h2 id="readings-1">Readings<a href="#readings-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">batch/v1beta1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">CronJob</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">schedule</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;*/1 * * * *&#34;</span><span class="w"> </span><span class="c"># At every minute.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">jobTemplate</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">template</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">hello</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/busybox:latest</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span><span class="nt">args</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="l">/bin/sh</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- -<span class="l">c</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">            </span>- <span class="l">date; echo Hello from the Kubernetes cluster</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">          </span><span class="nt">restartPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">OnFailure</span><span class="w">
+</span></span></span></code></pre></div><p>这里我们通过 kubectl create 创建一个 CronJob：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl create -f resources/cronjob.yaml
+</span></span><span class="line"><span class="cl">cronjob.batch/hello created
+</span></span></code></pre></div><p>查看 CronJob：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl get cronjob
+</span></span><span class="line"><span class="cl">NAME    SCHEDULE      SUSPEND   ACTIVE   LAST SCHEDULE   AGE
+</span></span><span class="line"><span class="cl">hello   */1 * * * *   False     <span class="m">0</span>        57s             69m
+</span></span><span class="line"><span class="cl">$ kubectl get <span class="nb">jobs</span>
+</span></span><span class="line"><span class="cl">NAME               COMPLETIONS   DURATION   AGE
+</span></span><span class="line"><span class="cl">hello-1566286260   1/1           11s        46s
+</span></span></code></pre></div><p>删除 CronJob：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 删除 CronJob 会删除它创建的所有 job 和 pod，并停止正在创建的 job</span>
+</span></span><span class="line"><span class="cl">$ kubectl delete cronjob hello
+</span></span><span class="line"><span class="cl">cronjob.batch <span class="s2">&#34;hello&#34;</span> deleted
+</span></span></code></pre></div><h2 id="readings-1">Readings<a href="#readings-1" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li><a href="https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/" target="_blank" rel="noopener">kubernetes cronjob</a>
 </li>
@@ -169,21 +169,21 @@ cronjob.batch <span class="s2">&#34;hello&#34;</span> deleted
 <h1 id="kubernetes-daemonset">Kubernetes Daemonset<a href="#kubernetes-daemonset" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <h2 id="using-daemonset">Using Daemonset<a href="#using-daemonset" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>DaemonSet 默认在每台主机上运行 Pod，典型的场景包括<strong>日志收集、存储进程</strong>等。这里，我们通过 kubectl create 来创建一个 DaemonSet：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/daemonset.yaml
-daemonset <span class="s2">&#34;ds-nginx&#34;</span> created
-
-$ kubectl get ds
-NAME       DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
-ds-nginx   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       <span class="m">1</span>            <span class="m">1</span>           &lt;none&gt;          4s
-
-$ kubectl get pods
-NAME             READY     STATUS    RESTARTS   AGE
-ds-nginx-hnndc   1/1       Running   <span class="m">0</span>          8s
-</code></pre></div><p>可以看到，minikube 节点都运行了一个 DaemonSet。由于目前只有一个节点，很难观测到效果，但当我们向集群中增加新的节点， DaemonSet 会自动在新的节点中启动 Pod。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl create -f resources/daemonset.yaml
+</span></span><span class="line"><span class="cl">daemonset <span class="s2">&#34;ds-nginx&#34;</span> created
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get ds
+</span></span><span class="line"><span class="cl">NAME       DESIRED   CURRENT   READY   UP-TO-DATE   AVAILABLE   NODE SELECTOR   AGE
+</span></span><span class="line"><span class="cl">ds-nginx   <span class="m">1</span>         <span class="m">1</span>         <span class="m">1</span>       <span class="m">1</span>            <span class="m">1</span>           &lt;none&gt;          4s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get pods
+</span></span><span class="line"><span class="cl">NAME             READY     STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">ds-nginx-hnndc   1/1       Running   <span class="m">0</span>          8s
+</span></span></code></pre></div><p>可以看到，minikube 节点都运行了一个 DaemonSet。由于目前只有一个节点，很难观测到效果，但当我们向集群中增加新的节点， DaemonSet 会自动在新的节点中启动 Pod。</p>
 <p>我们可以通过 kubectl delete 删除 DaemonSet：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl delete daemonset ds-nginx
-daemonset.extensions <span class="s2">&#34;ds-nginx&#34;</span> deleted
-</code></pre></div><p>DaemonSet 相对于其他控制器（Deployment, Job 等）有几个特点：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl delete daemonset ds-nginx
+</span></span><span class="line"><span class="cl">daemonset.extensions <span class="s2">&#34;ds-nginx&#34;</span> deleted
+</span></span></code></pre></div><p>DaemonSet 相对于其他控制器（Deployment, Job 等）有几个特点：</p>
 <p><strong>由 DaemonSet controller 调度 (1.12 以前)</strong>：</p>
 <ul>
 <li>DaemonSet controller 创建 pod 时会将指定 nodeName（.spec.nodeName），所以 scheduler 会忽视它。因此：
@@ -232,58 +232,58 @@ daemonset.extensions <span class="s2">&#34;ds-nginx&#34;</span> deleted
 </ul>
 <h2 id="using-resource-quota">Using Resource quota<a href="#using-resource-quota" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>我们可以通过 <code>kubectl create -f</code> 创建 ResourceQuota，该 quota 限制了 tutorial namespace 只能请求 1 个 CPU 和 1Gi 内存，最多只能使用 2 个 CPU 和 2Gi 内存。这里，请求指的是 kubernetes 在调度时容器时会寻找至少有 1 个 CPU 和 1Gi 内存的节点。最多使用指的是当容器可以使用超过其请求的 1 个 CPU 数量，但是一定不可能超过 2 个 CPU。kubernetes 的这个设计目的是提供更加灵活的资源模型，支持超卖。</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 这里用到了前面 lab 创建的 namespace tutorial，若已删除，需重新创建</span>
-$ kubectl create namespace tutorial
-namespace/tutorial created
-
-$ kubectl create -f resources/quota.yaml
-resourcequota/tutorial-quota created
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ResourceQuota</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">tutorial-quota</span><span class="w">
-</span><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tutorial</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">hard</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of CPU requests cannot exceed this value.</span><span class="w">
-</span><span class="w">    </span><span class="nt">requests.cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1&#34;</span><span class="w">
-</span><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of memory requests cannot exceed this value.</span><span class="w">
-</span><span class="w">    </span><span class="nt">requests.memory</span><span class="p">:</span><span class="w"> </span><span class="l">1Gi</span><span class="w">
-</span><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of CPU limits cannot exceed this value.</span><span class="w">
-</span><span class="w">    </span><span class="nt">limits.cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2&#34;</span><span class="w">
-</span><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of memory limits cannot exceed this value.</span><span class="w">
-</span><span class="w">    </span><span class="nt">limits.memory</span><span class="p">:</span><span class="w"> </span><span class="l">2Gi</span><span class="w">
-</span></code></pre></div><p>查看 ResourceQuota 细节：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kubectl describe quota -n tutorial
-Name:            tutorial-quota
-Namespace:       tutorial
-Resource         Used    Hard
---------         ----    ----
-limits.cpu       500m    <span class="m">2</span>
-limits.memory    1124Mi  2Gi
-requests.cpu     300m    <span class="m">1</span>
-requests.memory  612Mi   1Gi
-</code></pre></div><p>pod_exceeds_quota.yaml</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">apiVersion: v1
-kind: Pod
-metadata:
-  name: pod
-  namespace: tutorial
-spec:
-  containers:
-  - name: nginx
-    image: nginx:1.13
-    resources:
-      requests:
-        cpu: <span class="s2">&#34;2&#34;</span>
-        memory: <span class="s2">&#34;1Gi&#34;</span>
-      limits:
-        cpu: <span class="s2">&#34;2&#34;</span>
-        memory: <span class="s2">&#34;1Gi&#34;</span>
-</code></pre></div><p>如果我们尝试在 tutorial namespace 下创建超过配额的资源，kubernetes 会直接返回错误：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sh" data-lang="sh">$ kubectl create -f resources/pod_exceeds_quota.yaml -n tutorial
-Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: error when creating <span class="s2">&#34;resources/pod_exceeds_quota.yaml&#34;</span>: pods <span class="s2">&#34;pod&#34;</span> is forbidden: exceeded quota: default-quota, requested: limits.cpu<span class="o">=</span>2,requests.cpu<span class="o">=</span>2,requests.memory<span class="o">=</span>1Gi, used: limits.cpu<span class="o">=</span>200m,requests.cpu<span class="o">=</span>100m,requests.memory<span class="o">=</span>256Mi, limited: limits.cpu<span class="o">=</span>2,requests.cpu<span class="o">=</span>1,requests.memory<span class="o">=</span>1Gi
-</code></pre></div><h2 id="readings-3">Readings<a href="#readings-3" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 这里用到了前面 lab 创建的 namespace tutorial，若已删除，需重新创建</span>
+</span></span><span class="line"><span class="cl">$ kubectl create namespace tutorial
+</span></span><span class="line"><span class="cl">namespace/tutorial created
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl create -f resources/quota.yaml
+</span></span><span class="line"><span class="cl">resourcequota/tutorial-quota created
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">ResourceQuota</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">tutorial-quota</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l">tutorial</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">hard</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of CPU requests cannot exceed this value.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">requests.cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;1&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of memory requests cannot exceed this value.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">requests.memory</span><span class="p">:</span><span class="w"> </span><span class="l">1Gi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of CPU limits cannot exceed this value.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">limits.cpu</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;2&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="c"># Across all pods in a non-terminal state, the sum of memory limits cannot exceed this value.</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">limits.memory</span><span class="p">:</span><span class="w"> </span><span class="l">2Gi</span><span class="w">
+</span></span></span></code></pre></div><p>查看 ResourceQuota 细节：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ kubectl describe quota -n tutorial
+</span></span><span class="line"><span class="cl">Name:            tutorial-quota
+</span></span><span class="line"><span class="cl">Namespace:       tutorial
+</span></span><span class="line"><span class="cl">Resource         Used    Hard
+</span></span><span class="line"><span class="cl">--------         ----    ----
+</span></span><span class="line"><span class="cl">limits.cpu       500m    <span class="m">2</span>
+</span></span><span class="line"><span class="cl">limits.memory    1124Mi  2Gi
+</span></span><span class="line"><span class="cl">requests.cpu     300m    <span class="m">1</span>
+</span></span><span class="line"><span class="cl">requests.memory  612Mi   1Gi
+</span></span></code></pre></div><p>pod_exceeds_quota.yaml</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">apiVersion: v1
+</span></span><span class="line"><span class="cl">kind: Pod
+</span></span><span class="line"><span class="cl">metadata:
+</span></span><span class="line"><span class="cl">  name: pod
+</span></span><span class="line"><span class="cl">  namespace: tutorial
+</span></span><span class="line"><span class="cl">spec:
+</span></span><span class="line"><span class="cl">  containers:
+</span></span><span class="line"><span class="cl">  - name: nginx
+</span></span><span class="line"><span class="cl">    image: nginx:1.13
+</span></span><span class="line"><span class="cl">    resources:
+</span></span><span class="line"><span class="cl">      requests:
+</span></span><span class="line"><span class="cl">        cpu: <span class="s2">&#34;2&#34;</span>
+</span></span><span class="line"><span class="cl">        memory: <span class="s2">&#34;1Gi&#34;</span>
+</span></span><span class="line"><span class="cl">      limits:
+</span></span><span class="line"><span class="cl">        cpu: <span class="s2">&#34;2&#34;</span>
+</span></span><span class="line"><span class="cl">        memory: <span class="s2">&#34;1Gi&#34;</span>
+</span></span></code></pre></div><p>如果我们尝试在 tutorial namespace 下创建超过配额的资源，kubernetes 会直接返回错误：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sh" data-lang="sh"><span class="line"><span class="cl">$ kubectl create -f resources/pod_exceeds_quota.yaml -n tutorial
+</span></span><span class="line"><span class="cl">Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: error when creating <span class="s2">&#34;resources/pod_exceeds_quota.yaml&#34;</span>: pods <span class="s2">&#34;pod&#34;</span> is forbidden: exceeded quota: default-quota, requested: limits.cpu<span class="o">=</span>2,requests.cpu<span class="o">=</span>2,requests.memory<span class="o">=</span>1Gi, used: limits.cpu<span class="o">=</span>200m,requests.cpu<span class="o">=</span>100m,requests.memory<span class="o">=</span>256Mi, limited: limits.cpu<span class="o">=</span>2,requests.cpu<span class="o">=</span>1,requests.memory<span class="o">=</span>1Gi
+</span></span></code></pre></div><h2 id="readings-3">Readings<a href="#readings-3" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li><a href="https://kubernetes.io/docs/concepts/policy/resource-quotas/" target="_blank" rel="noopener">Kubernetes Resource Quotas</a>
 </li>
@@ -296,41 +296,41 @@ Error from server <span class="o">(</span>Forbidden<span class="o">)</span>: err
 <li>持久化存储，比如 Ceph。kubernetes 通过 Volume 的方式挂载外部持久化存储。</li>
 <li>映射类存储，比如 ConfigMap。此类存储基于其他存储类型，为 Pod 提供元数据，配置等信息。</li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">emptydir-pod</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/nginx:1.9.3</span><span class="w">
-</span><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">emptydir-pod</span><span class="w">
-</span><span class="w">    </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/cache</span><span class="w">
-</span><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cache-volume</span><span class="w">
-</span><span class="w">  </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cache-volume</span><span class="w">
-</span><span class="w">    </span><span class="nt">emptyDir</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
-</span></code></pre></div><p>无论是那种类型，都可以在 Pod 中直接指定 Volume 的信息。接下来我们创建一个最简单的 Pod，使用 EmptyDir 作为 Volume。可以看到，kubernetes 根据 yaml 文件的内容，为该 Pod 挂载了一个 cache 目录。对于 EmptyDir 而言，该目录的本质就是宿主机上的一个目录。</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/emptydir_pod.yaml
-pod <span class="s2">&#34;emptydir-pod&#34;</span> created
-
-$ kubectl get pods
-NAME                     READY   STATUS    RESTARTS   AGE
-emptydir-pod             1/1     Running   <span class="m">0</span>          5s
-
-<span class="c1"># 进入 emptydir-pod 并创建一个文件</span>
-$ kubectl <span class="nb">exec</span> -it emptydir-pod bash
-root@emptydir-pod:/# ls cache/
-root@emptydir-pod:/# touch cache/abc
-
-<span class="c1"># 按 &#39;Ctrl + D&#39; 退出 pod</span>
-$ kubectl get pods emptydir-pod -o yaml <span class="p">|</span> grep uid
-  uid: 15ccac29-773b-41d2-bd54-8d746a009396
-
-<span class="c1"># 我们将会在宿主机上看见之前创建的文件</span>
-$ minikube ssh
-$ sudo ls /var/lib/kubelet/pods/15ccac29-773b-41d2-bd54-8d746a009396/volumes/kubernetes.io~empty-dir/cache-volume/abc
-</code></pre></div><p>可以验证，当 Pod 被删除后，数据也就丢失了。若我们想使存储与 Pod 的生命周期解耦，需要使用网络存储。如果我们查看 emptydir_pod.yaml 文件，可以看到使用方法和 ConfigMap 和 Secret 完全类似。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">emptydir-pod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/nginx:1.9.3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">emptydir-pod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="l">/cache</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cache-volume</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">cache-volume</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">emptyDir</span><span class="p">:</span><span class="w"> </span>{}<span class="w">
+</span></span></span></code></pre></div><p>无论是那种类型，都可以在 Pod 中直接指定 Volume 的信息。接下来我们创建一个最简单的 Pod，使用 EmptyDir 作为 Volume。可以看到，kubernetes 根据 yaml 文件的内容，为该 Pod 挂载了一个 cache 目录。对于 EmptyDir 而言，该目录的本质就是宿主机上的一个目录。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl create -f resources/emptydir_pod.yaml
+</span></span><span class="line"><span class="cl">pod <span class="s2">&#34;emptydir-pod&#34;</span> created
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get pods
+</span></span><span class="line"><span class="cl">NAME                     READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">emptydir-pod             1/1     Running   <span class="m">0</span>          5s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 进入 emptydir-pod 并创建一个文件</span>
+</span></span><span class="line"><span class="cl">$ kubectl <span class="nb">exec</span> -it emptydir-pod bash
+</span></span><span class="line"><span class="cl">root@emptydir-pod:/# ls cache/
+</span></span><span class="line"><span class="cl">root@emptydir-pod:/# touch cache/abc
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 按 &#39;Ctrl + D&#39; 退出 pod</span>
+</span></span><span class="line"><span class="cl">$ kubectl get pods emptydir-pod -o yaml <span class="p">|</span> grep uid
+</span></span><span class="line"><span class="cl">  uid: 15ccac29-773b-41d2-bd54-8d746a009396
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1"># 我们将会在宿主机上看见之前创建的文件</span>
+</span></span><span class="line"><span class="cl">$ minikube ssh
+</span></span><span class="line"><span class="cl">$ sudo ls /var/lib/kubelet/pods/15ccac29-773b-41d2-bd54-8d746a009396/volumes/kubernetes.io~empty-dir/cache-volume/abc
+</span></span></code></pre></div><p>可以验证，当 Pod 被删除后，数据也就丢失了。若我们想使存储与 Pod 的生命周期解耦，需要使用网络存储。如果我们查看 emptydir_pod.yaml 文件，可以看到使用方法和 ConfigMap 和 Secret 完全类似。</p>
 <h2 id="readings-4">Readings<a href="#readings-4" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li><a href="https://kubernetes.io/docs/concepts/storage/volumes/" target="_blank" rel="noopener">kubernetes volumes</a>
@@ -358,99 +358,99 @@ $ sudo ls /var/lib/kubelet/pods/15ccac29-773b-41d2-bd54-8d746a009396/volumes/kub
 <p>接下来，我们感受一下如何使用 PV 和 PVC。</p>
 <p>首先，我们需要创建新的 PV。类比于节点，可以理解为是向集群中添加节点，这里我们创建一个基于 hostPath 的 PV。基于 hostPath 的 PV 主要用来做测试，生产环境中一般采用其他存储方案如 NFS, GlusterFS, Ceph 等。</p>
 <p>pv_hostpath.yaml</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolume</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pv-hostpath</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">storageClassName</span><span class="p">:</span><span class="w"> </span><span class="l">standard</span><span class="w">
-</span><span class="w">  </span><span class="nt">capacity</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">10Gi</span><span class="w">
-</span><span class="w">  </span><span class="nt">accessModes</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="l">ReadWriteMany</span><span class="w">
-</span><span class="w">  </span><span class="nt">persistentVolumeReclaimPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Recycle</span><span class="w">
-</span><span class="w">  </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/tmp/data1</span><span class="w">
-</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/pv_hostpath.yaml
-persistentvolume <span class="s2">&#34;pv-hostpath&#34;</span> created
-
-$ kubectl get pv
-NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
-pv-hostpath   10Gi       RWX            Recycle          Available           standard                7s
-</code></pre></div><p>创建 PV 之后，我们需要申请使用 PV，因此需要在 kubernetes 中创建 PVC。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolume</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pv-hostpath</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">storageClassName</span><span class="p">:</span><span class="w"> </span><span class="l">standard</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">capacity</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">10Gi</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">accessModes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">ReadWriteMany</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">persistentVolumeReclaimPolicy</span><span class="p">:</span><span class="w"> </span><span class="l">Recycle</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">hostPath</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l">/tmp/data1</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl create -f resources/pv_hostpath.yaml
+</span></span><span class="line"><span class="cl">persistentvolume <span class="s2">&#34;pv-hostpath&#34;</span> created
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get pv
+</span></span><span class="line"><span class="cl">NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS      CLAIM   STORAGECLASS   REASON   AGE
+</span></span><span class="line"><span class="cl">pv-hostpath   10Gi       RWX            Recycle          Available           standard                7s
+</span></span></code></pre></div><p>创建 PV 之后，我们需要申请使用 PV，因此需要在 kubernetes 中创建 PVC。</p>
 <p>pvc.yaml</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolumeClaim</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">myclaim</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">accessModes</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="l">ReadWriteMany</span><span class="w">
-</span><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span><span class="nt">requests</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">8Gi</span><span class="w">
-</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/pvc.yaml
-persistentvolumeclaim <span class="s2">&#34;myclaim&#34;</span> created
-</code></pre></div><p>kubernetes 根据 PVC 所需的容量（resources.requests.storage）和访问方式（accessMode）来调度存储资源。如下所示，我们创建的 PV 和 PVC 被 kubernetes 绑定在了一起。</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl get pv
-NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS   REASON   AGE
-pv-hostpath   10Gi       RWX            Recycle          Bound    default/myclaim   standard                45s
-
-$ kubectl get pvc
-NAME      STATUS   VOLUME        CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-myclaim   Bound    pv-hostpath   10Gi       RWX            standard       26s
-</code></pre></div><p>PV 和 PVC 的封装主要作用是达到了平台可移植性。应用不再需要关系底层存储的细节，只需要使用 PVC 即可。接下来我们使用上面的 PVC 来创建应用。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">PersistentVolumeClaim</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">myclaim</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">accessModes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="l">ReadWriteMany</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">resources</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span><span class="nt">requests</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">storage</span><span class="p">:</span><span class="w"> </span><span class="l">8Gi</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl create -f resources/pvc.yaml
+</span></span><span class="line"><span class="cl">persistentvolumeclaim <span class="s2">&#34;myclaim&#34;</span> created
+</span></span></code></pre></div><p>kubernetes 根据 PVC 所需的容量（resources.requests.storage）和访问方式（accessMode）来调度存储资源。如下所示，我们创建的 PV 和 PVC 被 kubernetes 绑定在了一起。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl get pv
+</span></span><span class="line"><span class="cl">NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS   REASON   AGE
+</span></span><span class="line"><span class="cl">pv-hostpath   10Gi       RWX            Recycle          Bound    default/myclaim   standard                45s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get pvc
+</span></span><span class="line"><span class="cl">NAME      STATUS   VOLUME        CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+</span></span><span class="line"><span class="cl">myclaim   Bound    pv-hostpath   10Gi       RWX            standard       26s
+</span></span></code></pre></div><p>PV 和 PVC 的封装主要作用是达到了平台可移植性。应用不再需要关系底层存储的细节，只需要使用 PVC 即可。接下来我们使用上面的 PVC 来创建应用。</p>
 <p>pod_with_pvc.yaml</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
-</span><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
-</span><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pod-with-pvc</span><span class="w">
-</span><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
-</span><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
-</span><span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/nginx:1.9.3</span><span class="w">
-</span><span class="w">      </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
-</span><span class="w">      </span>- <span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/var/www/html&#34;</span><span class="w">
-</span><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">mypd</span><span class="w">
-</span><span class="w">  </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
-</span><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">mypd</span><span class="w">
-</span><span class="w">      </span><span class="nt">persistentVolumeClaim</span><span class="p">:</span><span class="w">
-</span><span class="w">        </span><span class="nt">claimName</span><span class="p">:</span><span class="w"> </span><span class="l">myclaim</span><span class="w">
-</span></code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl create -f resources/pod_with_pvc.yaml
-pod <span class="s2">&#34;pod-with-pvc&#34;</span> created
-
-$ kubectl get pods
-NAME           READY   STATUS    RESTARTS   AGE
-pod-with-pvc   1/1     Running   <span class="m">0</span>          5s
-
-$ kubectl <span class="nb">exec</span> -it pod-with-pvc bash
-root@pod-with-pvc:/# touch /var/www/html/index.html
-
-$ minikube ssh
-$ ls /tmp/data1/
-index.html
-</code></pre></div><p>当我们删除 Pod 时，PV 和 PVC 的绑定不受任何影响，意味着我们可以重新创建 Pod 使用 PVC，数据仍然存在。</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl delete pod pod-with-pvc
-pod <span class="s2">&#34;pod-with-pvc&#34;</span> deleted
-
-$ kubectl get pvc
-NAME      STATUS   VOLUME        CAPACITY   ACCESS MODES   STORAGECLASS   AGE
-myclaim   Bound    pv-hostpath   10Gi       RWX            standard       2m26s
-
-$ kubectl get pv
-NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS   REASON   AGE
-pv-hostpath   10Gi       RWX            Recycle          Bound    default/myclaim   standard                3m7s
-</code></pre></div><p>如果进一步删除 PVC，可以看到 PV 进入了 <code>Released</code> 状态，这意味着 PV 已经被释放，但是还无法被重新使用，需要管理员手动清理 PV 数据后，将 PV 状态修改为 <code>Available</code>。PV 进入 <code>Release</code> 状态的原因是 PV 的回收策略被指定为 <code>Recycle</code>（spec.persistentVolumeReclaimPolicy: Recycle）。如果将回收策略改为 <code>Delete</code>，那么 PV 会被 kubernetes 直接删除。</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl delete pvc myclaim
-persistentvolumeclaim <span class="s2">&#34;myclaim&#34;</span> deleted
-
-$ kubectl get pv
-NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM             STORAGECLASS   REASON   AGE
-pv-hostpath   10Gi       RWX            Recycle          Released   default/myclaim   standard                3m55s
-</code></pre></div><p>PV 可以被手动删除，kubernetes 不会自动清理底层的数据。</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ kubectl delete pv pv-hostpath
-persistentvolume <span class="s2">&#34;pv-hostpath&#34;</span> deleted
-</code></pre></div><h2 id="readings-5">Readings<a href="#readings-5" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l">Pod</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l">v1</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">metadata</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">pod-with-pvc</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">spec</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">containers</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">nginx</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l">cargo.caicloud.io/caicloud/nginx:1.9.3</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">volumeMounts</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span>- <span class="nt">mountPath</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;/var/www/html&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">mypd</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="nt">volumes</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">    </span>- <span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l">mypd</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">      </span><span class="nt">persistentVolumeClaim</span><span class="p">:</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">        </span><span class="nt">claimName</span><span class="p">:</span><span class="w"> </span><span class="l">myclaim</span><span class="w">
+</span></span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl create -f resources/pod_with_pvc.yaml
+</span></span><span class="line"><span class="cl">pod <span class="s2">&#34;pod-with-pvc&#34;</span> created
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get pods
+</span></span><span class="line"><span class="cl">NAME           READY   STATUS    RESTARTS   AGE
+</span></span><span class="line"><span class="cl">pod-with-pvc   1/1     Running   <span class="m">0</span>          5s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl <span class="nb">exec</span> -it pod-with-pvc bash
+</span></span><span class="line"><span class="cl">root@pod-with-pvc:/# touch /var/www/html/index.html
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ minikube ssh
+</span></span><span class="line"><span class="cl">$ ls /tmp/data1/
+</span></span><span class="line"><span class="cl">index.html
+</span></span></code></pre></div><p>当我们删除 Pod 时，PV 和 PVC 的绑定不受任何影响，意味着我们可以重新创建 Pod 使用 PVC，数据仍然存在。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl delete pod pod-with-pvc
+</span></span><span class="line"><span class="cl">pod <span class="s2">&#34;pod-with-pvc&#34;</span> deleted
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get pvc
+</span></span><span class="line"><span class="cl">NAME      STATUS   VOLUME        CAPACITY   ACCESS MODES   STORAGECLASS   AGE
+</span></span><span class="line"><span class="cl">myclaim   Bound    pv-hostpath   10Gi       RWX            standard       2m26s
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get pv
+</span></span><span class="line"><span class="cl">NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS   CLAIM             STORAGECLASS   REASON   AGE
+</span></span><span class="line"><span class="cl">pv-hostpath   10Gi       RWX            Recycle          Bound    default/myclaim   standard                3m7s
+</span></span></code></pre></div><p>如果进一步删除 PVC，可以看到 PV 进入了 <code>Released</code> 状态，这意味着 PV 已经被释放，但是还无法被重新使用，需要管理员手动清理 PV 数据后，将 PV 状态修改为 <code>Available</code>。PV 进入 <code>Release</code> 状态的原因是 PV 的回收策略被指定为 <code>Recycle</code>（spec.persistentVolumeReclaimPolicy: Recycle）。如果将回收策略改为 <code>Delete</code>，那么 PV 会被 kubernetes 直接删除。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl delete pvc myclaim
+</span></span><span class="line"><span class="cl">persistentvolumeclaim <span class="s2">&#34;myclaim&#34;</span> deleted
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">$ kubectl get pv
+</span></span><span class="line"><span class="cl">NAME          CAPACITY   ACCESS MODES   RECLAIM POLICY   STATUS     CLAIM             STORAGECLASS   REASON   AGE
+</span></span><span class="line"><span class="cl">pv-hostpath   10Gi       RWX            Recycle          Released   default/myclaim   standard                3m55s
+</span></span></code></pre></div><p>PV 可以被手动删除，kubernetes 不会自动清理底层的数据。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ kubectl delete pv pv-hostpath
+</span></span><span class="line"><span class="cl">persistentvolume <span class="s2">&#34;pv-hostpath&#34;</span> deleted
+</span></span></code></pre></div><h2 id="readings-5">Readings<a href="#readings-5" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
 <li><a href="https://kubernetes.io/docs/concepts/storage/persistent-volumes/" target="_blank" rel="noopener">Kubernetes Persistent Volume</a>
 </li>
@@ -461,24 +461,24 @@ persistentvolume <span class="s2">&#34;pv-hostpath&#34;</span> deleted
 <h2 id="using-storageclass">Using StorageClass<a href="#using-storageclass" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>从上述操作的步骤可以看出，管理员需要首先创建 PV 才能让用户使用底层存储。其次，用户在使用 PVC 申请存储的时候，只能指定存储空间大小和访问模式。假如底层同时提供 GlusterFS 和 NFS，或者是不同规格的 GlusterFS，用户并没有能力指定特定的存储系统。从 1.2 版本开始，Kubernetes 逐渐引入了 StorageClass 的概念来解决上述两个问题。</p>
 <p>首先，我们需要创建 StorageClass。minikube 自带一个基于 hostPath 类型的 StorageClass，如下所示。</p>
-<pre><code>$ kubectl get storageclass standard -o yaml
+<pre tabindex="0"><code>$ kubectl get storageclass standard -o yaml
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   annotations:
-    storageclass.kubernetes.io/is-default-class: &quot;true&quot;
-  creationTimestamp: &quot;2019-06-27T03:03:57Z&quot;
+    storageclass.kubernetes.io/is-default-class: &#34;true&#34;
+  creationTimestamp: &#34;2019-06-27T03:03:57Z&#34;
   labels:
     addonmanager.kubernetes.io/mode: EnsureExists
   name: standard
-  resourceVersion: &quot;356&quot;
+  resourceVersion: &#34;356&#34;
   selfLink: /apis/storage.k8s.io/v1/storageclasses/standard
   uid: c9e7cc0f-2829-4adc-a313-63ea3a4950b7
 provisioner: k8s.io/minikube-hostpath
 reclaimPolicy: Delete
 volumeBindingMode: Immediate
 </code></pre><p>minikube 自带的 StorageClass 的名字为 <code>standard</code>，provisioner 名字为 <code>k8s.io/minikube-hostpath</code>。当我们创建一个 PVC 时，需要指定所需要的 StorageClass 名字，例如：</p>
-<pre><code>kind: PersistentVolumeClaim
+<pre tabindex="0"><code>kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
   name: claim-standard
@@ -490,7 +490,7 @@ spec:
     requests:
       storage: 8Gi
 </code></pre><p>上述 PVC 将会使用 <code>standard</code> StorageClass 创建一个 PV，如下所示：</p>
-<pre><code>$ kubectl get pvc
+<pre tabindex="0"><code>$ kubectl get pvc
 NAME      STATUS    VOLUME                                     CAPACITY   ACCESSMODES   STORAGECLASS   AGE
 myclaim   Bound     pvc-207c1e0b-a341-11e7-bf8e-0800277a7b6e   8Gi        RWX           standard       6s
 
@@ -498,8 +498,8 @@ $ kubectl get pv
 NAME                                       CAPACITY   ACCESSMODES   RECLAIMPOLICY   STATUS    CLAIM             STORAGECLASS   REASON    AGE
 pvc-207c1e0b-a341-11e7-bf8e-0800277a7b6e   8Gi        RWX           Delete          Bound     default/myclaim   standard                 8s
 </code></pre><p>可以看到 Kubernetes 自动生成了一个 PV。注意，动态生成的 PV 其回收属性是 <code>Delete</code>，即删除 PVC 会将 PV 也同时删除：</p>
-<pre><code>$ kubectl delete pvc myclaim
-persistentvolumeclaim &quot;myclaim&quot; deleted
+<pre tabindex="0"><code>$ kubectl delete pvc myclaim
+persistentvolumeclaim &#34;myclaim&#34; deleted
 
 $ kubectl get pvc
 No resources found.
@@ -509,17 +509,17 @@ No resources found.
 </code></pre><h2 id="default-storageclass">Default StorageClass<a href="#default-storageclass" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>kubernetes 集群中可以创建多个 StorageClass，其中有且仅有一个默认 StorageClass。当创建的 PVC 没有指定需要什么类型的存储时（即 pvc.spec.storageClassName 为空），Kubernetes 使用默认 StorageClass。</p>
 <p>在 minikube 环境中，<code>standard</code> 即为默认的 StorageClass。我们在 PV &amp; PVC 章节中创建的 PVC 没有指定 storageClassName，因此默认使用 <code>standard</code>。</p>
-<pre><code>$ kubectl get storageclass
+<pre tabindex="0"><code>$ kubectl get storageclass
 NAME                 PROVISIONER                AGE
 standard (default)   k8s.io/minikube-hostpath   9d
 </code></pre><h2 id="storageclass-provisioner">StorageClass Provisioner<a href="#storageclass-provisioner" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>除了名字之外，每一个 StorageClass 都必须指明 provisioner。 provisioner 是真正创建底层存储的组件。provisioner 负责监听一个特定的事件 - “用户创建了一个 PVC，该 PVC 使用某个 StorageClass，该 StorageClass 的 provisioner 是我自己”。当发生该事件，provisioner 将会创建底层存储。例如：</p>
-<pre><code>apiVersion: storage.k8s.io/v1
+<pre tabindex="0"><code>apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: gluster-class
   annotations:
-    storageclass.kubernetes.io/is-default-class: &quot;false&quot;
+    storageclass.kubernetes.io/is-default-class: &#34;false&#34;
 provisioner: example.com/gluster
 </code></pre><p>当用户创建一个 PVC 使用 <code>gluster-class</code>，名为 <code>example.com/gluster</code> 的 provisioner 需要创建基于 GlusterFS 的 PV 供 PVC 使用。一般情况下，provisioner 以 Pod 形式运行在 kubernetes 集群中，长运行并监听上述事件。 provisioner 的稳定性和健壮性是极为重要的，否则动态创建会失效。</p>
 <h2 id="readings-6">Readings<a href="#readings-6" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
@@ -562,7 +562,7 @@ provisioner: example.com/gluster
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/kubernetes">kubernetes</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4339 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4381 字</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-05-25 21:23 &#43;0800</p>
 			</footer>
 		</article>
@@ -634,7 +634,7 @@ provisioner: example.com/gluster
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

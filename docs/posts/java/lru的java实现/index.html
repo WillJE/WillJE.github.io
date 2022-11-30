@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="LRU的JAVA实现">
-<meta itemprop="description" content="什么是LRU算法? LRU是Least Recently Used的缩写，即最近最久未使用，是一种操作系统中常用的页面置换算法。 知道了什么是LRU后，我们再来聊下它的使用场景 在工作中，对于Redis我们一定是比较熟悉的，它是一个内存数据库；因为它是内存数据库，并且内存的空间是有限的，如果Redis中数据量很大的话，内存就可能被占满，但是此时如果还有数据存入Redis的话，那该怎"><meta itemprop="datePublished" content="2018-04-25T20:55:29&#43;08:00" />
-<meta itemprop="dateModified" content="2018-04-25T20:55:29&#43;08:00" />
+<meta itemprop="description" content="什么是LRU算法? LRU是Least Recently Used的缩写，即最近最久未使用，是一种操作系统中常用的页面置换算法。 知道了什么是LRU后，我们再来聊下它的使用场景 在工作中，对于Redis我们一定是比较熟悉的，它是一个内存数据库；因为它是内存数据库，并且内存的空间是有限的，如果Redis中数据量很大的话，内存就可能被占满，但是此时如果还有数据存入Redis的话，那该怎"><meta itemprop="datePublished" content="2018-04-25T20:55:29+08:00" />
+<meta itemprop="dateModified" content="2018-04-25T20:55:29+08:00" />
 <meta itemprop="wordCount" content="1856">
 <meta itemprop="keywords" content="LRU," /><meta property="og:title" content="LRU的JAVA实现" />
 <meta property="og:description" content="什么是LRU算法? LRU是Least Recently Used的缩写，即最近最久未使用，是一种操作系统中常用的页面置换算法。 知道了什么是LRU后，我们再来聊下它的使用场景 在工作中，对于Redis我们一定是比较熟悉的，它是一个内存数据库；因为它是内存数据库，并且内存的空间是有限的，如果Redis中数据量很大的话，内存就可能被占满，但是此时如果还有数据存入Redis的话，那该怎" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/java/lru%E7%9A%84java%E5%AE%9E%E7%8E%B0/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2018-04-25T20:55:29&#43;08:00" />
-<meta property="article:modified_time" content="2018-04-25T20:55:29&#43;08:00" />
+<meta property="article:published_time" content="2018-04-25T20:55:29+08:00" />
+<meta property="article:modified_time" content="2018-04-25T20:55:29+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="LRU的JAVA实现"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>LRU的JAVA实现</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -91,183 +91,183 @@
 <blockquote>
 <p>因为LRU缓存设计中使用了双向链表，所以需要设计下链表中的节点类，如下：</p>
 </blockquote>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java">
-<span class="kd">public</span> <span class="kd">class</span> <span class="nc">DoubleLinkedListNode</span> <span class="o">{</span>
-  <span class="n">String</span> <span class="n">key</span><span class="o">;</span>
-  <span class="n">Object</span> <span class="n">value</span><span class="o">;</span>
-  <span class="c1">// 头指针
-</span><span class="c1"></span>  <span class="n">DoubleLinkedListNode</span> <span class="n">pre</span><span class="o">;</span>
-  <span class="c1">// 尾指针
-</span><span class="c1"></span>  <span class="n">DoubleLinkedListNode</span> <span class="n">next</span><span class="o">;</span> 
-  
-  <span class="kd">public</span> <span class="nf">DoubleLinkedListNode</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">;</span>
-        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div><h2 id="完整代码">完整代码<a href="#完整代码" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LRUCache</span> <span class="o">{</span>
- 
-  <span class="kd">private</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">DoubleLinkedListNode</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">DoubleLinkedListNode</span><span class="o">&gt;();</span>
-  <span class="c1">// 头结点
-</span><span class="c1"></span>  <span class="kd">private</span> <span class="n">DoubleLinkedListNode</span> <span class="n">head</span><span class="o">;</span>
-  <span class="c1">// 尾节点
-</span><span class="c1"></span>  <span class="kd">private</span> <span class="n">DoubleLinkedListNode</span> <span class="n">tail</span><span class="o">;</span>
-  <span class="c1">// 双向链表的容量
-</span><span class="c1"></span>  <span class="kd">private</span> <span class="kt">int</span> <span class="n">capacity</span><span class="o">;</span>
-  <span class="c1">// 双向链表中节点的数量
-</span><span class="c1"></span>  <span class="kd">private</span> <span class="kt">int</span> <span class="n">size</span><span class="o">;</span>
- 
-  <span class="kd">public</span> <span class="nf">LRUCache</span><span class="o">(</span><span class="kt">int</span> <span class="n">capacity</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">this</span><span class="o">.</span><span class="na">capacity</span> <span class="o">=</span> <span class="n">capacity</span><span class="o">;</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
-  <span class="o">}</span>
- 
-  <span class="cm">/**
-</span><span class="cm">   * @Description: 将节点设置为头结点
-</span><span class="cm">   * @param node
-</span><span class="cm">   */</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setHead</span><span class="o">(</span><span class="n">DoubleLinkedListNode</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
-    <span class="c1">// 节点的尾指针执行头结点
-</span><span class="c1"></span>    <span class="n">node</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
-    <span class="c1">// 节点的头指针置为空
-</span><span class="c1"></span>    <span class="n">node</span><span class="o">.</span><span class="na">pre</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">head</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-      <span class="c1">// 将头结点的头指针执行节点
-</span><span class="c1"></span>      <span class="n">head</span><span class="o">.</span><span class="na">pre</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="n">head</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">tail</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-      <span class="c1">// 如果双向链表中还没有节点时，头结点和尾节点都是当前节点
-</span><span class="c1"></span>      <span class="n">tail</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
- 
-  <span class="cm">/**
-</span><span class="cm">   * @Description:将双向链表中的节点移除
-</span><span class="cm">   * @param node
-</span><span class="cm">   */</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">removeNode</span><span class="o">(</span><span class="n">DoubleLinkedListNode</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">DoubleLinkedListNode</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
-    <span class="n">DoubleLinkedListNode</span> <span class="n">pre</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">pre</span><span class="o">;</span>
-    <span class="n">DoubleLinkedListNode</span> <span class="n">post</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
-    <span class="c1">// 如果当前节点没有头指针的话，说明它是链表的头结点
-</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">pre</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">pre</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">post</span><span class="o">;</span>
-    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-      <span class="n">head</span> <span class="o">=</span> <span class="n">post</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="c1">// 如果当前节点没有尾指针的话，说明当前节点是尾节点
-</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">post</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">post</span><span class="o">.</span><span class="na">pre</span> <span class="o">=</span> <span class="n">pre</span><span class="o">;</span>
-    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-      <span class="n">tail</span> <span class="o">=</span> <span class="n">pre</span><span class="o">;</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
- 
-  <span class="cm">/**
-</span><span class="cm">   * @Description:从缓存Cache中get
-</span><span class="cm">   * @param key
-</span><span class="cm">   * @return
-</span><span class="cm">   */</span>
-  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">get</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
-    <span class="c1">// 使用hashmap进行查询，时间复杂度为O(1)，如果进行链表查询，需要遍历链表，时间复杂度为O(n)
-</span><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">key</span><span class="o">))</span> <span class="o">{</span>
-      <span class="n">DoubleLinkedListNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
-      <span class="c1">// 将查询出的节点从链表中移除
-</span><span class="c1"></span>      <span class="n">removeNode</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
-      <span class="c1">// 将查询出的节点设置为头结点
-</span><span class="c1"></span>      <span class="n">setHead</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
-      <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="na">value</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="c1">// 缓存中没有要查询的内容
-</span><span class="c1"></span>    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
-  <span class="o">}</span>
- 
-  <span class="cm">/**
-</span><span class="cm">   * @Description:将key-value存储set到缓存Cache中
-</span><span class="cm">   * @param key
-</span><span class="cm">   * @param value
-</span><span class="cm">   */</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">if</span> <span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">key</span><span class="o">))</span> <span class="o">{</span>
-      <span class="n">DoubleLinkedListNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
-      <span class="n">node</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
-      <span class="n">removeNode</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
-      <span class="n">setHead</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
-    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-      <span class="c1">// 如果缓存中没有词key-value
-</span><span class="c1"></span>      <span class="c1">// 创建一个新的节点
-</span><span class="c1"></span>      <span class="n">DoubleLinkedListNode</span> <span class="n">newNode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DoubleLinkedListNode</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
-      <span class="c1">// 如果链表中的节点数小于链表的初始容量（还不需要进行数据置换）则直接将新节点设置为头结点
-</span><span class="c1"></span>      <span class="k">if</span> <span class="o">(</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">capacity</span><span class="o">)</span> <span class="o">{</span>
-        <span class="n">setHead</span><span class="o">(</span><span class="n">newNode</span><span class="o">);</span>
-        <span class="c1">// 将新节点放入hashmap中，用于提高查找速度
-</span><span class="c1"></span>        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">newNode</span><span class="o">);</span>
-        <span class="n">size</span><span class="o">++;</span>
-      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
-        <span class="c1">// 缓存(双向链表)满了需要将&#34;最近醉酒未使用&#34;的节点(尾节点)删除，腾出新空间存放新节点
-</span><span class="c1"></span>        <span class="c1">// 首先将map中的尾节点删除
-</span><span class="c1"></span>        <span class="n">map</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">tail</span><span class="o">.</span><span class="na">key</span><span class="o">);</span>
-        <span class="c1">// 移除尾节点并重新置顶尾节点的头指针指向的节点为新尾节点
-</span><span class="c1"></span>        <span class="n">removeNode</span><span class="o">(</span><span class="n">tail</span><span class="o">);</span>
-        <span class="c1">// 将新节点设置为头节点
-</span><span class="c1"></span>        <span class="n">setHead</span><span class="o">(</span><span class="n">newNode</span><span class="o">);</span>
-        <span class="c1">// 将新节点放入到map中
-</span><span class="c1"></span>        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">newNode</span><span class="o">);</span>
-      <span class="o">}</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
- 
-  <span class="cm">/**
-</span><span class="cm">   * @Description: 遍历双向链表
-</span><span class="cm">   * @param head
-</span><span class="cm">   *            双向链表的 头结点
-</span><span class="cm">   */</span>
-  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">traverse</span><span class="o">(</span><span class="n">DoubleLinkedListNode</span> <span class="n">head</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">DoubleLinkedListNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
-    <span class="k">while</span> <span class="o">(</span><span class="n">node</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">key</span> <span class="o">+</span> <span class="s">&#34;  &#34;</span><span class="o">);</span>
-      <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
-    <span class="o">}</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
-  <span class="o">}</span>
- 
-  <span class="c1">// test
-</span><span class="c1"></span>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;双向链表容量为6&#34;</span><span class="o">);</span>
-    <span class="n">LRUCache</span> <span class="n">lc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LRUCache</span><span class="o">(</span><span class="n">6</span><span class="o">);</span>
- 
-    <span class="c1">// 向缓存中插入set数据
-</span><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">6</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-      <span class="n">lc</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="s">&#34;test&#34;</span> <span class="o">+</span> <span class="n">i</span><span class="o">,</span> <span class="s">&#34;test&#34;</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>
-    <span class="o">}</span>
- 
-    <span class="c1">// 遍历缓存中的数据，从左到右，数据越不经常使用
-</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;第一次遍历双向链表：(从头结点遍历到尾节点)&#34;</span><span class="o">);</span>
-    <span class="n">lc</span><span class="o">.</span><span class="na">traverse</span><span class="o">(</span><span class="n">lc</span><span class="o">.</span><span class="na">head</span><span class="o">);</span>
- 
-    <span class="c1">// 使用get查询缓存中数据
-</span><span class="c1"></span>    <span class="n">lc</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;test2&#34;</span><span class="o">);</span>
- 
-    <span class="c1">// 再次遍历缓存中的数据，从左到右，数据越不经常使用,并且此次发现刚刚操作的数据节点位于链表的头结点了。
-</span><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;get查询 test2节点后 ，第二次遍历双向链表：&#34;</span><span class="o">);</span>
-    <span class="n">lc</span><span class="o">.</span><span class="na">traverse</span><span class="o">(</span><span class="n">lc</span><span class="o">.</span><span class="na">head</span><span class="o">);</span>
- 
-    <span class="c1">// 再次向缓存中插入数据，发现缓存链表已经满了，需要将尾节点移除
-</span><span class="c1"></span>    <span class="n">lc</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="s">&#34;sucess&#34;</span><span class="o">,</span> <span class="s">&#34;sucess&#34;</span><span class="o">);</span>
- 
-    <span class="cm">/**
-</span><span class="cm">     * 再次遍历缓存中的数据，从左到右，数据越不经常使用,并且此次发现刚刚set操作时由于链表满了， 就将尾节点test0
-</span><span class="cm">     * 移除了，并且将新节点置为链表的头结点。
-</span><span class="cm">     */</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
-    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;put插入sucess节点后，第三次遍历双向链表：&#34;</span><span class="o">);</span>
-    <span class="n">lc</span><span class="o">.</span><span class="na">traverse</span><span class="o">(</span><span class="n">lc</span><span class="o">.</span><span class="na">head</span><span class="o">);</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">DoubleLinkedListNode</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">String</span> <span class="n">key</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="n">Object</span> <span class="n">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 头指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">DoubleLinkedListNode</span> <span class="n">pre</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 尾指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">DoubleLinkedListNode</span> <span class="n">next</span><span class="o">;</span> 
+</span></span><span class="line"><span class="cl">  
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="nf">DoubleLinkedListNode</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">        <span class="k">this</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><h2 id="完整代码">完整代码<a href="#完整代码" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kd">public</span> <span class="kd">class</span> <span class="nc">LRUCache</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">  <span class="kd">private</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">DoubleLinkedListNode</span><span class="o">&gt;</span> <span class="n">map</span> <span class="o">=</span> <span class="k">new</span> <span class="n">HashMap</span><span class="o">&lt;</span><span class="n">String</span><span class="o">,</span> <span class="n">DoubleLinkedListNode</span><span class="o">&gt;();</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 头结点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">private</span> <span class="n">DoubleLinkedListNode</span> <span class="n">head</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 尾节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">private</span> <span class="n">DoubleLinkedListNode</span> <span class="n">tail</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 双向链表的容量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">private</span> <span class="kt">int</span> <span class="n">capacity</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 双向链表中节点的数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">private</span> <span class="kt">int</span> <span class="n">size</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="nf">LRUCache</span><span class="o">(</span><span class="kt">int</span> <span class="n">capacity</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">this</span><span class="o">.</span><span class="na">capacity</span> <span class="o">=</span> <span class="n">capacity</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">size</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @Description: 将节点设置为头结点
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @param node
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">setHead</span><span class="o">(</span><span class="n">DoubleLinkedListNode</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 节点的尾指针执行头结点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">node</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 节点的头指针置为空
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">node</span><span class="o">.</span><span class="na">pre</span> <span class="o">=</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">head</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 将头结点的头指针执行节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">head</span><span class="o">.</span><span class="na">pre</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">head</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">tail</span> <span class="o">==</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 如果双向链表中还没有节点时，头结点和尾节点都是当前节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">tail</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @Description:将双向链表中的节点移除
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @param node
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">removeNode</span><span class="o">(</span><span class="n">DoubleLinkedListNode</span> <span class="n">node</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DoubleLinkedListNode</span> <span class="n">cur</span> <span class="o">=</span> <span class="n">node</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DoubleLinkedListNode</span> <span class="n">pre</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">pre</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DoubleLinkedListNode</span> <span class="n">post</span> <span class="o">=</span> <span class="n">cur</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 如果当前节点没有头指针的话，说明它是链表的头结点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">pre</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">pre</span><span class="o">.</span><span class="na">next</span> <span class="o">=</span> <span class="n">post</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">head</span> <span class="o">=</span> <span class="n">post</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 如果当前节点没有尾指针的话，说明当前节点是尾节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">post</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">post</span><span class="o">.</span><span class="na">pre</span> <span class="o">=</span> <span class="n">pre</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">tail</span> <span class="o">=</span> <span class="n">pre</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @Description:从缓存Cache中get
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @param key
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @return
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="n">Object</span> <span class="nf">get</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 使用hashmap进行查询，时间复杂度为O(1)，如果进行链表查询，需要遍历链表，时间复杂度为O(n)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">key</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">DoubleLinkedListNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 将查询出的节点从链表中移除
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">removeNode</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 将查询出的节点设置为头结点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">setHead</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="k">return</span> <span class="n">node</span><span class="o">.</span><span class="na">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 缓存中没有要查询的内容
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">return</span> <span class="kc">null</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @Description:将key-value存储set到缓存Cache中
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @param key
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @param value
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">set</span><span class="o">(</span><span class="n">String</span> <span class="n">key</span><span class="o">,</span> <span class="n">Object</span> <span class="n">value</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="o">(</span><span class="n">map</span><span class="o">.</span><span class="na">containsKey</span><span class="o">(</span><span class="n">key</span><span class="o">))</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">DoubleLinkedListNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">map</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="n">key</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">node</span><span class="o">.</span><span class="na">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">      <span class="n">removeNode</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">setHead</span><span class="o">(</span><span class="n">node</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 如果缓存中没有词key-value
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="c1">// 创建一个新的节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">DoubleLinkedListNode</span> <span class="n">newNode</span> <span class="o">=</span> <span class="k">new</span> <span class="n">DoubleLinkedListNode</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">value</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 如果链表中的节点数小于链表的初始容量（还不需要进行数据置换）则直接将新节点设置为头结点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">if</span> <span class="o">(</span><span class="n">size</span> <span class="o">&lt;</span> <span class="n">capacity</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="n">setHead</span><span class="o">(</span><span class="n">newNode</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 将新节点放入hashmap中，用于提高查找速度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">newNode</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="n">size</span><span class="o">++;</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span> <span class="k">else</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 缓存(双向链表)满了需要将&#34;最近醉酒未使用&#34;的节点(尾节点)删除，腾出新空间存放新节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="c1">// 首先将map中的尾节点删除
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">map</span><span class="o">.</span><span class="na">remove</span><span class="o">(</span><span class="n">tail</span><span class="o">.</span><span class="na">key</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 移除尾节点并重新置顶尾节点的头指针指向的节点为新尾节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">removeNode</span><span class="o">(</span><span class="n">tail</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 将新节点设置为头节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">setHead</span><span class="o">(</span><span class="n">newNode</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 将新节点放入到map中
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="n">map</span><span class="o">.</span><span class="na">put</span><span class="o">(</span><span class="n">key</span><span class="o">,</span> <span class="n">newNode</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">  <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @Description: 遍历双向链表
+</span></span></span><span class="line"><span class="cl"><span class="cm">   * @param head
+</span></span></span><span class="line"><span class="cl"><span class="cm">   *            双向链表的 头结点
+</span></span></span><span class="line"><span class="cl"><span class="cm">   */</span>
+</span></span><span class="line"><span class="cl">  <span class="kd">public</span> <span class="kt">void</span> <span class="nf">traverse</span><span class="o">(</span><span class="n">DoubleLinkedListNode</span> <span class="n">head</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">DoubleLinkedListNode</span> <span class="n">node</span> <span class="o">=</span> <span class="n">head</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="k">while</span> <span class="o">(</span><span class="n">node</span> <span class="o">!=</span> <span class="kc">null</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">print</span><span class="o">(</span><span class="n">node</span><span class="o">.</span><span class="na">key</span> <span class="o">+</span> <span class="s">&#34;  &#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="n">node</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="na">next</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">  <span class="c1">// test
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="n">String</span><span class="o">[]</span> <span class="n">args</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;双向链表容量为6&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">LRUCache</span> <span class="n">lc</span> <span class="o">=</span> <span class="k">new</span> <span class="n">LRUCache</span><span class="o">(</span><span class="n">6</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="c1">// 向缓存中插入set数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">6</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">lc</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="s">&#34;test&#34;</span> <span class="o">+</span> <span class="n">i</span><span class="o">,</span> <span class="s">&#34;test&#34;</span> <span class="o">+</span> <span class="n">i</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="c1">// 遍历缓存中的数据，从左到右，数据越不经常使用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;第一次遍历双向链表：(从头结点遍历到尾节点)&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lc</span><span class="o">.</span><span class="na">traverse</span><span class="o">(</span><span class="n">lc</span><span class="o">.</span><span class="na">head</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="c1">// 使用get查询缓存中数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">lc</span><span class="o">.</span><span class="na">get</span><span class="o">(</span><span class="s">&#34;test2&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="c1">// 再次遍历缓存中的数据，从左到右，数据越不经常使用,并且此次发现刚刚操作的数据节点位于链表的头结点了。
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;get查询 test2节点后 ，第二次遍历双向链表：&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lc</span><span class="o">.</span><span class="na">traverse</span><span class="o">(</span><span class="n">lc</span><span class="o">.</span><span class="na">head</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="c1">// 再次向缓存中插入数据，发现缓存链表已经满了，需要将尾节点移除
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="n">lc</span><span class="o">.</span><span class="na">set</span><span class="o">(</span><span class="s">&#34;sucess&#34;</span><span class="o">,</span> <span class="s">&#34;sucess&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"> 
+</span></span><span class="line"><span class="cl">    <span class="cm">/**
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * 再次遍历缓存中的数据，从左到右，数据越不经常使用,并且此次发现刚刚set操作时由于链表满了， 就将尾节点test0
+</span></span></span><span class="line"><span class="cl"><span class="cm">     * 移除了，并且将新节点置为链表的头结点。
+</span></span></span><span class="line"><span class="cl"><span class="cm">     */</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="n">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="s">&#34;put插入sucess节点后，第三次遍历双向链表：&#34;</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">    <span class="n">lc</span><span class="o">.</span><span class="na">traverse</span><span class="o">(</span><span class="n">lc</span><span class="o">.</span><span class="na">head</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div>
 			</div><div class="content">
 	<br>
 	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
@@ -310,6 +310,9 @@
 			<a class="next-post" href="https://willje.github.io/posts/net/vmware%E8%99%9A%E6%8B%9F%E6%9C%BAcentos7%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE/">
 				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>vmvare虚拟机centos网络配置</span>
 			</a>
+			<a class="prev-post" href="https://willje.github.io/posts/read/%E7%9A%87%E5%B8%9D%E7%9A%84%E6%96%B0%E8%A1%A3-%E5%85%B1%E6%9C%89%E7%9F%A5%E8%AF%86%E5%92%8C%E5%85%AC%E5%85%B1%E7%9F%A5%E8%AF%86/">
+				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span></span>
+			</a>
 		</div>
 		<div id="comments" class="thin"><script src="https://utteranc.es/client.js"
 	repo="polaris1119/polarisxu"
@@ -330,7 +333,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

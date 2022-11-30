@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="Golang中defer的那些事">
-<meta itemprop="description" content="Golang中的defer关键字实现比较特殊的功能，按照官方的解释，defer后面的表达式会被放入一个列表中，在当前方法返回的时候，列表中的表达式就会被执行。一个方法中可以在一个或者多个地方使用defer表达式，这也是前面提到的，为什么需要用一个列表来保存这些表达式。在Golang中，defer表达式通常用来处理一些清理和释放资源的操作。 貌似看起来比较难懂，"><meta itemprop="datePublished" content="2021-04-05T12:13:54&#43;08:00" />
-<meta itemprop="dateModified" content="2021-04-05T12:13:54&#43;08:00" />
+<meta itemprop="description" content="Golang中的defer关键字实现比较特殊的功能，按照官方的解释，defer后面的表达式会被放入一个列表中，在当前方法返回的时候，列表中的表达式就会被执行。一个方法中可以在一个或者多个地方使用defer表达式，这也是前面提到的，为什么需要用一个列表来保存这些表达式。在Golang中，defer表达式通常用来处理一些清理和释放资源的操作。 貌似看起来比较难懂，"><meta itemprop="datePublished" content="2021-04-05T12:13:54+08:00" />
+<meta itemprop="dateModified" content="2021-04-05T12:13:54+08:00" />
 <meta itemprop="wordCount" content="1342">
 <meta itemprop="keywords" content="defer,go," /><meta property="og:title" content="Golang中defer的那些事" />
 <meta property="og:description" content="Golang中的defer关键字实现比较特殊的功能，按照官方的解释，defer后面的表达式会被放入一个列表中，在当前方法返回的时候，列表中的表达式就会被执行。一个方法中可以在一个或者多个地方使用defer表达式，这也是前面提到的，为什么需要用一个列表来保存这些表达式。在Golang中，defer表达式通常用来处理一些清理和释放资源的操作。 貌似看起来比较难懂，" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/go/basic/golang%E4%B8%ADdefer%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-04-05T12:13:54&#43;08:00" />
-<meta property="article:modified_time" content="2021-04-05T12:13:54&#43;08:00" />
+<meta property="article:published_time" content="2021-04-05T12:13:54+08:00" />
+<meta property="article:modified_time" content="2021-04-05T12:13:54+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Golang中defer的那些事"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Golang中defer的那些事</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -74,70 +74,70 @@
 				<p>Golang中的defer关键字实现比较特殊的功能，按照官方的解释，defer后面的表达式会被放入一个列表中，在当前方法返回的时候，列表中的表达式就会被执行。一个方法中可以在一个或者多个地方使用defer表达式，这也是前面提到的，为什么需要用一个列表来保存这些表达式。在Golang中，defer表达式通常用来处理一些清理和释放资源的操作。</p>
 <p>貌似看起来比较难懂，其实，如果你用过C#，一定记得那个用起来非常方便的using语句，defer可以理解成为了实现类似的功能。不过比起C#的using语句，defer的行为稍微复杂一些，想要彻底理解defer，需要了解Golang中defer相关的一些特性。</p>
 <p>通过一个简单的例子，我们就可以大致了解defer的用法：</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">CopyFile</span><span class="p">(</span><span class="nx">dstName</span><span class="p">,</span> <span class="nx">srcName</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">written</span> <span class="kt">int64</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">src</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="nx">srcName</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="k">return</span>
-    <span class="p">}</span>
-
-    <span class="nx">dst</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="nx">dstName</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="k">return</span>
-    <span class="p">}</span>
-
-    <span class="nx">written</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">io</span><span class="p">.</span><span class="nf">Copy</span><span class="p">(</span><span class="nx">dst</span><span class="p">,</span> <span class="nx">src</span><span class="p">)</span>
-    <span class="nx">dst</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
-    <span class="nx">src</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
-    <span class="k">return</span>
-<span class="p">}</span>
-</code></pre></div><p>CopyFile方法简单的实现了文件内容的拷贝功能，将源文件的内容拷贝到目标文件。咋一看还没什么问题，不过Golang中的资源也是需要释放的，假如os.Create方法的调用出了错误，下面的语句会直接return，导致这两个打开的文件没有机会被释放。这个时候，defer就可以派上用场了。</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">CopyFile</span><span class="p">(</span><span class="nx">dstName</span><span class="p">,</span> <span class="nx">srcName</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">written</span> <span class="kt">int64</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">src</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="nx">srcName</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="k">return</span>
-    <span class="p">}</span>
-    <span class="k">defer</span> <span class="nx">src</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
-
-    <span class="nx">dst</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="nx">dstName</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="k">return</span>
-    <span class="p">}</span>
-    <span class="k">defer</span> <span class="nx">dst</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
-
-    <span class="k">return</span> <span class="nx">io</span><span class="p">.</span><span class="nf">Copy</span><span class="p">(</span><span class="nx">dst</span><span class="p">,</span> <span class="nx">src</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></div><p>这是使用defer改进过后的例子：改进的代码中两处都使用到了defer表达式，表达式的内容就是关闭文件。前面介绍过，虽然表达式的具体行为是关闭文件，但是并不会被马上执行，两个表达式都会被放入一个list，等待被调用。先卖个关子，这个list可以看作是一个栈(stack)的结构，是一个后进先出的栈。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">CopyFile</span><span class="p">(</span><span class="nx">dstName</span><span class="p">,</span> <span class="nx">srcName</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">written</span> <span class="kt">int64</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">src</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="nx">srcName</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">dst</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="nx">dstName</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">written</span><span class="p">,</span> <span class="nx">err</span> <span class="p">=</span> <span class="nx">io</span><span class="p">.</span><span class="nf">Copy</span><span class="p">(</span><span class="nx">dst</span><span class="p">,</span> <span class="nx">src</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dst</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">src</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>CopyFile方法简单的实现了文件内容的拷贝功能，将源文件的内容拷贝到目标文件。咋一看还没什么问题，不过Golang中的资源也是需要释放的，假如os.Create方法的调用出了错误，下面的语句会直接return，导致这两个打开的文件没有机会被释放。这个时候，defer就可以派上用场了。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">CopyFile</span><span class="p">(</span><span class="nx">dstName</span><span class="p">,</span> <span class="nx">srcName</span> <span class="kt">string</span><span class="p">)</span> <span class="p">(</span><span class="nx">written</span> <span class="kt">int64</span><span class="p">,</span> <span class="nx">err</span> <span class="kt">error</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">src</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="nx">srcName</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">defer</span> <span class="nx">src</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">dst</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Create</span><span class="p">(</span><span class="nx">dstName</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">defer</span> <span class="nx">dst</span><span class="p">.</span><span class="nf">Close</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">io</span><span class="p">.</span><span class="nf">Copy</span><span class="p">(</span><span class="nx">dst</span><span class="p">,</span> <span class="nx">src</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>这是使用defer改进过后的例子：改进的代码中两处都使用到了defer表达式，表达式的内容就是关闭文件。前面介绍过，虽然表达式的具体行为是关闭文件，但是并不会被马上执行，两个表达式都会被放入一个list，等待被调用。先卖个关子，这个list可以看作是一个栈(stack)的结构，是一个后进先出的栈。</p>
 <p>知道了defer的基本用法，我们得继续深入了解一下defer的一些特性：</p>
 <ul>
 <li><strong>defer表达式中变量的值在defer表达式被定义时就已经明确</strong></li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">a</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span>
-    <span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
-    <span class="nx">i</span><span class="o">++</span>
-    <span class="k">return</span>
-<span class="p">}</span>
-</code></pre></div><p>上面的这段代码，defer表达式中用到了i这个变量，i在初始化之后的值为0，接着程序执行到defer表达式这一行，表达式所用到的i的值就为0了，接着，表达式被放入list，等待在return的时候被调用。所以，后面尽管有一个i++语句，仍然不能改变表达式 fmt.Println(i)的结果。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">a</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Println</span><span class="p">(</span><span class="nx">i</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">i</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>上面的这段代码，defer表达式中用到了i这个变量，i在初始化之后的值为0，接着程序执行到defer表达式这一行，表达式所用到的i的值就为0了，接着，表达式被放入list，等待在return的时候被调用。所以，后面尽管有一个i++语句，仍然不能改变表达式 fmt.Println(i)的结果。</p>
 <p>所以，程序运行结束的时候，输出的结果是0而不是1。</p>
 <ul>
 <li><strong>defer表达式的调用顺序是按照先进后出的方式</strong></li>
 </ul>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">b</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-    <span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-    <span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="p">}</span>
-</code></pre></div><p>前面已经提到过，defer表达式会被放入一个类似于栈(stack)的结构，所以调用的顺序是后进先出的。所以，上面这段代码输出的结果是4321而不是1234。在实际的编码中应该注意，程序后面的defer表达式会被优先执行。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">b</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">defer</span> <span class="nx">fmt</span><span class="p">.</span><span class="nf">Print</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>前面已经提到过，defer表达式会被放入一个类似于栈(stack)的结构，所以调用的顺序是后进先出的。所以，上面这段代码输出的结果是4321而不是1234。在实际的编码中应该注意，程序后面的defer表达式会被优先执行。</p>
 <ul>
 <li><strong>defer表达式中可以修改函数中的命名返回值</strong></li>
 </ul>
 <p>Golang中的函数返回值是可以命名的，这也是Golang带给开发人员的一个比较方便特性。</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">c</span><span class="p">()</span> <span class="p">(</span><span class="nx">i</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
-    <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="nx">i</span><span class="o">++</span> <span class="p">}()</span>
-    <span class="k">return</span> <span class="mi">1</span>
-<span class="p">}</span>
-</code></pre></div><p>上面的示例程序，返回值变量名为i，在defer表达式中可以修改这个变量的值。所以，虽然在return的时候给返回值赋值为1，后来defer修改了这个值，让i自增了1，所以，函数的返回值是2而不是1。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">c</span><span class="p">()</span> <span class="p">(</span><span class="nx">i</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">defer</span> <span class="kd">func</span><span class="p">()</span> <span class="p">{</span> <span class="nx">i</span><span class="o">++</span> <span class="p">}()</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>上面的示例程序，返回值变量名为i，在defer表达式中可以修改这个变量的值。所以，虽然在return的时候给返回值赋值为1，后来defer修改了这个值，让i自增了1，所以，函数的返回值是2而不是1。</p>
 <p>理解了defer的三个特性，用到defer的时候就能心中有数了。</p>
 <h2 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <ul>
@@ -215,7 +215,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

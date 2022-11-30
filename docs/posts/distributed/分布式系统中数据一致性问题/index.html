@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="分布式系统中的数据一致性问题">
-<meta itemprop="description" content="数据一致性 数据库系统中的数据一致性 数据一致性问题最初是存在于数据库系统中的一个概念，数据库系统中一致性问题通常指的是关联数据之间的逻辑是否完整和正确，通常数据库系统会通过使用事务来保证数据的一致性和完整性。事务本质上就是一个操作序列的有限集合，若事务中有的操作没有成功完成，则事务中的所有操作都需要被回滚，回到事务执行前的状态。 比如当你在淘宝中购买商品进行付款"><meta itemprop="datePublished" content="2021-01-05T20:55:29&#43;08:00" />
-<meta itemprop="dateModified" content="2021-01-05T20:55:29&#43;08:00" />
+<meta itemprop="description" content="数据一致性 数据库系统中的数据一致性 数据一致性问题最初是存在于数据库系统中的一个概念，数据库系统中一致性问题通常指的是关联数据之间的逻辑是否完整和正确，通常数据库系统会通过使用事务来保证数据的一致性和完整性。事务本质上就是一个操作序列的有限集合，若事务中有的操作没有成功完成，则事务中的所有操作都需要被回滚，回到事务执行前的状态。 比如当你在淘宝中购买商品进行付款"><meta itemprop="datePublished" content="2021-01-05T20:55:29+08:00" />
+<meta itemprop="dateModified" content="2021-01-05T20:55:29+08:00" />
 <meta itemprop="wordCount" content="4827">
 <meta itemprop="keywords" content="数据一致性," /><meta property="og:title" content="分布式系统中的数据一致性问题" />
 <meta property="og:description" content="数据一致性 数据库系统中的数据一致性 数据一致性问题最初是存在于数据库系统中的一个概念，数据库系统中一致性问题通常指的是关联数据之间的逻辑是否完整和正确，通常数据库系统会通过使用事务来保证数据的一致性和完整性。事务本质上就是一个操作序列的有限集合，若事务中有的操作没有成功完成，则事务中的所有操作都需要被回滚，回到事务执行前的状态。 比如当你在淘宝中购买商品进行付款" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F%E4%B8%AD%E6%95%B0%E6%8D%AE%E4%B8%80%E8%87%B4%E6%80%A7%E9%97%AE%E9%A2%98/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-01-05T20:55:29&#43;08:00" />
-<meta property="article:modified_time" content="2021-01-05T20:55:29&#43;08:00" />
+<meta property="article:published_time" content="2021-01-05T20:55:29+08:00" />
+<meta property="article:modified_time" content="2021-01-05T20:55:29+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="分布式系统中的数据一致性问题"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>分布式系统中的数据一致性问题</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -210,8 +210,8 @@
 <p>相对于2PC，3PC主要解决的单点故障问题，并减少阻塞，因为一旦参与者无法及时收到来自协调者的信息之后，他会默认执行commit。而不会一直持有事务资源并处于阻塞状态。但是这种机制也会导致数据一致性问题，因为，由于网络原因，协调者发送的abort响应没有及时被参与者接收到，那么参与者在等待超时之后执行了commit操作。这样就和其他接到abort命令并执行回滚的参与者之间存在数据不一致的情况。</p>
 <h2 id="终极办法">终极办法<a href="#终极办法" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>了解了2PC和3PC之后，我们可以发现，无论是二阶段提交还是三阶段提交都无法彻底解决分布式的一致性问题。Google Chubby的作者Mike Burrows说过，</p>
-<div class="highlight"><pre class="chroma"><code class="language-html" data-lang="html">there is only one consensus protocol, and that’s Paxos” – all other approaches are just broken versions of Paxos.
-</code></pre></div><p>意即<strong>世上只有一种一致性算法，那就是Paxos</strong>，所有其他一致性算法都是Paxos算法的不完整版。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-html" data-lang="html"><span class="line"><span class="cl">there is only one consensus protocol, and that’s Paxos” – all other approaches are just broken versions of Paxos.
+</span></span></code></pre></div><p>意即<strong>世上只有一种一致性算法，那就是Paxos</strong>，所有其他一致性算法都是Paxos算法的不完整版。</p>
 <p>Paxos算法太难于理解，<a href="https://willje.github.io/posts/distributed/raft-%E7%AE%97%E6%B3%95/" target="_blank" rel="noopener">Raft算法</a>
 更易理解也有具体实现。</p>
 
@@ -277,7 +277,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

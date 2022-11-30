@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-	<meta name="generator" content="Hugo 0.82.0" />
+	<meta name="generator" content="Hugo 0.106.0">
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -27,7 +27,7 @@
 
 	<title>will&#39;s blog</title>
 	<link rel="alternate" type="application/rss+xml" href="https://willje.github.io/index.xml" title="will's blog" />
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
 </head>
@@ -166,7 +166,7 @@
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>k8s有几种port类型，分别是TargetPort，ContainerPort，NodePort，Port，那么该怎么区别她们呢，各自的使用场景又是什么呢，接下来这篇文章给你分析一下。 ContainerPort ContainerPort表示你使用的镜像需要开放的端口。例如，mysql 服务需要暴露 3306 端口，redis 暴露 6379 端口 apiVersion:v1kind:ReplicationControllermetadata:name:redis-masterlabels:name:redis-masterspec:replicas:1selector:name:redis-mastertemplate:metadata:labels:name:redis-masterspec:containers:- name:masterimage:kubeguide/redis-masterports:- containerPort:6379# 此处定义暴露的端口NodePort 一旦你的pod创建</p></div>
+                <div class="p_part"><p>k8s有几种port类型，分别是TargetPort，ContainerPort，NodePort，Port，那么该怎么区别她们呢，各自的使用场景又是什么呢，接下来这篇文章给你分析一下。 ContainerPort ContainerPort表示你使用的镜像需要开放的端口。例如，mysql 服务需要暴露 3306 端口，redis 暴露 6379 端口 apiVersion: v1 kind: ReplicationController metadata: name: redis-master labels: name: redis-master spec: replicas: 1 selector: name: redis-master template: metadata: labels: name: redis-master spec: containers: - name: master image: kubeguide/redis-master ports:</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
@@ -181,11 +181,11 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/">Kubernetes中的Service与Ingress</a>
+                <h2><a href="/posts/k8s/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/">Kubernetes网络模型</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>Service 必须了解的一点是 Service 的访问信息在 Kubernetes 集群内是有效的，集群之外是无效的。 Service可以看作是一组提供相同服务的Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。对于Service 的工作原理请参考：https://time.geekbang.org/column/article/68636 当需要从集群外部访问k8s里的服务的时候，</p></div>
+                <div class="p_part"><p>关于 Pod 如何接入网络这件事情，Kubernetes 做出了明确的选择。具体来说，Kubernetes 要求所有的网络插件实现必须满足如下要求： 所有的 Pod 可以与任何其他 Pod 直接通信，无需使用 NAT 映射（network address translation） 所有节点可以与所有 Pod 直接通信，无需使用 NAT 映射 Pod 内部获取到的 IP 地址与其他 Pod 或节点与其通信时的 IP 地址是同一个 在这些限制条件下，需要解决如下</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
@@ -200,11 +200,11 @@
     
         <div class="post animated fadeInDown">
             <div class="post-title">
-                <h2><a href="/posts/k8s/kubernetes%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/">Kubernetes网络模型</a>
+                <h2><a href="/posts/k8s/kubernetes%E4%B8%AD%E7%9A%84service%E4%B8%8Eingress/">Kubernetes中的Service与Ingress</a>
                 </h2>
             </div>
             <div class="post-content">
-                <div class="p_part"><p>关于 Pod 如何接入网络这件事情，Kubernetes 做出了明确的选择。具体来说，Kubernetes 要求所有的网络插件实现必须满足如下要求： 所有的 Pod 可以与任何其他 Pod 直接通信，无需使用 NAT 映射（network address translation） 所有节点可以与所有 Pod 直接通信，无需使用 NAT 映射 Pod 内部获取到的 IP 地址与其他 Pod 或节点与其通信时的 IP 地址是同一个 在这些限制条件下，需要解决如下</p></div>
+                <div class="p_part"><p>Service 必须了解的一点是 Service 的访问信息在 Kubernetes 集群内是有效的，集群之外是无效的。 Service可以看作是一组提供相同服务的Pod对外的访问接口。借助Service，应用可以方便地实现服务发现和负载均衡。对于Service 的工作原理请参考：https://time.geekbang.org/column/article/68636 当需要从集群外部访问k8s里的服务的时候，</p></div>
             </div>
             <div class="post-footer">
                 <div class="meta">
@@ -258,37 +258,35 @@
     
     <div class="pagination">
         
-<ul class="pagination">
-  <li class="page-item">
-    <a href="/" class="page-link" aria-label="First"><span aria-hidden="true">&laquo;&laquo;</span></a>
-  </li>
-  <li class="page-item">
-    <a href="/" class="page-link" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
-  </li>
-  <li class="page-item">
-    <a class="page-link" href="/">1</a>
-  </li>
-  <li class="page-item active">
-    <a class="page-link" href="/page/2/">2</a>
-  </li>
-  <li class="page-item">
-    <a class="page-link" href="/page/3/">3</a>
-  </li>
-  <li class="page-item disabled">
-    <span aria-hidden="true">&nbsp;&hellip;&nbsp;</span>
-  </li>
-  <li class="page-item">
-    <a class="page-link" href="/page/9/">9</a>
-  </li>
-  <li class="page-item">
-    <a href="/page/3/" class="page-link" aria-label="Next"><span aria-hidden="true">&raquo;</span></a>
-  </li>
-  <li class="page-item">
-    <a href="/page/9/" class="page-link" aria-label="Last"><span aria-hidden="true">&raquo;&raquo;</span></a>
-  </li>
-</ul>
-
-
+    <ul class="pagination pagination-default">
+      <li class="page-item">
+        <a href="/" aria-label="First" class="page-link" role="button"><span aria-hidden="true">&laquo;&laquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/" aria-label="Previous" class="page-link" role="button"><span aria-hidden="true">&laquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/" aria-label="Page 1" class="page-link" role="button">1</a>
+      </li>
+      <li class="page-item active">
+        <a aria-current="page" aria-label="Page 2" class="page-link" role="button">2</a>
+      </li>
+      <li class="page-item">
+        <a href="/page/3/" aria-label="Page 3" class="page-link" role="button">3</a>
+      </li>
+      <li class="page-item">
+        <a href="/page/4/" aria-label="Page 4" class="page-link" role="button">4</a>
+      </li>
+      <li class="page-item">
+        <a href="/page/5/" aria-label="Page 5" class="page-link" role="button">5</a>
+      </li>
+      <li class="page-item">
+        <a href="/page/3/" aria-label="Next" class="page-link" role="button"><span aria-hidden="true">&raquo;</span></a>
+      </li>
+      <li class="page-item">
+        <a href="/page/9/" aria-label="Last" class="page-link" role="button"><span aria-hidden="true">&raquo;&raquo;</span></a>
+      </li>
+    </ul>
     </div>
 		</main>
 
@@ -301,7 +299,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

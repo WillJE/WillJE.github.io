@@ -8,19 +8,19 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="从一个yaml文件读取多个文档">
-<meta itemprop="description" content="简单需求 最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构： name:&#34;doc first&#34;---name:&#34;second&#34;---name:&#34;skip 3, now 4&#34;---通过gopkg.in/yaml.v3``Deocder可以帮我们解析出来，默认使用&quot;&mdash;&ldquo;来区分不同的文档。 package main import &#34;fmt&#34; import &#34;gopkg.in/yaml.v3&#34; import &#34;os&#34; import &#34;errors&#34; import &#34;io&#34; type Spec struct { Name string `yaml:&#34;name&#34;` } func main() { f, err := os.Open(&#34;spec.yaml&#34;) if err != nil { panic(err) } d := yaml.NewDecoder(f) for { // create new spec here spec := new(Spec) // pass a reference to spec reference err := d.Decode(&amp;spec) //"><meta itemprop="datePublished" content="2021-04-17T16:25:38&#43;08:00" />
-<meta itemprop="dateModified" content="2021-04-17T16:25:38&#43;08:00" />
+<meta itemprop="description" content="简单需求 最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构： name: &#34;doc first&#34; --- name: &#34;second&#34; --- name: &#34;skip 3, now 4&#34; --- 通过gopkg.in/yaml.v3``Deocder可以帮我们解析出来，默认使用&quot;&mdash;&ldquo;来区分不同的文档。 package main import &#34;fmt&#34; import &#34;gopkg.in/yaml.v3&#34; import &#34;os&#34; import &#34;errors&#34; import &#34;io&#34; type Spec struct { Name string `yaml:&#34;name&#34;` } func main() { f, err := os.Open(&#34;spec.yaml&#34;) if err != nil { panic(err) } d := yaml.NewDecoder(f) for { // create new spec here spec := new(Spec) // pass a reference to spec reference err := d.Decode(&amp;spec) //"><meta itemprop="datePublished" content="2021-04-17T16:25:38+08:00" />
+<meta itemprop="dateModified" content="2021-04-17T16:25:38+08:00" />
 <meta itemprop="wordCount" content="447">
 <meta itemprop="keywords" content="yaml,go," /><meta property="og:title" content="从一个yaml文件读取多个文档" />
-<meta property="og:description" content="简单需求 最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构： name:&#34;doc first&#34;---name:&#34;second&#34;---name:&#34;skip 3, now 4&#34;---通过gopkg.in/yaml.v3``Deocder可以帮我们解析出来，默认使用&quot;&mdash;&ldquo;来区分不同的文档。 package main import &#34;fmt&#34; import &#34;gopkg.in/yaml.v3&#34; import &#34;os&#34; import &#34;errors&#34; import &#34;io&#34; type Spec struct { Name string `yaml:&#34;name&#34;` } func main() { f, err := os.Open(&#34;spec.yaml&#34;) if err != nil { panic(err) } d := yaml.NewDecoder(f) for { // create new spec here spec := new(Spec) // pass a reference to spec reference err := d.Decode(&amp;spec) //" />
+<meta property="og:description" content="简单需求 最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构： name: &#34;doc first&#34; --- name: &#34;second&#34; --- name: &#34;skip 3, now 4&#34; --- 通过gopkg.in/yaml.v3``Deocder可以帮我们解析出来，默认使用&quot;&mdash;&ldquo;来区分不同的文档。 package main import &#34;fmt&#34; import &#34;gopkg.in/yaml.v3&#34; import &#34;os&#34; import &#34;errors&#34; import &#34;io&#34; type Spec struct { Name string `yaml:&#34;name&#34;` } func main() { f, err := os.Open(&#34;spec.yaml&#34;) if err != nil { panic(err) } d := yaml.NewDecoder(f) for { // create new spec here spec := new(Spec) // pass a reference to spec reference err := d.Decode(&amp;spec) //" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-04-17T16:25:38&#43;08:00" />
-<meta property="article:modified_time" content="2021-04-17T16:25:38&#43;08:00" />
+<meta property="article:published_time" content="2021-04-17T16:25:38+08:00" />
+<meta property="article:modified_time" content="2021-04-17T16:25:38+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="从一个yaml文件读取多个文档"/>
-<meta name="twitter:description" content="简单需求 最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构： name:&#34;doc first&#34;---name:&#34;second&#34;---name:&#34;skip 3, now 4&#34;---通过gopkg.in/yaml.v3``Deocder可以帮我们解析出来，默认使用&quot;&mdash;&ldquo;来区分不同的文档。 package main import &#34;fmt&#34; import &#34;gopkg.in/yaml.v3&#34; import &#34;os&#34; import &#34;errors&#34; import &#34;io&#34; type Spec struct { Name string `yaml:&#34;name&#34;` } func main() { f, err := os.Open(&#34;spec.yaml&#34;) if err != nil { panic(err) } d := yaml.NewDecoder(f) for { // create new spec here spec := new(Spec) // pass a reference to spec reference err := d.Decode(&amp;spec) //"/>
+<meta name="twitter:description" content="简单需求 最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构： name: &#34;doc first&#34; --- name: &#34;second&#34; --- name: &#34;skip 3, now 4&#34; --- 通过gopkg.in/yaml.v3``Deocder可以帮我们解析出来，默认使用&quot;&mdash;&ldquo;来区分不同的文档。 package main import &#34;fmt&#34; import &#34;gopkg.in/yaml.v3&#34; import &#34;os&#34; import &#34;errors&#34; import &#34;io&#34; type Spec struct { Name string `yaml:&#34;name&#34;` } func main() { f, err := os.Open(&#34;spec.yaml&#34;) if err != nil { panic(err) } d := yaml.NewDecoder(f) for { // create new spec here spec := new(Spec) // pass a reference to spec reference err := d.Decode(&amp;spec) //"/>
 
 	<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 	<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>从一个yaml文件读取多个文档</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -73,79 +73,80 @@
 			<div class="content">
 				<h1 id="简单需求">简单需求<a href="#简单需求" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <p>最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构：</p>
-<div class="highlight"><pre class="chroma"><code class="language-yaml" data-lang="yaml"><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;doc first&#34;</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;second&#34;</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;skip 3, now 4&#34;</span><span class="w">
-</span><span class="w"></span><span class="nn">---</span><span class="w">
-</span></code></pre></div><p>通过<code>gopkg.in/yaml.v3``Deocder</code>可以帮我们解析出来，默认使用&quot;&mdash;&ldquo;来区分不同的文档。</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kn">package</span> <span class="nx">main</span>
-
-<span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
-<span class="kn">import</span> <span class="s">&#34;gopkg.in/yaml.v3&#34;</span>
-<span class="kn">import</span> <span class="s">&#34;os&#34;</span>
-<span class="kn">import</span> <span class="s">&#34;errors&#34;</span>
-<span class="kn">import</span> <span class="s">&#34;io&#34;</span>
-
-<span class="kd">type</span> <span class="nx">Spec</span> <span class="kd">struct</span> <span class="p">{</span>
-    <span class="nx">Name</span> <span class="kt">string</span> <span class="s">`yaml:&#34;name&#34;`</span>
-<span class="p">}</span>
-
-<span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-    <span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="s">&#34;spec.yaml&#34;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-    <span class="p">}</span>
-    <span class="nx">d</span> <span class="o">:=</span> <span class="nx">yaml</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
-    <span class="k">for</span> <span class="p">{</span>
-        <span class="c1">// create new spec here
-</span><span class="c1"></span>        <span class="nx">spec</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">Spec</span><span class="p">)</span>
-        <span class="c1">// pass a reference to spec reference
-</span><span class="c1"></span>        <span class="nx">err</span> <span class="o">:=</span> <span class="nx">d</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">spec</span><span class="p">)</span>
-        <span class="c1">// check it was parsed
-</span><span class="c1"></span>        <span class="k">if</span> <span class="nx">spec</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-            <span class="k">continue</span>
-        <span class="p">}</span>
-        <span class="c1">// break the loop in case of EOF
-</span><span class="c1"></span>        <span class="k">if</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">Is</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span><span class="p">)</span> <span class="p">{</span>
-            <span class="k">break</span>
-        <span class="p">}</span>
-        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-            <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
-        <span class="p">}</span>
-        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;name is &#39;%s&#39;\n&#34;</span><span class="p">,</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><h1 id="复杂需求">复杂需求<a href="#复杂需求" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-yaml" data-lang="yaml"><span class="line"><span class="cl"><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;doc first&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;second&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="s2">&#34;skip 3, now 4&#34;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="nn">---</span><span class="w">
+</span></span></span></code></pre></div><p>通过<code>gopkg.in/yaml.v3``Deocder</code>可以帮我们解析出来，默认使用&quot;&mdash;&ldquo;来区分不同的文档。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kn">package</span> <span class="nx">main</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;fmt&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;gopkg.in/yaml.v3&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;os&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;errors&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="kn">import</span> <span class="s">&#34;io&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">type</span> <span class="nx">Spec</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Name</span> <span class="kt">string</span> <span class="s">`yaml:&#34;name&#34;`</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">f</span><span class="p">,</span> <span class="nx">err</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">Open</span><span class="p">(</span><span class="s">&#34;spec.yaml&#34;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">d</span> <span class="o">:=</span> <span class="nx">yaml</span><span class="p">.</span><span class="nf">NewDecoder</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// create new spec here
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">spec</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">Spec</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// pass a reference to spec reference
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">err</span> <span class="o">:=</span> <span class="nx">d</span><span class="p">.</span><span class="nf">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">spec</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// check it was parsed
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="nx">spec</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">continue</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// break the loop in case of EOF
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="nx">errors</span><span class="p">.</span><span class="nf">Is</span><span class="p">(</span><span class="nx">err</span><span class="p">,</span> <span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">err</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nb">panic</span><span class="p">(</span><span class="nx">err</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">fmt</span><span class="p">.</span><span class="nf">Printf</span><span class="p">(</span><span class="s">&#34;name is &#39;%s&#39;\n&#34;</span><span class="p">,</span> <span class="nx">spec</span><span class="p">.</span><span class="nx">Name</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h1 id="复杂需求">复杂需求<a href="#复杂需求" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <p>因为现在的GRPC项目中，<code>yaml</code>结构体用到了<code>any</code>类型，此时用上面那种方式，解析会出错，所以思来想去，好像只能按行读取yaml文件，然后根据&rdquo;&mdash;&ldquo;来区分不同的文档，单独解析每个文档即可。</p>
 <p>具体可看代码：</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="nx">f</span><span class="p">,</span><span class="nx">_</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="nx">filename</span><span class="p">)</span>
-<span class="nx">buf</span> <span class="o">:=</span> <span class="nx">bufio</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
-<span class="kd">var</span> <span class="nx">eachDocument</span> <span class="kt">string</span>
-<span class="nx">byteSlice</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([][]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="k">for</span> <span class="p">{</span>
-    <span class="nx">b</span><span class="p">,</span> <span class="nx">errR</span> <span class="o">:=</span> <span class="nx">buf</span><span class="p">.</span><span class="nf">ReadBytes</span><span class="p">(</span><span class="sc">&#39;\n&#39;</span><span class="p">)</span>
-    <span class="k">if</span> <span class="nx">errR</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="nx">errR</span> <span class="o">==</span> <span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span> <span class="p">{</span>
-            <span class="nx">eachDocument</span> <span class="p">=</span> <span class="nx">eachDocument</span> <span class="o">+</span> <span class="nb">string</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span>
-            <span class="nx">jsonByte</span> <span class="o">:=</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">eachDocument</span><span class="p">)</span>
-            <span class="nx">byteSlice</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">byteSlice</span><span class="p">,</span> <span class="nx">jsonByte</span><span class="p">)</span>
-            <span class="k">break</span>
-        <span class="p">}</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="s">&#34;---\r\n&#34;</span> <span class="o">==</span> <span class="nb">string</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">eachDocument</span> <span class="p">=</span> <span class="nx">eachDocument</span> <span class="o">+</span> <span class="nb">string</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span>
-        <span class="nx">jsonByte</span> <span class="o">:=</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">eachDocument</span><span class="p">)</span>
-        <span class="nx">byteSlice</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">byteSlice</span><span class="p">,</span> <span class="nx">jsonByte</span><span class="p">)</span>
-        <span class="nx">eachDocument</span> <span class="p">=</span> <span class="s">&#34;&#34;</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">eachDocument</span> <span class="p">=</span> <span class="nx">eachDocument</span> <span class="o">+</span> <span class="nb">string</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span>
-    <span class="p">}</span>
-<span class="p">}</span>
-</code></pre></div><p>这个<code>byteSlice</code>结构体就是我们解析出来的文档。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="nx">f</span><span class="p">,</span><span class="nx">_</span> <span class="o">:=</span> <span class="nx">os</span><span class="p">.</span><span class="nf">open</span><span class="p">(</span><span class="nx">filename</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="nx">buf</span> <span class="o">:=</span> <span class="nx">bufio</span><span class="p">.</span><span class="nf">NewReader</span><span class="p">(</span><span class="nx">f</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="kd">var</span> <span class="nx">eachDocument</span> <span class="kt">string</span>
+</span></span><span class="line"><span class="cl"><span class="nx">byteSlice</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([][]</span><span class="kt">byte</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl"><span class="k">for</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">b</span><span class="p">,</span> <span class="nx">errR</span> <span class="o">:=</span> <span class="nx">buf</span><span class="p">.</span><span class="nf">ReadBytes</span><span class="p">(</span><span class="sc">&#39;\n&#39;</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">errR</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">errR</span> <span class="o">==</span> <span class="nx">io</span><span class="p">.</span><span class="nx">EOF</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">eachDocument</span> <span class="p">=</span> <span class="nx">eachDocument</span> <span class="o">+</span> <span class="nb">string</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">jsonByte</span> <span class="o">:=</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">eachDocument</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">byteSlice</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">byteSlice</span><span class="p">,</span> <span class="nx">jsonByte</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="s">&#34;---\r\n&#34;</span> <span class="o">==</span> <span class="nb">string</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">eachDocument</span> <span class="p">=</span> <span class="nx">eachDocument</span> <span class="o">+</span> <span class="nb">string</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">jsonByte</span> <span class="o">:=</span> <span class="p">[]</span><span class="nb">byte</span><span class="p">(</span><span class="nx">eachDocument</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">byteSlice</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">byteSlice</span><span class="p">,</span> <span class="nx">jsonByte</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">eachDocument</span> <span class="p">=</span> <span class="s">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">eachDocument</span> <span class="p">=</span> <span class="nx">eachDocument</span> <span class="o">+</span> <span class="nb">string</span><span class="p">(</span><span class="nx">b</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><p>这个<code>byteSlice</code>结构体就是我们解析出来的文档。</p>
 <h1 id="参考资料">参考资料<a href="#参考资料" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <ul>
-<li><a href="https://stackoverflow.com/questions/53464099/read-multiple-yamls-in-a-file">https://stackoverflow.com/questions/53464099/read-multiple-yamls-in-a-file</a></li>
+<li><a href="https://stackoverflow.com/questions/53464099/read-multiple-yamls-in-a-file" target="_blank" rel="noopener">https://stackoverflow.com/questions/53464099/read-multiple-yamls-in-a-file</a>
+</li>
 </ul>
 
 			</div><div class="content">
@@ -210,7 +211,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

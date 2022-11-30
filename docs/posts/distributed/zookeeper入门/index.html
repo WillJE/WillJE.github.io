@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="Zookeeper入门">
-<meta itemprop="description" content="我们在虚拟机中安装zookeeper，首先要安装linux虚拟机。 安装linux虚拟机 安装vmvare，地址在这里 下载centos镜像，地址在这里 安装，这里要注意网络配置，Centos网络设置 我这里没有设置固定IP，因为使用的是DHCP动态分配IP，不知道明天起来IP会不会变。 补充：IP变了，于是按照下面的方法固定IP； 关键点，配置网络；vmware虚拟机c"><meta itemprop="datePublished" content="2020-11-28T20:55:29&#43;08:00" />
-<meta itemprop="dateModified" content="2020-11-28T20:55:29&#43;08:00" />
+<meta itemprop="description" content="我们在虚拟机中安装zookeeper，首先要安装linux虚拟机。 安装linux虚拟机 安装vmvare，地址在这里 下载centos镜像，地址在这里 安装，这里要注意网络配置，Centos网络设置 我这里没有设置固定IP，因为使用的是DHCP动态分配IP，不知道明天起来IP会不会变。 补充：IP变了，于是按照下面的方法固定IP； 关键点，配置网络；vmware虚拟机c"><meta itemprop="datePublished" content="2020-11-28T20:55:29+08:00" />
+<meta itemprop="dateModified" content="2020-11-28T20:55:29+08:00" />
 <meta itemprop="wordCount" content="3221">
 <meta itemprop="keywords" content="zookeeper," /><meta property="og:title" content="Zookeeper入门" />
 <meta property="og:description" content="我们在虚拟机中安装zookeeper，首先要安装linux虚拟机。 安装linux虚拟机 安装vmvare，地址在这里 下载centos镜像，地址在这里 安装，这里要注意网络配置，Centos网络设置 我这里没有设置固定IP，因为使用的是DHCP动态分配IP，不知道明天起来IP会不会变。 补充：IP变了，于是按照下面的方法固定IP； 关键点，配置网络；vmware虚拟机c" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/distributed/zookeeper%E5%85%A5%E9%97%A8/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-11-28T20:55:29&#43;08:00" />
-<meta property="article:modified_time" content="2020-11-28T20:55:29&#43;08:00" />
+<meta property="article:published_time" content="2020-11-28T20:55:29+08:00" />
+<meta property="article:modified_time" content="2020-11-28T20:55:29+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Zookeeper入门"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Zookeeper入门</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -93,35 +93,35 @@
 <p><a href="https://www.cnblogs.com/toutou/p/9670395.html" target="_blank" rel="noopener">《CentOS安装Java JDK》</a>
 </p>
 <p>查看是否安装了java</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">yum list installed <span class="p">|</span> grep jdk
-</code></pre></div><p>查询CentOS自带的Java相关组件</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">rpm -qa <span class="p">|</span> grep java
-</code></pre></div><p>rpm：管理套件</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">yum list installed <span class="p">|</span> grep jdk
+</span></span></code></pre></div><p>查询CentOS自带的Java相关组件</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">rpm -qa <span class="p">|</span> grep java
+</span></span></code></pre></div><p>rpm：管理套件</p>
 <p>-qa：使用询问模式，查询所有套件</p>
 <p>grep：查找文件里符合条件的字符串</p>
 <p><a href="https://www.jianshu.com/p/0dd37861a983" target="_blank" rel="noopener">Centos7.5安装java8 - 简书</a>
 </p>
 <p>查看<code>java</code>版本库</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">yum search java <span class="p">|</span> grep jdk
-</code></pre></div><p>安装</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">yum install java-1.8.0-openjdk java-1.8.0-openjdk-devel
-</code></pre></div><p>这里后面应该要配置环境变量的，但是我没有配置，输入</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">java -version
-</code></pre></div><p>也显示了java版本。不知道这里是为什么？</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">yum search java <span class="p">|</span> grep jdk
+</span></span></code></pre></div><p>安装</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">yum install java-1.8.0-openjdk java-1.8.0-openjdk-devel
+</span></span></code></pre></div><p>这里后面应该要配置环境变量的，但是我没有配置，输入</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">java -version
+</span></span></code></pre></div><p>也显示了java版本。不知道这里是为什么？</p>
 <p>设置环境变量是这样设置的</p>
 <p>打开配置文件地址</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">vim /etc/profile
-</code></pre></div><p>设置环境变量</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># java enviroment</span>
-<span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/usr/local/java8
-<span class="nb">export</span> <span class="nv">JRE_HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/jre
-<span class="nb">export</span> <span class="nv">CLASSPATH</span><span class="o">=</span>.:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/lib:<span class="si">${</span><span class="nv">JRE_HOME</span><span class="si">}</span>/lib
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$PATH</span>
-</code></pre></div><p>然后刷新配置文件</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">source</span> /etc/profile
-</code></pre></div><p>检查</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">java -version
-</code></pre></div><h2 id="安装zookeeper">安装zookeeper<a href="#安装zookeeper" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">vim /etc/profile
+</span></span></code></pre></div><p>设置环境变量</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># java enviroment</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">JAVA_HOME</span><span class="o">=</span>/usr/local/java8
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">JRE_HOME</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/jre
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">CLASSPATH</span><span class="o">=</span>.:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/lib:<span class="si">${</span><span class="nv">JRE_HOME</span><span class="si">}</span>/lib
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$PATH</span>
+</span></span></code></pre></div><p>然后刷新配置文件</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">source</span> /etc/profile
+</span></span></code></pre></div><p>检查</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">java -version
+</span></span></code></pre></div><h2 id="安装zookeeper">安装zookeeper<a href="#安装zookeeper" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p><a href="https://www.youtube.com/watch?v=cjqPBDZle9U&amp;list=PLMUlMXMh0NUE8qh7BQreXiYcSOEgq9RM_&amp;index=5" target="_blank" rel="noopener">视频介绍</a>
 </p>
 <p>博客介绍：<a href="https://www.cnblogs.com/toutou/p/install_codis.html#install_zookeeper" target="_blank" rel="noopener">《安装ZooKeeper》</a>
@@ -130,61 +130,61 @@
 <p>下载完成之后，上传至centos服务器/home目录下，这里有一个坑：<a href="https://juejin.cn/post/6844903944850767886" target="_blank" rel="noopener">zookeeper-3.5.5安装报错：找不到或无法加载主类org.apache &hellip;</a>
 ，*.tar.gz只是源代码，而-bin.tar.gz才包含编译后的二进制文件。</p>
 <p>解压</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">tar -zxvf
-</code></pre></div><p>重命名为zookeeper</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">mv apache-zookeeper-3.7.0 zookeeper
-</code></pre></div><p>移动到usr/local目录下</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">mv zookeeper /usr/local
-</code></pre></div><p>配置环境变量</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># 添加Zookeeper HOME路径</span>
-<span class="nb">export</span> <span class="nv">ZOOKEEPER_HOME</span><span class="o">=</span>/usr/local/zookeeper
-<span class="c1"># 在export PATH 下添加 ZOOKEEPER_HOME</span>
-<span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$ZOOKEEPER_HOME</span>/bin
-</code></pre></div><h3 id="修改zookeeper配置文件">修改zookeeper配置文件<a href="#修改zookeeper配置文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">tar -zxvf
+</span></span></code></pre></div><p>重命名为zookeeper</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">mv apache-zookeeper-3.7.0 zookeeper
+</span></span></code></pre></div><p>移动到usr/local目录下</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">mv zookeeper /usr/local
+</span></span></code></pre></div><p>配置环境变量</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># 添加Zookeeper HOME路径</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">ZOOKEEPER_HOME</span><span class="o">=</span>/usr/local/zookeeper
+</span></span><span class="line"><span class="cl"><span class="c1"># 在export PATH 下添加 ZOOKEEPER_HOME</span>
+</span></span><span class="line"><span class="cl"><span class="nb">export</span> <span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="si">${</span><span class="nv">JAVA_HOME</span><span class="si">}</span>/bin:<span class="nv">$ZOOKEEPER_HOME</span>/bin
+</span></span></code></pre></div><h3 id="修改zookeeper配置文件">修改zookeeper配置文件<a href="#修改zookeeper配置文件" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>首先复制一份配置文件conf/zoo_sample.cfg，后面修改针对这个复制的配置文件</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">cp zoo_sample.cfg zoo.cfg
-</code></pre></div><div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="c1"># The number of milliseconds of each tick</span>
-<span class="nv">tickTime</span><span class="o">=</span><span class="m">2000</span>
-<span class="c1"># The number of ticks that the initial </span>
-<span class="c1"># synchronization phase can take</span>
-<span class="nv">initLimit</span><span class="o">=</span><span class="m">10</span>
-<span class="c1"># The number of ticks that can pass between </span>
-<span class="c1"># sending a request and getting an acknowledgement</span>
-<span class="nv">syncLimit</span><span class="o">=</span><span class="m">5</span>
-<span class="c1"># the directory where the snapshot is stored.</span>
-<span class="c1"># do not use /tmp for storage, /tmp here is just </span>
-<span class="c1"># example sakes.</span>
-<span class="nv">dataDir</span><span class="o">=</span>/tmp/zookeeper
-<span class="c1"># the port at which the clients will connect</span>
-<span class="nv">clientPort</span><span class="o">=</span><span class="m">2181</span>
-<span class="c1"># the maximum number of client connections.</span>
-<span class="c1"># increase this if you need to handle more clients</span>
-<span class="c1">#maxClientCnxns=60</span>
-<span class="c1">#</span>
-<span class="c1"># Be sure to read the maintenance section of the </span>
-<span class="c1"># administrator guide before turning on autopurge.</span>
-<span class="c1">#</span>
-<span class="c1"># http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance</span>
-<span class="c1">#</span>
-<span class="c1"># The number of snapshots to retain in dataDir</span>
-<span class="c1">#autopurge.snapRetainCount=3</span>
-<span class="c1"># Purge task interval in hours</span>
-<span class="c1"># Set to &#34;0&#34; to disable auto purge feature</span>
-<span class="c1">#autopurge.purgeInterval=1</span>
-
-<span class="c1">## Metrics Providers</span>
-<span class="c1">#</span>
-<span class="c1"># https://prometheus.io Metrics Exporter</span>
-<span class="c1">#metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider</span>
-<span class="c1">#metricsProvider.httpPort=7000</span>
-<span class="c1">#metricsProvider.exportJvmInfo=true</span>
-</code></pre></div><p>新增了两行数据和日志目录</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nv">dataDir</span><span class="o">=</span>/usr/local/zookeeper/dataDir
-<span class="nv">dataLogDir</span><span class="o">=</span>/usr/local/zookeeper/dataLogDir
-</code></pre></div><p>同理在对应目录建好目录</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">mkdir dataDir
-mkdir dataLogDir
-</code></pre></div><h3 id="启动zookeeper服务">启动zookeeper服务<a href="#启动zookeeper服务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">cp zoo_sample.cfg zoo.cfg
+</span></span></code></pre></div><div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="c1"># The number of milliseconds of each tick</span>
+</span></span><span class="line"><span class="cl"><span class="nv">tickTime</span><span class="o">=</span><span class="m">2000</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># The number of ticks that the initial </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># synchronization phase can take</span>
+</span></span><span class="line"><span class="cl"><span class="nv">initLimit</span><span class="o">=</span><span class="m">10</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># The number of ticks that can pass between </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># sending a request and getting an acknowledgement</span>
+</span></span><span class="line"><span class="cl"><span class="nv">syncLimit</span><span class="o">=</span><span class="m">5</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># the directory where the snapshot is stored.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># do not use /tmp for storage, /tmp here is just </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># example sakes.</span>
+</span></span><span class="line"><span class="cl"><span class="nv">dataDir</span><span class="o">=</span>/tmp/zookeeper
+</span></span><span class="line"><span class="cl"><span class="c1"># the port at which the clients will connect</span>
+</span></span><span class="line"><span class="cl"><span class="nv">clientPort</span><span class="o">=</span><span class="m">2181</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># the maximum number of client connections.</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># increase this if you need to handle more clients</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#maxClientCnxns=60</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Be sure to read the maintenance section of the </span>
+</span></span><span class="line"><span class="cl"><span class="c1"># administrator guide before turning on autopurge.</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># http://zookeeper.apache.org/doc/current/zookeeperAdmin.html#sc_maintenance</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># The number of snapshots to retain in dataDir</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#autopurge.snapRetainCount=3</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Purge task interval in hours</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># Set to &#34;0&#34; to disable auto purge feature</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#autopurge.purgeInterval=1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">## Metrics Providers</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#</span>
+</span></span><span class="line"><span class="cl"><span class="c1"># https://prometheus.io Metrics Exporter</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#metricsProvider.className=org.apache.zookeeper.metrics.prometheus.PrometheusMetricsProvider</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#metricsProvider.httpPort=7000</span>
+</span></span><span class="line"><span class="cl"><span class="c1">#metricsProvider.exportJvmInfo=true</span>
+</span></span></code></pre></div><p>新增了两行数据和日志目录</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nv">dataDir</span><span class="o">=</span>/usr/local/zookeeper/dataDir
+</span></span><span class="line"><span class="cl"><span class="nv">dataLogDir</span><span class="o">=</span>/usr/local/zookeeper/dataLogDir
+</span></span></code></pre></div><p>同理在对应目录建好目录</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">mkdir dataDir
+</span></span><span class="line"><span class="cl">mkdir dataLogDir
+</span></span></code></pre></div><h3 id="启动zookeeper服务">启动zookeeper服务<a href="#启动zookeeper服务" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>在bin目录下执行<code>./zkServer.sh start</code></p>
 <p><p class="md__image">
   <img src="../Zookeeper%e5%85%a5%e9%97%a8.assets/image-20210613205955830.png"
@@ -210,16 +210,16 @@ mkdir dataLogDir
 </p>
 </p>
 <p><code>ls</code>命令</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 1<span class="o">]</span> ls
-ls <span class="o">[</span>-s<span class="o">]</span> <span class="o">[</span>-w<span class="o">]</span> <span class="o">[</span>-R<span class="o">]</span> path
-<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 2<span class="o">]</span> ls /
-<span class="o">[</span>zookeeper<span class="o">]</span>
-<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 3<span class="o">]</span> ls /zookeeper
-<span class="o">[</span>config, quota<span class="o">]</span>
-<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 4<span class="o">]</span> ls /zookeeper/config
-<span class="o">[]</span>
-<span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 5<span class="o">]</span> ls /zookeeper/quota
-</code></pre></div><p><code>create</code>命令，创建一个节点和设置值；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 1<span class="o">]</span> ls
+</span></span><span class="line"><span class="cl">ls <span class="o">[</span>-s<span class="o">]</span> <span class="o">[</span>-w<span class="o">]</span> <span class="o">[</span>-R<span class="o">]</span> path
+</span></span><span class="line"><span class="cl"><span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 2<span class="o">]</span> ls /
+</span></span><span class="line"><span class="cl"><span class="o">[</span>zookeeper<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 3<span class="o">]</span> ls /zookeeper
+</span></span><span class="line"><span class="cl"><span class="o">[</span>config, quota<span class="o">]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 4<span class="o">]</span> ls /zookeeper/config
+</span></span><span class="line"><span class="cl"><span class="o">[]</span>
+</span></span><span class="line"><span class="cl"><span class="o">[</span>zk: localhost:2181<span class="o">(</span>CONNECTED<span class="o">)</span> 5<span class="o">]</span> ls /zookeeper/quota
+</span></span></code></pre></div><p><code>create</code>命令，创建一个节点和设置值；</p>
 <ul>
 <li><code>create -e</code> 是可以创建临时节点的，临时节点当client断开连接或者session持续一段时间心跳断了，server会将其删除</li>
 <li><code>create - s</code>可以创建顺序节点</li>
@@ -327,18 +327,18 @@ ls <span class="o">[</span>-s<span class="o">]</span> <span class="o">[</span>-w
 </p>
 <p>zookeeper 支持某些特定的四字命令与其交互，用户获取 zookeeper 服务的当前状态及相关信息，用户在客户端可以通过 telenet 或者 nc（netcat） 向 zookeeper 提交相应的命令。</p>
 <p>安装 nc 命令：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">$ yum install nc                <span class="c1"># centos</span>
-或
-$ sudo apt install netcat       <span class="c1"># ubuntu</span>
-</code></pre></div><p>四字命令格式：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">echo</span> <span class="o">[</span>command<span class="o">]</span> <span class="p">|</span> nc <span class="o">[</span>ip<span class="o">]</span> <span class="o">[</span>port<span class="o">]</span>
-</code></pre></div><p>此时输入命令</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell"><span class="nb">echo</span> stat <span class="p">|</span> nc 192.168.152.128 <span class="m">2181</span>
-</code></pre></div><p>报错：</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">stat is not executed because it is not in the whitelist.
-</code></pre></div><p>这时要将下面这段加入配置文件</p>
-<div class="highlight"><pre class="chroma"><code class="language-shell" data-lang="shell">4lw.commands.whitelist<span class="o">=</span>stat, ruok, conf, isro
-</code></pre></div><p>完成后重启Zookeeper服务即可；</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">$ yum install nc                <span class="c1"># centos</span>
+</span></span><span class="line"><span class="cl">或
+</span></span><span class="line"><span class="cl">$ sudo apt install netcat       <span class="c1"># ubuntu</span>
+</span></span></code></pre></div><p>四字命令格式：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">echo</span> <span class="o">[</span>command<span class="o">]</span> <span class="p">|</span> nc <span class="o">[</span>ip<span class="o">]</span> <span class="o">[</span>port<span class="o">]</span>
+</span></span></code></pre></div><p>此时输入命令</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl"><span class="nb">echo</span> stat <span class="p">|</span> nc 192.168.152.128 <span class="m">2181</span>
+</span></span></code></pre></div><p>报错：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">stat is not executed because it is not in the whitelist.
+</span></span></code></pre></div><p>这时要将下面这段加入配置文件</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-shell" data-lang="shell"><span class="line"><span class="cl">4lw.commands.whitelist<span class="o">=</span>stat, ruok, conf, isro
+</span></span></code></pre></div><p>完成后重启Zookeeper服务即可；</p>
 <h2 id="zookeeper集群搭建">ZooKeeper集群搭建<a href="#zookeeper集群搭建" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p><a href="https://www.cnblogs.com/ysocean/p/9860529.html" target="_blank" rel="noopener">zookeeper 集群搭建- YSOcean - 博客园</a>
 </p>
@@ -427,7 +427,7 @@ $ sudo apt install netcat       <span class="c1"># ubuntu</span>
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

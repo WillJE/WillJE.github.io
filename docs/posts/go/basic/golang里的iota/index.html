@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="Golang里的iota">
-<meta itemprop="description" content="认识 有些概念有名字，并且有时候我们关注这些名字，甚至（特别）是在我们代码中。 const ( CCVisa = &#34;Visa&#34; CCMasterCard = &#34;MasterCard&#34; CCAmericanExpress = &#34;American Express&#34; ) 在其他时候，我们仅仅关注能把一个东西与其他的做区分。有些时候，有些时候一件事没有本质上的意义。比如，我们在一个数据库表中存储产品，我们可能不想以 string 存储他们的分类。我们不关注这个分类是怎样命名的，此外，该名字在市场上一直在变化。 我们仅仅关注它们是怎么彼此区分的"><meta itemprop="datePublished" content="2021-03-17T16:23:40&#43;08:00" />
-<meta itemprop="dateModified" content="2021-03-17T16:23:40&#43;08:00" />
+<meta itemprop="description" content="认识 有些概念有名字，并且有时候我们关注这些名字，甚至（特别）是在我们代码中。 const ( CCVisa = &#34;Visa&#34; CCMasterCard = &#34;MasterCard&#34; CCAmericanExpress = &#34;American Express&#34; ) 在其他时候，我们仅仅关注能把一个东西与其他的做区分。有些时候，有些时候一件事没有本质上的意义。比如，我们在一个数据库表中存储产品，我们可能不想以 string 存储他们的分类。我们不关注这个分类是怎样命名的，此外，该名字在市场上一直在变化。 我们仅仅关注它们是怎么彼此区分的"><meta itemprop="datePublished" content="2021-03-17T16:23:40+08:00" />
+<meta itemprop="dateModified" content="2021-03-17T16:23:40+08:00" />
 <meta itemprop="wordCount" content="1670">
 <meta itemprop="keywords" content="iota,go," /><meta property="og:title" content="Golang里的iota" />
 <meta property="og:description" content="认识 有些概念有名字，并且有时候我们关注这些名字，甚至（特别）是在我们代码中。 const ( CCVisa = &#34;Visa&#34; CCMasterCard = &#34;MasterCard&#34; CCAmericanExpress = &#34;American Express&#34; ) 在其他时候，我们仅仅关注能把一个东西与其他的做区分。有些时候，有些时候一件事没有本质上的意义。比如，我们在一个数据库表中存储产品，我们可能不想以 string 存储他们的分类。我们不关注这个分类是怎样命名的，此外，该名字在市场上一直在变化。 我们仅仅关注它们是怎么彼此区分的" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/go/basic/golang%E9%87%8C%E7%9A%84iota/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-03-17T16:23:40&#43;08:00" />
-<meta property="article:modified_time" content="2021-03-17T16:23:40&#43;08:00" />
+<meta property="article:published_time" content="2021-03-17T16:23:40+08:00" />
+<meta property="article:modified_time" content="2021-03-17T16:23:40+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Golang里的iota"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Golang里的iota</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -73,184 +73,184 @@
 			<div class="content">
 				<h1 id="认识">认识<a href="#认识" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <p>有些概念有名字，并且有时候我们关注这些名字，甚至（特别）是在我们代码中。</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="p">(</span>
-    <span class="nx">CCVisa</span>            <span class="p">=</span> <span class="s">&#34;Visa&#34;</span>
-    <span class="nx">CCMasterCard</span>      <span class="p">=</span> <span class="s">&#34;MasterCard&#34;</span>
-    <span class="nx">CCAmericanExpress</span> <span class="p">=</span> <span class="s">&#34;American Express&#34;</span>
-<span class="p">)</span>
-</code></pre></div><p>在其他时候，我们仅仅关注能把一个东西与其他的做区分。有些时候，有些时候一件事没有本质上的意义。比如，我们在一个数据库表中存储产品，我们可能不想以 string 存储他们的分类。我们不关注这个分类是怎样命名的，此外，该名字在市场上一直在变化。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">CCVisa</span>            <span class="p">=</span> <span class="s">&#34;Visa&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">CCMasterCard</span>      <span class="p">=</span> <span class="s">&#34;MasterCard&#34;</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">CCAmericanExpress</span> <span class="p">=</span> <span class="s">&#34;American Express&#34;</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><p>在其他时候，我们仅仅关注能把一个东西与其他的做区分。有些时候，有些时候一件事没有本质上的意义。比如，我们在一个数据库表中存储产品，我们可能不想以 string 存储他们的分类。我们不关注这个分类是怎样命名的，此外，该名字在市场上一直在变化。</p>
 <p>我们仅仅关注它们是怎么彼此区分的。</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="p">(</span>
-    <span class="nx">CategoryBooks</span>    <span class="p">=</span> <span class="mi">0</span>
-    <span class="nx">CategoryHealth</span>   <span class="p">=</span> <span class="mi">1</span>
-    <span class="nx">CategoryClothing</span> <span class="p">=</span> <span class="mi">2</span>
-<span class="p">)</span>
-</code></pre></div><p>使用 0, 1, 和 2 代替，我们也可以选择 17， 43， 和 61。这些值是任意的。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">CategoryBooks</span>    <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">CategoryHealth</span>   <span class="p">=</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">CategoryClothing</span> <span class="p">=</span> <span class="mi">2</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><p>使用 0, 1, 和 2 代替，我们也可以选择 17， 43， 和 61。这些值是任意的。</p>
 <p>常量是重要的，但是它们很难推断，并且难以维护。在一些语言中像 Ruby 开发者通常只是避免它们。在 Go，常量有许多微妙之处。当用好了，可以使得代码非常优雅且易维护的。</p>
 <p>看下面一段代码：</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="p">(</span>
-    <span class="nx">a</span> <span class="p">=</span> <span class="kc">iota</span>
-    <span class="nx">b</span>
-    <span class="nx">c</span>
-<span class="p">)</span>
-</code></pre></div><p>相信你能脱口答出来，常量 a 等于 0，此后定义的常量依次递增，b = 1，c = 2。没毛病，这有何难？</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">a</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">b</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">c</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><p>相信你能脱口答出来，常量 a 等于 0，此后定义的常量依次递增，b = 1，c = 2。没毛病，这有何难？</p>
 <p>看看下面这段代码，尝试理解一下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="nx">a</span> <span class="p">=</span> <span class="kc">iota</span>
-
-<span class="kd">const</span> <span class="p">(</span>
-	<span class="nx">b</span> <span class="p">=</span> <span class="kc">iota</span>
-<span class="p">)</span>
-
-<span class="kd">const</span> <span class="p">(</span>
-	<span class="nx">c</span> <span class="p">=</span> <span class="mi">10</span>
-	<span class="nx">d</span> <span class="p">=</span> <span class="kc">iota</span>
-	<span class="nx">e</span>
-	<span class="nx">f</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span>
-	<span class="c1">// nothing
-</span><span class="c1"></span>	<span class="nx">g</span>
-	<span class="nx">h</span> <span class="p">=</span> <span class="kc">iota</span>
-	<span class="nx">i</span>
-	<span class="nx">j</span> <span class="p">=</span> <span class="mi">0</span>
-	<span class="nx">k</span>
-	<span class="nx">l</span><span class="p">,</span> <span class="nx">m</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span>
-	<span class="nx">n</span><span class="p">,</span> <span class="nx">o</span>
-
-	<span class="nx">p</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span>
-	<span class="nx">q</span>
-	<span class="nx">_</span>
-	<span class="nx">r</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span>
-	<span class="nx">s</span>
-	<span class="nx">t</span> <span class="p">=</span> <span class="nx">r</span>
-	<span class="nx">u</span>
-	<span class="nx">v</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span>
-	<span class="nx">w</span>
-	<span class="nx">x</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
-	<span class="nx">y</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
-	<span class="nx">z</span>
-<span class="p">)</span>
-</code></pre></div><h1 id="理解">理解<a href="#理解" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="nx">a</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">b</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">c</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">d</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">e</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">f</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="c1">// nothing
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">g</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">h</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">i</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">j</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">k</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">l</span><span class="p">,</span> <span class="nx">m</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">n</span><span class="p">,</span> <span class="nx">o</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">	<span class="nx">p</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">q</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">_</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">r</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">s</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">t</span> <span class="p">=</span> <span class="nx">r</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">u</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">v</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">w</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">x</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">y</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">z</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><h1 id="理解">理解<a href="#理解" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <h3 id="第一步不同-const-定义块互不干扰">第一步：不同 const 定义块互不干扰<a href="#第一步不同-const-定义块互不干扰" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="nx">a</span> <span class="p">=</span> <span class="kc">iota</span>
-
-<span class="kd">const</span> <span class="p">(</span>
-	<span class="nx">b</span> <span class="p">=</span> <span class="kc">iota</span>
-<span class="p">)</span>
-</code></pre></div><p>由于 a 和 b 在不同的定义块里，互不影响，所以 a 等于 0 且 b 也等于 0，也不会影响后面的常量定义。所以下面我们重点看后面的常量 c 到 z 。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="nx">a</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">b</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><p>由于 a 和 b 在不同的定义块里，互不影响，所以 a 等于 0 且 b 也等于 0，也不会影响后面的常量定义。所以下面我们重点看后面的常量 c 到 z 。</p>
 <h3 id="第二步所有注释行和空行全部忽略">第二步：所有注释行和空行全部忽略<a href="#第二步所有注释行和空行全部忽略" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>没错，你应该注意到我在代码里安插了一行毫无意义的注释和一行莫名其妙的空行，这是我故意为之，但不用多想，这完全不会影响常量的定义，直接忽略即可。</p>
 <p>但需要注意的是，代码_并不是一个空行，它是一个省略了标识符也省略了表达式的常量定义，这一点你需要清楚，不要大意。</p>
 <p>所以现在你脑中的代码应该是这样：</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="p">(</span>
-	<span class="nx">c</span> <span class="p">=</span> <span class="mi">10</span>
-	<span class="nx">d</span> <span class="p">=</span> <span class="kc">iota</span>
-	<span class="nx">e</span>
-	<span class="nx">f</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span>
-	<span class="nx">g</span>
-	<span class="nx">h</span> <span class="p">=</span> <span class="kc">iota</span>
-	<span class="nx">i</span>
-	<span class="nx">j</span> <span class="p">=</span> <span class="mi">0</span>
-	<span class="nx">k</span>
-	<span class="nx">l</span><span class="p">,</span> <span class="nx">m</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span>
-	<span class="nx">n</span><span class="p">,</span> <span class="nx">o</span>
-	<span class="nx">p</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span>
-	<span class="nx">q</span>
-	<span class="nx">_</span>
-	<span class="nx">r</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span>
-	<span class="nx">s</span>
-	<span class="nx">t</span> <span class="p">=</span> <span class="nx">r</span>
-	<span class="nx">u</span>
-	<span class="nx">v</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span>
-	<span class="nx">w</span>
-	<span class="nx">x</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
-	<span class="nx">y</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
-	<span class="nx">z</span>
-<span class="p">)</span>
-</code></pre></div><h3 id="第三步没有表达式的常量定义复用上一行的表达式">第三步：没有表达式的常量定义复用上一行的表达式<a href="#第三步没有表达式的常量定义复用上一行的表达式" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">c</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">d</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">e</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">f</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">g</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">h</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">i</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">j</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">k</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">l</span><span class="p">,</span> <span class="nx">m</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">n</span><span class="p">,</span> <span class="nx">o</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">p</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">q</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">_</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">r</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">s</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">t</span> <span class="p">=</span> <span class="nx">r</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">u</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">v</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">w</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">x</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">y</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">z</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><h3 id="第三步没有表达式的常量定义复用上一行的表达式">第三步：没有表达式的常量定义复用上一行的表达式<a href="#第三步没有表达式的常量定义复用上一行的表达式" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>这一步比较关键，golang 在常量定义时是可以省略表达式的，编译时会自动复用上一行的表示式。你问如果上一行也省略了表达式怎么办，继续往上找嘛，由此可见，一个常量定义代码块的第一行定义是不可以省略，否则就不明所以了。</p>
 <p>要注意这个特性跟 iota 是没有关系的，即使定义时没有用到 iota，这个特性也仍然有效。</p>
 <p>到这里，思路就开始清晰了：</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="p">(</span>
-	<span class="nx">c</span> <span class="p">=</span> <span class="mi">10</span>
-	<span class="nx">d</span> <span class="p">=</span> <span class="kc">iota</span>
-	<span class="nx">e</span> <span class="p">=</span> <span class="kc">iota</span>
-	<span class="nx">f</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span>
-	<span class="nx">g</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span>
-	<span class="nx">h</span> <span class="p">=</span> <span class="kc">iota</span>
-	<span class="nx">i</span> <span class="p">=</span> <span class="kc">iota</span>
-	<span class="nx">j</span> <span class="p">=</span> <span class="mi">0</span>
-	<span class="nx">k</span> <span class="p">=</span> <span class="mi">0</span>
-	<span class="nx">l</span><span class="p">,</span> <span class="nx">m</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span>
-	<span class="nx">n</span><span class="p">,</span> <span class="nx">o</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span>
-	<span class="nx">p</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span>
-	<span class="nx">q</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span>
-	<span class="nx">_</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span>
-	<span class="nx">r</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span>
-	<span class="nx">s</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span>
-	<span class="nx">t</span> <span class="p">=</span> <span class="nx">r</span>
-	<span class="nx">u</span> <span class="p">=</span> <span class="nx">r</span>
-	<span class="nx">v</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span>
-	<span class="nx">w</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span>
-	<span class="nx">x</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
-	<span class="nx">y</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
-	<span class="nx">z</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
-<span class="p">)</span>
-</code></pre></div><h3 id="第四步从第一行开始iota-从-0-逐行加一">第四步：从第一行开始，iota 从 0 逐行加一<a href="#第四步从第一行开始iota-从-0-逐行加一" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">c</span> <span class="p">=</span> <span class="mi">10</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">d</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">e</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">f</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">g</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">h</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">i</span> <span class="p">=</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">j</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">k</span> <span class="p">=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">l</span><span class="p">,</span> <span class="nx">m</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">n</span><span class="p">,</span> <span class="nx">o</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">p</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">q</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">_</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">r</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">s</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">t</span> <span class="p">=</span> <span class="nx">r</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">u</span> <span class="p">=</span> <span class="nx">r</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">v</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">w</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">x</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">y</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">z</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span>
+</span></span><span class="line"><span class="cl"><span class="p">)</span>
+</span></span></code></pre></div><h3 id="第四步从第一行开始iota-从-0-逐行加一">第四步：从第一行开始，iota 从 0 逐行加一<a href="#第四步从第一行开始iota-从-0-逐行加一" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>这是一个比较容易混淆人的点，就是赋值表达式里无论是否引用了 iota，也无论引用了多少次，iota 的都会从常量定义块的第一行（注意这里不计空行和注释）开始计数，从 0 开始，逐行加一。</p>
 <p>所以在这一步里我们先不用管常量定义的表达式是什么，先把 iota 在当前行的位置的值先写出来，这有助于防止被混淆视听。</p>
 <p>形如：</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="p">(</span>
-	<span class="nx">c</span> <span class="p">=</span> <span class="mi">10</span> <span class="c1">// iota = 0
-</span><span class="c1"></span>	<span class="nx">d</span> <span class="p">=</span> <span class="kc">iota</span> <span class="c1">// iota = 1
-</span><span class="c1"></span>	<span class="nx">e</span> <span class="p">=</span> <span class="kc">iota</span> <span class="c1">// iota = 2
-</span><span class="c1"></span>	<span class="nx">f</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span> <span class="c1">// iota = 3
-</span><span class="c1"></span>	<span class="nx">g</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span> <span class="c1">// iota = 4
-</span><span class="c1"></span>	<span class="nx">h</span> <span class="p">=</span> <span class="kc">iota</span> <span class="c1">// iota = 5
-</span><span class="c1"></span>	<span class="nx">i</span> <span class="p">=</span> <span class="kc">iota</span> <span class="c1">// iota = 6
-</span><span class="c1"></span>	<span class="nx">j</span> <span class="p">=</span> <span class="mi">0</span> <span class="c1">// iota = 7
-</span><span class="c1"></span>	<span class="nx">k</span> <span class="p">=</span> <span class="mi">0</span> <span class="c1">// iota = 8
-</span><span class="c1"></span>	<span class="nx">l</span><span class="p">,</span> <span class="nx">m</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span> <span class="c1">// iota = 9
-</span><span class="c1"></span>	<span class="nx">n</span><span class="p">,</span> <span class="nx">o</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span> <span class="c1">// iota = 10
-</span><span class="c1"></span>	<span class="nx">p</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 11
-</span><span class="c1"></span>	<span class="nx">q</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 12
-</span><span class="c1"></span>	<span class="nx">_</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 13
-</span><span class="c1"></span>	<span class="nx">r</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span> <span class="c1">// iota = 14
-</span><span class="c1"></span>	<span class="nx">s</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span> <span class="c1">// iota = 15
-</span><span class="c1"></span>	<span class="nx">t</span> <span class="p">=</span> <span class="nx">r</span> <span class="c1">// iota = 16
-</span><span class="c1"></span>	<span class="nx">u</span> <span class="p">=</span> <span class="nx">r</span> <span class="c1">// iota = 17
-</span><span class="c1"></span>	<span class="nx">v</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span> <span class="c1">// iota = 18
-</span><span class="c1"></span>	<span class="nx">w</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span> <span class="c1">// iota = 19
-</span><span class="c1"></span>	<span class="nx">x</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 20
-</span><span class="c1"></span>	<span class="nx">y</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 21
-</span><span class="c1"></span>	<span class="nx">z</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 22
-</span><span class="c1"></span><span class="p">)</span>
-</code></pre></div><h3 id="第五步替换所有-iota">第五步：替换所有 iota<a href="#第五步替换所有-iota" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">c</span> <span class="p">=</span> <span class="mi">10</span> <span class="c1">// iota = 0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">d</span> <span class="p">=</span> <span class="kc">iota</span> <span class="c1">// iota = 1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">e</span> <span class="p">=</span> <span class="kc">iota</span> <span class="c1">// iota = 2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">f</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span> <span class="c1">// iota = 3
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">g</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span> <span class="c1">// iota = 4
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">h</span> <span class="p">=</span> <span class="kc">iota</span> <span class="c1">// iota = 5
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">i</span> <span class="p">=</span> <span class="kc">iota</span> <span class="c1">// iota = 6
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">j</span> <span class="p">=</span> <span class="mi">0</span> <span class="c1">// iota = 7
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">k</span> <span class="p">=</span> <span class="mi">0</span> <span class="c1">// iota = 8
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">l</span><span class="p">,</span> <span class="nx">m</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span> <span class="c1">// iota = 9
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">n</span><span class="p">,</span> <span class="nx">o</span> <span class="p">=</span> <span class="kc">iota</span><span class="p">,</span> <span class="kc">iota</span> <span class="c1">// iota = 10
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">p</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 11
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">q</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 12
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">_</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 13
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">r</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span> <span class="c1">// iota = 14
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">s</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="kc">iota</span> <span class="c1">// iota = 15
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">t</span> <span class="p">=</span> <span class="nx">r</span> <span class="c1">// iota = 16
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">u</span> <span class="p">=</span> <span class="nx">r</span> <span class="c1">// iota = 17
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">v</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span> <span class="c1">// iota = 18
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">w</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="kc">iota</span> <span class="c1">// iota = 19
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">x</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 20
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">y</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 21
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">z</span> <span class="kt">float32</span> <span class="p">=</span> <span class="kc">iota</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 22
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">)</span>
+</span></span></code></pre></div><h3 id="第五步替换所有-iota">第五步：替换所有 iota<a href="#第五步替换所有-iota" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>最后一步就比较无脑了，逐行替换出现的 iota 为真实值即可：</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">const</span> <span class="p">(</span>
-	<span class="nx">c</span> <span class="p">=</span> <span class="mi">10</span> <span class="c1">// iota = 0
-</span><span class="c1"></span>	<span class="nx">d</span> <span class="p">=</span> <span class="mi">1</span> <span class="c1">// iota = 1
-</span><span class="c1"></span>	<span class="nx">e</span> <span class="p">=</span> <span class="mi">2</span> <span class="c1">// iota = 2
-</span><span class="c1"></span>	<span class="nx">f</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span> <span class="c1">// iota = 3
-</span><span class="c1"></span>	<span class="nx">g</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span> <span class="c1">// iota = 4
-</span><span class="c1"></span>	<span class="nx">h</span> <span class="p">=</span> <span class="mi">5</span> <span class="c1">// iota = 5
-</span><span class="c1"></span>	<span class="nx">i</span> <span class="p">=</span> <span class="mi">6</span> <span class="c1">// iota = 6
-</span><span class="c1"></span>	<span class="nx">j</span> <span class="p">=</span> <span class="mi">0</span> <span class="c1">// iota = 7
-</span><span class="c1"></span>	<span class="nx">k</span> <span class="p">=</span> <span class="mi">0</span> <span class="c1">// iota = 8
-</span><span class="c1"></span>	<span class="nx">l</span><span class="p">,</span> <span class="nx">m</span> <span class="p">=</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span> <span class="c1">// iota = 9
-</span><span class="c1"></span>	<span class="nx">n</span><span class="p">,</span> <span class="nx">o</span> <span class="p">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span> <span class="c1">// iota = 10
-</span><span class="c1"></span>	<span class="nx">p</span> <span class="p">=</span> <span class="mi">11</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 11
-</span><span class="c1"></span>	<span class="nx">q</span> <span class="p">=</span> <span class="mi">12</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 12
-</span><span class="c1"></span>	<span class="nx">_</span> <span class="p">=</span> <span class="mi">13</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 13
-</span><span class="c1"></span>	<span class="nx">r</span> <span class="p">=</span> <span class="mi">14</span> <span class="o">*</span> <span class="mi">14</span> <span class="c1">// iota = 14
-</span><span class="c1"></span>	<span class="nx">s</span> <span class="p">=</span> <span class="mi">15</span> <span class="o">*</span> <span class="mi">15</span> <span class="c1">// iota = 15
-</span><span class="c1"></span>	<span class="nx">t</span> <span class="p">=</span> <span class="nx">r</span> <span class="c1">// iota = 16
-</span><span class="c1"></span>	<span class="nx">u</span> <span class="p">=</span> <span class="nx">r</span> <span class="c1">// iota = 17
-</span><span class="c1"></span>	<span class="nx">v</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">18</span> <span class="c1">// iota = 18
-</span><span class="c1"></span>	<span class="nx">w</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">19</span> <span class="c1">// iota = 19
-</span><span class="c1"></span>	<span class="nx">x</span> <span class="p">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 20
-</span><span class="c1"></span>	<span class="nx">y</span> <span class="kt">float32</span> <span class="p">=</span> <span class="mi">21</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 21
-</span><span class="c1"></span>	<span class="nx">z</span> <span class="kt">float32</span> <span class="p">=</span> <span class="mi">22</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 22
-</span><span class="c1"></span><span class="p">)</span>
-</code></pre></div><p>到这里，事情已经水落石出。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">const</span> <span class="p">(</span>
+</span></span><span class="line"><span class="cl">	<span class="nx">c</span> <span class="p">=</span> <span class="mi">10</span> <span class="c1">// iota = 0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">d</span> <span class="p">=</span> <span class="mi">1</span> <span class="c1">// iota = 1
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">e</span> <span class="p">=</span> <span class="mi">2</span> <span class="c1">// iota = 2
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">f</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span> <span class="c1">// iota = 3
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">g</span> <span class="p">=</span> <span class="s">&#34;hello&#34;</span> <span class="c1">// iota = 4
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">h</span> <span class="p">=</span> <span class="mi">5</span> <span class="c1">// iota = 5
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">i</span> <span class="p">=</span> <span class="mi">6</span> <span class="c1">// iota = 6
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">j</span> <span class="p">=</span> <span class="mi">0</span> <span class="c1">// iota = 7
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">k</span> <span class="p">=</span> <span class="mi">0</span> <span class="c1">// iota = 8
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">l</span><span class="p">,</span> <span class="nx">m</span> <span class="p">=</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">9</span> <span class="c1">// iota = 9
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">n</span><span class="p">,</span> <span class="nx">o</span> <span class="p">=</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span> <span class="c1">// iota = 10
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">p</span> <span class="p">=</span> <span class="mi">11</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 11
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">q</span> <span class="p">=</span> <span class="mi">12</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 12
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">_</span> <span class="p">=</span> <span class="mi">13</span> <span class="o">+</span> <span class="mi">1</span> <span class="c1">// iota = 13
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">r</span> <span class="p">=</span> <span class="mi">14</span> <span class="o">*</span> <span class="mi">14</span> <span class="c1">// iota = 14
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">s</span> <span class="p">=</span> <span class="mi">15</span> <span class="o">*</span> <span class="mi">15</span> <span class="c1">// iota = 15
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">t</span> <span class="p">=</span> <span class="nx">r</span> <span class="c1">// iota = 16
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">u</span> <span class="p">=</span> <span class="nx">r</span> <span class="c1">// iota = 17
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">v</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">18</span> <span class="c1">// iota = 18
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">w</span> <span class="p">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">19</span> <span class="c1">// iota = 19
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">x</span> <span class="p">=</span> <span class="mi">20</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 20
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">y</span> <span class="kt">float32</span> <span class="p">=</span> <span class="mi">21</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 21
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>	<span class="nx">z</span> <span class="kt">float32</span> <span class="p">=</span> <span class="mi">22</span> <span class="o">*</span> <span class="mf">0.01</span> <span class="c1">// iota = 22
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="p">)</span>
+</span></span></code></pre></div><p>到这里，事情已经水落石出。</p>
 <p>无它。</p>
 <h1 id="参考文章">参考文章<a href="#参考文章" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <ul>
@@ -338,7 +338,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

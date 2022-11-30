@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="Serveless和FaaS">
-<meta itemprop="description" content="无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无"><meta itemprop="datePublished" content="2021-10-10T20:55:29&#43;08:00" />
-<meta itemprop="dateModified" content="2021-10-10T20:55:29&#43;08:00" />
-<meta itemprop="wordCount" content="4659">
+<meta itemprop="description" content="无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无"><meta itemprop="datePublished" content="2021-10-10T20:55:29+08:00" />
+<meta itemprop="dateModified" content="2021-10-10T20:55:29+08:00" />
+<meta itemprop="wordCount" content="4637">
 <meta itemprop="keywords" content="Serveless,FaaS," /><meta property="og:title" content="Serveless和FaaS" />
 <meta property="og:description" content="无服务器架构（Serverless architectures）是指一个应用大量依赖第三方服务（后端即服务，Backend as a Service，简称“BaaS”），或者把代码交由托管的、短生命周期的容器中执行（函数即服务，Function as a Service，简称“FaaS”）。现在最知名的 FaaS 平台是 AWS Lambda。把这些技术和单页应用等相关概念相结合，这样的架构无" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/other/concept/serverless%E5%92%8Cfaas/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-10-10T20:55:29&#43;08:00" />
-<meta property="article:modified_time" content="2021-10-10T20:55:29&#43;08:00" />
+<meta property="article:published_time" content="2021-10-10T20:55:29+08:00" />
+<meta property="article:modified_time" content="2021-10-10T20:55:29+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Serveless和FaaS"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Serveless和FaaS</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -124,7 +124,7 @@
 <h3 id="解构-function-as-a-service">解构 “Function as a Service”<a href="#解构-function-as-a-service" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>我们已经提到多次 FaaS 的概念，现在来挖掘下它究竟是什么含义。先来看看 Amazon 的 Lambda <a href="https://aws.amazon.com/cn/lambda/" target="_blank" rel="noopener">产品简介</a>
 ：</p>
-<p><em>通过 AWS Lambda，无需配置或管理服务器</em>*(1)**即可运行代码。您只需按消耗的计算时间付费 – 代码未运行时不产生费用。借助 Lambda，您几乎可以为任何类型的应用程序或后端服务**(2)**运行代码，而且全部无需管理。只需上传您的代码，Lambda 会处理运行**(3)**和扩展高可用性**(4)**代码所需的一切工作。您可以将您的代码设置为自动从其他 AWS 服务**(5)**触发，或者直接从任何 Web 或移动应用程序**(6)**调用。*</p>
+<p><em>通过 AWS Lambda，无需配置或管理服务器</em>*(1)<strong>即可运行代码。您只需按消耗的计算时间付费 – 代码未运行时不产生费用。借助 Lambda，您几乎可以为任何类型的应用程序或后端服务</strong>(2)<strong>运行代码，而且全部无需管理。只需上传您的代码，Lambda 会处理运行</strong>(3)<strong>和扩展高可用性</strong>(4)<strong>代码所需的一切工作。您可以将您的代码设置为自动从其他 AWS 服务</strong>(5)<strong>触发，或者直接从任何 Web 或移动应用程序</strong>(6)*<em>调用。</em></p>
 <ol>
 <li><strong>本质上 FaaS 就是无需配置或管理你自己的服务器系统或者服务器应用即可运行后端代码</strong>，其中第二项——服务器应用——是个关键因素，使其区别于现今其他一些流行的架构趋势如容器或者 PaaS（Platform as a Service）。 回顾前面点击处理的例子，FaaS 替换掉了点击处理服务器（可能跑在一台物理服务器或者容器中，但绝对是一个独立的应用程序），它不需要服务器，也没有一个应用程序在持续运行。</li>
 <li>FaaS 不需要代码基于特定的库或框架，从语言或环境的层面来看 FaaS 就是一个普通的应用程序。例如 AWS Lambda 支持 JavaScript、Python 以及任意 JVM 语言（Java、Clojure、Scala 等），并且你的 FaaS 函数还可以调用任何一起部署的程序，也就是说实际上你可以用任何能编译为 Unix 程序的语言（稍后我们会讲到 Apex）。FaaS 也有一些不容忽视的局限，尤其是牵涉到状态和执行时长问题，这些我们稍后详谈。 再次回顾一下点击处理的例子——代码迁移到 FaaS 唯一需要修改的是 main 方法（启动）的部分，删掉即可，也许还会有一些上层消息处理的代码（实现消息监听界面），不过这很可能只是方法签名上的小改动。所有其他代码（比如那些访问数据库的）都可以原样用在 FaaS 中。</li>
@@ -194,7 +194,7 @@
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/serveless">Serveless</a></span><span class="tag"><a href="https://willje.github.io/tags/faas">FaaS</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4659 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>4637 字</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-10-10 20:55 &#43;0800</p>
 			</footer>
 		</article>
@@ -245,7 +245,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

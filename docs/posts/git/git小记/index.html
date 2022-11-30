@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="Git小记">
-<meta itemprop="description" content="分支 查看本地分支 git branch 查看远程分支 git branch -r 查看本地和远程所有分支 git branch -a 创建分支 git branch [name]//该命令创建分支后不会马上切换到新分支 创建分支并切换到该分支 git checkout -b [name] 切换分支 git checkout [name] 如果希望强制切换，即放弃本地修改，则使用命令 git checkout -f newBranch 删除分支 git branch -d [name] //选项只能删除已经参与了合并的分支，对于未有合并的分支是无法删除的。 如果想强制删除一个分支，可以使用-D选项 这只是删"><meta itemprop="datePublished" content="2020-10-05T12:10:00&#43;08:00" />
-<meta itemprop="dateModified" content="2020-10-05T12:10:00&#43;08:00" />
+<meta itemprop="description" content="分支 查看本地分支 git branch 查看远程分支 git branch -r 查看本地和远程所有分支 git branch -a 创建分支 git branch [name]//该命令创建分支后不会马上切换到新分支 创建分支并切换到该分支 git checkout -b [name] 切换分支 git checkout [name] 如果希望强制切换，即放弃本地修改，则使用命令 git checkout -f newBranch 删除分支 git branch -d [name] //选项只能删除已经参与了合并的分支，对于未有合并的分支是无法删除的。 如果想强制删除一个分支，可以使用-D选项 这只是删"><meta itemprop="datePublished" content="2020-10-05T12:10:00+08:00" />
+<meta itemprop="dateModified" content="2020-10-05T12:10:00+08:00" />
 <meta itemprop="wordCount" content="720">
 <meta itemprop="keywords" content="git," /><meta property="og:title" content="Git小记" />
 <meta property="og:description" content="分支 查看本地分支 git branch 查看远程分支 git branch -r 查看本地和远程所有分支 git branch -a 创建分支 git branch [name]//该命令创建分支后不会马上切换到新分支 创建分支并切换到该分支 git checkout -b [name] 切换分支 git checkout [name] 如果希望强制切换，即放弃本地修改，则使用命令 git checkout -f newBranch 删除分支 git branch -d [name] //选项只能删除已经参与了合并的分支，对于未有合并的分支是无法删除的。 如果想强制删除一个分支，可以使用-D选项 这只是删" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/git/git%E5%B0%8F%E8%AE%B0/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-10-05T12:10:00&#43;08:00" />
-<meta property="article:modified_time" content="2020-10-05T12:10:00&#43;08:00" />
+<meta property="article:published_time" content="2020-10-05T12:10:00+08:00" />
+<meta property="article:modified_time" content="2020-10-05T12:10:00+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Git小记"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>Git小记</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -73,34 +73,34 @@
 			<div class="content">
 				<h1 id="分支">分支<a href="#分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <h2 id="查看本地分支">查看本地分支<a href="#查看本地分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<pre><code>git branch
+<pre tabindex="0"><code>git branch
 </code></pre><h2 id="查看远程分支">查看远程分支<a href="#查看远程分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<pre><code>git branch -r
+<pre tabindex="0"><code>git branch -r
 </code></pre><h2 id="查看本地和远程所有分支">查看本地和远程所有分支<a href="#查看本地和远程所有分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<pre><code>git branch -a
+<pre tabindex="0"><code>git branch -a
 </code></pre><h2 id="创建分支">创建分支<a href="#创建分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<pre><code>git branch [name]//该命令创建分支后不会马上切换到新分支
+<pre tabindex="0"><code>git branch [name]//该命令创建分支后不会马上切换到新分支
 </code></pre><h2 id="创建分支并切换到该分支">创建分支并切换到该分支<a href="#创建分支并切换到该分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<pre><code>git checkout -b [name]
+<pre tabindex="0"><code>git checkout -b [name]
 </code></pre><h2 id="切换分支">切换分支<a href="#切换分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<pre><code>git checkout [name]
+<pre tabindex="0"><code>git checkout [name]
 
 如果希望强制切换，即放弃本地修改，则使用命令
 git checkout -f newBranch
 </code></pre><h2 id="删除分支">删除分支<a href="#删除分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<pre><code>git branch -d [name] //选项只能删除已经参与了合并的分支，对于未有合并的分支是无法删除的。
+<pre tabindex="0"><code>git branch -d [name] //选项只能删除已经参与了合并的分支，对于未有合并的分支是无法删除的。
 如果想强制删除一个分支，可以使用-D选项
 </code></pre><p>这只是删除本地分支，删除远程分支使用</p>
-<pre><code>git push origin -d [name]
+<pre tabindex="0"><code>git push origin -d [name]
 </code></pre><h2 id="合并分支">合并分支<a href="#合并分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
-<pre><code>git merge [name] //将名称为[name]的分支与当前分支合并
+<pre tabindex="0"><code>git merge [name] //将名称为[name]的分支与当前分支合并
 </code></pre><h2 id="创建远程分支">创建远程分支<a href="#创建远程分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>就是将本地分支提交到远程</p>
-<pre><code>git push origin [name]
+<pre tabindex="0"><code>git push origin [name]
 </code></pre><p>另一种方式</p>
-<pre><code>git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;
+<pre tabindex="0"><code>git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;
 </code></pre><h1 id="提交">提交<a href="#提交" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
-<pre><code>git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;
+<pre tabindex="0"><code>git push &lt;远程主机名&gt; &lt;本地分支名&gt;:&lt;远程分支名&gt;
 </code></pre><h1 id="常用操作">常用操作<a href="#常用操作" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h1>
 <h3 id="合并本地两个分支">合并本地两个分支<a href="#合并本地两个分支" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p><strong>场景</strong>：在一个dev分支开发时，突然出现一个bug需要修改，此时可以选择在dev分支上或者master分支上新建一个分支fixbug01分支；</p>
@@ -203,7 +203,7 @@ git checkout -f newBranch
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

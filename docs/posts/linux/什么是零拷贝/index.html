@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="什么是零拷贝">
-<meta itemprop="description" content="前言 磁盘可以说是计算机系统最慢的硬件之一，读写速度相差内存 10 倍以上，所以针对优化磁盘的技术非常的多，比如零拷贝、直接 I/O、异步 I/O 等等，这些优化的目的就是为了提高系统的吞吐量，另外操作系统内核中的磁盘高速缓存区，可以有效的减少磁盘的访问次数。 这次，我们就以「文件传输」作为切入点，来分析 I/O 工作方式，以及如何优化传输文件的性能。 为什么要有 DMA 技术? 在没有 DMA 技术前，"><meta itemprop="datePublished" content="2021-02-25T20:55:29&#43;08:00" />
-<meta itemprop="dateModified" content="2021-02-25T20:55:29&#43;08:00" />
-<meta itemprop="wordCount" content="7003">
+<meta itemprop="description" content="前言 磁盘可以说是计算机系统最慢的硬件之一，读写速度相差内存 10 倍以上，所以针对优化磁盘的技术非常的多，比如零拷贝、直接 I/O、异步 I/O 等等，这些优化的目的就是为了提高系统的吞吐量，另外操作系统内核中的磁盘高速缓存区，可以有效的减少磁盘的访问次数。 这次，我们就以「文件传输」作为切入点，来分析 I/O 工作方式，以及如何优化传输文件的性能。 为什么要有 DMA 技术? 在没有 DMA 技术前，"><meta itemprop="datePublished" content="2021-02-25T20:55:29+08:00" />
+<meta itemprop="dateModified" content="2021-02-25T20:55:29+08:00" />
+<meta itemprop="wordCount" content="7004">
 <meta itemprop="keywords" content="Linux," /><meta property="og:title" content="什么是零拷贝" />
 <meta property="og:description" content="前言 磁盘可以说是计算机系统最慢的硬件之一，读写速度相差内存 10 倍以上，所以针对优化磁盘的技术非常的多，比如零拷贝、直接 I/O、异步 I/O 等等，这些优化的目的就是为了提高系统的吞吐量，另外操作系统内核中的磁盘高速缓存区，可以有效的减少磁盘的访问次数。 这次，我们就以「文件传输」作为切入点，来分析 I/O 工作方式，以及如何优化传输文件的性能。 为什么要有 DMA 技术? 在没有 DMA 技术前，" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/linux/%E4%BB%80%E4%B9%88%E6%98%AF%E9%9B%B6%E6%8B%B7%E8%B4%9D/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-02-25T20:55:29&#43;08:00" />
-<meta property="article:modified_time" content="2021-02-25T20:55:29&#43;08:00" />
+<meta property="article:published_time" content="2021-02-25T20:55:29+08:00" />
+<meta property="article:modified_time" content="2021-02-25T20:55:29+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="什么是零拷贝"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>什么是零拷贝</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -105,9 +105,9 @@
 <p>如果服务端要提供文件传输的功能，我们能想到的最简单的方式是：将磁盘上的文件读取出来，然后通过网络协议发送给客户端。</p>
 <p>传统 I/O 的工作方式是，数据读取和写入是从用户空间到内核空间来回复制，而内核空间的数据是通过操作系统层面的 I/O 接口从磁盘读取或写入。</p>
 <p>代码通常如下，一般会需要两个系统调用：</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">read</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">tmp_buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
-<span class="n">write</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">tmp_buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
-</code></pre></div><p>代码很简单，虽然就两行代码，但是这里面发生了不少的事情。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">read</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">tmp_buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">write</span><span class="p">(</span><span class="n">socket</span><span class="p">,</span> <span class="n">tmp_buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+</span></span></code></pre></div><p>代码很简单，虽然就两行代码，但是这里面发生了不少的事情。</p>
 <p><p class="md__image">
   <img src="../%e4%bb%80%e4%b9%88%e6%98%af%e9%9b%b6%e6%8b%b7%e8%b4%9d.assets/%e4%bc%a0%e7%bb%9f%e6%96%87%e4%bb%b6%e4%bc%a0%e8%be%93.png"
     alt="img"  />
@@ -147,9 +147,9 @@
 <p>下面就谈一谈，它们是如何减少「上下文切换」和「数据拷贝」的次数。</p>
 <h3 id="mmap--write">mmap + write<a href="#mmap--write" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>在前面我们知道，<code>read()</code> 系统调用的过程中会把内核缓冲区的数据拷贝到用户的缓冲区里，于是为了减少这一步开销，我们可以用 <code>mmap()</code> 替换 <code>read()</code> 系统调用函数。</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="n">buf</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
-<span class="n">write</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
-</code></pre></div><p><code>mmap()</code> 系统调用函数会直接把内核缓冲区里的数据「<strong>映射</strong>」到用户空间，这样，操作系统内核与用户空间就不需要再进行任何的数据拷贝操作。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="n">buf</span> <span class="o">=</span> <span class="n">mmap</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+</span></span><span class="line"><span class="cl"><span class="n">write</span><span class="p">(</span><span class="n">sockfd</span><span class="p">,</span> <span class="n">buf</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
+</span></span></code></pre></div><p><code>mmap()</code> 系统调用函数会直接把内核缓冲区里的数据「<strong>映射</strong>」到用户空间，这样，操作系统内核与用户空间就不需要再进行任何的数据拷贝操作。</p>
 <p>![img](什么是零拷贝.assets/mmap + write 零拷贝.png)</p>
 <p>具体过程如下：</p>
 <ul>
@@ -161,9 +161,9 @@
 <p>但这还不是最理想的零拷贝，因为仍然需要通过 CPU 把内核缓冲区的数据拷贝到 socket 缓冲区里，而且仍然需要 4 次上下文切换，因为系统调用还是 2 次。</p>
 <h3 id="sendfile">sendfile<a href="#sendfile" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>在 Linux 内核版本 2.1 中，提供了一个专门发送文件的系统调用函数 <code>sendfile()</code>，函数形式如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-c" data-lang="c"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
-</span><span class="cp"></span><span class="n">ssize_t</span> <span class="nf">sendfile</span><span class="p">(</span><span class="kt">int</span> <span class="n">out_fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">in_fd</span><span class="p">,</span> <span class="n">off_t</span> <span class="o">*</span><span class="n">offset</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">count</span><span class="p">);</span>
-</code></pre></div><p>它的前两个参数分别是目的端和源端的文件描述符，后面两个参数是源端的偏移量和复制数据的长度，返回值是实际复制数据的长度。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-c" data-lang="c"><span class="line"><span class="cl"><span class="cp">#include</span> <span class="cpf">&lt;sys/socket.h&gt;</span><span class="cp">
+</span></span></span><span class="line"><span class="cl"><span class="cp"></span><span class="n">ssize_t</span> <span class="nf">sendfile</span><span class="p">(</span><span class="kt">int</span> <span class="n">out_fd</span><span class="p">,</span> <span class="kt">int</span> <span class="n">in_fd</span><span class="p">,</span> <span class="n">off_t</span> <span class="o">*</span><span class="n">offset</span><span class="p">,</span> <span class="n">size_t</span> <span class="n">count</span><span class="p">);</span>
+</span></span></code></pre></div><p>它的前两个参数分别是目的端和源端的文件描述符，后面两个参数是源端的偏移量和复制数据的长度，返回值是实际复制数据的长度。</p>
 <p>首先，它可以替代前面的 <code>read()</code> 和 <code>write()</code> 这两个系统调用，这样就可以减少一次系统调用，也就减少了 2 次上下文切换的开销。</p>
 <p>其次，该系统调用，可以直接把内核缓冲区里的数据拷贝到 socket 缓冲区里，不再拷贝到用户态，这样就只有 2 次上下文切换，和 3 次数据拷贝。如下图：</p>
 <p><p class="md__image">
@@ -173,9 +173,9 @@
 </p>
 <p>但是这还不是真正的零拷贝技术，如果网卡支持 SG-DMA（<em>The Scatter-Gather Direct Memory Access</em>）技术（和普通的 DMA 有所不同），我们可以进一步减少通过 CPU 把内核缓冲区里的数据拷贝到 socket 缓冲区的过程。</p>
 <p>你可以在你的 Linux 系统通过下面这个命令，查看网卡是否支持 scatter-gather 特性：</p>
-<div class="highlight"><pre class="chroma"><code class="language-bash" data-lang="bash">$ ethtool -k eth0 <span class="p">|</span> grep scatter-gather
-scatter-gather: on
-</code></pre></div><p>于是，从 Linux 内核 <code>2.4</code> 版本开始起，对于支持网卡支持 SG-DMA 技术的情况下， <code>sendfile()</code> 系统调用的过程发生了点变化，具体过程如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-bash" data-lang="bash"><span class="line"><span class="cl">$ ethtool -k eth0 <span class="p">|</span> grep scatter-gather
+</span></span><span class="line"><span class="cl">scatter-gather: on
+</span></span></code></pre></div><p>于是，从 Linux 内核 <code>2.4</code> 版本开始起，对于支持网卡支持 SG-DMA 技术的情况下， <code>sendfile()</code> 系统调用的过程发生了点变化，具体过程如下：</p>
 <ul>
 <li>第一步，通过 DMA 将磁盘上的数据拷贝到内核缓冲区里；</li>
 <li>第二步，缓冲区描述符和数据长度传到 socket 缓冲区，这样网卡的 SG-DMA 控制器就可以直接将内核缓存中的数据拷贝到网卡的缓冲区里，此过程不需要将数据从操作系统内核缓冲区拷贝到 socket 缓冲区中，这样就减少了一次数据拷贝；</li>
@@ -192,11 +192,11 @@ scatter-gather: on
 <h2 id="使用零拷贝技术的项目">使用零拷贝技术的项目<a href="#使用零拷贝技术的项目" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>事实上，Kafka 这个开源项目，就利用了「零拷贝」技术，从而大幅提升了 I/O 的吞吐率，这也是 Kafka 在处理海量数据为什么这么快的原因之一。</p>
 <p>如果你追溯 Kafka 文件传输的代码，你会发现，最终它调用了 Java NIO 库里的 <code>transferTo</code> 方法：</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="nd">@Overridepublic</span> 
-<span class="kt">long</span> <span class="nf">transferFrom</span><span class="o">(</span><span class="n">FileChannel</span> <span class="n">fileChannel</span><span class="o">,</span> <span class="kt">long</span> <span class="n">position</span><span class="o">,</span> <span class="kt">long</span> <span class="n">count</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span> 
-    <span class="k">return</span> <span class="n">fileChannel</span><span class="o">.</span><span class="na">transferTo</span><span class="o">(</span><span class="n">position</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">socketChannel</span><span class="o">);</span>
-<span class="o">}</span>
-</code></pre></div><p>如果 Linux 系统支持 <code>sendfile()</code> 系统调用，那么 <code>transferTo()</code> 实际上最后就会使用到 <code>sendfile()</code> 系统调用函数。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="nd">@Overridepublic</span> 
+</span></span><span class="line"><span class="cl"><span class="kt">long</span> <span class="nf">transferFrom</span><span class="o">(</span><span class="n">FileChannel</span> <span class="n">fileChannel</span><span class="o">,</span> <span class="kt">long</span> <span class="n">position</span><span class="o">,</span> <span class="kt">long</span> <span class="n">count</span><span class="o">)</span> <span class="kd">throws</span> <span class="n">IOException</span> <span class="o">{</span> 
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="n">fileChannel</span><span class="o">.</span><span class="na">transferTo</span><span class="o">(</span><span class="n">position</span><span class="o">,</span> <span class="n">count</span><span class="o">,</span> <span class="n">socketChannel</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>如果 Linux 系统支持 <code>sendfile()</code> 系统调用，那么 <code>transferTo()</code> 实际上最后就会使用到 <code>sendfile()</code> 系统调用函数。</p>
 <p>曾经有大佬专门写过程序测试过，在同样的硬件条件下，传统文件传输和零拷拷贝文件传输的性能差异，你可以看到下面这张测试数据图，使用了零拷贝能够缩短 <code>65%</code> 的时间，大幅度提升了机器传输数据的吞吐量。</p>
 <p><p class="md__image">
   <img src="../%e4%bb%80%e4%b9%88%e6%98%af%e9%9b%b6%e6%8b%b7%e8%b4%9d.assets/%e9%9b%b6%e6%8b%b7%e8%b4%9d%e6%b5%8b%e8%af%95%e6%95%b0%e6%8d%ae.png"
@@ -205,7 +205,7 @@ scatter-gather: on
 </p>
 <p>数据来源于：https://developer.ibm.com/articles/j-zerocopy/</p>
 <p>另外，Nginx 也支持零拷贝技术，一般默认是开启零拷贝技术，这样有利于提高文件传输的效率，是否开启零拷贝技术的配置如下：</p>
-<pre><code>http {
+<pre tabindex="0"><code>http {
 ...
     sendfile on
 ...
@@ -280,7 +280,7 @@ scatter-gather: on
 <li>传输小文件的时候，则使用「零拷贝技术」；</li>
 </ul>
 <p>在 nginx 中，我们可以用如下配置，来根据文件的大小来使用不同的方式：</p>
-<pre><code>location /video/ { 
+<pre tabindex="0"><code>location /video/ { 
     sendfile on; 
     aio on; 
     directio 1024m; 
@@ -319,7 +319,7 @@ scatter-gather: on
 				<p>
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-tag meta-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7" y2="7"></line></svg><span class="tag"><a href="https://willje.github.io/tags/linux">Linux</a></span>
 				</p>
-				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>7003 字</p>
+				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-file-text"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>7004 字</p>
 				<p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>2021-02-25 20:55 &#43;0800</p>
 			</footer>
 		</article>
@@ -348,7 +348,7 @@ scatter-gather: on
 			<a class="next-post" href="https://willje.github.io/posts/distributed/%E4%BC%A0%E7%BB%9F%E4%BA%8B%E5%8A%A1%E4%B8%8E%E6%9F%94%E6%80%A7%E4%BA%8B%E5%8A%A1/">
 				<span class="post-nav-label"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>&nbsp;新</span><br><span>传统事务与柔性事务</span>
 			</a>
-			<a class="prev-post" href="https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F-%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/">
+			<a class="prev-post" href="https://willje.github.io/posts/distributed/%E5%88%86%E5%B8%83%E5%BC%8F%E7%B3%BB%E7%BB%9F---%E5%B9%82%E7%AD%89%E6%80%A7%E8%AE%BE%E8%AE%A1/">
 				<span class="post-nav-label">旧&nbsp;<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg></span><br><span>分布式系统---幂等性设计</span>
 			</a>
 		</div>
@@ -371,7 +371,7 @@ scatter-gather: on
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

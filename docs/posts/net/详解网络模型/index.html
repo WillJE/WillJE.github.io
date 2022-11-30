@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="详解计算机网络模型">
-<meta itemprop="description" content="一、体系结构 计算机网络的各层及其协议的集合被称为网络的体系结构，按照不同的维度，其常被分为七层、五层、四层网络结构： 应用层 (application layer)：直接为应用进程提供服务。应用层协议定义的是应用进程间通讯和交互的规则，不同的应用有着不同的应用层协议，如 HTTP协议（万维网服务）、FTP协议（文件传输）、SMTP协议（电子邮件）、DNS（域名查询）等。 传输层 (transport layer"><meta itemprop="datePublished" content="2021-05-20T20:55:29&#43;08:00" />
-<meta itemprop="dateModified" content="2021-05-20T20:55:29&#43;08:00" />
+<meta itemprop="description" content="一、体系结构 计算机网络的各层及其协议的集合被称为网络的体系结构，按照不同的维度，其常被分为七层、五层、四层网络结构： 应用层 (application layer)：直接为应用进程提供服务。应用层协议定义的是应用进程间通讯和交互的规则，不同的应用有着不同的应用层协议，如 HTTP协议（万维网服务）、FTP协议（文件传输）、SMTP协议（电子邮件）、DNS（域名查询）等。 传输层 (transport layer"><meta itemprop="datePublished" content="2021-05-20T20:55:29+08:00" />
+<meta itemprop="dateModified" content="2021-05-20T20:55:29+08:00" />
 <meta itemprop="wordCount" content="12204">
 <meta itemprop="keywords" content="网络," /><meta property="og:title" content="详解计算机网络模型" />
 <meta property="og:description" content="一、体系结构 计算机网络的各层及其协议的集合被称为网络的体系结构，按照不同的维度，其常被分为七层、五层、四层网络结构： 应用层 (application layer)：直接为应用进程提供服务。应用层协议定义的是应用进程间通讯和交互的规则，不同的应用有着不同的应用层协议，如 HTTP协议（万维网服务）、FTP协议（文件传输）、SMTP协议（电子邮件）、DNS（域名查询）等。 传输层 (transport layer" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/net/%E8%AF%A6%E8%A7%A3%E7%BD%91%E7%BB%9C%E6%A8%A1%E5%9E%8B/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-05-20T20:55:29&#43;08:00" />
-<meta property="article:modified_time" content="2021-05-20T20:55:29&#43;08:00" />
+<meta property="article:published_time" content="2021-05-20T20:55:29+08:00" />
+<meta property="article:modified_time" content="2021-05-20T20:55:29+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="详解计算机网络模型"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>详解计算机网络模型</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -351,7 +351,7 @@
 </p>
 </p>
 <p>由于子网对外是不可见的，所以需要使用子网掩码来辅助路由，假设目标 IP 地址为 192.168.10.198，想要正确到达该地址，必须先正确到达网络地址 192.168.10.192 。网络地址，子网掩码和主机 IP 之间的关系如下：</p>
-<pre><code>IP 地址：192.168.10.198             二进制IP地址：11000000.10101000.00001010.11000110
+<pre tabindex="0"><code>IP 地址：192.168.10.198             二进制IP地址：11000000.10101000.00001010.11000110
 子网掩码：255.255.255.224           二进制掩码：11111111.11111111.11111111.11100000
 网络地址：192.168.10.192            按位逻辑与运算结果为：11000000.10101000.00001010.11000000
 </code></pre><p>现代互联网标准规定：所有网络都必须使用子网掩码，同时路由器的路由表中也必须包含子网掩码这一项。因为路由表包含了 IP 地址和子网掩码，所以通过位运算就能很快计算出网络地址。</p>
@@ -384,7 +384,7 @@
 </table>
 <h3 id="45-构成超网">4.5 构成超网<a href="#45-构成超网" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>无类别域间路由（CIDR，Classless Inter-Domain Routing）是一个给用户分配 IP 地址以及在互联网上有效地路由 IP 数据报的地址归类方法。它消除了传统的 A 类，B 类 和 C 类地址以及划分子网的概念，采用无分类的两级编址：</p>
-<pre><code>IP地址 ::= {&lt;网络前缀&gt;,&lt;主机号&gt;}
+<pre tabindex="0"><code>IP地址 ::= {&lt;网络前缀&gt;,&lt;主机号&gt;}
 </code></pre><p>并使用斜线记法进行表示：</p>
 <p>128.14.35.7 / 20 = 10000000 00001110 00100011 00000111 此时表示前 20 位都是网络前缀，该地址所处的地址块中的最小地址和最大地址则分别为：</p>
 <table>
@@ -488,7 +488,7 @@
 </li>
 <li>
 <p>每一条 TCP 连接唯一地被通信两端的两个端点所确定，即：</p>
-<pre><code>TCP 连接 ::= {socket1,socket2} = {(IP1,port1),(IP2,port2)}
+<pre tabindex="0"><code>TCP 连接 ::= {socket1,socket2} = {(IP1,port1),(IP2,port2)}
 复制代码
 </code></pre></li>
 </ul>
@@ -608,16 +608,16 @@
 <p>通常接收方一般都是采用累积确认的方式。此时接收方不必对收到的分组逐个发送确认，而是在收到几个分组后，对按序到达的最后一个分组发送确认，它表示：这个分组及其之前的所有分组都已正确到达。</p>
 <h3 id="57-tcp-的可靠传输">5.7 TCP 的可靠传输<a href="#57-tcp-的可靠传输" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>TCP 的滑动窗口以字节为单位，并采用以下方法来计算超时重传时间 RTO（Retransmission Time Out）：</p>
-<pre><code>RTO = RTT_S + 4 × RTT_D
+<pre tabindex="0"><code>RTO = RTT_S + 4 × RTT_D
 </code></pre><p>其中 RTTS 表示加权平均往返时间，计算方式如下：</p>
-<pre><code>新的 RTT_S = (1-α) × 旧的 RTT_S +  α × 新的 RTT 值
+<pre tabindex="0"><code>新的 RTT_S = (1-α) × 旧的 RTT_S +  α × 新的 RTT 值
 </code></pre><ul>
 <li>RTT （Round Trip Time）代表报文段的往返时间，它记录一个报文段从发出去到收到确认的时间长度；</li>
 <li>第一次测量时， RTTS 的值就等于 RTT 的值，之后的 RTTS 则采用上面的公式进行计算；</li>
 <li>其中 0 ≤ α＜1 ，RFC 6298 推荐其值取 0.125 。</li>
 </ul>
 <p>RTTD 是 RTT 偏差的加权平均值，计算方式如下：</p>
-<pre><code>新的 RTT_D = (1-β) × 旧的 RTT_D +  β × |RTT_S - 新的 RTT 值|
+<pre tabindex="0"><code>新的 RTT_D = (1-β) × 旧的 RTT_D +  β × |RTT_S - 新的 RTT 值|
 </code></pre><ul>
 <li>第一次测量时，RTTD 的值就等于 RTT 值的一半，之后的 RTTD 则采用上面的公式进行计算；</li>
 <li>β 值是一个小于 1 的系数，RFC 6298 推荐其值取 0.25 。</li>
@@ -677,7 +677,7 @@
 <p>万维网是一个分布式的超媒体系统，它是超文本系统的扩展。它包含以下重要概念：</p>
 <p><strong>1. 统一资源定位符 URL</strong></p>
 <p>用于定位互联网上资源的位置和访问这些资源的方法，其格式如下：</p>
-<pre><code>&lt;协议&gt;://&lt;主机&gt;:&lt;端口&gt;/&lt;路径&gt;
+<pre tabindex="0"><code>&lt;协议&gt;://&lt;主机&gt;:&lt;端口&gt;/&lt;路径&gt;
 </code></pre><p><strong>2. 超文本传送协议 HTTP</strong></p>
 <p>HTTP 协议定义了浏览器如何向万维网请求文档，以及服务器如何把文档传送给浏览器。</p>
 <p><strong>3. 超文本标记语言 HTML</strong></p>
@@ -809,7 +809,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

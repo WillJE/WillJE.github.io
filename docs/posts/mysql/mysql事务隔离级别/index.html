@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="MySQL事务隔离级别">
-<meta itemprop="description" content="MySQL事务隔离级别 什么是事务？ 数据库操作的最小工作单元，是作为单个逻辑工作单元执行的一系列操作；事务是一组不可再分割的操作集合（工作逻辑单元） 举个栗子： 事务最经典常用的栗子可能就是转账：一个账户少钱了，哪另一个账户肯定要多钱，李永龙说过，亏本的买卖咱可不干，吃亏了不高兴！ 所以，少钱和多钱这两个操作，要么同时成功，要么同时失败！ MySQL中如何开启事务？ 手"><meta itemprop="datePublished" content="2020-04-09T19:46:38&#43;08:00" />
-<meta itemprop="dateModified" content="2020-04-09T19:46:38&#43;08:00" />
+<meta itemprop="description" content="MySQL事务隔离级别 什么是事务？ 数据库操作的最小工作单元，是作为单个逻辑工作单元执行的一系列操作；事务是一组不可再分割的操作集合（工作逻辑单元） 举个栗子： 事务最经典常用的栗子可能就是转账：一个账户少钱了，哪另一个账户肯定要多钱，李永龙说过，亏本的买卖咱可不干，吃亏了不高兴！ 所以，少钱和多钱这两个操作，要么同时成功，要么同时失败！ MySQL中如何开启事务？ 手"><meta itemprop="datePublished" content="2020-04-09T19:46:38+08:00" />
+<meta itemprop="dateModified" content="2020-04-09T19:46:38+08:00" />
 <meta itemprop="wordCount" content="2963">
 <meta itemprop="keywords" content="MySQL,事务隔离级别," /><meta property="og:title" content="MySQL事务隔离级别" />
 <meta property="og:description" content="MySQL事务隔离级别 什么是事务？ 数据库操作的最小工作单元，是作为单个逻辑工作单元执行的一系列操作；事务是一组不可再分割的操作集合（工作逻辑单元） 举个栗子： 事务最经典常用的栗子可能就是转账：一个账户少钱了，哪另一个账户肯定要多钱，李永龙说过，亏本的买卖咱可不干，吃亏了不高兴！ 所以，少钱和多钱这两个操作，要么同时成功，要么同时失败！ MySQL中如何开启事务？ 手" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/mysql/mysql%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-04-09T19:46:38&#43;08:00" />
-<meta property="article:modified_time" content="2020-04-09T19:46:38&#43;08:00" />
+<meta property="article:published_time" content="2020-04-09T19:46:38+08:00" />
+<meta property="article:modified_time" content="2020-04-09T19:46:38+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="MySQL事务隔离级别"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>MySQL事务隔离级别</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -154,16 +154,16 @@
 </ul>
 <p>为了更好的介绍以上四种情况，再举个栗子：</p>
 <p>建一张表并插入两条数据：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="c1">-- 建表语句
-</span><span class="c1"></span><span class="k">CREATE</span> <span class="k">TABLE</span> <span class="o">`</span><span class="n">t_transaction</span><span class="o">`</span> <span class="p">(</span>
-  <span class="o">`</span><span class="n">id</span><span class="o">`</span> <span class="nb">INT</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span> <span class="n">AUTO_INCREMENT</span><span class="p">,</span>
-  <span class="o">`</span><span class="n">account</span><span class="o">`</span> <span class="nb">INT</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="k">NOT</span> <span class="k">NULL</span><span class="p">,</span>
-  <span class="k">PRIMARY</span> <span class="k">KEY</span> <span class="p">(</span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="p">)</span>
-<span class="p">)</span> <span class="n">ENGINE</span><span class="o">=</span><span class="n">INNODB</span> <span class="n">AUTO_INCREMENT</span><span class="o">=</span><span class="mi">1</span> <span class="k">DEFAULT</span> <span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8mb4</span> <span class="n">ROW_FORMAT</span><span class="o">=</span><span class="n">COMPACT</span> <span class="k">COMMENT</span><span class="o">=</span><span class="s1">&#39;事务隔离级别测试表&#39;</span><span class="p">;</span>
-<span class="c1">-- 插入数据
-</span><span class="c1"></span><span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">t_transaction</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span> <span class="k">VALUES</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span><span class="p">);</span>
-<span class="k">INSERT</span> <span class="k">INTO</span> <span class="n">t_transaction</span> <span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span> <span class="k">VALUES</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1000</span><span class="p">);</span>
-</code></pre></div><p>表结构如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="c1">-- 建表语句
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="o">`</span><span class="n">t_transaction</span><span class="o">`</span><span class="w"> </span><span class="p">(</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="w"> </span><span class="nb">INT</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="n">AUTO_INCREMENT</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="o">`</span><span class="n">account</span><span class="o">`</span><span class="w"> </span><span class="nb">INT</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w">  </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="o">`</span><span class="n">id</span><span class="o">`</span><span class="p">)</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="p">)</span><span class="w"> </span><span class="n">ENGINE</span><span class="o">=</span><span class="n">INNODB</span><span class="w"> </span><span class="n">AUTO_INCREMENT</span><span class="o">=</span><span class="mi">1</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">CHARSET</span><span class="o">=</span><span class="n">utf8mb4</span><span class="w"> </span><span class="n">ROW_FORMAT</span><span class="o">=</span><span class="n">COMPACT</span><span class="w"> </span><span class="k">COMMENT</span><span class="o">=</span><span class="s1">&#39;事务隔离级别测试表&#39;</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="c1">-- 插入数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">t_transaction</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1000</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">INSERT</span><span class="w"> </span><span class="k">INTO</span><span class="w"> </span><span class="n">t_transaction</span><span class="w"> </span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span><span class="w"> </span><span class="k">VALUES</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1000</span><span class="p">);</span><span class="w">
+</span></span></span></code></pre></div><p>表结构如下：</p>
 <p><p class="md__image">
   <img src="../images/image-20210509193936604.png"
     alt="image-20210509193936604"  />
@@ -172,22 +172,22 @@
 <p>打开两个会话，准备模拟环境。</p>
 <h4 id="read-uncommitter">Read uncommitter<a href="#read-uncommitter" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <p>然后在会话1执行如下语句：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SET</span> <span class="k">SESSION</span> <span class="k">TRANSACTION</span> <span class="k">ISOLATION</span> <span class="k">LEVEL</span> <span class="k">READ</span> <span class="k">UNCOMMITTED</span><span class="p">;</span>
-<span class="k">START</span> <span class="k">TRANSACTION</span><span class="p">;</span>
-<span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">t_transaction</span><span class="p">;</span>
-</code></pre></div><p>执行结果如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SET</span><span class="w"> </span><span class="k">SESSION</span><span class="w"> </span><span class="k">TRANSACTION</span><span class="w"> </span><span class="k">ISOLATION</span><span class="w"> </span><span class="k">LEVEL</span><span class="w"> </span><span class="k">READ</span><span class="w"> </span><span class="k">UNCOMMITTED</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">START</span><span class="w"> </span><span class="k">TRANSACTION</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">t_transaction</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>执行结果如下：</p>
 <p><p class="md__image">
   <img src="../images/image-20210509193957145.png"
     alt="image-20210509193957145"  />
 </p>
 </p>
 <p>接下来在会话2执行如下语句，把id为1的记录 account 值增加 200，但是并<strong>没有提交事务</strong>：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SET</span> <span class="k">SESSION</span> <span class="k">TRANSACTION</span> <span class="k">ISOLATION</span> <span class="k">LEVEL</span> <span class="k">READ</span> <span class="k">UNCOMMITTED</span><span class="p">;</span>
-<span class="k">START</span> <span class="k">TRANSACTION</span><span class="p">;</span>
-<span class="k">UPDATE</span> <span class="n">t_transaction</span> <span class="k">SET</span> <span class="n">account</span> <span class="o">=</span> <span class="n">account</span><span class="o">+</span><span class="mi">200</span> <span class="k">WHERE</span> <span class="n">id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span>
-</code></pre></div><p>回过头我们再在会话1执行一次查询：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SELECT</span> <span class="o">*</span> <span class="k">FROM</span> <span class="n">t_transaction</span><span class="p">;</span>
-</code></pre></div><p>执行结果如下：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SET</span><span class="w"> </span><span class="k">SESSION</span><span class="w"> </span><span class="k">TRANSACTION</span><span class="w"> </span><span class="k">ISOLATION</span><span class="w"> </span><span class="k">LEVEL</span><span class="w"> </span><span class="k">READ</span><span class="w"> </span><span class="k">UNCOMMITTED</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">START</span><span class="w"> </span><span class="k">TRANSACTION</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">UPDATE</span><span class="w"> </span><span class="n">t_transaction</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">account</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">account</span><span class="o">+</span><span class="mi">200</span><span class="w"> </span><span class="k">WHERE</span><span class="w"> </span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>回过头我们再在会话1执行一次查询：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SELECT</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">t_transaction</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>执行结果如下：</p>
 <p><p class="md__image">
   <img src="../images/image-20210509194028848.png"
     alt="image-20210509194028848"  />
@@ -201,18 +201,18 @@
 <p><em>答案是否定的，因为只有事务commit后才会真正更新到数据库。</em></p>
 <h4 id="read-committed">Read committed<a href="#read-committed" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <p>我们利用如下语句将会话2的事务隔离级别设置为<code>read committed</code></p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">SET</span> <span class="k">SESSION</span> <span class="k">TRANSACTION</span> <span class="k">ISOLATION</span> <span class="k">LEVEL</span> <span class="k">READ</span> <span class="k">COMMITTED</span><span class="p">;</span>
-</code></pre></div><p>然后在会话1中执行如下语句：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">update</span> <span class="n">t_transaction</span> <span class="k">set</span> <span class="n">account</span><span class="o">=</span><span class="n">account</span><span class="o">-</span><span class="mi">200</span> <span class="k">where</span> <span class="n">id</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
-</code></pre></div><p>我们将id=1的用户account减200。然后查询，发现id=1的用户account变为800。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">SET</span><span class="w"> </span><span class="k">SESSION</span><span class="w"> </span><span class="k">TRANSACTION</span><span class="w"> </span><span class="k">ISOLATION</span><span class="w"> </span><span class="k">LEVEL</span><span class="w"> </span><span class="k">READ</span><span class="w"> </span><span class="k">COMMITTED</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>然后在会话1中执行如下语句：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">update</span><span class="w"> </span><span class="n">t_transaction</span><span class="w"> </span><span class="k">set</span><span class="w"> </span><span class="n">account</span><span class="o">=</span><span class="n">account</span><span class="o">-</span><span class="mi">200</span><span class="w"> </span><span class="k">where</span><span class="w"> </span><span class="n">id</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>我们将id=1的用户account减200。然后查询，发现id=1的用户account变为800。</p>
 <p><strong><p class="md__image">
   <img src="../images/image-20210509194118396.png"
     alt="image-20210509194118396"  />
 </p>
 </strong></p>
 <p>在会话2中查询：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">t_transaction</span><span class="p">;</span>
-</code></pre></div><p><p class="md__image">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">t_transaction</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p><p class="md__image">
   <img src="../images/image-20210509194134176.png"
     alt="image-20210509194134176"  />
 </p>
@@ -231,18 +231,18 @@
 <h4 id="repeatableread">RepeatableRead<a href="#repeatableread" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <p><strong>这是MySQL默认的隔离级别</strong></p>
 <p>在会话2中我们当前事务隔离级别为repeatable read。具体操作如下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">set</span> <span class="k">session</span> <span class="k">transaction</span> <span class="k">isolation</span> <span class="k">level</span> <span class="k">repeatable</span> <span class="k">read</span><span class="p">;</span>
-<span class="k">start</span> <span class="k">transaction</span><span class="p">;</span>
-</code></pre></div><p>接着在会话2中查询数据：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">set</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">transaction</span><span class="w"> </span><span class="k">isolation</span><span class="w"> </span><span class="k">level</span><span class="w"> </span><span class="k">repeatable</span><span class="w"> </span><span class="k">read</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">start</span><span class="w"> </span><span class="k">transaction</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>接着在会话2中查询数据：</p>
 <p><p class="md__image">
   <img src="../images/image-20210509194215137.png"
     alt="image-20210509194215137"  />
 </p>
 </p>
 <p>我们在会话1中为表account添加一条数据：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">insert</span> <span class="k">into</span> <span class="n">t_transaction</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span> <span class="n">value</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1000</span><span class="p">);</span>
-<span class="k">commit</span><span class="p">;</span>
-</code></pre></div><p>然后我们查询看数据插入是否成功：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">t_transaction</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1000</span><span class="p">);</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">commit</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>然后我们查询看数据插入是否成功：</p>
 <p><p class="md__image">
   <img src="../images/image-20210509194229007.png"
     alt="image-20210509194229007"  />
@@ -255,8 +255,8 @@
 </p>
 </p>
 <p>会话2中想插入一条新数据id=3，value=1000。来我们操作下：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">insert</span> <span class="k">into</span> <span class="n">t_transaction</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span> <span class="n">value</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span><span class="err">；</span>
-</code></pre></div><p>执行结果：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">insert</span><span class="w"> </span><span class="k">into</span><span class="w"> </span><span class="n">t_transaction</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="n">account</span><span class="p">)</span><span class="w"> </span><span class="n">value</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">1000</span><span class="p">)</span><span class="err">；</span><span class="w">
+</span></span></span></code></pre></div><p>执行结果：</p>
 <p><p class="md__image">
   <img src="../images/image-20210509194302430.png"
     alt="image-20210509194302430"  />
@@ -268,11 +268,11 @@
 。</p>
 <h4 id="serializable">Serializable<a href="#serializable" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h4>
 <p>同样，我们将会话2的事务隔离级别设置为serializable并开启事务。</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">set</span> <span class="k">session</span> <span class="k">transaction</span> <span class="k">isolation</span> <span class="k">level</span> <span class="k">serializable</span><span class="p">;</span>
-<span class="k">start</span> <span class="k">transaction</span><span class="p">;</span>
-</code></pre></div><p>在会话2中我们执行下面操作：</p>
-<div class="highlight"><pre class="chroma"><code class="language-sql" data-lang="sql"><span class="k">select</span> <span class="o">*</span> <span class="k">from</span> <span class="n">account</span><span class="p">;</span>
-</code></pre></div><p><p class="md__image">
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">set</span><span class="w"> </span><span class="k">session</span><span class="w"> </span><span class="k">transaction</span><span class="w"> </span><span class="k">isolation</span><span class="w"> </span><span class="k">level</span><span class="w"> </span><span class="k">serializable</span><span class="p">;</span><span class="w">
+</span></span></span><span class="line"><span class="cl"><span class="w"></span><span class="k">start</span><span class="w"> </span><span class="k">transaction</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p>在会话2中我们执行下面操作：</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-sql" data-lang="sql"><span class="line"><span class="cl"><span class="k">select</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="k">from</span><span class="w"> </span><span class="n">account</span><span class="p">;</span><span class="w">
+</span></span></span></code></pre></div><p><p class="md__image">
   <img src="../images/image-20210509194327343.png"
     alt="image-20210509194327343"  />
 </p>
@@ -370,7 +370,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

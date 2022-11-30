@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="IO多路复用">
-<meta itemprop="description" content="阻塞 IO 服务端为了处理客户端的连接和请求的数据，写了如下代码。 listenfd = socket(); // 打开一个网络通信端口 bind(listenfd); // 绑定 listen(listenfd); // 监听 while(1) { connfd = accept(listenfd); // 阻塞建立连接 int n = read(connfd, buf); // 阻塞读数据 doSomeThing(buf); // 利用读到的数据做些什么 close(connfd); // 关闭连接，循环等待下一个连接 } 这段代码会执行得磕磕绊绊，就像这样。 ![图片](IO 多路复用.assets/微信图片_20210529211749.gif) 可以看到，服务端的线程阻塞"><meta itemprop="datePublished" content="2020-05-30T20:55:29&#43;08:00" />
-<meta itemprop="dateModified" content="2020-05-30T20:55:29&#43;08:00" />
+<meta itemprop="description" content="阻塞 IO 服务端为了处理客户端的连接和请求的数据，写了如下代码。 listenfd = socket(); // 打开一个网络通信端口 bind(listenfd); // 绑定 listen(listenfd); // 监听 while(1) { connfd = accept(listenfd); // 阻塞建立连接 int n = read(connfd, buf); // 阻塞读数据 doSomeThing(buf); // 利用读到的数据做些什么 close(connfd); // 关闭连接，循环等待下一个连接 } 这段代码会执行得磕磕绊绊，就像这样。 ![图片](IO 多路复用.assets/微信图片_20210529211749.gif) 可以看到，服务端的线程阻塞"><meta itemprop="datePublished" content="2020-05-30T20:55:29+08:00" />
+<meta itemprop="dateModified" content="2020-05-30T20:55:29+08:00" />
 <meta itemprop="wordCount" content="3667">
 <meta itemprop="keywords" content="IO," /><meta property="og:title" content="IO多路复用" />
 <meta property="og:description" content="阻塞 IO 服务端为了处理客户端的连接和请求的数据，写了如下代码。 listenfd = socket(); // 打开一个网络通信端口 bind(listenfd); // 绑定 listen(listenfd); // 监听 while(1) { connfd = accept(listenfd); // 阻塞建立连接 int n = read(connfd, buf); // 阻塞读数据 doSomeThing(buf); // 利用读到的数据做些什么 close(connfd); // 关闭连接，循环等待下一个连接 } 这段代码会执行得磕磕绊绊，就像这样。 ![图片](IO 多路复用.assets/微信图片_20210529211749.gif) 可以看到，服务端的线程阻塞" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/linux/io-%E5%A4%9A%E8%B7%AF%E5%A4%8D%E7%94%A8/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2020-05-30T20:55:29&#43;08:00" />
-<meta property="article:modified_time" content="2020-05-30T20:55:29&#43;08:00" />
+<meta property="article:published_time" content="2020-05-30T20:55:29+08:00" />
+<meta property="article:modified_time" content="2020-05-30T20:55:29+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="IO多路复用"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>IO多路复用</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -73,16 +73,16 @@
 			<div class="content">
 				<h2 id="阻塞-io"><strong>阻塞 IO</strong><a href="#阻塞-io" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>服务端为了处理客户端的连接和请求的数据，写了如下代码。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="n">listenfd</span> <span class="o">=</span> <span class="n">socket</span><span class="o">();</span>   <span class="c1">// 打开一个网络通信端口
-</span><span class="c1"></span><span class="n">bind</span><span class="o">(</span><span class="n">listenfd</span><span class="o">);</span>        <span class="c1">// 绑定
-</span><span class="c1"></span><span class="n">listen</span><span class="o">(</span><span class="n">listenfd</span><span class="o">);</span>      <span class="c1">// 监听
-</span><span class="c1"></span><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
-  <span class="n">connfd</span> <span class="o">=</span> <span class="n">accept</span><span class="o">(</span><span class="n">listenfd</span><span class="o">);</span>  <span class="c1">// 阻塞建立连接
-</span><span class="c1"></span>  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">read</span><span class="o">(</span><span class="n">connfd</span><span class="o">,</span> <span class="n">buf</span><span class="o">);</span>  <span class="c1">// 阻塞读数据
-</span><span class="c1"></span>  <span class="n">doSomeThing</span><span class="o">(</span><span class="n">buf</span><span class="o">);</span>  <span class="c1">// 利用读到的数据做些什么
-</span><span class="c1"></span>  <span class="n">close</span><span class="o">(</span><span class="n">connfd</span><span class="o">);</span>     <span class="c1">// 关闭连接，循环等待下一个连接
-</span><span class="c1"></span><span class="o">}</span>
-</code></pre></div><p>这段代码会执行得磕磕绊绊，就像这样。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">listenfd</span> <span class="o">=</span> <span class="n">socket</span><span class="o">();</span>   <span class="c1">// 打开一个网络通信端口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">bind</span><span class="o">(</span><span class="n">listenfd</span><span class="o">);</span>        <span class="c1">// 绑定
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="n">listen</span><span class="o">(</span><span class="n">listenfd</span><span class="o">);</span>      <span class="c1">// 监听
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">connfd</span> <span class="o">=</span> <span class="n">accept</span><span class="o">(</span><span class="n">listenfd</span><span class="o">);</span>  <span class="c1">// 阻塞建立连接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">read</span><span class="o">(</span><span class="n">connfd</span><span class="o">,</span> <span class="n">buf</span><span class="o">);</span>  <span class="c1">// 阻塞读数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">doSomeThing</span><span class="o">(</span><span class="n">buf</span><span class="o">);</span>  <span class="c1">// 利用读到的数据做些什么
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">close</span><span class="o">(</span><span class="n">connfd</span><span class="o">);</span>     <span class="c1">// 关闭连接，循环等待下一个连接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></div><p>这段代码会执行得磕磕绊绊，就像这样。</p>
 <p>![图片](IO 多路复用.assets/微信图片_20210529211749.gif)</p>
 <p>可以看到，服务端的线程阻塞在了两个地方，一个是 accept 函数，一个是 read 函数。</p>
 <p>如果再把 read 函数的细节展开，我们会发现其阻塞在了两个阶段。</p>
@@ -95,24 +95,24 @@
 <h2 id="非阻塞io">非阻塞IO<a href="#非阻塞io" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>为了解决上面的问题，其关键在于改造这个 read 函数。</p>
 <p>有一种聪明的办法是，每次都创建一个新的进程或线程，去调用 read 函数，并做业务处理。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
-  <span class="n">connfd</span> <span class="o">=</span> <span class="n">accept</span><span class="o">(</span><span class="n">listenfd</span><span class="o">);</span>  <span class="c1">// 阻塞建立连接
-</span><span class="c1"></span>  <span class="n">pthread_create</span><span class="err">（</span><span class="n">doWork</span><span class="o">);</span>  <span class="c1">// 创建一个新的线程
-</span><span class="c1"></span><span class="o">}</span>
-<span class="kt">void</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{</span>
-  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">read</span><span class="o">(</span><span class="n">connfd</span><span class="o">,</span> <span class="n">buf</span><span class="o">);</span>  <span class="c1">// 阻塞读数据
-</span><span class="c1"></span>  <span class="n">doSomeThing</span><span class="o">(</span><span class="n">buf</span><span class="o">);</span>  <span class="c1">// 利用读到的数据做些什么
-</span><span class="c1"></span>  <span class="n">close</span><span class="o">(</span><span class="n">connfd</span><span class="o">);</span>     <span class="c1">// 关闭连接，循环等待下一个连接
-</span><span class="c1"></span><span class="o">}</span>
-</code></pre></div><p>这样，当给一个客户端建立好连接后，就可以立刻等待新的客户端连接，而不用阻塞在原客户端的 read 请求上。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">connfd</span> <span class="o">=</span> <span class="n">accept</span><span class="o">(</span><span class="n">listenfd</span><span class="o">);</span>  <span class="c1">// 阻塞建立连接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">pthread_create</span><span class="err">（</span><span class="n">doWork</span><span class="o">);</span>  <span class="c1">// 创建一个新的线程
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="kt">void</span> <span class="nf">doWork</span><span class="o">()</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">read</span><span class="o">(</span><span class="n">connfd</span><span class="o">,</span> <span class="n">buf</span><span class="o">);</span>  <span class="c1">// 阻塞读数据
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">doSomeThing</span><span class="o">(</span><span class="n">buf</span><span class="o">);</span>  <span class="c1">// 利用读到的数据做些什么
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">close</span><span class="o">(</span><span class="n">connfd</span><span class="o">);</span>     <span class="c1">// 关闭连接，循环等待下一个连接
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="o">}</span>
+</span></span></code></pre></div><p>这样，当给一个客户端建立好连接后，就可以立刻等待新的客户端连接，而不用阻塞在原客户端的 read 请求上。</p>
 <p>![图片](IO 多路复用.assets/微信图片_20210529211906.gif)</p>
 <p>不过，这不叫非阻塞 IO，只不过用了多线程的手段使得主线程没有卡在 read 函数上不往下走罢了。操作系统为我们提供的 read 函数仍然是阻塞的。</p>
 <p>所以真正的非阻塞 IO，不能是通过我们用户层的小把戏，<strong>而是要恳请操作系统为我们提供一个非阻塞的 read 函数</strong>。</p>
 <p>这个 read 函数的效果是，如果没有数据到达时（到达网卡并拷贝到了内核缓冲区），立刻返回一个错误值（-1），而不是阻塞地等待。</p>
 <p>操作系统提供了这样的功能，只需要在调用 read 前，将文件描述符设置为非阻塞即可。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="n">fcntl</span><span class="o">(</span><span class="n">connfd</span><span class="o">,</span> <span class="n">F_SETFL</span><span class="o">,</span> <span class="n">O_NONBLOCK</span><span class="o">);</span>
-<span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">read</span><span class="o">(</span><span class="n">connfd</span><span class="o">,</span> <span class="n">buffer</span><span class="o">)</span> <span class="o">!=</span> <span class="n">SUCCESS</span><span class="o">);</span>
-</code></pre></div><p>这样，就需要用户线程循环调用 read，直到返回值不为 -1，再开始处理业务。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">fcntl</span><span class="o">(</span><span class="n">connfd</span><span class="o">,</span> <span class="n">F_SETFL</span><span class="o">,</span> <span class="n">O_NONBLOCK</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">read</span><span class="o">(</span><span class="n">connfd</span><span class="o">,</span> <span class="n">buffer</span><span class="o">)</span> <span class="o">!=</span> <span class="n">SUCCESS</span><span class="o">);</span>
+</span></span></code></pre></div><p>这样，就需要用户线程循环调用 read，直到返回值不为 -1，再开始处理业务。</p>
 <p>![图片](IO 多路复用.assets/微信图片_20210529211945.gif)</p>
 <p>这里我们注意到一个细节。</p>
 <p>非阻塞的 read，指的是在数据到达前，即数据还未到达网卡，或者到达网卡但还没有拷贝到内核缓冲区之前，这个阶段是非阻塞的。</p>
@@ -123,16 +123,16 @@
 <p>为每个客户端创建一个线程，服务器端的线程资源很容易被耗光。</p>
 <p>![image-20210529212305446](IO 多路复用.assets/image-20210529212305446.png)</p>
 <p>当然还有个聪明的办法，我们可以每 accept 一个客户端连接后，将这个文件描述符（connfd）放到一个数组里。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="n">fdlist</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">connfd</span><span class="o">);</span>
-</code></pre></div><p>然后弄一个新的线程去不断遍历这个数组，调用每一个元素的非阻塞 read 方法。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
-  <span class="k">for</span><span class="o">(</span><span class="n">fd</span> <span class="o">&lt;--</span> <span class="n">fdlist</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">if</span><span class="o">(</span><span class="n">read</span><span class="o">(</span><span class="n">fd</span><span class="o">)</span> <span class="o">!=</span> <span class="o">-</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
-      <span class="n">doSomeThing</span><span class="o">();</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div><p>这样，我们就成功用一个线程处理了多个客户端连接。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="n">fdlist</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">connfd</span><span class="o">);</span>
+</span></span></code></pre></div><p>然后弄一个新的线程去不断遍历这个数组，调用每一个元素的非阻塞 read 方法。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span><span class="o">(</span><span class="n">fd</span> <span class="o">&lt;--</span> <span class="n">fdlist</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="o">(</span><span class="n">read</span><span class="o">(</span><span class="n">fd</span><span class="o">)</span> <span class="o">!=</span> <span class="o">-</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="n">doSomeThing</span><span class="o">();</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>这样，我们就成功用一个线程处理了多个客户端连接。</p>
 <p>![图片](IO 多路复用.assets/微信图片_20210529212313.gif)</p>
 <p>你是不是觉得这有些多路复用的意思？</p>
 <p>但这和我们用多线程去将阻塞 IO 改造成看起来是非阻塞 IO 一样，这种遍历方式也只是我们用户自己想出的小把戏，每次遍历遇到 read 返回 -1 时仍然是一次浪费资源的系统调用。</p>
@@ -142,49 +142,49 @@
 <p>select 是操作系统提供的系统调用函数，通过它，我们可以把一个文件描述符的数组发给操作系统， 让操作系统去遍历，确定哪个文件描述符可以读写， 然后告诉我们去处理：</p>
 <p>![图片](IO 多路复用.assets/微信图片_20210529212431.gif)</p>
 <p>select系统调用的函数定义如下。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kt">int</span> <span class="nf">select</span><span class="o">(</span>
-    <span class="kt">int</span> <span class="n">nfds</span><span class="o">,</span>
-    <span class="n">fd_set</span> <span class="o">*</span><span class="n">readfds</span><span class="o">,</span>
-    <span class="n">fd_set</span> <span class="o">*</span><span class="n">writefds</span><span class="o">,</span>
-    <span class="n">fd_set</span> <span class="o">*</span><span class="n">exceptfds</span><span class="o">,</span>
-    <span class="n">struct</span> <span class="n">timeval</span> <span class="o">*</span><span class="n">timeout</span><span class="o">);</span>
-<span class="c1">// nfds:监控的文件描述符集里最大文件描述符加1
-</span><span class="c1">// readfds：监控有读数据到达文件描述符集合，传入传出参数
-</span><span class="c1">// writefds：监控写数据到达文件描述符集合，传入传出参数
-</span><span class="c1">// exceptfds：监控异常发生达文件描述符集合, 传入传出参数
-</span><span class="c1">// timeout：定时阻塞监控时间，3种情况
-</span><span class="c1">//  1.NULL，永远等下去
-</span><span class="c1">//  2.设置timeval，等待固定时间
-</span><span class="c1">//  3.设置timeval里时间均为0，检查描述字后立即返回，轮询
-</span></code></pre></div><p>服务端代码，这样来写。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">select</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">    <span class="kt">int</span> <span class="n">nfds</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fd_set</span> <span class="o">*</span><span class="n">readfds</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fd_set</span> <span class="o">*</span><span class="n">writefds</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">fd_set</span> <span class="o">*</span><span class="n">exceptfds</span><span class="o">,</span>
+</span></span><span class="line"><span class="cl">    <span class="n">struct</span> <span class="n">timeval</span> <span class="o">*</span><span class="n">timeout</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// nfds:监控的文件描述符集里最大文件描述符加1
+</span></span></span><span class="line"><span class="cl"><span class="c1">// readfds：监控有读数据到达文件描述符集合，传入传出参数
+</span></span></span><span class="line"><span class="cl"><span class="c1">// writefds：监控写数据到达文件描述符集合，传入传出参数
+</span></span></span><span class="line"><span class="cl"><span class="c1">// exceptfds：监控异常发生达文件描述符集合, 传入传出参数
+</span></span></span><span class="line"><span class="cl"><span class="c1">// timeout：定时阻塞监控时间，3种情况
+</span></span></span><span class="line"><span class="cl"><span class="c1">//  1.NULL，永远等下去
+</span></span></span><span class="line"><span class="cl"><span class="c1">//  2.设置timeval，等待固定时间
+</span></span></span><span class="line"><span class="cl"><span class="c1">//  3.设置timeval里时间均为0，检查描述字后立即返回，轮询
+</span></span></span></code></pre></div><p>服务端代码，这样来写。</p>
 <p>首先一个线程不断接受客户端连接，并把 socket 文件描述符放到一个 list 里。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
-  <span class="n">connfd</span> <span class="o">=</span> <span class="n">accept</span><span class="o">(</span><span class="n">listenfd</span><span class="o">);</span>
-  <span class="n">fcntl</span><span class="o">(</span><span class="n">connfd</span><span class="o">,</span> <span class="n">F_SETFL</span><span class="o">,</span> <span class="n">O_NONBLOCK</span><span class="o">);</span>
-  <span class="n">fdlist</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">connfd</span><span class="o">);</span>
-<span class="o">}</span>
-</code></pre></div><p>然后，另一个线程不再自己遍历，而是调用 select，将这批文件描述符 list 交给操作系统去遍历。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
-  <span class="c1">// 把一堆文件描述符 list 传给 select 函数
-</span><span class="c1"></span>  <span class="c1">// 有已就绪的文件描述符就返回，nready 表示有多少个就绪的
-</span><span class="c1"></span>  <span class="n">nready</span> <span class="o">=</span> <span class="n">select</span><span class="o">(</span><span class="n">list</span><span class="o">);</span>
-  <span class="o">...</span>
-<span class="o">}</span>
-</code></pre></div><p>不过，当 select 函数返回后，用户依然需要遍历刚刚提交给操作系统的 list。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">connfd</span> <span class="o">=</span> <span class="n">accept</span><span class="o">(</span><span class="n">listenfd</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">fcntl</span><span class="o">(</span><span class="n">connfd</span><span class="o">,</span> <span class="n">F_SETFL</span><span class="o">,</span> <span class="n">O_NONBLOCK</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="n">fdlist</span><span class="o">.</span><span class="na">add</span><span class="o">(</span><span class="n">connfd</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>然后，另一个线程不再自己遍历，而是调用 select，将这批文件描述符 list 交给操作系统去遍历。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 把一堆文件描述符 list 传给 select 函数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// 有已就绪的文件描述符就返回，nready 表示有多少个就绪的
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="n">nready</span> <span class="o">=</span> <span class="n">select</span><span class="o">(</span><span class="n">list</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="o">...</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>不过，当 select 函数返回后，用户依然需要遍历刚刚提交给操作系统的 list。</p>
 <p>只不过，操作系统会将准备就绪的文件描述符做上标识，用户层将不会再有无意义的系统调用开销。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
-  <span class="n">nready</span> <span class="o">=</span> <span class="n">select</span><span class="o">(</span><span class="n">list</span><span class="o">);</span>
-  <span class="c1">// 用户层依然要遍历，只不过少了很多无效的系统调用
-</span><span class="c1"></span>  <span class="k">for</span><span class="o">(</span><span class="n">fd</span> <span class="o">&lt;--</span> <span class="n">fdlist</span><span class="o">)</span> <span class="o">{</span>
-    <span class="k">if</span><span class="o">(</span><span class="n">fd</span> <span class="o">!=</span> <span class="o">-</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
-      <span class="c1">// 只读已就绪的文件描述符
-</span><span class="c1"></span>      <span class="n">read</span><span class="o">(</span><span class="n">fd</span><span class="o">,</span> <span class="n">buf</span><span class="o">);</span>
-      <span class="c1">// 总共只有 nready 个已就绪描述符，不用过多遍历
-</span><span class="c1"></span>      <span class="k">if</span><span class="o">(--</span><span class="n">nready</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="k">break</span><span class="o">;</span>
-    <span class="o">}</span>
-  <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div><p>正如刚刚的动图中所描述的，其直观效果如下。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="k">while</span><span class="o">(</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">nready</span> <span class="o">=</span> <span class="n">select</span><span class="o">(</span><span class="n">list</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 用户层依然要遍历，只不过少了很多无效的系统调用
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">for</span><span class="o">(</span><span class="n">fd</span> <span class="o">&lt;--</span> <span class="n">fdlist</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span><span class="o">(</span><span class="n">fd</span> <span class="o">!=</span> <span class="o">-</span><span class="n">1</span><span class="o">)</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 只读已就绪的文件描述符
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="n">read</span><span class="o">(</span><span class="n">fd</span><span class="o">,</span> <span class="n">buf</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 总共只有 nready 个已就绪描述符，不用过多遍历
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="k">if</span><span class="o">(--</span><span class="n">nready</span> <span class="o">==</span> <span class="n">0</span><span class="o">)</span> <span class="k">break</span><span class="o">;</span>
+</span></span><span class="line"><span class="cl">    <span class="o">}</span>
+</span></span><span class="line"><span class="cl">  <span class="o">}</span>
+</span></span><span class="line"><span class="cl"><span class="o">}</span>
+</span></span></code></pre></div><p>正如刚刚的动图中所描述的，其直观效果如下。</p>
 <p>![图片](IO 多路复用.assets/微信图片_20210529212600.gif)</p>
 <p>可以看出几个细节：</p>
 <ol>
@@ -203,14 +203,14 @@
 <p>可以看到，这种方式，既做到了一个线程处理多个客户端连接（文件描述符），又减少了系统调用的开销（多个文件描述符只有一次 select 的系统调用 + n 次就绪状态的文件描述符的 read 系统调用）。</p>
 <h3 id="poll">poll<a href="#poll" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h3>
 <p>poll 也是操作系统提供的系统调用函数。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kt">int</span> <span class="nf">poll</span><span class="o">(</span><span class="n">struct</span> <span class="n">pollfd</span> <span class="o">*</span><span class="n">fds</span><span class="o">,</span> <span class="n">nfds_tnfds</span><span class="o">,</span> <span class="kt">int</span> <span class="n">timeout</span><span class="o">);</span>
-
-<span class="n">struct</span> <span class="n">pollfd</span> <span class="o">{</span>
-  <span class="n">intfd</span><span class="o">;</span> <span class="cm">/*文件描述符*/</span>
-  <span class="n">shortevents</span><span class="o">;</span> <span class="cm">/*监控的事件*/</span>
-  <span class="n">shortrevents</span><span class="o">;</span> <span class="cm">/*监控事件中满足条件返回的事件*/</span>
-<span class="o">};</span>
-</code></pre></div><p>它和 select 的主要区别就是，去掉了 select 只能监听 1024 个文件描述符的限制。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">poll</span><span class="o">(</span><span class="n">struct</span> <span class="n">pollfd</span> <span class="o">*</span><span class="n">fds</span><span class="o">,</span> <span class="n">nfds_tnfds</span><span class="o">,</span> <span class="kt">int</span> <span class="n">timeout</span><span class="o">);</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="n">struct</span> <span class="n">pollfd</span> <span class="o">{</span>
+</span></span><span class="line"><span class="cl">  <span class="n">intfd</span><span class="o">;</span> <span class="cm">/*文件描述符*/</span>
+</span></span><span class="line"><span class="cl">  <span class="n">shortevents</span><span class="o">;</span> <span class="cm">/*监控的事件*/</span>
+</span></span><span class="line"><span class="cl">  <span class="n">shortrevents</span><span class="o">;</span> <span class="cm">/*监控事件中满足条件返回的事件*/</span>
+</span></span><span class="line"><span class="cl"><span class="o">};</span>
+</span></span></code></pre></div><p>它和 select 的主要区别就是，去掉了 select 只能监听 1024 个文件描述符的限制。</p>
 <h2 id="epoll">epoll<a href="#epoll" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <p>epoll 是最终的大 boss，它解决了 select 和 poll 的一些问题。</p>
 <p>还记得上面说的 select 的三个细节么？</p>
@@ -239,14 +239,14 @@
 </ol>
 <p>具体，操作系统提供了这三个函数。</p>
 <p>第一步，创建一个 epoll 句柄</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kt">int</span> <span class="nf">epoll_create</span><span class="o">(</span><span class="kt">int</span> <span class="n">size</span><span class="o">);</span>
-</code></pre></div><p>第二步，向内核添加、修改或删除要监控的文件描述符。</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kt">int</span> <span class="nf">epoll_ctl</span><span class="o">(</span>
-  <span class="kt">int</span> <span class="n">epfd</span><span class="o">,</span> <span class="kt">int</span> <span class="n">op</span><span class="o">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="o">,</span> <span class="n">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">event</span><span class="o">);</span>
-</code></pre></div><p>第三步，类似发起了 select() 调用</p>
-<div class="highlight"><pre class="chroma"><code class="language-java" data-lang="java"><span class="kt">int</span> <span class="nf">epoll_wait</span><span class="o">(</span>
-  <span class="kt">int</span> <span class="n">epfd</span><span class="o">,</span> <span class="n">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">events</span><span class="o">,</span> <span class="kt">int</span> <span class="n">max</span> <span class="n">events</span><span class="o">,</span> <span class="kt">int</span> <span class="n">timeout</span><span class="o">);</span>
-</code></pre></div><p>使用起来，其内部原理就像如下一般丝滑。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">epoll_create</span><span class="o">(</span><span class="kt">int</span> <span class="n">size</span><span class="o">);</span>
+</span></span></code></pre></div><p>第二步，向内核添加、修改或删除要监控的文件描述符。</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">epoll_ctl</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">epfd</span><span class="o">,</span> <span class="kt">int</span> <span class="n">op</span><span class="o">,</span> <span class="kt">int</span> <span class="n">fd</span><span class="o">,</span> <span class="n">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">event</span><span class="o">);</span>
+</span></span></code></pre></div><p>第三步，类似发起了 select() 调用</p>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-java" data-lang="java"><span class="line"><span class="cl"><span class="kt">int</span> <span class="nf">epoll_wait</span><span class="o">(</span>
+</span></span><span class="line"><span class="cl">  <span class="kt">int</span> <span class="n">epfd</span><span class="o">,</span> <span class="n">struct</span> <span class="n">epoll_event</span> <span class="o">*</span><span class="n">events</span><span class="o">,</span> <span class="kt">int</span> <span class="n">max</span> <span class="n">events</span><span class="o">,</span> <span class="kt">int</span> <span class="n">timeout</span><span class="o">);</span>
+</span></span></code></pre></div><p>使用起来，其内部原理就像如下一般丝滑。</p>
 <p>![图片](IO 多路复用.assets/微信图片_20210529212947.gif)</p>
 <p>如果你想继续深入了解 epoll 的底层原理，推荐阅读飞哥的《<a href="http://mp.weixin.qq.com/s?__biz=MjM5Njg5NDgwNA==&amp;mid=2247484905&amp;idx=1&amp;sn=a74ed5d7551c4fb80a8abe057405ea5e&amp;chksm=a6e304d291948dc4fd7fe32498daaae715adb5f84ec761c31faf7a6310f4b595f95186647f12&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">图解 | 深入揭秘 epoll 是如何实现 IO 多路复用的！</a>
 》，从 linux 源码级别，一行一行非常硬核地解读 epoll 的实现原理，且配有大量方便理解的图片，非常适合源码控的小伙伴阅读。</p>
@@ -321,7 +321,7 @@
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {

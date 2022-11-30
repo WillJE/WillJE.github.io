@@ -8,15 +8,15 @@
 	<meta name="theme-color" content="#fcfcfc">
 	<meta name="msapplication-TileColor" content="#fcfcfc">
 <meta itemprop="name" content="滑动窗口算法思想">
-<meta itemprop="description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。 滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。 可用滑动窗口思想解决的问"><meta itemprop="datePublished" content="2021-09-13T21:23:18&#43;08:00" />
-<meta itemprop="dateModified" content="2021-09-13T21:23:18&#43;08:00" />
+<meta itemprop="description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。 滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。 可用滑动窗口思想解决的问"><meta itemprop="datePublished" content="2021-09-13T21:23:18+08:00" />
+<meta itemprop="dateModified" content="2021-09-13T21:23:18+08:00" />
 <meta itemprop="wordCount" content="6016">
 <meta itemprop="keywords" content="滑动窗口," /><meta property="og:title" content="滑动窗口算法思想" />
 <meta property="og:description" content="滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。 滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。 可用滑动窗口思想解决的问" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="https://willje.github.io/posts/algorithm/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3/" /><meta property="article:section" content="posts" />
-<meta property="article:published_time" content="2021-09-13T21:23:18&#43;08:00" />
-<meta property="article:modified_time" content="2021-09-13T21:23:18&#43;08:00" />
+<meta property="article:published_time" content="2021-09-13T21:23:18+08:00" />
+<meta property="article:modified_time" content="2021-09-13T21:23:18+08:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="滑动窗口算法思想"/>
@@ -30,7 +30,7 @@
 	<link rel="shortcut icon" href="/favicon.ico">
 
 	<title>滑动窗口算法思想</title>
-	<link rel="stylesheet" href="https://willje.github.io/css/style.min.d3141168199607bf3a517216ce3c263814eecdbc8fca72a9a88700799a838219.css" integrity="sha256-0xQRaBmWB786UXIWzjwmOBTuzbyPynKpqIcAeZqDghk=" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://willje.github.io/css/style.min.037b6ee8f8c1baab6a3d0a9da11c3ff18a7552471f16c59fd98538d5ce99208b.css" integrity="sha256-A3tu6PjBuqtqPQqdoRw/8Yp1UkcfFsWf2YU41c6ZIIs=" crossorigin="anonymous">
 	
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
 	<link rel="stylesheet" href="https://willje.github.io/css/styles.css">
@@ -89,7 +89,7 @@
 <p>第 2 步相当于在寻找一个「可行解」，然后第 3 步在优化这个「可行解」，最终找到最优解。 左右指针轮流前进，窗口大小增增减减，窗口不断向右滑动。</p>
 </blockquote>
 <p><strong>代码模板</strong></p>
-<pre><code>left,right := 0,0 // 左右指针
+<pre tabindex="0"><code>left,right := 0,0 // 左右指针
 
 // 窗口右边界滑动
 for right &lt; length {
@@ -125,32 +125,32 @@ for right &lt; length {
 </a>
 </p>
 <p>我们维护一个长度为2的窗口，然后依次滑动这个窗口直至结束。在滑动时，出一个左边元素，进一个右边元素，计算这个窗口内的元素和，然后和最大和比较。滑动结束，也就求出了最大和是多少。</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">maxSubSum</span><span class="p">(</span><span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-  <span class="k">if</span> <span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="mi">0</span>
-  <span class="p">}</span>
-  <span class="k">if</span> <span class="nx">n</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">n</span> <span class="p">=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span>
-  <span class="p">}</span>
-  <span class="c1">// sum 标记窗口内元素和
-</span><span class="c1"></span>  <span class="c1">// maxSum标记sum的最大值
-</span><span class="c1"></span>  <span class="nx">sum</span><span class="p">,</span> <span class="nx">maxSum</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-  <span class="c1">// 初始化窗口
-</span><span class="c1"></span>  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-    <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
-  <span class="p">}</span>
-  <span class="nx">maxSum</span> <span class="p">=</span> <span class="nx">sum</span>
-  <span class="c1">// 滑动窗口
-</span><span class="c1"></span>  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-    <span class="c1">// 左出右进
-</span><span class="c1"></span>    <span class="nx">sum</span> <span class="p">=</span> <span class="nx">sum</span> <span class="o">-</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="nx">n</span><span class="p">]</span> <span class="o">+</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
-    <span class="k">if</span> <span class="nx">sum</span> <span class="p">&gt;</span> <span class="nx">maxSum</span> <span class="p">{</span>
-      <span class="nx">maxSum</span> <span class="p">=</span> <span class="nx">sum</span>
-    <span class="p">}</span>
-  <span class="p">}</span>
-  <span class="k">return</span> <span class="nx">maxSum</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="和为target的连续正整数序列">和为target的连续正整数序列<a href="#和为target的连续正整数序列" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">maxSubSum</span><span class="p">(</span><span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">n</span> <span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="nx">n</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="nx">n</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">n</span> <span class="p">=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// sum 标记窗口内元素和
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// maxSum标记sum的最大值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">sum</span><span class="p">,</span> <span class="nx">maxSum</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 初始化窗口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">maxSum</span> <span class="p">=</span> <span class="nx">sum</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 滑动窗口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">n</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">);</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 左出右进
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">sum</span> <span class="p">=</span> <span class="nx">sum</span> <span class="o">-</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="nx">n</span><span class="p">]</span> <span class="o">+</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">i</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">sum</span> <span class="p">&gt;</span> <span class="nx">maxSum</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">maxSum</span> <span class="p">=</span> <span class="nx">sum</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">maxSum</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="和为target的连续正整数序列">和为target的连续正整数序列<a href="#和为target的连续正整数序列" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <blockquote>
 <p>输入一个正整数 target ，输出所有和为 target 的连续正整数序列（至少含有两个数）。</p>
 <p>序列内的数字由小到大排列，不同序列按照首个数字从小到大排列。</p>
@@ -171,45 +171,45 @@ for right &lt; length {
 <li>窗口内元素和大于target，需要缩小窗口。窗口左边界移动。</li>
 <li>窗口内元素和等于target，记录结果。窗口向右滑动。</li>
 </ol>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">findContinuousSequence</span><span class="p">(</span><span class="nx">target</span> <span class="kt">int</span><span class="p">)</span> <span class="p">[][]</span><span class="kt">int</span> <span class="p">{</span>
-  <span class="c1">// 记录窗口内元素和
-</span><span class="c1"></span>  <span class="nx">sum</span> <span class="o">:=</span> <span class="mi">0</span>
-  <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
-  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">right</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-    <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">i</span>
-  <span class="p">}</span>
-
-  <span class="nx">result</span> <span class="o">:=</span> <span class="p">[][]</span><span class="kt">int</span><span class="p">{}</span>
-  <span class="k">for</span> <span class="nx">left</span> <span class="o">&lt;=</span> <span class="nx">target</span><span class="o">-</span><span class="mi">1</span> <span class="p">{</span>
-    <span class="k">if</span> <span class="nx">sum</span> <span class="o">==</span> <span class="nx">target</span> <span class="p">{</span>
-      <span class="nx">tmp</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span><span class="p">)</span>
-      <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">left</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">right</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-        <span class="nx">tmp</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="nx">left</span><span class="p">]</span> <span class="p">=</span> <span class="nx">i</span>
-      <span class="p">}</span>
-      <span class="nx">result</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="nx">tmp</span><span class="p">)</span>
-      <span class="c1">// 窗口向右滑动
-</span><span class="c1"></span>      <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="p">=</span> <span class="nx">left</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nx">left</span><span class="o">+</span><span class="mi">3</span>
-      <span class="nx">sum</span> <span class="p">=</span> <span class="p">(</span><span class="nx">left</span> <span class="o">+</span> <span class="nx">left</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">sum</span> <span class="p">&lt;</span> <span class="nx">target</span> <span class="p">{</span>
-      <span class="c1">// 和小于target，窗口右侧向右移动
-</span><span class="c1"></span>      <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">right</span>
-      <span class="nx">right</span><span class="o">++</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">sum</span> <span class="p">&gt;</span> <span class="nx">target</span> <span class="p">{</span>
-      <span class="c1">// 和大于target，窗口左侧向右移动
-</span><span class="c1"></span>      <span class="nx">sum</span> <span class="o">-=</span> <span class="nx">left</span>
-      <span class="nx">left</span><span class="o">++</span>
-    <span class="p">}</span>
-
-    <span class="c1">// 如果窗口长度为2，且窗口内元素已经大于target，则可以终止滑动了
-</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">&amp;&amp;</span> <span class="nx">sum</span> <span class="p">&gt;</span> <span class="nx">target</span> <span class="p">{</span>
-      <span class="k">break</span>
-    <span class="p">}</span>
-
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="nx">result</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="长度最小的子数组">长度最小的子数组<a href="#长度最小的子数组" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">findContinuousSequence</span><span class="p">(</span><span class="nx">target</span> <span class="kt">int</span><span class="p">)</span> <span class="p">[][]</span><span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 记录窗口内元素和
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">sum</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">1</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">right</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">i</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="nx">result</span> <span class="o">:=</span> <span class="p">[][]</span><span class="kt">int</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="nx">left</span> <span class="o">&lt;=</span> <span class="nx">target</span><span class="o">-</span><span class="mi">1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">sum</span> <span class="o">==</span> <span class="nx">target</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">tmp</span> <span class="o">:=</span> <span class="nb">make</span><span class="p">([]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="nx">left</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">right</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">tmp</span><span class="p">[</span><span class="nx">i</span><span class="o">-</span><span class="nx">left</span><span class="p">]</span> <span class="p">=</span> <span class="nx">i</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">result</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">result</span><span class="p">,</span> <span class="nx">tmp</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 窗口向右滑动
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="p">=</span> <span class="nx">left</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nx">left</span><span class="o">+</span><span class="mi">3</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">sum</span> <span class="p">=</span> <span class="p">(</span><span class="nx">left</span> <span class="o">+</span> <span class="nx">left</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">sum</span> <span class="p">&lt;</span> <span class="nx">target</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 和小于target，窗口右侧向右移动
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">right</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">right</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="nx">sum</span> <span class="p">&gt;</span> <span class="nx">target</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="c1">// 和大于target，窗口左侧向右移动
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>      <span class="nx">sum</span> <span class="o">-=</span> <span class="nx">left</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">left</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 如果窗口长度为2，且窗口内元素已经大于target，则可以终止滑动了
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span> <span class="o">==</span> <span class="mi">2</span> <span class="o">&amp;&amp;</span> <span class="nx">sum</span> <span class="p">&gt;</span> <span class="nx">target</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">break</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">result</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="长度最小的子数组">长度最小的子数组<a href="#长度最小的子数组" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <blockquote>
 <p>给定一个含有 n 个正整数的数组和一个正整数 s ，找出该数组中满足其和 ≥ s 的长度最小的连续子数组，并返回其长度。如果不存在符合条件的连续子数组，返回 0。</p>
 <p>示例:
@@ -224,42 +224,42 @@ for right &lt; length {
 <p>和上面一个题目一样，我们只需要一个sum变量来存储窗口内元素的和即可。</p>
 <p>当sum=s时，此时说明这个窗口是满足条件的，我们要判断此时窗口的长度是否是最小。另外，窗口左边界增加，缩小窗口。
 不断重复增大，缩小窗口的操作，直至窗口到数组末尾。</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">minSubArrayLen</span><span class="p">(</span><span class="nx">s</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-    <span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span>
-
-    <span class="nx">min</span> <span class="o">:=</span> <span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span>
-
-    <span class="c1">// 滑动窗口的左右指针
-</span><span class="c1"></span>    <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-    <span class="c1">// 窗口内元素的和
-</span><span class="c1"></span>    <span class="nx">sum</span> <span class="o">:=</span> <span class="mi">0</span>
-    <span class="c1">// 当和小于s时，增大窗口
-</span><span class="c1"></span>    <span class="k">for</span> <span class="nx">sum</span> <span class="p">&lt;</span> <span class="nx">s</span> <span class="o">&amp;&amp;</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">length</span> <span class="p">{</span>
-
-        <span class="c1">// 如果最小窗口长度已经是1，那么窗口可终止滑动
-</span><span class="c1"></span>        <span class="k">if</span> <span class="nx">min</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
-            <span class="k">break</span>
-        <span class="p">}</span>
-
-        <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span>
-        <span class="nx">right</span><span class="o">++</span>
-
-        <span class="c1">// 当和大于等于s时，缩小窗口
-</span><span class="c1"></span>        <span class="k">for</span> <span class="nx">sum</span> <span class="o">&gt;=</span> <span class="nx">s</span> <span class="p">{</span>
-            <span class="c1">// 比较此时窗口长度与记录的最小长度
-</span><span class="c1"></span>            <span class="k">if</span> <span class="nx">min</span> <span class="p">&gt;</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span> <span class="p">{</span>
-                <span class="nx">min</span> <span class="p">=</span> <span class="nx">right</span> <span class="o">-</span> <span class="nx">left</span>
-            <span class="p">}</span>
-            <span class="nx">sum</span> <span class="o">-=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span>
-            <span class="nx">left</span><span class="o">++</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="nx">min</span> <span class="o">==</span> <span class="nx">length</span><span class="o">+</span><span class="mi">1</span> <span class="p">{</span>
-        <span class="k">return</span> <span class="mi">0</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">min</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="水果成篮">水果成篮<a href="#水果成篮" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">minSubArrayLen</span><span class="p">(</span><span class="nx">s</span> <span class="kt">int</span><span class="p">,</span> <span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">min</span> <span class="o">:=</span> <span class="nx">length</span> <span class="o">+</span> <span class="mi">1</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 滑动窗口的左右指针
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 窗口内元素的和
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">sum</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 当和小于s时，增大窗口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="nx">sum</span> <span class="p">&lt;</span> <span class="nx">s</span> <span class="o">&amp;&amp;</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">length</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// 如果最小窗口长度已经是1，那么窗口可终止滑动
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">if</span> <span class="nx">min</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">break</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="nx">sum</span> <span class="o">+=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">right</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">        <span class="c1">// 当和大于等于s时，缩小窗口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">for</span> <span class="nx">sum</span> <span class="o">&gt;=</span> <span class="nx">s</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 比较此时窗口长度与记录的最小长度
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="nx">min</span> <span class="p">&gt;</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">min</span> <span class="p">=</span> <span class="nx">right</span> <span class="o">-</span> <span class="nx">left</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">sum</span> <span class="o">-=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">left</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">min</span> <span class="o">==</span> <span class="nx">length</span><span class="o">+</span><span class="mi">1</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="k">return</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">min</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="水果成篮">水果成篮<a href="#水果成篮" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <blockquote>
 <p>在一排树中，第 i 棵树产生 tree[i] 型的水果。
 你可以从你选择的任何树开始，然后重复执行以下步骤：</p>
@@ -303,40 +303,40 @@ for right &lt; length {
 <p>如果窗口内收集的水果小于等于两种，那么我们增大窗口。
 如果窗口内收集的水果多于两种，那么我们减小窗口。
 然后在滑动的过程中，取到窗口的最大长度即可。</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">totalFruit</span><span class="p">(</span><span class="nx">tree</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
-    <span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">tree</span><span class="p">)</span>
-
-    <span class="nx">max</span> <span class="o">:=</span> <span class="mi">0</span>
-    <span class="c1">// basketMap存储窗口内已收集的水果数量
-</span><span class="c1"></span>    <span class="nx">basketMap</span> <span class="o">:=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="kt">int</span><span class="p">{}</span>
-    <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-
-    <span class="c1">// 当窗口内元素个数小于等于2，增大窗口
-</span><span class="c1"></span>    <span class="k">for</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">length</span> <span class="o">&amp;&amp;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">basketMap</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="p">{</span>
-        <span class="nx">rightItem</span> <span class="o">:=</span> <span class="nx">tree</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span>
-        <span class="c1">// 增大窗口，右边元素入窗
-</span><span class="c1"></span>        <span class="nx">basketMap</span><span class="p">[</span><span class="nx">rightItem</span><span class="p">]</span><span class="o">++</span>
-        <span class="nx">right</span><span class="o">++</span>
-        <span class="c1">// 如果窗口内元素已大于2个，减小窗口
-</span><span class="c1"></span>        <span class="k">for</span> <span class="nb">len</span><span class="p">(</span><span class="nx">basketMap</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">2</span> <span class="p">{</span>
-            <span class="nx">leftItem</span> <span class="o">:=</span> <span class="nx">tree</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span>
-            <span class="nx">basketMap</span><span class="p">[</span><span class="nx">leftItem</span><span class="p">]</span><span class="o">--</span>
-            <span class="c1">// 如果左边元素出窗后，该类水果数量已为0，则delete该key
-</span><span class="c1"></span>            <span class="k">if</span> <span class="nx">basketMap</span><span class="p">[</span><span class="nx">leftItem</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-                <span class="nb">delete</span><span class="p">(</span><span class="nx">basketMap</span><span class="p">,</span> <span class="nx">leftItem</span><span class="p">)</span>
-            <span class="p">}</span>
-            <span class="nx">left</span><span class="o">++</span>
-        <span class="p">}</span>
-        <span class="nx">current</span> <span class="o">:=</span> <span class="nx">right</span> <span class="o">-</span> <span class="nx">left</span>
-        <span class="k">if</span> <span class="nx">max</span> <span class="p">&lt;</span> <span class="nx">current</span> <span class="p">{</span>
-            <span class="c1">// fmt.Printf(&#34;left: %d,right: %d\n&#34;, left, right)
-</span><span class="c1"></span>            <span class="nx">max</span> <span class="p">=</span> <span class="nx">current</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="k">return</span> <span class="nx">max</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="最长不重复子串的长度">最长不重复子串的长度<a href="#最长不重复子串的长度" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">totalFruit</span><span class="p">(</span><span class="nx">tree</span> <span class="p">[]</span><span class="kt">int</span><span class="p">)</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">tree</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">max</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// basketMap存储窗口内已收集的水果数量
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">basketMap</span> <span class="o">:=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">int</span><span class="p">]</span><span class="kt">int</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 当窗口内元素个数小于等于2，增大窗口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">length</span> <span class="o">&amp;&amp;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">basketMap</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">2</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">rightItem</span> <span class="o">:=</span> <span class="nx">tree</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 增大窗口，右边元素入窗
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="nx">basketMap</span><span class="p">[</span><span class="nx">rightItem</span><span class="p">]</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">right</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">        <span class="c1">// 如果窗口内元素已大于2个，减小窗口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>        <span class="k">for</span> <span class="nb">len</span><span class="p">(</span><span class="nx">basketMap</span><span class="p">)</span> <span class="p">&gt;</span> <span class="mi">2</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">leftItem</span> <span class="o">:=</span> <span class="nx">tree</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">basketMap</span><span class="p">[</span><span class="nx">leftItem</span><span class="p">]</span><span class="o">--</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// 如果左边元素出窗后，该类水果数量已为0，则delete该key
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="k">if</span> <span class="nx">basketMap</span><span class="p">[</span><span class="nx">leftItem</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nb">delete</span><span class="p">(</span><span class="nx">basketMap</span><span class="p">,</span> <span class="nx">leftItem</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">left</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">current</span> <span class="o">:=</span> <span class="nx">right</span> <span class="o">-</span> <span class="nx">left</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">max</span> <span class="p">&lt;</span> <span class="nx">current</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="c1">// fmt.Printf(&#34;left: %d,right: %d\n&#34;, left, right)
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>            <span class="nx">max</span> <span class="p">=</span> <span class="nx">current</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">max</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="最长不重复子串的长度">最长不重复子串的长度<a href="#最长不重复子串的长度" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <blockquote>
 <p>给定一个字符串str，找出其中不含有重复字符的最长子串的长度。</p>
 <p>例如，str=”abcabcdd”，最长不重复子串”abcd”的长度为4。</p>
@@ -348,7 +348,7 @@ for right &lt; length {
     alt=""  />
 </p>
 </p>
-<pre><code>func lengthOfLongestSubstring(str string) int {
+<pre tabindex="0"><code>func lengthOfLongestSubstring(str string) int {
   length := len(str)
   if length == 0 || length == 1 {
     return length
@@ -404,7 +404,7 @@ for right &lt; length {
 <p>我们抽象一个窗口，用于记录s1中每个字符<strong>应该出现的次数</strong>，然后把这个窗口放到s2上滑动判断。</p>
 <p>当入窗时，次数减少。因为入窗相当于已经出现。
 当出窗时，次数增加。出窗相当于入窗的逆操作。</p>
-<pre><code>func checkInclusion(s1 string, s2 string) bool {
+<pre tabindex="0"><code>func checkInclusion(s1 string, s2 string) bool {
   l1, l2 := len(s1), len(s2)
   if l1 &gt; l2 {
     return false
@@ -455,59 +455,59 @@ for right &lt; length {
 <p>那么，怎么判断窗口内是否包含T中所有的字符呢？</p>
 <p>我们可以使用<strong>出现次数</strong>来判断，如同上一个题一样。先将T中所有字符出现次数放入哈希表，表示窗口中各个字符应该出现的次数。</p>
 <p>当窗口在滑动过程中，遇到T中的字符，那么说明这个字符已经出现，次数减一。当T中所有字符出现次数为0时，说明窗口内已经包含了T中所有的字符。</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="kd">func</span> <span class="nf">minWindow</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">t</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
-  <span class="nx">ls</span><span class="p">,</span> <span class="nx">lt</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span>
-  <span class="k">if</span> <span class="nx">ls</span> <span class="p">&lt;</span> <span class="nx">lt</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="s">&#34;&#34;</span>
-  <span class="p">}</span>
-
-  <span class="c1">// 窗口里存的是t中字符应该出现的次数
-</span><span class="c1"></span>  <span class="c1">// 正数表示该字符还缺的出现次数，0表示刚好出现，负数表示s中字符出现的次数多于t中字符出现次数
-</span><span class="c1"></span>  <span class="nx">windowMap</span> <span class="o">:=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">byte</span><span class="p">]</span><span class="kt">int</span><span class="p">{}</span>
-  <span class="c1">// 初始化窗口
-</span><span class="c1"></span>
-  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">lt</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
-    <span class="nx">windowMap</span><span class="p">[</span><span class="nx">t</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span><span class="o">++</span>
-  <span class="p">}</span>
-  <span class="nx">windowSize</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">windowMap</span><span class="p">)</span>
-  <span class="c1">// 其实在go语言里map有零值的概念，这块代码可以不要
-</span><span class="c1"></span>  <span class="c1">// 在其他语言，比如Java的HashMap没有零值概念，需要先初始化一下所有s中的字符出现次数
-</span><span class="c1"></span>  <span class="c1">// for i := 0; i &lt; ls; i++ {
-</span><span class="c1"></span>  <span class="c1">// 	if _, ok := windowMap[s[i]]; !ok {
-</span><span class="c1"></span>  <span class="c1">// 		windowMap[s[i]] = 0
-</span><span class="c1"></span>  <span class="c1">// 	}
-</span><span class="c1"></span>  <span class="c1">// }
-</span><span class="c1"></span>
-  <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-  <span class="c1">// 窗口中已经包含T的不同字符的种类
-</span><span class="c1"></span>  <span class="nx">c</span> <span class="o">:=</span> <span class="mi">0</span>
-  <span class="nx">ans</span> <span class="o">:=</span> <span class="s">&#34;&#34;</span>
-
-  <span class="k">for</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">ls</span> <span class="p">{</span>
-    <span class="c1">// 窗口右边界移动，扩大窗口
-</span><span class="c1"></span>    <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">right</span><span class="p">]]</span><span class="o">--</span>
-
-    <span class="c1">// 统计窗口中已经包含的T中的不同字符的种类
-</span><span class="c1"></span>    <span class="k">if</span> <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">right</span><span class="p">]]</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-      <span class="nx">c</span><span class="o">++</span>
-    <span class="p">}</span>
-
-    <span class="c1">// c==windowSize说明窗口已经包含所有T中的字符
-</span><span class="c1"></span>    <span class="k">for</span> <span class="nx">c</span> <span class="o">==</span> <span class="nx">windowSize</span> <span class="o">&amp;&amp;</span> <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">left</span><span class="p">]]</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
-      <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">left</span><span class="p">]]</span><span class="o">++</span>
-      <span class="nx">left</span><span class="o">++</span>
-    <span class="p">}</span>
-    <span class="k">if</span> <span class="nx">c</span> <span class="o">==</span> <span class="nx">windowSize</span> <span class="p">{</span>
-      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">ans</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span><span class="o">+</span><span class="mi">1</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">ans</span><span class="p">)</span> <span class="p">{</span>
-        <span class="nx">ans</span> <span class="p">=</span> <span class="nx">s</span><span class="p">[</span><span class="nx">left</span> <span class="p">:</span> <span class="nx">right</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
-      <span class="p">}</span>
-    <span class="p">}</span>
-    <span class="nx">right</span><span class="o">++</span>
-  <span class="p">}</span>
-
-  <span class="k">return</span> <span class="nx">ans</span>
-<span class="p">}</span>
-</code></pre></div><h2 id="滑动窗口最大值">滑动窗口最大值<a href="#滑动窗口最大值" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="kd">func</span> <span class="nf">minWindow</span><span class="p">(</span><span class="nx">s</span> <span class="kt">string</span><span class="p">,</span> <span class="nx">t</span> <span class="kt">string</span><span class="p">)</span> <span class="kt">string</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">ls</span><span class="p">,</span> <span class="nx">lt</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">s</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="nx">t</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="k">if</span> <span class="nx">ls</span> <span class="p">&lt;</span> <span class="nx">lt</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="s">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="c1">// 窗口里存的是t中字符应该出现的次数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// 正数表示该字符还缺的出现次数，0表示刚好出现，负数表示s中字符出现的次数多于t中字符出现次数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">windowMap</span> <span class="o">:=</span> <span class="kd">map</span><span class="p">[</span><span class="kt">byte</span><span class="p">]</span><span class="kt">int</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 初始化窗口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="nx">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="nx">lt</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">windowMap</span><span class="p">[</span><span class="nx">t</span><span class="p">[</span><span class="nx">i</span><span class="p">]]</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">windowSize</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">windowMap</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 其实在go语言里map有零值的概念，这块代码可以不要
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// 在其他语言，比如Java的HashMap没有零值概念，需要先初始化一下所有s中的字符出现次数
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// for i := 0; i &lt; ls; i++ {
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// 	if _, ok := windowMap[s[i]]; !ok {
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// 		windowMap[s[i]] = 0
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// 	}
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="c1">// }
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>
+</span></span><span class="line"><span class="cl">  <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">  <span class="c1">// 窗口中已经包含T的不同字符的种类
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>  <span class="nx">c</span> <span class="o">:=</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">  <span class="nx">ans</span> <span class="o">:=</span> <span class="s">&#34;&#34;</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">for</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">ls</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="c1">// 窗口右边界移动，扩大窗口
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">right</span><span class="p">]]</span><span class="o">--</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 统计窗口中已经包含的T中的不同字符的种类
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">if</span> <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">right</span><span class="p">]]</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">c</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// c==windowSize说明窗口已经包含所有T中的字符
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="k">for</span> <span class="nx">c</span> <span class="o">==</span> <span class="nx">windowSize</span> <span class="o">&amp;&amp;</span> <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">left</span><span class="p">]]</span> <span class="p">&lt;</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">windowMap</span><span class="p">[</span><span class="nx">s</span><span class="p">[</span><span class="nx">left</span><span class="p">]]</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">      <span class="nx">left</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">c</span> <span class="o">==</span> <span class="nx">windowSize</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">      <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nx">ans</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">||</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span><span class="o">+</span><span class="mi">1</span> <span class="p">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="nx">ans</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">ans</span> <span class="p">=</span> <span class="nx">s</span><span class="p">[</span><span class="nx">left</span> <span class="p">:</span> <span class="nx">right</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">      <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">right</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">  <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">  <span class="k">return</span> <span class="nx">ans</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span></code></pre></div><h2 id="滑动窗口最大值">滑动窗口最大值<a href="#滑动窗口最大值" class="anchor" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 7h3a5 5 0 0 1 5 5 5 5 0 0 1-5 5h-3m-6 0H6a5 5 0 0 1-5-5 5 5 0 0 1 5-5h3"></path><line x1="8" y1="12" x2="16" y2="12"></line></svg></a></h2>
 <blockquote>
 <p>给定一个数组 nums，有一个大小为 k 的滑动窗口从数组的最左侧移动到数组的最右侧。你只可以看到在滑动窗口内的 k 个数字。滑动窗口每次只向右移动一位。</p>
 <p>返回滑动窗口中的最大值。</p>
@@ -517,7 +517,7 @@ for right &lt; length {
 <p>输入: nums = [1,3,-1,-3,5,3,6,7], 和 k = 3
 输出: [3,3,5,5,6,7]
 解释:</p>
-<pre><code>&gt;  滑动窗口的位置                最大值
+<pre tabindex="0"><code>&gt;  滑动窗口的位置                最大值
 &gt; ---------------               -----
 &gt; [1  3  -1] -3  5  3  6  7      3
 &gt; 1 [3  -1  -3] 5  3  6  7       3
@@ -536,120 +536,120 @@ for right &lt; length {
 <p>循环窗口内所有元素，选择最大值么？当然不是，如果是循环选择最大值的话，那复杂度不就是O(n*k)了么。</p>
 <p>除了同步滑动窗口的左右边界，剩下的就是如何在常数时间内获得窗口内的最大值，这个有点像leetcode 155最小栈那个类似，那个是实现一个最小栈，即支持栈的操作，然后可以在常数时间内获取栈内的最小值。这个的话，应该是实现一个最大队列，即支持队列的入队出队，然后在常数时间内获得队列里的最大值。因为这个窗口的滑动本身就是一个队列的操作，滑动一次，就是一个入队出队操作。</p>
 <p>这里我们使用双端队列来实现。由于golang中没有原生实现双端队列这个结构，因此这里自己简单用链表实现一个。</p>
-<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="c1">// -----双端队列实现 begin-------
-</span><span class="c1">// QueueNode 队列节点
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">QueueNode</span> <span class="kd">struct</span> <span class="p">{</span>
-    <span class="nx">Val</span>  <span class="kt">int</span>
-    <span class="nx">Next</span> <span class="o">*</span><span class="nx">QueueNode</span>
-    <span class="nx">Pre</span>  <span class="o">*</span><span class="nx">QueueNode</span>
-<span class="p">}</span>
-
-<span class="c1">// DoubleQueue 双端队列
-</span><span class="c1"></span><span class="kd">type</span> <span class="nx">DoubleQueue</span> <span class="kd">struct</span> <span class="p">{</span>
-    <span class="nx">Left</span>  <span class="o">*</span><span class="nx">QueueNode</span>
-    <span class="nx">Right</span> <span class="o">*</span><span class="nx">QueueNode</span>
-    <span class="nx">Size</span>  <span class="kt">int</span>
-<span class="p">}</span>
-<span class="c1">// LeftPeek 获取左端元素值
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">LeftPeek</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span><span class="p">.</span><span class="nx">Val</span>
-<span class="p">}</span>
-<span class="c1">// LeftPush 从左端插入新元素
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">LeftPush</span><span class="p">(</span><span class="nx">num</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">node</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">QueueNode</span><span class="p">)</span>
-    <span class="nx">node</span><span class="p">.</span><span class="nx">Val</span> <span class="p">=</span> <span class="nx">num</span>
-    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">node</span>
-        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">node</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span>
-        <span class="nx">current</span><span class="p">.</span><span class="nx">Pre</span> <span class="p">=</span> <span class="nx">node</span>
-        <span class="nx">node</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">current</span>
-        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">node</span>
-    <span class="p">}</span>
-
-    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">++</span>
-<span class="p">}</span>
-<span class="c1">// LeftPop 从左端弹出元素
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">LeftPop</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
-    <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span>
-    <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Next</span>
-    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span><span class="p">.</span><span class="nx">Pre</span> <span class="p">=</span> <span class="kc">nil</span>
-    <span class="p">}</span>
-    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">--</span>
-    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="kc">nil</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Val</span>
-<span class="p">}</span>
-<span class="c1">// RightPeek 获取右端元素值
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">RightPeek</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
-    <span class="k">return</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span><span class="p">.</span><span class="nx">Val</span>
-<span class="p">}</span>
-<span class="c1">// RightPush 从右端插入新元素
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">RightPush</span><span class="p">(</span><span class="nx">num</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
-    <span class="nx">node</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">QueueNode</span><span class="p">)</span>
-    <span class="nx">node</span><span class="p">.</span><span class="nx">Val</span> <span class="p">=</span> <span class="nx">num</span>
-    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">node</span>
-        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">node</span>
-    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-        <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span>
-        <span class="nx">current</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">node</span>
-        <span class="nx">node</span><span class="p">.</span><span class="nx">Pre</span> <span class="p">=</span> <span class="nx">current</span>
-        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">node</span>
-    <span class="p">}</span>
-
-    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">++</span>
-<span class="p">}</span>
-<span class="c1">// RightPop 从右端弹出元素
-</span><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">RightPop</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
-    <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span>
-    <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Pre</span>
-    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
-        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="kc">nil</span>
-    <span class="p">}</span>
-    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">--</span>
-    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="kc">nil</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Val</span>
-<span class="p">}</span>
-<span class="c1">// -----双端队列实现 end-------
-</span><span class="c1">// -----题目解答 begin------
-</span><span class="c1"></span><span class="kd">func</span> <span class="nf">maxSlidingWindow</span><span class="p">(</span><span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">k</span> <span class="kt">int</span><span class="p">)</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
-    <span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span>
-    <span class="nx">res</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{}</span>
-
-    <span class="c1">// 初始化一个双端队列，用于存储窗口内的最大值
-</span><span class="c1"></span>    <span class="nx">dq</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">DoubleQueue</span><span class="p">)</span>
-
-    <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
-    <span class="k">for</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">length</span> <span class="p">{</span>
-        <span class="nx">rightNum</span> <span class="o">:=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span>
-        <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
-            <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPush</span><span class="p">(</span><span class="nx">rightNum</span><span class="p">)</span>
-        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
-            <span class="k">for</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">rightNum</span> <span class="p">&gt;</span> <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPeek</span><span class="p">()</span> <span class="p">{</span>
-                <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPop</span><span class="p">()</span>
-            <span class="p">}</span>
-            <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPush</span><span class="p">(</span><span class="nx">rightNum</span><span class="p">)</span>
-        <span class="p">}</span>
-        <span class="nx">right</span><span class="o">++</span>
-        <span class="k">if</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span> <span class="o">==</span> <span class="nx">k</span> <span class="p">{</span>
-            <span class="nx">res</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">res</span><span class="p">,</span> <span class="nx">dq</span><span class="p">.</span><span class="nf">LeftPeek</span><span class="p">())</span>
-            <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span> <span class="o">==</span> <span class="nx">dq</span><span class="p">.</span><span class="nf">LeftPeek</span><span class="p">()</span> <span class="p">{</span>
-                <span class="nx">dq</span><span class="p">.</span><span class="nf">LeftPop</span><span class="p">()</span>
-            <span class="p">}</span>
-            <span class="nx">left</span><span class="o">++</span>
-        <span class="p">}</span>
-    <span class="p">}</span>
-
-    <span class="k">return</span> <span class="nx">res</span>
-<span class="p">}</span>
-<span class="c1">// -----题目解答 end------
-</span></code></pre></div>
+<div class="highlight"><pre tabindex="0" class="chroma"><code class="language-go" data-lang="go"><span class="line"><span class="cl"><span class="c1">// -----双端队列实现 begin-------
+</span></span></span><span class="line"><span class="cl"><span class="c1">// QueueNode 队列节点
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">QueueNode</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Val</span>  <span class="kt">int</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Next</span> <span class="o">*</span><span class="nx">QueueNode</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Pre</span>  <span class="o">*</span><span class="nx">QueueNode</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl"><span class="c1">// DoubleQueue 双端队列
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">type</span> <span class="nx">DoubleQueue</span> <span class="kd">struct</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Left</span>  <span class="o">*</span><span class="nx">QueueNode</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Right</span> <span class="o">*</span><span class="nx">QueueNode</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">Size</span>  <span class="kt">int</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// LeftPeek 获取左端元素值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">LeftPeek</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span><span class="p">.</span><span class="nx">Val</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// LeftPush 从左端插入新元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">LeftPush</span><span class="p">(</span><span class="nx">num</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">node</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">QueueNode</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">node</span><span class="p">.</span><span class="nx">Val</span> <span class="p">=</span> <span class="nx">num</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">node</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">node</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">current</span><span class="p">.</span><span class="nx">Pre</span> <span class="p">=</span> <span class="nx">node</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">node</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">current</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">node</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// LeftPop 从左端弹出元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">LeftPop</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Next</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span><span class="p">.</span><span class="nx">Pre</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">--</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Val</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// RightPeek 获取右端元素值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">RightPeek</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span><span class="p">.</span><span class="nx">Val</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// RightPush 从右端插入新元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">RightPush</span><span class="p">(</span><span class="nx">num</span> <span class="kt">int</span><span class="p">)</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">node</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">QueueNode</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">node</span><span class="p">.</span><span class="nx">Val</span> <span class="p">=</span> <span class="nx">num</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="o">==</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="nx">node</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">node</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">current</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">node</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">node</span><span class="p">.</span><span class="nx">Pre</span> <span class="p">=</span> <span class="nx">current</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">node</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// RightPop 从右端弹出元素
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="p">(</span><span class="nx">dq</span> <span class="o">*</span><span class="nx">DoubleQueue</span><span class="p">)</span> <span class="nf">RightPop</span><span class="p">()</span> <span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">current</span> <span class="o">:=</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="p">=</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Pre</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">dq</span><span class="p">.</span><span class="nx">Right</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span><span class="o">--</span>
+</span></span><span class="line"><span class="cl">    <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">dq</span><span class="p">.</span><span class="nx">Left</span> <span class="p">=</span> <span class="kc">nil</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">current</span><span class="p">.</span><span class="nx">Val</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// -----双端队列实现 end-------
+</span></span></span><span class="line"><span class="cl"><span class="c1">// -----题目解答 begin------
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span><span class="kd">func</span> <span class="nf">maxSlidingWindow</span><span class="p">(</span><span class="nx">nums</span> <span class="p">[]</span><span class="kt">int</span><span class="p">,</span> <span class="nx">k</span> <span class="kt">int</span><span class="p">)</span> <span class="p">[]</span><span class="kt">int</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">length</span> <span class="o">:=</span> <span class="nb">len</span><span class="p">(</span><span class="nx">nums</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">    <span class="nx">res</span> <span class="o">:=</span> <span class="p">[]</span><span class="kt">int</span><span class="p">{}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="c1">// 初始化一个双端队列，用于存储窗口内的最大值
+</span></span></span><span class="line"><span class="cl"><span class="c1"></span>    <span class="nx">dq</span> <span class="o">:=</span> <span class="nb">new</span><span class="p">(</span><span class="nx">DoubleQueue</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="nx">left</span><span class="p">,</span> <span class="nx">right</span> <span class="o">:=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+</span></span><span class="line"><span class="cl">    <span class="k">for</span> <span class="nx">right</span> <span class="p">&lt;</span> <span class="nx">length</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">rightNum</span> <span class="o">:=</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">right</span><span class="p">]</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="o">==</span> <span class="mi">0</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPush</span><span class="p">(</span><span class="nx">rightNum</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="k">for</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">rightNum</span> <span class="p">&gt;</span> <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPeek</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPop</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">dq</span><span class="p">.</span><span class="nf">RightPush</span><span class="p">(</span><span class="nx">rightNum</span><span class="p">)</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">        <span class="nx">right</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">        <span class="k">if</span> <span class="nx">right</span><span class="o">-</span><span class="nx">left</span> <span class="o">==</span> <span class="nx">k</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">res</span> <span class="p">=</span> <span class="nb">append</span><span class="p">(</span><span class="nx">res</span><span class="p">,</span> <span class="nx">dq</span><span class="p">.</span><span class="nf">LeftPeek</span><span class="p">())</span>
+</span></span><span class="line"><span class="cl">            <span class="k">if</span> <span class="nx">dq</span><span class="p">.</span><span class="nx">Size</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="nx">nums</span><span class="p">[</span><span class="nx">left</span><span class="p">]</span> <span class="o">==</span> <span class="nx">dq</span><span class="p">.</span><span class="nf">LeftPeek</span><span class="p">()</span> <span class="p">{</span>
+</span></span><span class="line"><span class="cl">                <span class="nx">dq</span><span class="p">.</span><span class="nf">LeftPop</span><span class="p">()</span>
+</span></span><span class="line"><span class="cl">            <span class="p">}</span>
+</span></span><span class="line"><span class="cl">            <span class="nx">left</span><span class="o">++</span>
+</span></span><span class="line"><span class="cl">        <span class="p">}</span>
+</span></span><span class="line"><span class="cl">    <span class="p">}</span>
+</span></span><span class="line"><span class="cl">
+</span></span><span class="line"><span class="cl">    <span class="k">return</span> <span class="nx">res</span>
+</span></span><span class="line"><span class="cl"><span class="p">}</span>
+</span></span><span class="line"><span class="cl"><span class="c1">// -----题目解答 end------
+</span></span></span></code></pre></div>
 			</div><div class="content">
 	<br>
 	<img src="https://raw.githubusercontent.com/WillJE/WillJE.github.io/main/docs/wetchat-qrcode.png">
@@ -707,7 +707,7 @@ for right &lt; length {
 
 
 
-	<script src="https://willje.github.io/js/main.min.4eaa15feccc672488716f0338ac605e08c7553ce0ce175e13fa00a873636bf98.js" integrity="sha256-TqoV/szGckiHFvAzisYF4Ix1U84M4XXhP6AKhzY2v5g=" crossorigin="anonymous"></script>
+	<script src="https://willje.github.io/js/main.min.35de1ec5ccef7739e438e9119da86a7883c3a6419fb78d84d83e5697dd768b64.js" integrity="sha256-Nd4exczvdznkOOkRnahqeIPDpkGft42E2D5Wl912i2Q=" crossorigin="anonymous"></script>
 	<script>
 var _hmt = _hmt || [];
 (function() {
