@@ -65,6 +65,25 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%B8%80/">kubernetes基础使用（一）</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-05-23</span>
+                        <a class="tag"
+                                   href="/tags/kubernetes/">kubernetes</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/algorithm/lru%E7%AE%97%E6%B3%95/">LRU算法</a>
                 </h2>
             </div>
@@ -234,26 +253,6 @@
                                 class="date">2021-04-20</span>
                         <a class="tag"
                                    href="/tags/docker/">docker</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/">从一个yaml文件读取多个文档</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>简单需求 最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构： name: &#34;doc first&#34; --- name: &#34;second&#34; --- name: &#34;skip 3, now 4&#34; --- 通过gopkg.in/yaml.v3``Deocder可以帮我们解析出来，默认使用&quot;&mdash;&ldquo;来区分不同的文档。 package main import &#34;fmt&#34; import &#34;gopkg.in/yaml.v3&#34; import &#34;os&#34; import &#34;errors&#34; import &#34;io&#34; type Spec struct { Name string `yaml:&#34;name&#34;` } func main() { f, err := os.Open(&#34;spec.yaml&#34;) if err != nil { panic(err) } d := yaml.NewDecoder(f) for { // create new spec here spec := new(Spec) // pass a reference to spec reference err := d.Decode(&amp;spec) //</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-04-17</span>
-                        <a class="tag"
-                                   href="/tags/yaml/">yaml</a><a class="tag"
-                                   href="/tags/go/">go</a>
                     </div>
                 </div>
             </div>

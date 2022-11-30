@@ -65,6 +65,25 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/linux/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/">文件描述符</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>文件描述符是什么 fd 是 File descriptor 的缩写，中文名叫做：文件描述符。文件描述符是一个非负整数，本质上是一个索引值（这句话非常重要）。 什么时候拿到的 fd ？ 当打开一个文件时，内核向进程返回一个文件描述符（ open 系统调用得到 ），后续 read、write 这个文件时，则只需要用这个文件描述符来标识该文件，将其作为参数传入 read、write 。 fd 的值范围是什么？ 在 POSIX 语义中，0，1，2 这三</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-07-19</span>
+                        <a class="tag"
+                                   href="/tags/%E6%96%87%E4%BB%B6%E6%8F%8F%E8%BF%B0%E7%AC%A6/">文件描述符</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/mysql/%E4%B8%80%E9%81%93sql%E7%BB%83%E4%B9%A0%E9%A2%98/">一道SQL练习题</a>
                 </h2>
             </div>
@@ -228,25 +247,6 @@
                 <div class="meta">
                     <div class="info"><em class="fas fa-calendar-day"></em><span
                                 class="date">2021-05-25</span>
-                        <a class="tag"
-                                   href="/tags/kubernetes/">kubernetes</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/k8s/kubernetes%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E4%B8%80/">kubernetes基础使用（一）</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>创建namespace Kubernetes namespace 是用来构建虚拟的资源池；使用 kubernetes namespace，管理员可以将 kubernetes 划分成多个虚拟的区域，不同的项目或者团队可以使用不同的 namespace，达到了共享 kubernetes 集群资源的目的。此外， namespace 也被用来划分命名空间，即不同 namespace 里的资源可以取相同的名字，相同 namespace 内的资源不能重名。 Namespaces 通过 kubectl create -f，我们可以轻松地创建一个 namespace： ns.yaml文件如下</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-05-23</span>
                         <a class="tag"
                                    href="/tags/kubernetes/">kubernetes</a>
                     </div>

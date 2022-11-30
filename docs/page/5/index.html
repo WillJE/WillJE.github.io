@@ -65,6 +65,26 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/go/%E4%BB%8E%E4%B8%80%E4%B8%AAyaml%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%A4%9A%E4%B8%AA%E6%96%87%E6%A1%A3/">从一个yaml文件读取多个文档</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>简单需求 最近一个需求，从一个yaml文件中读取多个文档，例如有下面的文档结构： name: &#34;doc first&#34; --- name: &#34;second&#34; --- name: &#34;skip 3, now 4&#34; --- 通过gopkg.in/yaml.v3``Deocder可以帮我们解析出来，默认使用&quot;&mdash;&ldquo;来区分不同的文档。 package main import &#34;fmt&#34; import &#34;gopkg.in/yaml.v3&#34; import &#34;os&#34; import &#34;errors&#34; import &#34;io&#34; type Spec struct { Name string `yaml:&#34;name&#34;` } func main() { f, err := os.Open(&#34;spec.yaml&#34;) if err != nil { panic(err) } d := yaml.NewDecoder(f) for { // create new spec here spec := new(Spec) // pass a reference to spec reference err := d.Decode(&amp;spec) //</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2021-04-17</span>
+                        <a class="tag"
+                                   href="/tags/yaml/">yaml</a><a class="tag"
+                                   href="/tags/go/">go</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/go/basic/golang%E4%B8%ADdefer%E7%9A%84%E9%82%A3%E4%BA%9B%E4%BA%8B/">Golang中defer的那些事</a>
                 </h2>
             </div>
@@ -231,25 +251,6 @@
                                 class="date">2021-02-05</span>
                         <a class="tag"
                                    href="/tags/%E5%B9%82%E7%AD%89%E6%80%A7/">幂等性</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/distributed/raft-%E7%AE%97%E6%B3%95/">Raft算法</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>在一个由 Raft 协议组织的集群中有三类角色： Leader（领袖） Follower（群众） Candidate（候选人） 就像一个民主社会，领袖由民众投票选出。刚开始没有领袖，所有集群中的参与者都是群众，那么首先开启一轮大选，在大选期间所有群众都能参与竞选，这时所有群众的角色就变成了候选人，民主投票选出领袖后就开始了这届领袖的任期，然后选举结束，所有除领袖的候选人又变回</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2021-02-02</span>
-                        <a class="tag"
-                                   href="/tags/raft/">Raft</a>
                     </div>
                 </div>
             </div>

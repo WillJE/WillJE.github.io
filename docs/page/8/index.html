@@ -65,6 +65,26 @@
 		
         <div class="post animated fadeInDown">
             <div class="post-title">
+                <h2><a href="/posts/mysql/mysql-mvcc%E6%9C%BA%E5%88%B6/">MySQL_MVCC机制</a>
+                </h2>
+            </div>
+            <div class="post-content">
+                <div class="p_part"><p>本文中用到的概念解释 数据读取特性 不可重复读 指一个事务范围内两个相同的查询却返回了不同数据 这是由于查询时系统中其他事务修改的提交而引起的 幻读 在两个连续的查找之间一个并发的修改事务修改了查询的数据集，导致这两个查询返回了不同的结果 这是由于查询时系统中其他事务新增或者删除记录引起的 事务隔离级别 Read Commited(提交读) 一个事务从开始到提交前,所作的任何修改对其他</p></div>
+            </div>
+            <div class="post-footer">
+                <div class="meta">
+                    <div class="info"><em class="fas fa-calendar-day"></em><span
+                                class="date">2020-04-25</span>
+                        <a class="tag"
+                                   href="/tags/mysql/">MySQL</a><a class="tag"
+                                   href="/tags/mvcc/">MVCC</a>
+                    </div>
+                </div>
+            </div>
+				</div>
+    
+        <div class="post animated fadeInDown">
+            <div class="post-title">
                 <h2><a href="/posts/mysql/mysql-innodb%E9%94%81%E6%9C%BA%E5%88%B6/">MySQL InnoDB锁机制</a>
                 </h2>
             </div>
@@ -234,25 +254,6 @@
                                 class="date">2019-08-09</span>
                         <a class="tag"
                                    href="/tags/mysql/">MySQL</a>
-                    </div>
-                </div>
-            </div>
-				</div>
-    
-        <div class="post animated fadeInDown">
-            <div class="post-title">
-                <h2><a href="/posts/java/concurrent/%E7%94%9F%E4%BA%A7%E8%80%85%E6%B6%88%E8%B4%B9%E8%80%85/">Java生产者与消费者</a>
-                </h2>
-            </div>
-            <div class="post-content">
-                <div class="p_part"><p>实现生产者消费者模型，可以使用阻塞队列，或者使用 Object 类里自带的 wait() 和 notify() 或者 notifyAll() 的消息通知机制。 实现 wait()/notify() 接下来我们需要重点看下这个通知机制。 wait() 和 notify() 都是 Java 中的 Object 类自带的方法，可以用来实现线程间的通信。 在上一节 讲的 11 个 APIs 里我也提到了它，我们这里再展开讲一下。 wait() 方法是用来让当前线程等待，直到有别的线程调用 notify() 将它唤醒，或者我们可以设定一个时间让它自动苏醒。 调用该方法之前，线程</p></div>
-            </div>
-            <div class="post-footer">
-                <div class="meta">
-                    <div class="info"><em class="fas fa-calendar-day"></em><span
-                                class="date">2019-08-05</span>
-                        <a class="tag"
-                                   href="/tags/java/">Java</a>
                     </div>
                 </div>
             </div>

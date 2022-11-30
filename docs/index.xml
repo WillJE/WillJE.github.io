@@ -63,6 +63,15 @@
     </item>
     
     <item>
+      <title>皇帝的新衣-共有知识和公共知识</title>
+      <link>https://willje.github.io/posts/read/%E7%9A%87%E5%B8%9D%E7%9A%84%E6%96%B0%E8%A1%A3-%E5%85%B1%E6%9C%89%E7%9F%A5%E8%AF%86%E5%92%8C%E5%85%AC%E5%85%B1%E7%9F%A5%E8%AF%86/</link>
+      <pubDate>Wed, 10 Nov 2021 20:55:29 +0800</pubDate>
+      
+      <guid>https://willje.github.io/posts/read/%E7%9A%87%E5%B8%9D%E7%9A%84%E6%96%B0%E8%A1%A3-%E5%85%B1%E6%9C%89%E7%9F%A5%E8%AF%86%E5%92%8C%E5%85%AC%E5%85%B1%E7%9F%A5%E8%AF%86/</guid>
+      <description>最近看到李永乐的视频 你真的看懂《皇帝的新装》了吗？心知肚明和说出来有啥区别 受益非浅，于是记录一下。 什么是《皇帝的新装》，来自于著名作家安徒生的童话， 红眼睛、蓝眼睛 我们首先来讨论一个逻辑问题，这个问题最早是由华裔数学家陶哲轩提出的。 一个村子中有100个人，其中95个人的眼睛是蓝色的，5个人的眼睛是红色的。村子里有一个奇怪的规矩：虽然每个人都能看到其他人的眼睛是</description>
+    </item>
+    
+    <item>
       <title>Centos安装Nodejs和Python</title>
       <link>https://willje.github.io/posts/linux/centos%E5%AE%89%E8%A3%85nodejs%E5%92%8Cpython/</link>
       <pubDate>Sat, 30 Oct 2021 20:55:29 +0800</pubDate>
@@ -87,15 +96,6 @@
       
       <guid>https://willje.github.io/posts/k8s/helm%E5%AD%A6%E4%B9%A0/</guid>
       <description>helm介绍 chart Helm 的软件包，采用 TAR 格式。类似于 APT 的 DEB 包或者 YUM 的 RPM 包，其包含了一组定义 Kubernetes 资源相关的 YAML 文件。 Repoistory Helm 的软件仓库，Repository 本质上是一个 Web 服务器，该服务器保存了一系列的 Chart 软件包以供用户下载，并且提供了一个该 Repository 的 Chart 包的清单文件以供查询。Helm 可以同时管理多个不同的 Repository。 Release 使用 helm install 命令在 Kubernetes 集群中部署的 Chart 称为 Release，这里的 Release</description>
-    </item>
-    
-    <item>
-      <title>滑动窗口算法思想</title>
-      <link>https://willje.github.io/posts/algorithm/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3/</link>
-      <pubDate>Mon, 13 Sep 2021 21:23:18 +0800</pubDate>
-      
-      <guid>https://willje.github.io/posts/algorithm/%E6%BB%91%E5%8A%A8%E7%AA%97%E5%8F%A3%E7%AE%97%E6%B3%95%E6%80%9D%E6%83%B3/</guid>
-      <description>滑动窗口算法思想是非常重要的一种思想，可以用来解决数组，字符串的子元素问题。它可以将嵌套循环的问题，转换为单层循环问题，降低时间复杂度，提高效率。 滑动窗口的思想非常简单，它将子数组（子字符串）理解成一个滑动的窗口，然后将这个窗口在数组上滑动，在窗口滑动的过程中，左边会出一个元素，右边会进一个元素，然后只需要计算当前窗口内的元素值即可。 可用滑动窗口思想解决的问</description>
     </item>
     
   </channel>
